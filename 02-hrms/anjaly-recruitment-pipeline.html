@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIME Recruitment Pipeline — HRMS</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:      #0D1F35;
+  --navy-mid:  #1A3352;
+  --gold:      #C9A84C;
+  --gold-l:    #F7EDD0;
+  --red:       #C8102E;
+  --bg:        #F4F5F7;
+  --white:     #FFFFFF;
+  --text:      #0D1F35;
+  --sub:       #4A5D72;
+  --muted:     #8496A9;
+  --border:    #E0E6EE;
+
+  --s1: #E8F5E9; --s1t: #1B5E20; --s1b: #A5D6A7;
+  --s2: #E3F2FD; --s2t: #0D47A1; --s2b: #90CAF9;
+  --s3: #FFF3E0; --s3t: #E65100; --s3b: #FFCC80;
+  --s4: #F3E5F5; --s4t: #4A148C; --s4b: #CE93D8;
+  --s5: #E8EAF6; --s5t: #1A237E; --s5b: #9FA8DA;
+  --s6: #FCE4EC; --s6t: #880E4F; --s6b: #F48FB1;
+  --s7: #E0F2F1; --s7t: #004D40; --s7b: #80CBC4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  padding: 0 28px;
+  height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  position: sticky; top: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.xime { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; }
+.hdiv { width: 1px; height: 22px; background: rgba(255,255,255,0.12); }
+.htitle { font-size: 12.5px; color: rgba(255,255,255,0.5); }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.hdate { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.08em; }
+.havatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(201,168,76,0.15); border: 1.5px solid rgba(201,168,76,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold);
+}
+
+/* TOP BAR */
+.topbar {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px;
+}
+.page-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--text); }
+.topbar-right { display: flex; gap: 10px; align-items: center; }
+.btn-new {
+  padding: 7px 16px; background: var(--navy); color: white;
+  border: none; border-radius: 7px; font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px; font-weight: 500; cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-new:hover { background: var(--navy-mid); }
+.btn-outline {
+  padding: 7px 14px; background: white; color: var(--sub);
+  border: 1px solid var(--border); border-radius: 7px;
+  font-family: 'DM Sans', sans-serif; font-size: 12.5px; cursor: pointer;
+}
+
+/* STATS STRIP */
+.stats {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 1px; background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat {
+  background: white; padding: 14px 20px;
+  opacity: 0; animation: fadeUp 0.4s ease forwards;
+}
+.stat:nth-child(1){animation-delay:0.05s}
+.stat:nth-child(2){animation-delay:0.1s}
+.stat:nth-child(3){animation-delay:0.15s}
+.stat:nth-child(4){animation-delay:0.2s}
+.stat:nth-child(5){animation-delay:0.25s}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.stat-num {
+  font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600;
+  color: var(--text); line-height: 1; margin-bottom: 3px;
+}
+.stat-label { font-size: 11px; color: var(--muted); }
+.stat-num.green { color: #1B5E20; }
+.stat-num.blue  { color: #0D47A1; }
+.stat-num.amber { color: #E65100; }
+
+/* MAIN LAYOUT */
+.main { padding: 24px 28px; max-width: 1200px; margin: 0 auto; }
+
+/* KANBAN */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(160px, 1fr));
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.col { min-width: 160px; }
+
+.col-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; padding: 0 2px;
+}
+.col-title {
+  font-size: 11px; font-weight: 600;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.col-count {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 1px 7px; border-radius: 10px; font-weight: 500;
+}
+
+/* STAGE COLOURS */
+.col-1 .col-title { color: var(--s1t); }
+.col-1 .col-count { background: var(--s1); color: var(--s1t); border: 1px solid var(--s1b); }
+.col-2 .col-title { color: var(--s2t); }
+.col-2 .col-count { background: var(--s2); color: var(--s2t); border: 1px solid var(--s2b); }
+.col-3 .col-title { color: var(--s3t); }
+.col-3 .col-count { background: var(--s3); color: var(--s3t); border: 1px solid var(--s3b); }
+.col-4 .col-title { color: var(--s4t); }
+.col-4 .col-count { background: var(--s4); color: var(--s4t); border: 1px solid var(--s4b); }
+.col-5 .col-title { color: var(--s5t); }
+.col-5 .col-count { background: var(--s5); color: var(--s5t); border: 1px solid var(--s5b); }
+.col-6 .col-title { color: var(--s6t); }
+.col-6 .col-count { background: var(--s6); color: var(--s6t); border: 1px solid var(--s6b); }
+.col-7 .col-title { color: var(--s7t); }
+.col-7 .col-count { background: var(--s7); color: var(--s7t); border: 1px solid var(--s7b); }
+
+/* CANDIDATE CARD */
+.ccard {
+  background: white; border: 1px solid var(--border);
+  border-radius: 9px; padding: 13px 14px; margin-bottom: 8px;
+  cursor: pointer; transition: box-shadow 0.15s, transform 0.15s;
+  opacity: 0; animation: fadeUp 0.4s ease forwards;
+}
+.ccard:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
+
+.ccard-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.ccard-role { font-size: 11px; color: var(--muted); margin-bottom: 9px; line-height: 1.3; }
+.ccard-meta { display: flex; flex-direction: column; gap: 4px; }
+.cmeta-row { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--sub); }
+.cmeta-icon { font-size: 10px; width: 14px; }
+
+.ccard-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--border);
+}
+.campus-tag {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 8px;
+}
+.ct-blr   { background: #EBF4FF; color: #1A3352; }
+.ct-kochi { background: #E8F5E9; color: #1B5E20; }
+
+.sla-badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 500;
+}
+.sla-ok   { background: #F0FDF4; color: #16A34A; }
+.sla-warn { background: #FFFBEB; color: #D97706; }
+.sla-late { background: #FFF5F5; color: #DC2626; }
+
+/* APPROVAL GATE */
+.gate-card {
+  background: #F5F3FF; border: 1.5px solid #A78BFA;
+  border-radius: 9px; padding: 12px 14px; margin-bottom: 8px;
+  opacity: 0; animation: fadeUp 0.4s ease forwards;
+}
+.gate-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #4C1D95; margin-bottom: 6px; font-weight: 500;
+  display: flex; align-items: center; gap: 5px;
+}
+.gate-dot { width: 6px; height: 6px; border-radius: 50%; background: #7C3AED; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+.gate-title { font-size: 12.5px; font-weight: 500; color: #3C1D80; margin-bottom: 4px; }
+.gate-sub { font-size: 11px; color: #6D28D9; line-height: 1.4; }
+.gate-action {
+  margin-top: 9px; padding: 6px 12px; background: #4C1D95;
+  color: white; border: none; border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+  font-weight: 500; cursor: pointer; width: 100%;
+  transition: background 0.15s;
+}
+.gate-action:hover { background: #3C1D80; }
+
+/* EMPTY COL */
+.empty-col {
+  background: var(--bg); border: 1.5px dashed var(--border);
+  border-radius: 9px; padding: 16px 14px;
+  text-align: center; font-size: 11px; color: var(--muted);
+  min-height: 80px; display: flex; align-items: center; justify-content: center;
+}
+
+/* DETAIL PANEL */
+.detail-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(13,31,53,0.5); z-index: 200;
+  align-items: flex-start; justify-content: flex-end;
+}
+.detail-overlay.open { display: flex; }
+
+.detail-panel {
+  width: 380px; height: 100vh; background: white;
+  overflow-y: auto; padding: 0;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+  animation: slideIn 0.2s ease;
+}
+@keyframes slideIn { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
+
+.dp-header {
+  background: var(--navy); padding: 20px 22px;
+  position: sticky; top: 0;
+}
+.dp-close {
+  font-size: 11px; color: rgba(255,255,255,0.5);
+  cursor: pointer; margin-bottom: 12px; display: inline-block;
+}
+.dp-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: white; }
+.dp-role { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 3px; }
+
+.dp-body { padding: 20px 22px; }
+
+.dp-section { margin-bottom: 20px; }
+.dp-section-title {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px; font-weight: 500;
+}
+
+.dp-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.dp-row-label { font-size: 12px; color: var(--muted); }
+.dp-row-value { font-size: 12.5px; color: var(--text); font-weight: 500; text-align: right; max-width: 200px; }
+
+.stage-flow {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.sf-step {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 7px;
+  font-size: 12px;
+}
+.sf-step.done    { background: #F0FDF4; color: #15803D; }
+.sf-step.current { background: #F5F3FF; color: #4C1D95; font-weight: 500; border: 1px solid #DDD6FE; }
+.sf-step.pending { background: var(--bg); color: var(--muted); }
+.sf-icon { font-size: 11px; width: 16px; text-align: center; }
+
+.notes-area {
+  width: 100%; border: 1px solid var(--border); border-radius: 7px;
+  padding: 9px 11px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--text); resize: vertical;
+  min-height: 72px; background: var(--bg); outline: none;
+}
+.notes-area:focus { border-color: #93C5FD; background: white; }
+
+.dp-btn {
+  width: 100%; padding: 9px; background: var(--navy); color: white;
+  border: none; border-radius: 7px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 6px;
+  transition: background 0.15s;
+}
+.dp-btn:hover { background: var(--navy-mid); }
+.dp-btn.secondary {
+  background: white; color: var(--sub);
+  border: 1px solid var(--border); margin-top: 8px;
+}
+
+/* SECTION LABEL */
+.section-label {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px; margin-top: 6px;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--navy); padding: 14px 28px;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,0.3); letter-spacing: 0.04em;
+  margin-top: 40px;
+}
+
+@media (max-width: 700px) {
+  .kanban { grid-template-columns: repeat(4, 200px); }
+  .stats { grid-template-columns: repeat(3, 1fr); }
+  .detail-panel { width: 100vw; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="xime">XIME</div>
+    <div class="hdiv"></div>
+    <div class="htitle">Recruitment Pipeline · HRMS</div>
+  </div>
+  <div class="header-right">
+    <div class="hdate" id="hdate"></div>
+    <div class="havatar">ANJ</div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="page-title">Active Pipeline</div>
+  <div class="topbar-right">
+    <button class="btn-outline" onclick="alert('Export to CSV — Lavanya to wire up')">↓ Export</button>
+    <button class="btn-new" onclick="alert('New Requisition form — MRF Step 0')">+ New Requisition</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">1</div>
+    <div class="stat-label">Active roles</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num blue">1</div>
+    <div class="stat-label">Awaiting sanction</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num amber">2</div>
+    <div class="stat-label">Pending approval</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num green">0</div>
+    <div class="stat-label">Offers extended</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Joined this month</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="section-label">Recruitment Kanban — 13-Step Process · 5 Approval Gates</div>
+
+  <div class="kanban">
+
+    <!-- COL 1: REQUISITION -->
+    <div class="col col-1">
+      <div class="col-header">
+        <div class="col-title">Requisition</div>
+        <div class="col-count">1</div>
+      </div>
+      <div class="gate-card" style="animation-delay:0.1s">
+        <div class="gate-label"><div class="gate-dot"></div>AG 1 · Awaiting</div>
+        <div class="gate-title">Asst. Professor — Marketing</div>
+        <div class="gate-sub">MRF submitted · Bengaluru · Awaiting Presidential sanction · 14 hrs · SLA: 48 hrs</div>
+        <button class="gate-action" onclick="openDetail('ap-marketing')">Review Requisition →</button>
+      </div>
+    </div>
+
+    <!-- COL 2: JD & SOURCING -->
+    <div class="col col-2">
+      <div class="col-header">
+        <div class="col-title">JD & Sourcing</div>
+        <div class="col-count">0</div>
+      </div>
+      <div class="empty-col">No active roles</div>
+    </div>
+
+    <!-- COL 3: SCREENING -->
+    <div class="col col-3">
+      <div class="col-header">
+        <div class="col-title">Screening</div>
+        <div class="col-count">0</div>
+      </div>
+      <div class="empty-col">No candidates</div>
+    </div>
+
+    <!-- COL 4: INTERVIEWS -->
+    <div class="col col-4">
+      <div class="col-header">
+        <div class="col-title">Interviews</div>
+        <div class="col-count">0</div>
+      </div>
+      <div class="empty-col">No candidates</div>
+    </div>
+
+    <!-- COL 5: FINAL -->
+    <div class="col col-5">
+      <div class="col-header">
+        <div class="col-title">Final Round</div>
+        <div class="col-count">0</div>
+      </div>
+      <div class="empty-col">No candidates</div>
+    </div>
+
+    <!-- COL 6: OFFER -->
+    <div class="col col-6">
+      <div class="col-header">
+        <div class="col-title">Offer</div>
+        <div class="col-count">0</div>
+      </div>
+      <div class="empty-col">No offers</div>
+    </div>
+
+    <!-- COL 7: PRE-JOINING -->
+    <div class="col col-7">
+      <div class="col-header">
+        <div class="col-title">Pre-Joining</div>
+        <div class="col-count">0</div>
+      </div>
+      <div class="empty-col">No joiners</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detail-panel">
+    <div class="dp-header">
+      <div class="dp-close" onclick="closeDetailDirect()">← Close</div>
+      <div class="dp-name">Assistant Professor — Marketing</div>
+      <div class="dp-role">Faculty · Full Time · Bengaluru</div>
+    </div>
+    <div class="dp-body">
+
+      <div class="dp-section">
+        <div class="dp-section-title">Requisition Details</div>
+        <div class="dp-row"><span class="dp-row-label">Role type</span><span class="dp-row-value">New Position</span></div>
+        <div class="dp-row"><span class="dp-row-label">Campus</span><span class="dp-row-value">Bengaluru</span></div>
+        <div class="dp-row"><span class="dp-row-label">Requested by</span><span class="dp-row-value">Dean — Academics</span></div>
+        <div class="dp-row"><span class="dp-row-label">Submitted</span><span class="dp-row-value">30 Mar 2026 · 9:14 AM</span></div>
+        <div class="dp-row"><span class="dp-row-label">SLA deadline</span><span class="dp-row-value" style="color:#D97706;">31 Mar 2026 · 9:14 AM</span></div>
+        <div class="dp-row"><span class="dp-row-label">Reporting to</span><span class="dp-row-value">Dean — Academics</span></div>
+        <div class="dp-row"><span class="dp-row-label">Proposed joining</span><span class="dp-row-value">1 June 2026</span></div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">Candidate Profile Required</div>
+        <div class="dp-row"><span class="dp-row-label">Qualification</span><span class="dp-row-value">PhD / Post-Graduation</span></div>
+        <div class="dp-row"><span class="dp-row-label">Experience</span><span class="dp-row-value">5–8 years</span></div>
+        <div class="dp-row"><span class="dp-row-label">Specialisation</span><span class="dp-row-value">Marketing / Consumer Behaviour</span></div>
+        <div class="dp-row"><span class="dp-row-label">Salary band</span><span class="dp-row-value">Ref: XIME Faculty Band 2</span></div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">Process Stage</div>
+        <div class="stage-flow">
+          <div class="sf-step current"><span class="sf-icon">⏳</span>AG1 — Presidential Sanction · Pending</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>JD Preparation & AG2 Sign-off</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Job Posting & Sourcing</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Screening & Shortlisting</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Interviews & AG3 Selection</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Salary Fitment & AG4 Offer</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Pre-Joining & AG5 Clearance</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Onboarding Handoff → Reetha</div>
+        </div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">Recruiter Notes</div>
+        <textarea class="notes-area" placeholder="Add notes about this role or candidate…"></textarea>
+      </div>
+
+      <button class="dp-btn" onclick="alert('Approval notification sent to President')">Send Reminder to President →</button>
+      <button class="dp-btn secondary" onclick="closeDetailDirect()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>XIME Bengaluru · HRMS · Recruitment Module</span>
+  <span>Recruiter: Anjaly · 5 Approval Gates · 48hr SLA Standard</span>
+  <span>github.com/xime-bengaluru/integrated-centre</span>
+</div>
+
+<script>
+document.getElementById('hdate').textContent =
+  new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
+
+function openDetail(id) {
+  document.getElementById('detail-overlay').classList.add('open');
+}
+function closeDetail(e) {
+  if (e.target === document.getElementById('detail-overlay')) closeDetailDirect();
+}
+function closeDetailDirect() {
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+</script>
+</body>
+</html>
