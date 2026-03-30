@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faculty Self-Assessment — XIME FDP</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:     #0D1F35;
+  --gold:     #C9A84C;
+  --gold-l:   #F7EDD0;
+  --bg:       #F4F5F7;
+  --white:    #FFFFFF;
+  --text:     #0D1F35;
+  --sub:      #4A5D72;
+  --muted:    #8496A9;
+  --border:   #E0E6EE;
+  --red:      #C8102E;
+
+  --q1: #1A3352; --q1l: #EBF4FF; --q1b: #93C5FD;
+  --q2: #14532D; --q2l: #F0FDF4; --q2b: #86EFAC;
+  --q3: #7C2D12; --q3l: #FFF7ED; --q3b: #FDBA74;
+  --q4: #4C1D95; --q4l: #F5F3FF; --q4b: #A78BFA;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* HEADER */
+.header {
+  background: var(--navy); padding: 0 28px; height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  position: sticky; top: 0; z-index: 100;
+}
+.xime { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; }
+.hdiv { width: 1px; height: 22px; background: rgba(255,255,255,0.12); margin: 0 14px; }
+.htitle { font-size: 12.5px; color: rgba(255,255,255,0.5); }
+.hright { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.35); }
+
+/* HERO */
+.hero {
+  background: var(--navy); padding: 36px 28px 44px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -80px; right: -80px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 10px;
+  opacity: 0; animation: fadeUp 0.4s ease 0.1s forwards;
+}
+.hero-title {
+  font-family: 'Fraunces', serif; font-size: clamp(22px,4vw,32px);
+  font-weight: 600; color: white; line-height: 1.2; margin-bottom: 6px;
+  opacity: 0; animation: fadeUp 0.4s ease 0.15s forwards;
+}
+.hero-title em { color: var(--gold); font-style: italic; }
+.hero-sub {
+  font-size: 13.5px; color: rgba(255,255,255,0.45); margin-bottom: 28px;
+  opacity: 0; animation: fadeUp 0.4s ease 0.2s forwards;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* FACULTY SELECTOR */
+.faculty-select-wrap {
+  opacity: 0; animation: fadeUp 0.4s ease 0.25s forwards;
+}
+.faculty-select-label {
+  font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px;
+}
+.faculty-select {
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  background: rgba(255,255,255,0.08); border: 1.5px solid rgba(201,168,76,0.3);
+  color: white; border-radius: 8px; padding: 9px 14px;
+  outline: none; cursor: pointer; min-width: 280px;
+}
+.faculty-select option { background: var(--navy); color: white; }
+
+/* PROGRESS BAR */
+.progress-bar-wrap {
+  margin-top: 20px;
+  opacity: 0; animation: fadeUp 0.4s ease 0.3s forwards;
+}
+.pb-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 6px;
+}
+.pb-track {
+  height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;
+  overflow: hidden; max-width: 400px;
+}
+.pb-fill {
+  height: 100%; background: var(--gold); border-radius: 2px;
+  transition: width 0.4s ease; width: 0%;
+}
+
+/* MAIN */
+.main { padding: 28px; max-width: 900px; margin: 0 auto; }
+
+/* QUADRANT GRID */
+.quad-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 24px;
+}
+
+.quad-card {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  opacity: 0; animation: fadeUp 0.5s ease forwards;
+}
+.quad-card:nth-child(1){animation-delay:0.2s; border-top: 3px solid var(--q1);}
+.quad-card:nth-child(2){animation-delay:0.25s; border-top: 3px solid var(--q2);}
+.quad-card:nth-child(3){animation-delay:0.3s; border-top: 3px solid var(--q3);}
+.quad-card:nth-child(4){animation-delay:0.35s; border-top: 3px solid var(--q4);}
+
+.quad-header { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); }
+.quad-tag {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 8px; width: fit-content;
+  margin-bottom: 6px; font-weight: 500;
+}
+.qt1 { background: var(--q1l); color: var(--q1); border: 1px solid var(--q1b); }
+.qt2 { background: var(--q2l); color: var(--q2); border: 1px solid var(--q2b); }
+.qt3 { background: var(--q3l); color: var(--q3); border: 1px solid var(--q3b); }
+.qt4 { background: var(--q4l); color: var(--q4); border: 1px solid var(--q4b); }
+
+.quad-title { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; color: var(--text); }
+.quad-desc { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+/* SKILL ROWS */
+.skill-rows { padding: 14px 18px; display: flex; flex-direction: column; gap: 14px; }
+
+.skill-row { }
+.skill-name {
+  font-size: 12.5px; font-weight: 500; color: var(--text);
+  margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
+}
+.skill-val {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 1px 7px; border-radius: 8px;
+}
+
+.rating-track {
+  display: flex; gap: 5px; align-items: center;
+}
+.rating-btn {
+  flex: 1; padding: 6px 4px; border: 1.5px solid var(--border);
+  border-radius: 6px; background: var(--bg); cursor: pointer;
+  font-size: 11px; color: var(--muted); text-align: center;
+  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.rating-btn:hover { border-color: var(--navy); color: var(--navy); }
+.rating-btn.selected-1 { background: var(--q1l); border-color: var(--q1); color: var(--q1); font-weight: 500; }
+.rating-btn.selected-2 { background: var(--q2l); border-color: var(--q2); color: var(--q2); font-weight: 500; }
+.rating-btn.selected-3 { background: var(--q3l); border-color: var(--q3); color: var(--q3); font-weight: 500; }
+.rating-btn.selected-4 { background: var(--q4l); border-color: var(--q4); color: var(--q4); font-weight: 500; }
+
+/* NARRATIVE */
+.narrative-section {
+  background: white; border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 20px; margin-bottom: 20px;
+  opacity: 0; animation: fadeUp 0.5s ease 0.4s forwards;
+}
+.narr-title {
+  font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600;
+  color: var(--text); margin-bottom: 14px;
+}
+.narr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.narr-field { display: flex; flex-direction: column; gap: 5px; }
+.narr-label { font-size: 11.5px; font-weight: 500; color: var(--sub); }
+.narr-input {
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
+  border: 1.5px solid var(--border); border-radius: 7px;
+  padding: 8px 11px; background: var(--bg); outline: none;
+  transition: border-color 0.15s;
+}
+.narr-input:focus { border-color: #93C5FD; background: white; }
+.narr-textarea { resize: vertical; min-height: 68px; }
+
+/* SUBMIT */
+.submit-bar {
+  background: white; border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  opacity: 0; animation: fadeUp 0.5s ease 0.45s forwards;
+}
+.submit-status { font-size: 13px; color: var(--sub); }
+.submit-status strong { color: var(--text); }
+.submit-btn {
+  padding: 10px 28px; background: var(--navy); color: white;
+  border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s;
+}
+.submit-btn:hover { background: var(--navy-mid, #1A3352); }
+.submit-btn:disabled { background: var(--muted); cursor: default; }
+
+/* SUCCESS */
+.success-bar {
+  display: none; background: #F0FDF4; border: 1.5px solid #86EFAC;
+  border-radius: 12px; padding: 16px 20px; text-align: center;
+  font-size: 14px; color: #14532D; font-weight: 500;
+  margin-bottom: 20px;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--navy); padding: 14px 28px; margin-top: 40px;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,0.3); letter-spacing: 0.04em;
+}
+
+@media (max-width: 640px) {
+  .quad-grid { grid-template-columns: 1fr; }
+  .narr-grid { grid-template-columns: 1fr; }
+  .submit-bar { flex-direction: column; }
+  .faculty-select { min-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <div class="xime">XIME</div>
+    <div class="hdiv"></div>
+    <div class="htitle">Faculty Development Portal · Self-Assessment</div>
+  </div>
+  <div class="hright" id="hdate"></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">FDP Pilot — April 2026</div>
+  <div class="hero-title">Faculty <em>Self-Assessment</em></div>
+  <div class="hero-sub">Rate yourself across four development quadrants. Honest self-ratings help us plan the right support for you.</div>
+
+  <div class="faculty-select-wrap">
+    <div class="faculty-select-label">Select your name to begin</div>
+    <select class="faculty-select" id="facultySelect" onchange="onFacultyChange()">
+      <option value="">— Choose faculty member —</option>
+      <optgroup label="Bengaluru Campus">
+        <option value="dc-blr">Dr. Christopher · Bengaluru</option>
+        <option value="dt-blr">Dr. Tijo · Bengaluru</option>
+        <option value="dch-blr">Dr. Christina · Bengaluru</option>
+      </optgroup>
+      <optgroup label="Kochi Campus">
+        <option value="rn-kochi">Dr. Ranjith Nair · Kochi</option>
+        <option value="gt-kochi">Prof. Geethika Thomas · Kochi</option>
+        <option value="ln-kochi">Prof. Lavanya Nagarajan · Kochi</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="pb-label">
+      <span>Assessment completion</span>
+      <span id="pct">0 of 18 skills rated</span>
+    </div>
+    <div class="pb-track"><div class="pb-fill" id="pbfill"></div></div>
+  </div>
+</div>
+
+<!-- SUCCESS MESSAGE -->
+<div class="main">
+<div class="success-bar" id="success-bar">
+  ✓ Self-assessment submitted successfully. Your Dean will review and schedule a calibration conversation.
+</div>
+
+<!-- QUADRANT 1: TEACHING & PEDAGOGY -->
+<div class="quad-grid">
+  <div class="quad-card">
+    <div class="quad-header">
+      <div class="quad-tag qt1">Quadrant 1</div>
+      <div class="quad-title">Teaching & Pedagogy</div>
+      <div class="quad-desc">Your effectiveness in the classroom and as a course designer</div>
+    </div>
+    <div class="skill-rows">
+      <div class="skill-row">
+        <div class="skill-name"><span>Facilitation</span><span class="skill-val qt1" id="sv-fac">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('fac',1,1)" id="fac-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('fac',2,1)" id="fac-2">Developing</button>
+          <button class="rating-btn" onclick="rate('fac',3,1)" id="fac-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('fac',4,1)" id="fac-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Content Knowledge</span><span class="skill-val qt1" id="sv-ck">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('ck',1,1)" id="ck-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('ck',2,1)" id="ck-2">Developing</button>
+          <button class="rating-btn" onclick="rate('ck',3,1)" id="ck-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('ck',4,1)" id="ck-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Content Development</span><span class="skill-val qt1" id="sv-cd">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('cd',1,1)" id="cd-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('cd',2,1)" id="cd-2">Developing</button>
+          <button class="rating-btn" onclick="rate('cd',3,1)" id="cd-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('cd',4,1)" id="cd-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Case & Simulation Handling</span><span class="skill-val qt1" id="sv-cs">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('cs',1,1)" id="cs-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('cs',2,1)" id="cs-2">Developing</button>
+          <button class="rating-btn" onclick="rate('cs',3,1)" id="cs-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('cs',4,1)" id="cs-4">Expert</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUADRANT 2: RESEARCH -->
+  <div class="quad-card">
+    <div class="quad-header">
+      <div class="quad-tag qt2">Quadrant 2</div>
+      <div class="quad-title">Research & Intellectual Contribution</div>
+      <div class="quad-desc">Publications, conferences, and scholarly contribution</div>
+    </div>
+    <div class="skill-rows">
+      <div class="skill-row">
+        <div class="skill-name"><span>Case Research & Articles</span><span class="skill-val qt2" id="sv-cr">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('cr',1,2)" id="cr-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('cr',2,2)" id="cr-2">Developing</button>
+          <button class="rating-btn" onclick="rate('cr',3,2)" id="cr-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('cr',4,2)" id="cr-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Collaborative Research Projects</span><span class="skill-val qt2" id="sv-co">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('co',1,2)" id="co-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('co',2,2)" id="co-2">Developing</button>
+          <button class="rating-btn" onclick="rate('co',3,2)" id="co-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('co',4,2)" id="co-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Research Methodology</span><span class="skill-val qt2" id="sv-rm">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('rm',1,2)" id="rm-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('rm',2,2)" id="rm-2">Developing</button>
+          <button class="rating-btn" onclick="rate('rm',3,2)" id="rm-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('rm',4,2)" id="rm-4">Expert</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUADRANT 3: INDUSTRY ENGAGEMENT -->
+  <div class="quad-card">
+    <div class="quad-header">
+      <div class="quad-tag qt3">Quadrant 3</div>
+      <div class="quad-title">Industry Engagement</div>
+      <div class="quad-desc">Consulting, MDP delivery, and practitioner connection</div>
+    </div>
+    <div class="skill-rows">
+      <div class="skill-row">
+        <div class="skill-name"><span>Consulting</span><span class="skill-val qt3" id="sv-con">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('con',1,3)" id="con-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('con',2,3)" id="con-2">Developing</button>
+          <button class="rating-btn" onclick="rate('con',3,3)" id="con-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('con',4,3)" id="con-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>MDP Delivery</span><span class="skill-val qt3" id="sv-mdp">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('mdp',1,3)" id="mdp-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('mdp',2,3)" id="mdp-2">Developing</button>
+          <button class="rating-btn" onclick="rate('mdp',3,3)" id="mdp-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('mdp',4,3)" id="mdp-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Student Mentoring</span><span class="skill-val qt3" id="sv-sm">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('sm',1,3)" id="sm-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('sm',2,3)" id="sm-2">Developing</button>
+          <button class="rating-btn" onclick="rate('sm',3,3)" id="sm-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('sm',4,3)" id="sm-4">Expert</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUADRANT 4: LEADERSHIP & INSTITUTIONAL -->
+  <div class="quad-card">
+    <div class="quad-header">
+      <div class="quad-tag qt4">Quadrant 4</div>
+      <div class="quad-title">Leadership & Institutional Contribution</div>
+      <div class="quad-desc">Governance, accreditation, and institutional citizenship</div>
+    </div>
+    <div class="skill-rows">
+      <div class="skill-row">
+        <div class="skill-name"><span>Knowledge Sharing</span><span class="skill-val qt4" id="sv-ks">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('ks',1,4)" id="ks-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('ks',2,4)" id="ks-2">Developing</button>
+          <button class="rating-btn" onclick="rate('ks',3,4)" id="ks-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('ks',4,4)" id="ks-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Accreditation Tasks</span><span class="skill-val qt4" id="sv-at">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('at',1,4)" id="at-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('at',2,4)" id="at-2">Developing</button>
+          <button class="rating-btn" onclick="rate('at',3,4)" id="at-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('at',4,4)" id="at-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Strategic Planning</span><span class="skill-val qt4" id="sv-sp">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('sp',1,4)" id="sp-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('sp',2,4)" id="sp-2">Developing</button>
+          <button class="rating-btn" onclick="rate('sp',3,4)" id="sp-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('sp',4,4)" id="sp-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Innovation & Entrepreneurship</span><span class="skill-val qt4" id="sv-ie">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('ie',1,4)" id="ie-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('ie',2,4)" id="ie-2">Developing</button>
+          <button class="rating-btn" onclick="rate('ie',3,4)" id="ie-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('ie',4,4)" id="ie-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Administration</span><span class="skill-val qt4" id="sv-adm">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('adm',1,4)" id="adm-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('adm',2,4)" id="adm-2">Developing</button>
+          <button class="rating-btn" onclick="rate('adm',3,4)" id="adm-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('adm',4,4)" id="adm-4">Expert</button>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name"><span>Ranking Contribution</span><span class="skill-val qt4" id="sv-rc">—</span></div>
+        <div class="rating-track">
+          <button class="rating-btn" onclick="rate('rc',1,4)" id="rc-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('rc',2,4)" id="rc-2">Developing</button>
+          <button class="rating-btn" onclick="rate('rc',3,4)" id="rc-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('rc',4,4)" id="rc-4">Expert</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NARRATIVE SECTION -->
+<div class="narrative-section">
+  <div class="narr-title">Development Goals & Context</div>
+  <div class="narr-grid">
+    <div class="narr-field">
+      <div class="narr-label">What are you working on this year?</div>
+      <textarea class="narr-input narr-textarea" placeholder="e.g. Completing a paper, planning an MDP delivery, attending a conference…"></textarea>
+    </div>
+    <div class="narr-field">
+      <div class="narr-label">Where do you want to grow?</div>
+      <textarea class="narr-input narr-textarea" placeholder="e.g. More industry engagement, deeper research in ESG, leadership roles…"></textarea>
+    </div>
+    <div class="narr-field">
+      <div class="narr-label">Support needed from XIME</div>
+      <textarea class="narr-input narr-textarea" placeholder="e.g. Research funding, conference sponsorship, industry introductions…"></textarea>
+    </div>
+    <div class="narr-field">
+      <div class="narr-label">External commitments (consulting, advisory, etc.)</div>
+      <textarea class="narr-input narr-textarea" placeholder="e.g. Ongoing corporate engagement, advisory board membership…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT BAR -->
+<div class="submit-bar">
+  <div class="submit-status">
+    <strong id="submit-name">Select your name above</strong> to begin ·
+    <span id="submit-count">0 of 18 skills rated</span>
+  </div>
+  <button class="submit-btn" id="submit-btn" onclick="submitAssessment()" disabled>
+    Submit Assessment →
+  </button>
+</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>XIME Bengaluru · Faculty Development Portal · Pilot Cohort — April 2026</span>
+  <span>18 skills · Lavanya's taxonomy · 4 quadrants</span>
+  <span>github.com/xime-bengaluru/integrated-centre</span>
+</div>
+
+<script>
+document.getElementById('hdate').textContent =
+  new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
+
+const ratings = {};
+const total = 18;
+const labels = ['Beginner','Developing','Proficient','Expert'];
+const qColors = {1:'selected-1',2:'selected-2',3:'selected-3',4:'selected-4'};
+
+function rate(skill, level, quadrant) {
+  ratings[skill] = level;
+
+  // Clear all buttons for this skill
+  for(let i=1;i<=4;i++) {
+    const btn = document.getElementById(skill+'-'+i);
+    if(btn) btn.className = 'rating-btn';
+  }
+  // Select clicked
+  const sel = document.getElementById(skill+'-'+level);
+  if(sel) sel.classList.add('selected-'+quadrant);
+
+  // Update value badge
+  const badge = document.getElementById('sv-'+skill);
+  if(badge) badge.textContent = labels[level-1];
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = Object.keys(ratings).length;
+  const pct = Math.round((count/total)*100);
+  document.getElementById('pbfill').style.width = pct+'%';
+  document.getElementById('pct').textContent = count+' of '+total+' skills rated';
+  document.getElementById('submit-count').textContent = count+' of '+total+' skills rated';
+
+  const btn = document.getElementById('submit-btn');
+  const faculty = document.getElementById('facultySelect').value;
+  btn.disabled = !(count >= total && faculty);
+}
+
+function onFacultyChange() {
+  const sel = document.getElementById('facultySelect');
+  const name = sel.options[sel.selectedIndex].text;
+  document.getElementById('submit-name').textContent = name || 'Select your name above';
+  updateProgress();
+}
+
+function submitAssessment() {
+  document.getElementById('success-bar').style.display = 'block';
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('submit-btn').textContent = '✓ Submitted';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
