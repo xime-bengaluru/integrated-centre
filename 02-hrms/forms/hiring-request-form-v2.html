@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiring Request Form — XIME</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --xime-red:   #C8102E;
+    --blue:       #1E3A5F;
+    --blue-l:     #EBF4FF;
+    --blue-bd:    #93C5FD;
+    --green:      #14532D;
+    --green-l:    #F0FDF4;
+    --green-bd:   #86EFAC;
+    --amber:      #92400E;
+    --amber-l:    #FFFBEB;
+    --amber-bd:   #FCD34D;
+    --purple:     #4C1D95;
+    --purple-l:   #F5F3FF;
+    --purple-bd:  #A78BFA;
+    --teal:       #0E7490;
+    --teal-l:     #ECFEFF;
+    --teal-bd:    #67E8F9;
+    --border:     #E2E8F0;
+    --bg:         #F8F9FB;
+    --text:       #0F172A;
+    --sub:        #475569;
+    --label:      #64748B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 32px 20px 60px;
+  }
+
+  .page { max-width: 740px; margin: 0 auto; }
+
+  .form-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .form-header {
+    background: var(--blue);
+    padding: 0;
+  }
+  .header-top {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .logo-block {
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    min-width: 120px;
+  }
+  .logo-xime {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--xime-red);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .logo-tag {
+    font-size: 9px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .title-block {
+    flex: 1;
+    padding: 18px 24px;
+  }
+  .form-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: white;
+    line-height: 1.2;
+  }
+  .form-subtitle {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+  }
+  .ref-block {
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .ref-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .ref-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    color: white;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 5px;
+    padding: 3px 10px;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  /* ── CAMPUS STRIP ── */
+  .campus-strip {
+    background: rgba(0,0,0,0.2);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .campus-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    margin-right: 4px;
+  }
+  .campus-opt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .campus-opt:has(input:checked) {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.6);
+    color: white;
+    font-weight: 500;
+  }
+  .campus-opt input { display: none; }
+
+  /* ── NOTICE STRIP ── */
+  .notice-strip {
+    background: var(--amber-l);
+    border-bottom: 1px solid var(--amber-bd);
+    padding: 9px 24px;
+    font-size: 12px;
+    color: var(--amber);
+    display: flex;
+    gap: 7px;
+    align-items: flex-start;
+  }
+
+  /* ── SECTION ── */
+  .section { padding: 22px 24px 0; }
+  .section:last-of-type { padding-bottom: 24px; }
+  .section-head {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--xime-red);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid #FECACA;
+    font-weight: 500;
+  }
+
+  /* ── GRID ── */
+  .fg  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; margin-bottom: 12px; }
+  .fg1 { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+  .fg3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px 18px; margin-bottom: 12px; }
+  .span2 { grid-column: span 2; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--label);
+  }
+  .field label .req { color: var(--xime-red); margin-left: 1px; }
+  .field label .tag-new {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    background: var(--green-l);
+    color: var(--green);
+    border: 1px solid var(--green-bd);
+    border-radius: 10px;
+    padding: 1px 6px;
+    margin-left: 6px;
+  }
+  .field label .tag-mod {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    background: var(--amber-l);
+    color: var(--amber);
+    border: 1px solid var(--amber-bd);
+    border-radius: 10px;
+    padding: 1px 6px;
+    margin-left: 6px;
+  }
+
+  .field input, .field select, .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 11px;
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: #93C5FD;
+    background: white;
+  }
+  .field textarea { resize: vertical; min-height: 72px; }
+
+  .field .hint {
+    font-size: 11px;
+    color: var(--label);
+    line-height: 1.4;
+  }
+
+  /* ── RADIO PILLS ── */
+  .pill-group { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 2px; }
+  .pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border: 1.5px solid var(--border);
+    border-radius: 20px; cursor: pointer;
+    font-size: 12.5px; color: var(--sub);
+    background: var(--bg); transition: all 0.15s;
+  }
+  .pill:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--blue-l);
+    color: var(--blue);
+    font-weight: 500;
+  }
+  .pill input { display: none; }
+
+  /* ── CONDITIONAL BLOCK ── */
+  .conditional {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 8px;
+    display: none;
+  }
+  .conditional.show { display: block; }
+  .conditional .clabel {
+    font-size: 11px; font-weight: 500;
+    color: #92400E; margin-bottom: 8px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  /* ── SALARY BAND BOX ── */
+  .band-box {
+    padding: 11px 14px;
+    background: var(--green-l);
+    border: 1px solid var(--green-bd);
+    border-radius: 7px;
+    font-size: 12.5px;
+    color: var(--green);
+    line-height: 1.5;
+  }
+  .band-box strong { font-weight: 600; }
+
+  /* ── DIVIDER ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 20px 0 0; }
+
+  /* ── APPROVAL SECTION ── */
+  .approval-dept {
+    padding: 20px 24px;
+    background: #F8FAFC;
+    border-top: 1.5px solid var(--border);
+  }
+  .approval-pres {
+    padding: 20px 24px;
+    background: var(--blue-l);
+    border-top: 2px solid var(--blue-bd);
+  }
+  .ap-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .ap-title.dept  { color: var(--sub); }
+  .ap-title.pres  { color: var(--blue); }
+
+  .ap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px 18px; }
+  .ap-field { display: flex; flex-direction: column; gap: 5px; }
+  .ap-field label { font-size: 11.5px; font-weight: 500; }
+  .ap-field.dept label  { color: var(--label); }
+  .ap-field.pres label  { color: var(--blue); }
+  .ap-field input, .ap-field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; border-radius: 7px;
+    padding: 7px 11px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .ap-field.dept input  { border: 1.5px solid var(--border); background: white; color: var(--text); }
+  .ap-field.pres input  { border: 1.5px solid var(--blue-bd); background: white; color: var(--text); }
+  .ap-field.pres textarea { border: 1.5px solid var(--blue-bd); background: white; color: var(--text); resize: vertical; min-height: 56px; }
+  .ap-field.dept input:focus  { border-color: #93C5FD; }
+  .ap-field.pres input:focus, .ap-field.pres textarea:focus { border-color: var(--blue); }
+  .span2ap { grid-column: span 2; }
+
+  /* ── DECISION PILLS ── */
+  .decision-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .dp {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border: 1.5px solid var(--border);
+    border-radius: 8px; cursor: pointer;
+    font-size: 13px; background: white; color: var(--sub);
+    transition: all 0.15s;
+  }
+  .dp input { display: none; }
+  .dp.approved:has(input:checked) { border-color: #16A34A; background: var(--green-l); color: var(--green); font-weight: 500; }
+  .dp.rejected:has(input:checked) { border-color: #DC2626; background: #FFF5F5; color: #7F1D1D; font-weight: 500; }
+  .dp.onhold:has(input:checked)   { border-color: #D97706; background: var(--amber-l); color: var(--amber); font-weight: 500; }
+
+  /* ── SLA & HRMS STRIPS ── */
+  .sla-strip {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 14px; padding: 9px 13px;
+    background: var(--green-l); border: 1px solid var(--green-bd);
+    border-radius: 7px; font-size: 12px; color: var(--green);
+  }
+  .sla-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #16A34A; flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.35} }
+  .hrms-strip {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 8px; padding: 9px 13px;
+    background: var(--teal-l); border: 1px solid var(--teal-bd);
+    border-radius: 7px; font-size: 12px; color: var(--teal);
+  }
+
+  /* ── FOOTER ── */
+  .form-footer {
+    border-top: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px; color: var(--label);
+  }
+
+  /* ── VERSION NOTE ── */
+  .version-note {
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    background: var(--purple-l);
+    border: 1px solid var(--purple-bd);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--purple);
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+
+  @media (max-width:580px) {
+    .fg, .fg3, .ap-grid { grid-template-columns: 1fr; }
+    .span2, .span2ap { grid-column: span 1; }
+    .header-top { flex-direction: column; }
+    .ref-block { align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- VERSION NOTE -->
+  <div class="version-note">
+    <span>↑</span>
+    <span><strong>Upgraded version</strong> of the existing XIME Hiring Request Form. Fields marked <span style="background:var(--green-l);color:var(--green);border:1px solid var(--green-bd);border-radius:10px;padding:1px 6px;font-size:10px;font-family:'DM Mono',monospace;">new</span> are additions. Fields marked <span style="background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-bd);border-radius:10px;padding:1px 6px;font-size:10px;font-family:'DM Mono',monospace;">modified</span> have been reworked from the original. All existing fields retained.</span>
+  </div>
+
+  <div class="form-card">
+
+    <!-- HEADER -->
+    <div class="form-header">
+      <div class="header-top">
+        <div class="logo-block">
+          <div class="logo-xime">XIME</div>
+          <div class="logo-tag">Shaping Future Leaders</div>
+        </div>
+        <div class="title-block">
+          <div class="form-title">Hiring Request Form</div>
+          <div class="form-subtitle">Recruitment Module · HRMS Portal · Submit for Presidential approval before recruitment begins</div>
+        </div>
+        <div class="ref-block">
+          <div class="ref-label">Form reference</div>
+          <div class="ref-value">HRF / &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / 2026</div>
+        </div>
+      </div>
+
+      <!-- CAMPUS STRIP -->
+      <div class="campus-strip">
+        <span class="campus-label">Campus:</span>
+        <label class="campus-opt"><input type="radio" name="campus"> Bengaluru</label>
+        <label class="campus-opt"><input type="radio" name="campus"> Kochi</label>
+        <label class="campus-opt"><input type="radio" name="campus"> Chennai</label>
+        <label class="campus-opt"><input type="radio" name="campus"> XIS</label>
+      </div>
+    </div>
+
+    <!-- NOTICE STRIP -->
+    <div class="notice-strip">
+      <span>⚠</span>
+      <span>This form must be approved by the President or designated authority before any recruitment activity is initiated. SLA: decision within 48 hours of submission.</span>
+    </div>
+
+    <!-- ── SECTION A: DEPARTMENT DETAILS ── -->
+    <div class="section">
+      <div class="section-head">Department Details</div>
+      <div class="fg">
+        <div class="field">
+          <label>Department <span class="req">*</span></label>
+          <input type="text" placeholder="e.g. Academics, Corporate Relations, Finance">
+        </div>
+        <div class="field">
+          <label>Requested By (Name & Designation) <span class="req">*</span></label>
+          <input type="text" placeholder="Full name and designation">
+        </div>
+        <div class="field">
+          <label>Date of Request <span class="req">*</span></label>
+          <input type="date">
+        </div>
+        <div class="field">
+          <label>Email / Contact <span class="tag-new">new</span></label>
+          <input type="email" placeholder="For HRMS notifications">
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── SECTION B: POSITION DETAILS ── -->
+    <div class="section">
+      <div class="section-head">Position Details</div>
+      <div class="fg">
+        <div class="field">
+          <label>Job Title / Role <span class="req">*</span></label>
+          <input type="text" placeholder="e.g. Assistant Professor — Marketing">
+        </div>
+        <div class="field">
+          <label>Type of Hiring <span class="req">*</span></label>
+          <select>
+            <option value="" disabled selected>Select type</option>
+            <option>Faculty — Full Time</option>
+            <option>Faculty — Visiting / Adjunct</option>
+            <option>Staff — Permanent</option>
+            <option>Staff — Contract</option>
+            <option>Temporary / Project-based</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Number of Positions <span class="req">*</span></label>
+          <input type="number" min="1" placeholder="1">
+        </div>
+        <div class="field">
+          <label>Location <span class="req">*</span></label>
+          <input type="text" placeholder="e.g. Bengaluru — Electronic City">
+        </div>
+        <div class="field">
+          <label>Reporting To <span class="req">*</span></label>
+          <input type="text" placeholder="Name and designation">
+        </div>
+        <div class="field">
+          <label>Proposed Joining Date</label>
+          <input type="date">
+        </div>
+      </div>
+
+      <!-- Reason for Hiring -->
+      <div class="field" style="margin-bottom:10px;">
+        <label>Reason for Hiring <span class="req">*</span></label>
+        <div class="pill-group" id="reason-group">
+          <label class="pill" onclick="toggleBackfill('new')"><input type="radio" name="reason" value="new"> New Role</label>
+          <label class="pill" onclick="toggleBackfill('replacement')"><input type="radio" name="reason" value="replacement"> Replacement / Backfill</label>
+          <label class="pill" onclick="toggleBackfill('temporary')"><input type="radio" name="reason" value="temporary"> Temporary</label>
+          <label class="pill" onclick="toggleBackfill('projected')"><input type="radio" name="reason" value="projected"> Projected / Pipeline</label>
+        </div>
+      </div>
+
+      <!-- Conditional: Backfill details -->
+      <div class="conditional" id="backfill-block">
+        <div class="clabel">Backfill Details <span class="tag-new" style="font-family:inherit;font-size:10px;background:var(--green-l);color:var(--green);border:1px solid var(--green-bd);border-radius:10px;padding:1px 6px;margin-left:6px;">new</span></div>
+        <div class="fg" style="margin-bottom:0;">
+          <div class="field">
+            <label style="color:var(--amber);">Name of Departing Employee</label>
+            <input type="text" placeholder="Full name">
+          </div>
+          <div class="field">
+            <label style="color:var(--amber);">Last Working Date</label>
+            <input type="date">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── SECTION C: CANDIDATE PROFILE ── -->
+    <div class="section">
+      <div class="section-head">Candidate Profile</div>
+      <div class="fg">
+        <div class="field">
+          <label>Educational Qualification <span class="req">*</span></label>
+          <select>
+            <option value="" disabled selected>Select minimum qualification</option>
+            <option>Graduation (Any discipline)</option>
+            <option>Post-Graduation / MBA</option>
+            <option>PhD / Doctorate</option>
+            <option>Professional Certification</option>
+            <option>Diploma</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Specialisation / Domain</label>
+          <input type="text" placeholder="e.g. Marketing, Finance, HRM, IT">
+        </div>
+        <div class="field">
+          <label>Experience Required <span class="req">*</span></label>
+          <select>
+            <option value="" disabled selected>Select experience range</option>
+            <option>Fresher / 0 years</option>
+            <option>1–3 years</option>
+            <option>3–5 years</option>
+            <option>5–8 years</option>
+            <option>8–12 years</option>
+            <option>12+ years</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Industry / Sector Preference</label>
+          <input type="text" placeholder="e.g. Academic, IT Services, BFSI">
+        </div>
+      </div>
+      <div class="fg1">
+        <div class="field">
+          <label>Key Skills Required <span class="req">*</span></label>
+          <textarea placeholder="List 3–5 must-have skills or competencies…"></textarea>
+        </div>
+      </div>
+
+      <!-- Salary Band — MODIFIED -->
+      <div class="field" style="margin-bottom:0;">
+        <label>Salary Band Reference <span class="tag-mod">modified</span></label>
+        <div class="band-box">
+          <strong>Refer to approved XIME salary bands for this role level.</strong> Do not specify a range here — the Recruitment Professional will verify the candidate's salary expectation against the applicable band during the fitment check (Step 9 of the hiring process). Any exception to the approved band requires separate approval before offer issuance.
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── SECTION D: BUSINESS JUSTIFICATION ── -->
+    <div class="section">
+      <div class="section-head">Business Justification <span class="tag-new" style="font-family:inherit;font-size:10px;background:var(--green-l);color:var(--green);border:1px solid var(--green-bd);border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:middle;">new section</span></div>
+      <div class="fg1">
+        <div class="field">
+          <label>Reason this hire is needed now <span class="req">*</span></label>
+          <textarea style="min-height:90px;" placeholder="For new roles: describe the gap or growth this addresses. For backfills: describe the impact of the vacancy. For projected roles: describe the anticipated need and timeline. This field supports accreditation audit requirements."></textarea>
+          <div class="hint">This justification is required for institutional records and accreditation purposes.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DEPARTMENTAL APPROVAL ── -->
+    <div class="approval-dept">
+      <div class="ap-title dept">Approved By — Department / Functional Head</div>
+      <div class="ap-grid">
+        <div class="ap-field dept">
+          <label>Name <span style="color:var(--xime-red);">*</span></label>
+          <input type="text" placeholder="Full name of approving department head">
+        </div>
+        <div class="ap-field dept">
+          <label>Designation <span style="color:var(--xime-red);">*</span></label>
+          <input type="text" placeholder="e.g. Dean — Academics">
+        </div>
+        <div class="ap-field dept">
+          <label>Date <span style="color:var(--xime-red);">*</span></label>
+          <input type="date">
+        </div>
+        <div class="ap-field dept">
+          <label>Signature</label>
+          <input type="text" placeholder="Physical signature / HRMS confirmation">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRESIDENTIAL APPROVAL ── -->
+    <div class="approval-pres">
+      <div class="ap-title pres">Approved by the President — For Official Use Only</div>
+      <div class="ap-grid">
+        <div class="ap-field pres">
+          <label>Name</label>
+          <input type="text" placeholder="Name of approving authority">
+        </div>
+        <div class="ap-field pres">
+          <label>Designation</label>
+          <input type="text" placeholder="President / President's Designate">
+        </div>
+        <div class="ap-field pres">
+          <label>Date of Decision</label>
+          <input type="date">
+        </div>
+        <div class="ap-field pres">
+          <label>Form Received (HRMS)</label>
+          <input type="text" placeholder="Auto-populated by system">
+        </div>
+
+        <!-- Decision — MODIFIED (was Yes/checkbox only) -->
+        <div class="ap-field pres span2ap">
+          <label>Decision <span class="tag-mod" style="font-family:inherit;font-size:10px;background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-bd);border-radius:10px;padding:1px 6px;margin-left:6px;">modified</span></label>
+          <div class="decision-group">
+            <label class="dp approved"><input type="radio" name="decision"> ✓ &nbsp;Approved — proceed to recruitment</label>
+            <label class="dp rejected"><input type="radio" name="decision"> ✗ &nbsp;Not Approved — returned to department</label>
+            <label class="dp onhold"><input type="radio" name="decision"> ⏸ &nbsp;On Hold — review date to be set</label>
+          </div>
+        </div>
+
+        <!-- Remarks — NEW -->
+        <div class="ap-field pres span2ap">
+          <label>Remarks / Conditions <span class="tag-new" style="font-family:inherit;font-size:10px;background:var(--green-l);color:var(--green);border:1px solid var(--green-bd);border-radius:10px;padding:1px 6px;margin-left:6px;">new</span></label>
+          <textarea placeholder="Any conditions attached to approval, reasons for rejection or hold, or modified instructions…"></textarea>
+        </div>
+      </div>
+
+      <div class="sla-strip">
+        <div class="sla-dot"></div>
+        <span><strong>SLA:</strong> Decision required within <strong>48 hours</strong> of form submission. No recruitment activity may begin until approval is recorded in HRMS.</span>
+      </div>
+      <div class="hrms-strip">
+        <span style="font-size:14px;">⚡</span>
+        <span><strong>HRMS Trigger:</strong> On approval, the system automatically notifies the Recruitment Professional and opens the role in the recruitment pipeline. Form reference number is assigned and appended to all subsequent correspondence for this hire.</span>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="form-footer">
+      <span>XIME · HRF · HR-RECRUIT-001 · v2.0</span>
+      <span>Upgraded from original Hiring Request Form</span>
+      <span>HRMS Recruitment Module · 2026</span>
+    </div>
+
+  </div><!-- /form-card -->
+</div><!-- /page -->
+
+<script>
+function toggleBackfill(val) {
+  const block = document.getElementById('backfill-block');
+  if (val === 'replacement') {
+    block.classList.add('show');
+  } else {
+    block.classList.remove('show');
+  }
+}
+</script>
+</body>
+</html>

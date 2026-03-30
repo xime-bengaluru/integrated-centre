@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manpower Requisition Form — XIME</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --blue:     #1E3A5F;
+    --blue-l:   #EBF4FF;
+    --blue-bd:  #93C5FD;
+    --green:    #14532D;
+    --green-l:  #F0FDF4;
+    --green-bd: #86EFAC;
+    --purple:   #4C1D95;
+    --amber:    #92400E;
+    --amber-l:  #FFFBEB;
+    --red-l:    #FFF5F5;
+    --red-bd:   #FEB2B2;
+    --border:   #E2E8F0;
+    --bg:       #F8F9FB;
+    --text:     #0F172A;
+    --sub:      #475569;
+    --label:    #64748B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px 20px 60px;
+  }
+
+  .page { max-width: 720px; margin: 0 auto; }
+
+  /* FORM CARD */
+  .form-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  /* HEADER */
+  .form-header {
+    background: var(--blue);
+    padding: 28px 32px 24px;
+    color: white;
+  }
+  .form-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .inst-name {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    margin-bottom: 4px;
+  }
+  .form-title {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .form-subtitle {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+  .form-ref {
+    text-align: right;
+  }
+  .ref-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    margin-bottom: 4px;
+  }
+  .ref-box {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  /* CONTROL STRIP */
+  .control-strip {
+    background: var(--amber-l);
+    border-bottom: 1px solid #FCD34D;
+    padding: 9px 32px;
+    font-size: 12px;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 24px 32px 0;
+  }
+  .section:last-of-type { padding-bottom: 32px; }
+
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--label);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* FIELD GRID */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+    margin-bottom: 14px;
+  }
+  .field-grid.col-1 { grid-template-columns: 1fr; }
+  .field-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.span-2 { grid-column: span 2; }
+
+  .field label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--label);
+    letter-spacing: 0.02em;
+  }
+  .field label .req { color: #E53E3E; margin-left: 2px; }
+
+  .field input, .field select, .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 12px;
+    background: var(--bg);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--blue-bd);
+    background: white;
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+
+  /* RADIO GROUP */
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--sub);
+    transition: all 0.15s;
+    background: var(--bg);
+  }
+  .radio-option:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--blue-l);
+    color: var(--blue);
+    font-weight: 500;
+  }
+  .radio-option input[type=radio] {
+    width: 14px; height: 14px;
+    accent-color: var(--blue);
+    cursor: pointer;
+  }
+
+  /* SALARY BAND REFERENCE */
+  .band-ref {
+    padding: 12px 16px;
+    background: var(--green-l);
+    border: 1px solid var(--green-bd);
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--green);
+    margin-top: 4px;
+  }
+  .band-ref strong { font-weight: 600; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0 0; }
+
+  /* APPROVAL SECTION */
+  .approval-section {
+    background: var(--blue-l);
+    border-top: 2px solid var(--blue-bd);
+    padding: 24px 32px;
+  }
+  .approval-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 16px;
+  }
+  .approval-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+  }
+  .approval-block { display: flex; flex-direction: column; gap: 5px; }
+  .approval-block label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: 0.02em;
+  }
+  .approval-block input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    border: 1.5px solid var(--blue-bd);
+    border-radius: 7px;
+    padding: 8px 12px;
+    background: white;
+    outline: none;
+    color: var(--text);
+  }
+  .approval-block input:focus { border-color: var(--blue); }
+
+  .approval-status {
+    grid-column: span 2;
+    margin-top: 4px;
+  }
+  .approval-status label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--blue);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .status-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .status-option {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--sub);
+    background: white;
+    transition: all 0.15s;
+  }
+  .status-option.approved:has(input:checked)  { border-color: #16A34A; background: #F0FDF4; color: #14532D; font-weight: 500; }
+  .status-option.rejected:has(input:checked)  { border-color: #DC2626; background: #FFF5F5; color: #7F1D1D; font-weight: 500; }
+  .status-option.onhold:has(input:checked)    { border-color: #D97706; background: #FFFBEB; color: #78350F; font-weight: 500; }
+  .status-option input[type=radio] { width: 14px; height: 14px; cursor: pointer; }
+
+  .approval-note {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .approval-note label { font-size: 11px; font-weight: 500; color: var(--blue); }
+  .approval-note textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    border: 1.5px solid var(--blue-bd);
+    border-radius: 7px;
+    padding: 8px 12px;
+    background: white;
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    color: var(--text);
+  }
+
+  /* SLA STRIP */
+  .sla-strip {
+    background: #F0FDF4;
+    border: 1px solid var(--green-bd);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .sla-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #16A34A;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+  }
+
+  /* HRMS STRIP */
+  .hrms-strip {
+    background: #ECFEFF;
+    border: 1px solid #67E8F9;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #0E7490;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* FOOTER */
+  .form-footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--label);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 580px) {
+    .field-grid, .field-grid.col-3 { grid-template-columns: 1fr; }
+    .field.span-2 { grid-column: span 1; }
+    .approval-grid { grid-template-columns: 1fr; }
+    .approval-status { grid-column: span 1; }
+    .section { padding: 20px 20px 0; }
+    .approval-section { padding: 20px; }
+    .form-header { padding: 22px 20px 18px; }
+    .form-footer { padding: 12px 20px; }
+    .control-strip { padding: 9px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="form-card">
+
+  <!-- HEADER -->
+  <div class="form-header">
+    <div class="form-header-top">
+      <div>
+        <div class="inst-name">Xavier Institute of Management & Entrepreneurship</div>
+        <div class="form-title">Manpower Requisition Form</div>
+        <div class="form-subtitle">To be submitted before any recruitment is initiated · HRMS — Recruitment Module</div>
+      </div>
+      <div class="form-ref">
+        <div class="ref-label">Form Reference</div>
+        <div class="ref-box">MRF / ______ / 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROL STRIP -->
+  <div class="control-strip">
+    ⚠ This form must be approved by the President or President's Designate before the recruitment process is triggered. SLA: 48 hours from submission.
+  </div>
+
+  <!-- SECTION A: REQUISITION DETAILS -->
+  <div class="section">
+    <div class="section-title">Section A — Requisition Details</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Date of Submission <span class="req">*</span></label>
+        <input type="date">
+      </div>
+      <div class="field">
+        <label>Department / Function <span class="req">*</span></label>
+        <select>
+          <option value="" disabled selected>Select department</option>
+          <option>Academic — Faculty</option>
+          <option>Academic — Administration</option>
+          <option>Corporate Relations & Placements</option>
+          <option>Marketing & External Programs</option>
+          <option>Finance & Accounts</option>
+          <option>IT & Technology</option>
+          <option>Library</option>
+          <option>Student Affairs</option>
+          <option>President's Office</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Position / Role Title <span class="req">*</span></label>
+        <input type="text" placeholder="e.g. Assistant Professor — Marketing">
+      </div>
+      <div class="field">
+        <label>Reporting To <span class="req">*</span></label>
+        <input type="text" placeholder="Name and designation of reporting manager">
+      </div>
+      <div class="field">
+        <label>Number of Positions <span class="req">*</span></label>
+        <input type="number" min="1" placeholder="1">
+      </div>
+      <div class="field">
+        <label>Expected Joining Date</label>
+        <input type="date">
+      </div>
+    </div>
+
+    <!-- Role Type -->
+    <div class="field" style="margin-bottom:14px;">
+      <label>Role Type <span class="req">*</span></label>
+      <div class="radio-group">
+        <label class="radio-option"><input type="radio" name="roletype"> New Position</label>
+        <label class="radio-option"><input type="radio" name="roletype"> Backfill (Replacement)</label>
+        <label class="radio-option"><input type="radio" name="roletype"> Projected / Pipeline</label>
+        <label class="radio-option"><input type="radio" name="roletype"> Contract / Temporary</label>
+      </div>
+    </div>
+
+    <!-- If Backfill -->
+    <div class="field-grid">
+      <div class="field">
+        <label>If Backfill — Name of Departing Employee</label>
+        <input type="text" placeholder="Leave blank if not applicable">
+      </div>
+      <div class="field">
+        <label>If Backfill — Last Working Date</label>
+        <input type="date">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION B: ROLE REQUIREMENTS -->
+  <div class="section">
+    <div class="section-title">Section B — Role Requirements</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Minimum Educational Qualification <span class="req">*</span></label>
+        <select>
+          <option value="" disabled selected>Select qualification</option>
+          <option>Graduation (Any discipline)</option>
+          <option>Post-Graduation / MBA</option>
+          <option>PhD / Doctorate</option>
+          <option>Professional Certification (specify below)</option>
+          <option>Diploma</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Specialisation / Domain (if relevant)</label>
+        <input type="text" placeholder="e.g. Marketing, Finance, HRM">
+      </div>
+      <div class="field">
+        <label>Minimum Work Experience <span class="req">*</span></label>
+        <select>
+          <option value="" disabled selected>Select experience range</option>
+          <option>Fresher / 0 years</option>
+          <option>1–3 years</option>
+          <option>3–5 years</option>
+          <option>5–8 years</option>
+          <option>8–12 years</option>
+          <option>12+ years</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Industry / Sector Preference</label>
+        <input type="text" placeholder="e.g. Academic, IT Services, BFSI">
+      </div>
+    </div>
+    <div class="field-grid col-1">
+      <div class="field">
+        <label>Key Skills & Competencies Required <span class="req">*</span></label>
+        <textarea placeholder="List 3–5 must-have skills or competencies for this role…"></textarea>
+      </div>
+      <div class="field">
+        <label>Additional Certifications or Requirements</label>
+        <textarea placeholder="e.g. UGC-NET for faculty roles, specific tools, languages…" style="min-height:60px;"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION C: JUSTIFICATION -->
+  <div class="section">
+    <div class="section-title">Section C — Business Justification</div>
+    <div class="field-grid col-1">
+      <div class="field">
+        <label>Reason for Hire — Business Justification <span class="req">*</span></label>
+        <textarea placeholder="Explain why this role is needed at this time. For new positions: describe the gap this fills. For backfills: describe impact of vacancy. For projected roles: describe the anticipated need…" style="min-height:90px;"></textarea>
+      </div>
+    </div>
+
+    <!-- Salary Reference -->
+    <div class="field" style="margin-bottom:14px;">
+      <label>Salary Band Reference</label>
+      <div class="band-ref">
+        <strong>Salary bands are pre-approved and on record.</strong> The Recruitment Professional will verify the candidate's expectation against the applicable band at the fitment stage (Step 9). If candidate expectations exceed the approved band, exception approval will be sought separately before offer issuance.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION D: SUBMITTED BY -->
+  <div class="section">
+    <div class="section-title">Section D — Submitted By</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Name of Requesting Manager <span class="req">*</span></label>
+        <input type="text" placeholder="Full name">
+      </div>
+      <div class="field">
+        <label>Designation <span class="req">*</span></label>
+        <input type="text" placeholder="e.g. Dean — Academics">
+      </div>
+      <div class="field">
+        <label>Date <span class="req">*</span></label>
+        <input type="date">
+      </div>
+      <div class="field">
+        <label>Signature / HRMS Submission Confirmation</label>
+        <input type="text" placeholder="HRMS auto-captures on submit">
+      </div>
+    </div>
+  </div>
+
+
+  <!-- APPROVAL SECTION -->
+  <div class="approval-section">
+    <div class="approval-title">For Approval Use Only — President / President's Designate</div>
+
+    <div class="approval-grid">
+      <div class="approval-block">
+        <label>Approved By (Name)</label>
+        <input type="text" placeholder="Full name of approving authority">
+      </div>
+      <div class="approval-block">
+        <label>Designation</label>
+        <input type="text" placeholder="e.g. President / Dean — [Name]">
+      </div>
+      <div class="approval-block">
+        <label>Date of Decision</label>
+        <input type="date">
+      </div>
+      <div class="approval-block">
+        <label>Form Received Date (HRMS)</label>
+        <input type="text" placeholder="Auto-populated by HRMS">
+      </div>
+
+      <div class="approval-status">
+        <label>Decision <span style="color:#E53E3E;">*</span></label>
+        <div class="status-grid">
+          <label class="status-option approved"><input type="radio" name="decision"> ✓ &nbsp;Approved — proceed to recruitment</label>
+          <label class="status-option rejected"><input type="radio" name="decision"> ✗ &nbsp;Not Approved — returned to department</label>
+          <label class="status-option onhold"><input type="radio" name="decision"> ⏸ &nbsp;On Hold — review date to be set</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="approval-note">
+      <label>Remarks / Conditions (if any)</label>
+      <textarea placeholder="Any conditions, modifications, or reasons for rejection / hold…"></textarea>
+    </div>
+
+    <div class="sla-strip">
+      <div class="sla-dot"></div>
+      <span><strong>SLA:</strong> Decision to be communicated within <strong>48 hours</strong> of form submission. Recruitment is not triggered until approval is confirmed in HRMS.</span>
+    </div>
+
+    <div class="hrms-strip">
+      <span>⚡</span>
+      <span><strong>HRMS Trigger:</strong> On approval, system automatically notifies the Recruitment Professional and opens the role in the recruitment pipeline. Form reference number is auto-assigned and appended to all subsequent correspondence for this hire.</span>
+    </div>
+  </div>
+
+  <!-- FORM FOOTER -->
+  <div class="form-footer">
+    <span>XIME · MRF · HR-RECRUIT-001</span>
+    <span>Version 1.0 · March 2026</span>
+    <span>Recruitment Module · HRMS Portal</span>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

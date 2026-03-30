@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIME Hiring Process — Flow</title>
+<style>
+  body { margin: 0; padding: 24px 16px 48px; background: #F8F9FB; display: flex; justify-content: center; font-family: 'DM Sans', system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 760 972" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;display:block;">
+
+<defs>
+  <marker id="a" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto">
+    <path d="M0,0.5 L7,3.5 L0,6.5 Z" fill="#94A3B8"/>
+  </marker>
+  <marker id="ad" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto">
+    <path d="M0,0.5 L7,3.5 L0,6.5 Z" fill="#B45309"/>
+  </marker>
+</defs>
+
+<!-- TITLE -->
+<text x="380" y="26" font-size="15" fill="#0F172A" font-weight="500" text-anchor="middle" font-family="'DM Sans',system-ui">XIME Hiring Process — High Level Flow</text>
+<text x="380" y="41" font-size="10" fill="#94A3B8" text-anchor="middle" font-family="'DM Sans',system-ui">Bengaluru · Recruitment Module · v2 · 5 Control Gates</text>
+
+<!-- LEGEND -->
+<rect x="50" y="54" width="10" height="10" rx="2" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+<text x="65" y="63" font-size="10" fill="#475569" font-family="'DM Sans',system-ui">New step</text>
+<rect x="150" y="54" width="10" height="10" rx="2" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+<text x="165" y="63" font-size="10" fill="#475569" font-family="'DM Sans',system-ui">Existing step</text>
+<polygon points="274,53 280,47 286,53 280,59" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="293" y="63" font-size="10" fill="#475569" font-family="'DM Sans',system-ui">Control gate</text>
+<rect x="390" y="54" width="10" height="10" rx="2" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="405" y="63" font-size="10" fill="#475569" font-family="'DM Sans',system-ui">Phase 2 handoff</text>
+<line x1="515" y1="59" x2="529" y2="59" stroke="#CBD5E0" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="534" y="63" font-size="10" fill="#475569" font-family="'DM Sans',system-ui">Rejection / loop back</text>
+
+<!-- ═══ PHASE: INITIATION ═══ -->
+<line x1="160" y1="76" x2="232" y2="76" stroke="#E2E8F0" stroke-width="0.75"/>
+<text x="242" y="80" font-size="8" fill="#94A3B8" letter-spacing="1.8" font-family="'DM Mono',monospace">INITIATION</text>
+<line x1="320" y1="76" x2="480" y2="76" stroke="#E2E8F0" stroke-width="0.75"/>
+
+<!-- STEP 0 — NEW -->
+<rect x="160" y="84" width="320" height="42" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+<circle cx="183" cy="105" r="13" fill="#0F6E56"/>
+<text x="183" y="109" font-size="10" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">0</text>
+<text x="206" y="100" font-size="12" fill="#085041" font-weight="500" font-family="'DM Sans',system-ui">Manpower Requisition Form Submitted</text>
+<text x="206" y="117" font-size="10" fill="#1D9E75" font-family="'DM Sans',system-ui">Dept Head initiates · via HRMS Portal</text>
+
+<!-- Connector 0 → AG1 -->
+<line x1="320" y1="126" x2="320" y2="136" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ◆ GATE AG1 -->
+<polygon points="160,157 320,136 480,157 320,178" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="320" y="153" font-size="11" fill="#3C3489" font-weight="500" text-anchor="middle" font-family="'DM Sans',system-ui">AG 1 — Presidential Sanction</text>
+<text x="320" y="168" font-size="9" fill="#6D28D9" text-anchor="middle" font-family="'DM Mono',monospace" letter-spacing="0.5">48 HR SLA · PRESIDENT OR DESIGNATE</text>
+<!-- Reject arrow AG1 -->
+<line x1="480" y1="157" x2="504" y2="157" stroke="#CBD5E0" stroke-width="1.2" stroke-dasharray="4,2"/>
+<rect x="506" y="145" width="168" height="24" rx="5" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1"/>
+<text x="590" y="161" font-size="10" fill="#92400E" text-anchor="middle" font-family="'DM Sans',system-ui">↩ Returned to dept</text>
+
+<!-- Connector AG1 → STEP 1-3 -->
+<line x1="320" y1="178" x2="320" y2="190" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ═══ PHASE: ROLE & JD ═══ -->
+<line x1="160" y1="193" x2="215" y2="193" stroke="#E2E8F0" stroke-width="0.75"/>
+<text x="225" y="197" font-size="8" fill="#94A3B8" letter-spacing="1.8" font-family="'DM Mono',monospace">ROLE & JD</text>
+<line x1="314" y1="193" x2="480" y2="193" stroke="#E2E8F0" stroke-width="0.75"/>
+
+<!-- STEP 1-3 — EXISTING -->
+<rect x="160" y="200" width="320" height="42" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+<circle cx="183" cy="221" r="13" fill="#185FA5"/>
+<text x="183" y="225" font-size="9.5" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">1–3</text>
+<text x="206" y="216" font-size="12" fill="#0C447C" font-weight="500" font-family="'DM Sans',system-ui">Role ID · Job Analysis · JD Preparation</text>
+<text x="206" y="233" font-size="10" fill="#378ADD" font-family="'DM Sans',system-ui">Dept Head + Recruitment Professional</text>
+
+<!-- Connector 1-3 → AG2 -->
+<line x1="320" y1="242" x2="320" y2="252" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ◆ GATE AG2 -->
+<polygon points="160,273 320,252 480,273 320,294" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="320" y="269" font-size="11" fill="#3C3489" font-weight="500" text-anchor="middle" font-family="'DM Sans',system-ui">AG 2 — JD Sign-off</text>
+<text x="320" y="284" font-size="9" fill="#6D28D9" text-anchor="middle" font-family="'DM Mono',monospace" letter-spacing="0.5">DEPT HEAD · 48 HR SLA</text>
+<!-- Revise arrow AG2 -->
+<line x1="480" y1="273" x2="504" y2="273" stroke="#CBD5E0" stroke-width="1.2" stroke-dasharray="4,2"/>
+<rect x="506" y="261" width="140" height="24" rx="5" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1"/>
+<text x="576" y="277" font-size="10" fill="#92400E" text-anchor="middle" font-family="'DM Sans',system-ui">↩ Revise JD</text>
+
+<!-- Connector AG2 → STEP 4 -->
+<line x1="320" y1="294" x2="320" y2="308" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ═══ PHASE: SOURCING ═══ -->
+<line x1="160" y1="311" x2="219" y2="311" stroke="#E2E8F0" stroke-width="0.75"/>
+<text x="229" y="315" font-size="8" fill="#94A3B8" letter-spacing="1.8" font-family="'DM Mono',monospace">SOURCING</text>
+<line x1="306" y1="311" x2="480" y2="311" stroke="#E2E8F0" stroke-width="0.75"/>
+
+<!-- STEP 4 — EXISTING -->
+<rect x="160" y="318" width="320" height="42" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+<circle cx="183" cy="339" r="13" fill="#185FA5"/>
+<text x="183" y="343" font-size="10" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">4</text>
+<text x="206" y="334" font-size="12" fill="#0C447C" font-weight="500" font-family="'DM Sans',system-ui">Job Posting & Sourcing</text>
+<text x="206" y="351" font-size="10" fill="#378ADD" font-family="'DM Sans',system-ui">Internal first (3–5 days) · then external platforms</text>
+
+<!-- Connector 4 → 5-6 -->
+<line x1="320" y1="360" x2="320" y2="374" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ═══ PHASE: SCREENING ═══ -->
+<line x1="160" y1="377" x2="219" y2="377" stroke="#E2E8F0" stroke-width="0.75"/>
+<text x="229" y="381" font-size="8" fill="#94A3B8" letter-spacing="1.8" font-family="'DM Mono',monospace">SCREENING</text>
+<line x1="315" y1="377" x2="480" y2="377" stroke="#E2E8F0" stroke-width="0.75"/>
+
+<!-- STEP 5-6 — EXISTING -->
+<rect x="160" y="384" width="320" height="42" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+<circle cx="183" cy="405" r="13" fill="#185FA5"/>
+<text x="183" y="409" font-size="9.5" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">5–6</text>
+<text x="206" y="400" font-size="12" fill="#0C447C" font-weight="500" font-family="'DM Sans',system-ui">Screening · Shortlisting · Profile Sharing</text>
+<text x="206" y="417" font-size="10" fill="#378ADD" font-family="'DM Sans',system-ui">HRMS tracker · 48hr response SLA</text>
+
+<!-- Connector 5-6 → 7-8 -->
+<line x1="320" y1="426" x2="320" y2="440" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ═══ PHASE: INTERVIEWS ═══ -->
+<line x1="160" y1="443" x2="220" y2="443" stroke="#E2E8F0" stroke-width="0.75"/>
+<text x="230" y="447" font-size="8" fill="#94A3B8" letter-spacing="1.8" font-family="'DM Mono',monospace">INTERVIEWS</text>
+<line x1="323" y1="443" x2="480" y2="443" stroke="#E2E8F0" stroke-width="0.75"/>
+
+<!-- STEP 7-8 — EXISTING -->
+<rect x="160" y="450" width="320" height="42" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/>
+<circle cx="183" cy="471" r="13" fill="#185FA5"/>
+<text x="183" y="475" font-size="9.5" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">7–8</text>
+<text x="206" y="466" font-size="12" fill="#0C447C" font-weight="500" font-family="'DM Sans',system-ui">Interview Rounds · Final — President</text>
+<text x="206" y="483" font-size="10" fill="#378ADD" font-family="'DM Sans',system-ui">Structured feedback · 48hr SLA per round</text>
+
+<!-- Connector 7-8 → AG3 -->
+<line x1="320" y1="492" x2="320" y2="502" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ◆ GATE AG3 -->
+<polygon points="160,523 320,502 480,523 320,544" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="320" y="519" font-size="11" fill="#3C3489" font-weight="500" text-anchor="middle" font-family="'DM Sans',system-ui">AG 3 — Selection Decision</text>
+<text x="320" y="534" font-size="9" fill="#6D28D9" text-anchor="middle" font-family="'DM Mono',monospace" letter-spacing="0.5">PRESIDENT · 48 HR SLA</text>
+<!-- No candidate callout AG3 -->
+<line x1="480" y1="523" x2="504" y2="523" stroke="#CBD5E0" stroke-width="1.2" stroke-dasharray="4,2"/>
+<rect x="506" y="511" width="148" height="24" rx="5" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1"/>
+<text x="580" y="527" font-size="10" fill="#92400E" text-anchor="middle" font-family="'DM Sans',system-ui">↩ Next candidate</text>
+
+<!-- Connector AG3 → STEP 9-10 -->
+<line x1="320" y1="544" x2="320" y2="558" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ═══ PHASE: SELECTION & OFFER ═══ -->
+<line x1="160" y1="561" x2="219" y2="561" stroke="#E2E8F0" stroke-width="0.75"/>
+<text x="229" y="565" font-size="8" fill="#94A3B8" letter-spacing="1.8" font-family="'DM Mono',monospace">SELECTION</text>
+<line x1="313" y1="561" x2="480" y2="561" stroke="#E2E8F0" stroke-width="0.75"/>
+
+<!-- STEP 9-10 — NEW -->
+<rect x="160" y="568" width="320" height="42" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+<circle cx="183" cy="589" r="13" fill="#0F6E56"/>
+<text x="183" y="593" font-size="9.5" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">9–10</text>
+<text x="206" y="584" font-size="12" fill="#085041" font-weight="500" font-family="'DM Sans',system-ui">Salary Fitment · Offer Preparation</text>
+<text x="206" y="601" font-size="10" fill="#1D9E75" font-family="'DM Sans',system-ui">Approved bands · Standard offer template</text>
+
+<!-- Connector 9-10 → AG4 -->
+<line x1="320" y1="610" x2="320" y2="620" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ◆ GATE AG4 -->
+<polygon points="160,641 320,620 480,641 320,662" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="320" y="637" font-size="11" fill="#3C3489" font-weight="500" text-anchor="middle" font-family="'DM Sans',system-ui">AG 4 — Offer Sign-off</text>
+<text x="320" y="652" font-size="9" fill="#6D28D9" text-anchor="middle" font-family="'DM Mono',monospace" letter-spacing="0.5">PRESIDENT / DEAN · 24 HR SLA</text>
+
+<!-- Connector AG4 → STEP 11 -->
+<line x1="320" y1="662" x2="320" y2="672" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- STEP 11 — NEW -->
+<rect x="160" y="676" width="320" height="42" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+<circle cx="183" cy="697" r="13" fill="#0F6E56"/>
+<text x="183" y="701" font-size="10" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">11</text>
+<text x="206" y="692" font-size="12" fill="#085041" font-weight="500" font-family="'DM Sans',system-ui">Candidate Response & Negotiation</text>
+<text x="206" y="709" font-size="10" fill="#1D9E75" font-family="'DM Sans',system-ui">Acceptance · Negotiation · Decline</text>
+<!-- Declined loop callout -->
+<line x1="480" y1="697" x2="504" y2="697" stroke="#CBD5E0" stroke-width="1.2" stroke-dasharray="4,2"/>
+<rect x="506" y="685" width="148" height="24" rx="5" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1"/>
+<text x="580" y="701" font-size="10" fill="#92400E" text-anchor="middle" font-family="'DM Sans',system-ui">↩ Return to Step 8</text>
+
+<!-- Connector 11 → 12 -->
+<line x1="320" y1="718" x2="320" y2="732" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ═══ PHASE: PRE-JOINING ═══ -->
+<line x1="160" y1="735" x2="222" y2="735" stroke="#E2E8F0" stroke-width="0.75"/>
+<text x="232" y="739" font-size="8" fill="#94A3B8" letter-spacing="1.8" font-family="'DM Mono',monospace">PRE-JOINING</text>
+<line x1="332" y1="735" x2="480" y2="735" stroke="#E2E8F0" stroke-width="0.75"/>
+
+<!-- STEP 12 — NEW -->
+<rect x="160" y="742" width="320" height="42" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+<circle cx="183" cy="763" r="13" fill="#0F6E56"/>
+<text x="183" y="767" font-size="10" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">12</text>
+<text x="206" y="758" font-size="12" fill="#085041" font-weight="500" font-family="'DM Sans',system-ui">Pre-Joining Document Collection</text>
+<text x="206" y="775" font-size="10" fill="#1D9E75" font-family="'DM Sans',system-ui">Checklist by role type · background check</text>
+
+<!-- Connector 12 → AG5 -->
+<line x1="320" y1="784" x2="320" y2="794" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- ◆ GATE AG5 -->
+<polygon points="160,815 320,794 480,815 320,836" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="320" y="811" font-size="11" fill="#3C3489" font-weight="500" text-anchor="middle" font-family="'DM Sans',system-ui">AG 5 — Document Clearance</text>
+<text x="320" y="826" font-size="9" fill="#6D28D9" text-anchor="middle" font-family="'DM Mono',monospace" letter-spacing="0.5">MIN 5 WORKING DAYS BEFORE JOINING</text>
+
+<!-- Connector AG5 → STEP 13 -->
+<line x1="320" y1="836" x2="320" y2="846" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- STEP 13 — NEW -->
+<rect x="160" y="850" width="320" height="42" rx="7" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/>
+<circle cx="183" cy="871" r="13" fill="#0F6E56"/>
+<text x="183" y="875" font-size="10" fill="white" text-anchor="middle" font-family="'DM Mono',monospace">13</text>
+<text x="206" y="866" font-size="12" fill="#085041" font-weight="500" font-family="'DM Sans',system-ui">Joining Date Confirmation</text>
+<text x="206" y="883" font-size="10" fill="#1D9E75" font-family="'DM Sans',system-ui">All stakeholders notified · HRMS trigger</text>
+
+<!-- Dashed connector to handoff -->
+<line x1="320" y1="892" x2="320" y2="908" stroke="#B45309" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ad)"/>
+
+<!-- ═══ HANDOFF ═══ -->
+<rect x="160" y="914" width="320" height="50" rx="9" fill="#FAECE7" stroke="#993C1D" stroke-width="2" stroke-dasharray="7,4"/>
+<text x="320" y="934" font-size="13" fill="#712B13" font-weight="500" text-anchor="middle" font-family="'DM Sans',system-ui">Onboarding Module</text>
+<text x="320" y="952" font-size="10.5" fill="#993C1D" text-anchor="middle" font-family="'DM Sans',system-ui">Reetha · President's Office · Phase 2 · TBD Monday</text>
+
+</svg>
+</body>
+</html>
