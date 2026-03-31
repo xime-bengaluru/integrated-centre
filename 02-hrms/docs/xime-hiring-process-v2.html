@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIME Hiring Process — v2 with Approval Steps</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --existing:     #1E3A5F;
+    --existing-bg:  #F0F6FF;
+    --existing-bd:  #93C5FD;
+
+    --improve:      #92400E;
+    --improve-bg:   #FFFBEB;
+    --improve-bd:   #FCD34D;
+
+    --new:          #14532D;
+    --new-bg:       #F0FDF4;
+    --new-bd:       #86EFAC;
+
+    --approval:     #5B21B6;
+    --approval-bg:  #F5F3FF;
+    --approval-bd:  #A78BFA;
+
+    --hrms:         #0E7490;
+    --hrms-bg:      #ECFEFF;
+    --hrms-bd:      #67E8F9;
+
+    --handoff:      #831843;
+    --handoff-bg:   #FFF1F2;
+    --handoff-bd:   #FDA4AF;
+
+    --connector:    #CBD5E0;
+    --page-bg:      #F8F9FB;
+    --text:         #0F172A;
+    --subtext:      #475569;
+    --label:        #94A3B8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+    padding: 40px 20px 80px;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; }
+
+  /* HEADER */
+  .header { margin-bottom: 32px; }
+  .header-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--label);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .header h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .header p { margin-top: 6px; font-size: 13.5px; color: var(--subtext); }
+
+  /* FRAMEWORK BADGE */
+  .framework-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 14px 18px;
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    align-items: flex-start;
+  }
+  .framework-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--label);
+    padding-top: 3px;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .fbadge {
+    font-size: 11.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .fb-shrm    { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+  .fb-iso     { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .fb-efmd    { background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
+  .fb-pdca    { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 36px;
+    padding: 14px 18px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--subtext); }
+  .ldot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+  .ld-existing { background: var(--existing); }
+  .ld-improve  { background: #D97706; }
+  .ld-new      { background: #16A34A; }
+  .ld-approval { background: var(--approval); }
+  .ld-hrms     { background: var(--hrms); }
+  .ld-handoff  { background: var(--handoff); }
+
+  /* PHASE DIVIDER */
+  .phase-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 28px 0 16px;
+  }
+  .pdline { flex: 1; height: 1px; background: #E2E8F0; }
+  .pdtext {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #94A3B8;
+    white-space: nowrap; padding: 0 6px;
+    background: var(--page-bg);
+  }
+
+  /* STEP ROW */
+  .step { display: flex; gap: 14px; margin-bottom: 2px; }
+
+  .step-left {
+    display: flex; flex-direction: column;
+    align-items: center; flex-shrink: 0; width: 38px;
+  }
+  .step-num {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+    flex-shrink: 0; z-index: 1;
+  }
+  .sn-existing { background: var(--existing); color: white; }
+  .sn-new      { background: #16A34A; color: white; }
+  .sn-approval { background: var(--approval); color: white; }
+  .sn-handoff  { background: var(--handoff); color: white; }
+
+  .step-line { width: 2px; flex: 1; background: var(--connector); margin-top: 4px; min-height: 16px; }
+  .step-line.last { display: none; }
+
+  /* CARD */
+  .card {
+    flex: 1; border-radius: 10px; border: 1.5px solid;
+    padding: 14px 17px; margin-bottom: 8px;
+  }
+  .c-existing { background: white; border-color: var(--existing-bd); }
+  .c-new      { background: var(--new-bg); border-color: var(--new-bd); }
+  .c-approval { background: var(--approval-bg); border-color: var(--approval-bd); }
+  .c-handoff  { background: var(--handoff-bg); border-color: var(--handoff-bd); border-style: dashed; }
+
+  .card-head {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 8px; margin-bottom: 5px;
+  }
+  .card-title { font-size: 14.5px; font-weight: 600; line-height: 1.3; }
+  .ct-existing { color: var(--existing); }
+  .ct-new      { color: var(--new); }
+  .ct-approval { color: var(--approval); }
+  .ct-handoff  { color: var(--handoff); }
+
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .tg-existing { background: var(--existing-bg); color: var(--existing); border: 1px solid var(--existing-bd); }
+  .tg-new      { background: var(--new-bg); color: var(--new); border: 1px solid var(--new-bd); }
+  .tg-approval { background: var(--approval-bg); color: var(--approval); border: 1px solid var(--approval-bd); }
+  .tg-handoff  { background: var(--handoff-bg); color: var(--handoff); border: 1px solid var(--handoff-bd); }
+
+  .card-desc { font-size: 13px; color: var(--subtext); line-height: 1.55; }
+
+  /* IMPROVEMENT BOX */
+  .improve-box {
+    margin-top: 9px; padding: 9px 12px;
+    background: var(--improve-bg); border: 1px solid var(--improve-bd); border-radius: 7px;
+  }
+  .improve-box .bh {
+    font-family: 'DM Mono', monospace; font-size: 9.5px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--improve); margin-bottom: 4px; font-weight: 500;
+  }
+  .improve-box ul { padding-left: 13px; }
+  .improve-box li { font-size: 12px; color: var(--improve); line-height: 1.5; margin-bottom: 2px; }
+
+  /* ADD-ON BOX */
+  .add-box {
+    margin-top: 9px; padding: 9px 12px;
+    background: var(--new-bg); border: 1px solid var(--new-bd); border-radius: 7px;
+  }
+  .add-box .bh {
+    font-family: 'DM Mono', monospace; font-size: 9.5px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--new); margin-bottom: 4px; font-weight: 500;
+  }
+  .add-box ul { padding-left: 13px; }
+  .add-box li { font-size: 12px; color: var(--new); line-height: 1.5; margin-bottom: 2px; }
+
+  /* APPROVAL NODE */
+  .approval-node {
+    display: flex; gap: 14px; margin: 0 0 8px 0;
+    position: relative;
+  }
+  .approval-node .step-left { width: 38px; }
+  .ap-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+    background: var(--approval-bg); border: 2px solid var(--approval-bd);
+    z-index: 1;
+  }
+  .ap-card {
+    flex: 1; border-radius: 10px;
+    border: 1.5px solid var(--approval-bd);
+    background: var(--approval-bg);
+    padding: 11px 16px; margin-bottom: 8px;
+  }
+  .ap-head {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 8px; margin-bottom: 4px;
+  }
+  .ap-title { font-size: 13.5px; font-weight: 600; color: var(--approval); }
+  .ap-body { font-size: 12px; color: #6D28D9; line-height: 1.5; }
+
+  /* HRMS TRIGGER */
+  .hrms-trigger {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 8px; padding: 5px 11px;
+    background: var(--hrms-bg); border: 1px solid var(--hrms-bd);
+    border-radius: 6px; font-size: 11.5px; color: var(--hrms); font-weight: 500;
+  }
+  .hrms-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--hrms); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* CONTROL BADGE */
+  .ctrl {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 7px; padding: 3px 9px;
+    background: #FFF7ED; border: 1px solid #FED7AA;
+    border-radius: 4px; font-size: 11px; color: #C2410C; font-weight: 500;
+  }
+
+  /* SLA BADGE */
+  .sla {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 7px; margin-left: 6px; padding: 3px 9px;
+    background: #F0FDF4; border: 1px solid #86EFAC;
+    border-radius: 4px; font-size: 11px; color: #15803D; font-weight: 500;
+  }
+
+  /* FRAMEWORK ALIGNMENT NOTE */
+  .fw-note {
+    margin: 36px 0 0;
+    padding: 20px 22px;
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+  }
+  .fw-note h3 {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    margin-bottom: 12px;
+  }
+  .fw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .fw-item {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #E2E8F0;
+  }
+  .fw-item-title {
+    font-size: 12px; font-weight: 600; margin-bottom: 4px;
+  }
+  .fw-item-body { font-size: 11.5px; color: var(--subtext); line-height: 1.5; }
+
+  .handoff-note { font-size: 12.5px; color: var(--handoff); font-style: italic; margin-top: 6px; line-height: 1.5; }
+
+  .footer {
+    margin-top: 40px; padding: 14px 18px;
+    background: white; border: 1px solid #E2E8F0; border-radius: 10px;
+    font-size: 11.5px; color: var(--label);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .fw-grid { grid-template-columns: 1fr; }
+    .card-head { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-meta">XIME Bengaluru · Human Resources · Working Document · v2</div>
+    <h1>Hiring Process — Redesigned Flow</h1>
+    <p>Existing process · Proposed improvements · New recommended steps · Approval gates · HRMS trigger points</p>
+  </div>
+
+  <!-- FRAMEWORK ALIGNMENT -->
+  <div class="framework-bar">
+    <span class="framework-label">Aligned to →</span>
+    <span class="fbadge fb-shrm">SHRM Talent Acquisition Framework</span>
+    <span class="fbadge fb-iso">ISO 9001 Process Approach</span>
+    <span class="fbadge fb-efmd">EFMD / APCSB Institutional Governance</span>
+    <span class="fbadge fb-pdca">PDCA: Plan → Do → Check → Act</span>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="ldot ld-existing"></div><span><strong>Existing step</strong></span></div>
+    <div class="legend-item"><div class="ldot ld-improve"></div><span><strong>Proposed improvement</strong> (Anjaly)</span></div>
+    <div class="legend-item"><div class="ldot ld-new"></div><span><strong>New recommended step</strong></span></div>
+    <div class="legend-item"><div class="ldot ld-approval"></div><span><strong>Approval gate</strong> — required sign-off</span></div>
+    <div class="legend-item"><div class="ldot ld-hrms"></div><span><strong>HRMS trigger</strong> — system-initiated</span></div>
+    <div class="legend-item"><div class="ldot ld-handoff"></div><span><strong>Phase 2 handoff</strong> — Reetha / TBD Monday</span></div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- PHASE 1: INITIATION                                          -->
+  <!-- ============================================================ -->
+  <div class="phase-divider"><div class="pdline"></div><div class="pdtext">Phase 1 — Initiation</div><div class="pdline"></div></div>
+
+  <!-- STEP 0: Manpower Requisition (NEW) -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-new">0</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-new">
+      <div class="card-head">
+        <div class="card-title ct-new">Manpower Requisition Form Submitted</div>
+        <span class="tag tg-new">New Step</span>
+      </div>
+      <div class="card-desc">Department head submits a formal Manpower Requisition Form via HRMS. Role type (New / Backfill / Projected), justification, required qualifications, and proposed start date are captured at source.</div>
+      <div class="add-box">
+        <div class="bh">Form Covers</div>
+        <ul>
+          <li>Role title, department, role type (New / Backfill / Projected)</li>
+          <li>Justification for hire — business rationale required</li>
+          <li>Preferred qualification and experience range</li>
+          <li>Proposed joining date and reporting line</li>
+          <li>Salary band reference (existing bands to be referenced, not overridden)</li>
+        </ul>
+      </div>
+      <div class="ctrl">⚠ Control Point — No recruitment triggered without approved form</div>
+    </div>
+  </div>
+
+  <!-- APPROVAL GATE 1 -->
+  <div class="approval-node">
+    <div class="step-left">
+      <div class="ap-icon">✓</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="ap-card">
+      <div class="ap-head">
+        <div class="ap-title">Approval Gate 1 — Manpower Sanction</div>
+        <span class="tag tg-approval">Approval Required</span>
+      </div>
+      <div class="ap-body">
+        <strong>Approver:</strong> President or President's Designate &nbsp;|&nbsp;
+        <strong>SLA:</strong> 48 hours from submission
+        <br>Approved → Step 1 triggered automatically. Rejected → form returned to department head with reason. On hold → reason and expected review date captured.
+      </div>
+      <div class="hrms-trigger"><div class="hrms-dot"></div>HRMS Trigger — Approval notification sent to President / Designate on form submission</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: Role Identification -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">1</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Role Identification</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Recruitment Professional receives sanctioned requisition from HRMS. Role is formally opened. Department head provides detailed skill requirements for job analysis.</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Job Analysis -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">2</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Job Analysis</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Department head shares educational qualifications, work experience expectations, and key skill requirements with the Recruitment Professional.</div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Job Description -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">3</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Job Description Preparation</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Recruitment Professional drafts JD from standardised template and shares with department head for review.</div>
+      <div class="improve-box">
+        <div class="bh">Proposed Improvement</div>
+        <ul>
+          <li>Standardised JD template — no fresh drafting each time</li>
+          <li>Standardised interview invite and feedback templates created alongside</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPROVAL GATE 2 -->
+  <div class="approval-node">
+    <div class="step-left">
+      <div class="ap-icon">✓</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="ap-card">
+      <div class="ap-head">
+        <div class="ap-title">Approval Gate 2 — JD Sign-off</div>
+        <span class="tag tg-approval">Approval Required</span>
+      </div>
+      <div class="ap-body">
+        <strong>Approver:</strong> Department Head &nbsp;|&nbsp; <strong>SLA:</strong> 48 hours
+        <br>Approved → role moves to posting. Revision requested → returned to Recruitment Professional with comments.
+      </div>
+      <div class="hrms-trigger"><div class="hrms-dot"></div>HRMS Trigger — JD review notification sent to department head on draft completion</div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- PHASE 2: SOURCING                                            -->
+  <!-- ============================================================ -->
+  <div class="phase-divider"><div class="pdline"></div><div class="pdtext">Phase 2 — Sourcing</div><div class="pdline"></div></div>
+
+  <!-- STEP 4: Job Posting -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">4</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Job Posting & Sourcing</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Role posted on defined hiring platforms following JD approval.</div>
+      <div class="add-box">
+        <div class="bh">Recommended Addition</div>
+        <ul>
+          <li>Internal posting first (3–5 days) before external — aligns with fair process principles</li>
+          <li>Sourcing channels defined per role category: faculty / admin / support</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- PHASE 3: SCREENING                                           -->
+  <!-- ============================================================ -->
+  <div class="phase-divider"><div class="pdline"></div><div class="pdtext">Phase 3 — Screening</div><div class="pdline"></div></div>
+
+  <!-- STEP 5: Profile Review -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">5</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Profile Review & Shortlisting</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Recruitment Professional reviews applications, shortlists suitable candidates, and makes first-level calls to verify fit.</div>
+      <div class="improve-box">
+        <div class="bh">Proposed Improvement</div>
+        <ul>
+          <li>Replace Excel tracker with HRMS applicant module</li>
+          <li>Candidate Information Form (replacing "proforma") via Google Form — collects salary expectations and notice period</li>
+          <li>Form collected at first interaction / post-scheduling for online roles</li>
+          <li>Separate versions for XIME and XIS — both streamlined</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: Profile Sharing -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">6</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Profile Sharing with Department Head</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Shortlisted profiles shared with the hiring manager via HRMS for first-level interview scheduling.</div>
+      <div class="sla">⏱ SLA — Hiring manager response within 48 hours</div>
+      <div class="hrms-trigger" style="margin-top:8px;"><div class="hrms-dot"></div>HRMS Trigger — Profiles pushed to hiring manager dashboard; response SLA clock starts</div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- PHASE 4: INTERVIEWS                                          -->
+  <!-- ============================================================ -->
+  <div class="phase-divider"><div class="pdline"></div><div class="pdtext">Phase 4 — Interviews</div><div class="pdline"></div></div>
+
+  <!-- STEP 7: Interview Progress -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">7</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Interview Progress & Feedback</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Hiring manager conducts first-level interview and submits structured feedback. Panel confirmed for next round. Rejection emails sent to unsuccessful candidates.</div>
+      <div class="improve-box">
+        <div class="bh">Proposed Improvement</div>
+        <ul>
+          <li>Standardised feedback form — scored criteria, not open text</li>
+          <li>Defined round-completion SLA — feedback within 48 hours of each interview</li>
+          <li>Roles going on hold communicated to Recruitment Professional in real time</li>
+          <li>Weekly status report to all leaders every Saturday</li>
+        </ul>
+      </div>
+      <div class="hrms-trigger" style="margin-top:8px;"><div class="hrms-dot"></div>HRMS Trigger — Feedback form auto-sent to interviewer post-scheduled interview slot</div>
+    </div>
+  </div>
+
+  <!-- STEP 8: Final Interview -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-existing">8</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-existing">
+      <div class="card-head">
+        <div class="card-title ct-existing">Final Interview with President</div>
+        <span class="tag tg-existing">Existing</span>
+      </div>
+      <div class="card-desc">Candidates who cleared all prior rounds scheduled for final interview with the President. <em>Original documented process ends here.</em></div>
+      <div class="ctrl">⚠ Gap — No defined process existed beyond this point</div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- PHASE 5: SELECTION & OFFER — ALL NEW                        -->
+  <!-- ============================================================ -->
+  <div class="phase-divider"><div class="pdline"></div><div class="pdtext">Phase 5 — Selection & Offer · New Steps</div><div class="pdline"></div></div>
+
+  <!-- APPROVAL GATE 3 -->
+  <div class="approval-node">
+    <div class="step-left">
+      <div class="ap-icon">✓</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="ap-card">
+      <div class="ap-head">
+        <div class="ap-title">Approval Gate 3 — Final Selection Decision</div>
+        <span class="tag tg-approval">Approval Required</span>
+      </div>
+      <div class="ap-body">
+        <strong>Approver:</strong> President or President's Designate &nbsp;|&nbsp; <strong>SLA:</strong> 48 hours post final interview
+        <br>President or Designate confirms selected candidate and triggers salary fitment check against existing approved bands. No offer extended without this confirmation.
+      </div>
+      <div class="hrms-trigger"><div class="hrms-dot"></div>HRMS Trigger — Selection confirmation prompt sent to President after final interview is marked complete</div>
+    </div>
+  </div>
+
+  <!-- STEP 9: Salary Fitment -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-new">9</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-new">
+      <div class="card-head">
+        <div class="card-title ct-new">Salary Fitment Check</div>
+        <span class="tag tg-new">New Step</span>
+      </div>
+      <div class="card-desc">Candidate's salary expectation (collected via Candidate Information Form) checked against existing XIME salary bands for the role level. Fitment confirmed before offer is prepared.</div>
+      <div class="add-box">
+        <div class="bh">Process Notes</div>
+        <ul>
+          <li>Salary bands already exist — referenced here, not created afresh</li>
+          <li>If expectation exceeds band: exception approval required before proceeding</li>
+          <li>Fitment check recorded in HRMS against the candidate's file</li>
+        </ul>
+      </div>
+      <div class="ctrl">⚠ Control Point — Offer letter not drafted until fitment confirmed</div>
+    </div>
+  </div>
+
+  <!-- STEP 10: Offer Letter -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-new">10</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-new">
+      <div class="card-head">
+        <div class="card-title ct-new">Offer Letter Preparation & Issuance</div>
+        <span class="tag tg-new">New Step</span>
+      </div>
+      <div class="card-desc">Recruitment Professional prepares offer letter from standardised template using fitment-confirmed figures. Routed for authorised signature before issuance.</div>
+      <div class="add-box">
+        <div class="bh">Process Notes</div>
+        <ul>
+          <li>Standard offer letter template — no ad-hoc drafting</li>
+          <li>Signatory authority: President for faculty; Dean / Designate for admin roles</li>
+          <li>Offer validity stated on letter (recommend 5–7 working days)</li>
+          <li>Verbal offer made first; written offer issued within 24 hours of verbal acceptance</li>
+        </ul>
+      </div>
+      <div class="hrms-trigger" style="margin-top:8px;"><div class="hrms-dot"></div>HRMS Trigger — Offer letter routed to signatory for approval before sending to candidate</div>
+    </div>
+  </div>
+
+  <!-- APPROVAL GATE 4 -->
+  <div class="approval-node">
+    <div class="step-left">
+      <div class="ap-icon">✓</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="ap-card">
+      <div class="ap-head">
+        <div class="ap-title">Approval Gate 4 — Offer Letter Sign-off</div>
+        <span class="tag tg-approval">Approval Required</span>
+      </div>
+      <div class="ap-body">
+        <strong>Approver:</strong> President (faculty) / Designated Dean (admin) &nbsp;|&nbsp; <strong>SLA:</strong> 24 hours
+        <br>Signed offer letter returned to Recruitment Professional for despatch to candidate.
+      </div>
+      <div class="hrms-trigger"><div class="hrms-dot"></div>HRMS Trigger — Digital sign-off routed in system; auto-despatch to candidate on approval</div>
+    </div>
+  </div>
+
+  <!-- STEP 11: Candidate Response -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-new">11</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-new">
+      <div class="card-head">
+        <div class="card-title ct-new">Candidate Response & Negotiation</div>
+        <span class="tag tg-new">New Step</span>
+      </div>
+      <div class="card-desc">Candidate accepts, negotiates, or declines within offer validity window. Acceptance confirmed in writing. Decline triggers return to next shortlisted candidate from Step 8 pool.</div>
+      <div class="add-box">
+        <div class="bh">Process Notes</div>
+        <ul>
+          <li>Negotiation not handled ad hoc — any deviation from offer escalated for approval</li>
+          <li>Decline reason captured in HRMS — useful for pipeline and market intelligence</li>
+        </ul>
+      </div>
+      <div class="hrms-trigger" style="margin-top:8px;"><div class="hrms-dot"></div>HRMS Trigger — Acceptance confirmation recorded; pre-joining checklist auto-initiated</div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- PHASE 6: PRE-JOINING — ALL NEW                              -->
+  <!-- ============================================================ -->
+  <div class="phase-divider"><div class="pdline"></div><div class="pdtext">Phase 6 — Pre-Joining · New Steps</div><div class="pdline"></div></div>
+
+  <!-- STEP 12: Document Collection -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-new">12</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-new">
+      <div class="card-head">
+        <div class="card-title ct-new">Pre-Joining Document Collection</div>
+        <span class="tag tg-new">New Step</span>
+      </div>
+      <div class="card-desc">Standard document checklist sent to candidate on offer acceptance. Role-specific checklist (faculty / admin / support) ensures nothing is missed.</div>
+      <div class="add-box">
+        <div class="bh">Checklist Includes</div>
+        <ul>
+          <li>Educational certificates (originals to be verified on Day 1)</li>
+          <li>Identity and address proof</li>
+          <li>Previous employment documents and relieving letter</li>
+          <li>Passport-size photographs</li>
+          <li>Bank account details for payroll setup</li>
+        </ul>
+      </div>
+      <div class="ctrl">⚠ Control Point — Joining date not confirmed until document checklist cleared</div>
+      <div class="hrms-trigger" style="margin-top:8px;"><div class="hrms-dot"></div>HRMS Trigger — Checklist auto-sent to candidate; Recruitment Professional notified as items submitted</div>
+    </div>
+  </div>
+
+  <!-- APPROVAL GATE 5 -->
+  <div class="approval-node">
+    <div class="step-left">
+      <div class="ap-icon">✓</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="ap-card">
+      <div class="ap-head">
+        <div class="ap-title">Approval Gate 5 — Document Clearance</div>
+        <span class="tag tg-approval">Approval Required</span>
+      </div>
+      <div class="ap-body">
+        <strong>Approver:</strong> Recruitment Professional confirms completeness &nbsp;|&nbsp; <strong>SLA:</strong> Must be cleared minimum 5 working days before joining date
+        <br>Incomplete documents → candidate notified; joining date held until resolved.
+      </div>
+      <div class="hrms-trigger"><div class="hrms-dot"></div>HRMS Trigger — Document clearance confirmation unlocks joining date confirmation step</div>
+    </div>
+  </div>
+
+  <!-- STEP 13: Joining Date Confirmation -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-new">13</div>
+      <div class="step-line"></div>
+    </div>
+    <div class="card c-new">
+      <div class="card-head">
+        <div class="card-title ct-new">Joining Date Confirmation & Stakeholder Notification</div>
+        <span class="tag tg-new">New Step</span>
+      </div>
+      <div class="card-desc">Joining date confirmed with candidate. All relevant stakeholders notified minimum 5 working days in advance.</div>
+      <div class="add-box">
+        <div class="bh">Notifications Sent To</div>
+        <ul>
+          <li>Department head — to prepare workspace and team introduction</li>
+          <li>President's Office (Reetha) — onboarding workflow triggered here</li>
+          <li>IT / Admin — access, credentials, equipment (if applicable)</li>
+          <li>Accounts / Payroll — joining details for salary setup</li>
+        </ul>
+      </div>
+      <div class="hrms-trigger" style="margin-top:8px;"><div class="hrms-dot"></div>HRMS Trigger — Multi-stakeholder notification auto-sent; Onboarding workflow unlocked for Reetha</div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- HANDOFF → ONBOARDING                                        -->
+  <!-- ============================================================ -->
+  <div class="phase-divider"><div class="pdline"></div><div class="pdtext">Handoff → Onboarding Module · Phase 2</div><div class="pdline"></div></div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num sn-handoff">→</div>
+      <div class="step-line last"></div>
+    </div>
+    <div class="card c-handoff">
+      <div class="card-head">
+        <div class="card-title ct-handoff">Onboarding Workflow — Reetha, President's Office</div>
+        <span class="tag tg-handoff">Phase 2 · TBD Monday</span>
+      </div>
+      <div class="card-desc">Triggered automatically from Step 13 when joining date is confirmed and documents are cleared. This phase is owned by Reetha and is currently run from memory and informal notes.</div>
+      <div class="handoff-note">To be mapped Monday in conversation with Reetha. The Onboarding module will be built as a parallel workflow in the HRMS portal — connected to this handoff point and designed to the same standard as this recruitment module.</div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- FRAMEWORK ALIGNMENT NOTE                                    -->
+  <!-- ============================================================ -->
+  <div class="fw-note">
+    <h3>Framework Alignment — Why This Process Is Built the Way It Is</h3>
+    <div class="fw-grid">
+      <div class="fw-item">
+        <div class="fw-item-title" style="color:#1D4ED8;">SHRM Talent Acquisition Framework</div>
+        <div class="fw-item-body">This process follows SHRM's four-stage model: Workforce Planning → Sourcing → Screening & Selection → Onboarding. The Manpower Sanction (Step 0) directly maps to SHRM's workforce planning gate — a requirement that is missing from most informal institutional processes.</div>
+      </div>
+      <div class="fw-item">
+        <div class="fw-item-title" style="color:#15803D;">ISO 9001 — Process Approach</div>
+        <div class="fw-item-body">ISO 9001 requires documented, repeatable processes with defined inputs, outputs, and control points. Every approval gate in this flow is an ISO control point. The SLA structure (48-hour response windows) is consistent with ISO's measurable process objectives requirement.</div>
+      </div>
+      <div class="fw-item">
+        <div class="fw-item-title" style="color:#C2410C;">EFMD / APCSB Accreditation</div>
+        <div class="fw-item-body">EFMD Programme Accreditation and APCSB both evaluate institutional governance, including HR processes. Documented hiring procedures with approval chains, equity in sourcing (internal posting first), and record retention directly support XIME's 2030 accreditation goals. This process creates an auditable trail.</div>
+      </div>
+      <div class="fw-item">
+        <div class="fw-item-title" style="color:#6D28D9;">PDCA Cycle</div>
+        <div class="fw-item-body">Plan (Requisition + JD) → Do (Sourcing + Screening + Interviews) → Check (Approval gates + Fitment) → Act (Offer + Pre-joining + Onboarding). The weekly Saturday status report to leaders is the Check mechanism that feeds continuous improvement back into the process.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>XIME Bengaluru · HR Process Redesign · v2</span>
+    <span>5 Approval Gates · 4 HRMS Triggers · 48hr SLA Standard</span>
+    <span>Working Document · March 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
