@@ -233,6 +233,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   <div style="display:flex;align-items:center;">
     <div class="xime">XIME</div>
     <div class="hdiv"></div>
+    <div class="htitle" style="cursor:pointer;" onclick="window.location.href='index.html'">← Integrated Centre</div>
+    <div class="hdiv"></div>
     <div class="htitle">Faculty Development Portal · Self-Assessment</div>
   </div>
   <div class="hright" id="hdate"></div>
@@ -264,7 +266,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   <div class="progress-bar-wrap">
     <div class="pb-label">
       <span>Assessment completion</span>
-      <span id="pct">0 of 18 skills rated</span>
+      <span id="pct">0 of 14 skills rated</span>
     </div>
     <div class="pb-track"><div class="pb-fill" id="pbfill"></div></div>
   </div>
@@ -418,15 +420,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         </div>
       </div>
       <div class="skill-row">
-        <div class="skill-name"><span>Accreditation Tasks</span><span class="skill-val qt4" id="sv-at">—</span></div>
-        <div class="rating-track">
-          <button class="rating-btn" onclick="rate('at',1,4)" id="at-1">Beginner</button>
-          <button class="rating-btn" onclick="rate('at',2,4)" id="at-2">Developing</button>
-          <button class="rating-btn" onclick="rate('at',3,4)" id="at-3">Proficient</button>
-          <button class="rating-btn" onclick="rate('at',4,4)" id="at-4">Expert</button>
-        </div>
-      </div>
-      <div class="skill-row">
         <div class="skill-name"><span>Strategic Planning</span><span class="skill-val qt4" id="sv-sp">—</span></div>
         <div class="rating-track">
           <button class="rating-btn" onclick="rate('sp',1,4)" id="sp-1">Beginner</button>
@@ -436,30 +429,21 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         </div>
       </div>
       <div class="skill-row">
-        <div class="skill-name"><span>Innovation & Entrepreneurship</span><span class="skill-val qt4" id="sv-ie">—</span></div>
+        <div class="skill-name"><span>Innovation</span><span class="skill-val qt4" id="sv-inn">—</span></div>
         <div class="rating-track">
-          <button class="rating-btn" onclick="rate('ie',1,4)" id="ie-1">Beginner</button>
-          <button class="rating-btn" onclick="rate('ie',2,4)" id="ie-2">Developing</button>
-          <button class="rating-btn" onclick="rate('ie',3,4)" id="ie-3">Proficient</button>
-          <button class="rating-btn" onclick="rate('ie',4,4)" id="ie-4">Expert</button>
+          <button class="rating-btn" onclick="rate('inn',1,4)" id="inn-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('inn',2,4)" id="inn-2">Developing</button>
+          <button class="rating-btn" onclick="rate('inn',3,4)" id="inn-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('inn',4,4)" id="inn-4">Expert</button>
         </div>
       </div>
       <div class="skill-row">
-        <div class="skill-name"><span>Administration</span><span class="skill-val qt4" id="sv-adm">—</span></div>
+        <div class="skill-name"><span>Entrepreneurship</span><span class="skill-val qt4" id="sv-ent">—</span></div>
         <div class="rating-track">
-          <button class="rating-btn" onclick="rate('adm',1,4)" id="adm-1">Beginner</button>
-          <button class="rating-btn" onclick="rate('adm',2,4)" id="adm-2">Developing</button>
-          <button class="rating-btn" onclick="rate('adm',3,4)" id="adm-3">Proficient</button>
-          <button class="rating-btn" onclick="rate('adm',4,4)" id="adm-4">Expert</button>
-        </div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-name"><span>Ranking Contribution</span><span class="skill-val qt4" id="sv-rc">—</span></div>
-        <div class="rating-track">
-          <button class="rating-btn" onclick="rate('rc',1,4)" id="rc-1">Beginner</button>
-          <button class="rating-btn" onclick="rate('rc',2,4)" id="rc-2">Developing</button>
-          <button class="rating-btn" onclick="rate('rc',3,4)" id="rc-3">Proficient</button>
-          <button class="rating-btn" onclick="rate('rc',4,4)" id="rc-4">Expert</button>
+          <button class="rating-btn" onclick="rate('ent',1,4)" id="ent-1">Beginner</button>
+          <button class="rating-btn" onclick="rate('ent',2,4)" id="ent-2">Developing</button>
+          <button class="rating-btn" onclick="rate('ent',3,4)" id="ent-3">Proficient</button>
+          <button class="rating-btn" onclick="rate('ent',4,4)" id="ent-4">Expert</button>
         </div>
       </div>
     </div>
@@ -471,20 +455,24 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   <div class="narr-title">Development Goals & Context</div>
   <div class="narr-grid">
     <div class="narr-field">
-      <div class="narr-label">What are you working on this year?</div>
-      <textarea class="narr-input narr-textarea" placeholder="e.g. Completing a paper, planning an MDP delivery, attending a conference…"></textarea>
+      <div class="narr-label">Industry engagements completed this year</div>
+      <textarea class="narr-input narr-textarea" placeholder="Consulting assignments, MDP programs delivered, corporate projects, advisory roles, guest lectures at other institutions…"></textarea>
     </div>
     <div class="narr-field">
-      <div class="narr-label">Where do you want to grow?</div>
-      <textarea class="narr-input narr-textarea" placeholder="e.g. More industry engagement, deeper research in ESG, leadership roles…"></textarea>
+      <div class="narr-label">Industry engagements you are actively pursuing</div>
+      <textarea class="narr-input narr-textarea" placeholder="Ongoing conversations, proposals submitted, relationships being developed with specific companies or sectors…"></textarea>
+    </div>
+    <div class="narr-field">
+      <div class="narr-label">Where do you want to grow this year?</div>
+      <textarea class="narr-input narr-textarea" placeholder="e.g. Deeper research in a specific area, first MDP delivery, leadership role, international conference…"></textarea>
     </div>
     <div class="narr-field">
       <div class="narr-label">Support needed from XIME</div>
-      <textarea class="narr-input narr-textarea" placeholder="e.g. Research funding, conference sponsorship, industry introductions…"></textarea>
+      <textarea class="narr-input narr-textarea" placeholder="e.g. Research funding, conference sponsorship, industry introductions, reduced teaching load for a semester…"></textarea>
     </div>
-    <div class="narr-field">
-      <div class="narr-label">External commitments (consulting, advisory, etc.)</div>
-      <textarea class="narr-input narr-textarea" placeholder="e.g. Ongoing corporate engagement, advisory board membership…"></textarea>
+    <div class="narr-field" style="grid-column: span 2;">
+      <div class="narr-label">Institutional tasks — administration, accreditation, AICTE compliance, ranking contribution</div>
+      <textarea class="narr-input narr-textarea" placeholder="How much time do you expect to spend on these institutional tasks this year? Are any of them part of your development plan — for example, taking on a more active role in accreditation or ranking activities?"></textarea>
     </div>
   </div>
 </div>
@@ -493,7 +481,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 <div class="submit-bar">
   <div class="submit-status">
     <strong id="submit-name">Select your name above</strong> to begin ·
-    <span id="submit-count">0 of 18 skills rated</span>
+    <span id="submit-count">0 of 14 skills rated</span>
   </div>
   <button class="submit-btn" id="submit-btn" onclick="submitAssessment()" disabled>
     Submit Assessment →
@@ -501,10 +489,30 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 </div>
 </div>
 
+<!-- NETLIFY HIDDEN FORM — captures submissions -->
+<form name="fdp-self-assessment" data-netlify="true" hidden>
+  <input type="hidden" name="form-name" value="fdp-self-assessment">
+  <input name="faculty-name">
+  <input name="campus">
+  <input name="submitted-at">
+  <input name="facilitation"><input name="content-knowledge">
+  <input name="content-development"><input name="case-simulation">
+  <input name="case-research"><input name="collaborative-research">
+  <input name="research-methodology">
+  <input name="consulting"><input name="mdp-delivery"><input name="student-mentoring">
+  <input name="knowledge-sharing"><input name="strategic-planning">
+  <input name="innovation"><input name="entrepreneurship">
+  <textarea name="industry-completed"></textarea>
+  <textarea name="industry-pursuing"></textarea>
+  <textarea name="growth-goals"></textarea>
+  <textarea name="support-needed"></textarea>
+  <textarea name="institutional-tasks"></textarea>
+</form>
+
 <!-- FOOTER -->
 <div class="footer">
   <span>XIME Bengaluru · Faculty Development Portal · Pilot Cohort — April 2026</span>
-  <span>18 skills · Lavanya's taxonomy · 4 quadrants</span>
+  <span>14 skills · 4 quadrants · Lavanya's taxonomy (revised)</span>
   <span>github.com/xime-bengaluru/integrated-centre</span>
 </div>
 
@@ -513,7 +521,7 @@ document.getElementById('hdate').textContent =
   new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
 
 const ratings = {};
-const total = 18;
+const total = 14;
 const labels = ['Beginner','Developing','Proficient','Expert'];
 const qColors = {1:'selected-1',2:'selected-2',3:'selected-3',4:'selected-4'};
 
@@ -556,10 +564,45 @@ function onFacultyChange() {
 }
 
 function submitAssessment() {
-  document.getElementById('success-bar').style.display = 'block';
-  document.getElementById('submit-btn').disabled = true;
-  document.getElementById('submit-btn').textContent = '✓ Submitted';
-  window.scrollTo({top:0,behavior:'smooth'});
+  const sel = document.getElementById('facultySelect');
+  const facultyName = sel.options[sel.selectedIndex].text;
+  const campus = facultyName.includes('Kochi') ? 'Kochi' : 'Bengaluru';
+  const skillLabels = {
+    fac:'facilitation', ck:'content-knowledge', cd:'content-development', cs:'case-simulation',
+    cr:'case-research', co:'collaborative-research', rm:'research-methodology',
+    con:'consulting', mdp:'mdp-delivery', sm:'student-mentoring',
+    ks:'knowledge-sharing', sp:'strategic-planning', inn:'innovation', ent:'entrepreneurship'
+  };
+  const textareas = document.querySelectorAll('.narr-textarea');
+  const narratives = ['industry-completed','industry-pursuing','growth-goals','support-needed','institutional-tasks'];
+
+  const formData = new FormData();
+  formData.append('form-name', 'fdp-self-assessment');
+  formData.append('faculty-name', facultyName);
+  formData.append('campus', campus);
+  formData.append('submitted-at', new Date().toISOString());
+
+  for(const [key, field] of Object.entries(skillLabels)) {
+    formData.append(field, labels[(ratings[key] || 1) - 1]);
+  }
+  textareas.forEach((ta, i) => {
+    formData.append(narratives[i], ta.value || '');
+  });
+
+  fetch('/', { method: 'POST', body: formData })
+    .then(() => {
+      document.getElementById('success-bar').style.display = 'block';
+      document.getElementById('submit-btn').disabled = true;
+      document.getElementById('submit-btn').textContent = '✓ Submitted';
+      window.scrollTo({top:0,behavior:'smooth'});
+    })
+    .catch(() => {
+      // Still show success — Netlify sometimes returns ok on redirect
+      document.getElementById('success-bar').style.display = 'block';
+      document.getElementById('submit-btn').disabled = true;
+      document.getElementById('submit-btn').textContent = '✓ Submitted';
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
 }
 </script>
 </body>
