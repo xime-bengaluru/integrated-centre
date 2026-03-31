@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIME Onboarding — Employee Joining Module</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #0D1F35;
+  --gold:    #C9A84C;
+  --bg:      #F4F5F7;
+  --white:   #FFFFFF;
+  --text:    #0D1F35;
+  --sub:     #4A5D72;
+  --muted:   #8496A9;
+  --border:  #E0E6EE;
+  --green:   #14532D;
+  --green-l: #F0FDF4;
+  --green-b: #86EFAC;
+  --amber:   #92400E;
+  --amber-l: #FFFBEB;
+  --amber-b: #FCD34D;
+  --purple:  #4C1D95;
+  --purple-l:#F5F3FF;
+  --purple-b:#A78BFA;
+  --red:     #C8102E;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* HEADER */
+.header {
+  background: var(--navy); padding: 0 28px; height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  position: sticky; top: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; }
+.xime { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; }
+.hdiv { width: 1px; height: 22px; background: rgba(255,255,255,0.12); margin: 0 14px; }
+.htitle { font-size: 12.5px; color: rgba(255,255,255,0.5); cursor: pointer; }
+.hright { display: flex; align-items: center; gap: 12px; }
+.havatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(201,168,76,0.15); border: 1.5px solid rgba(201,168,76,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold);
+}
+.hdate { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.35); }
+
+/* TOPBAR */
+.topbar {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 0 28px; height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.page-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; }
+.btn-new {
+  padding: 7px 16px; background: var(--navy); color: white;
+  border: none; border-radius: 7px; font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px; font-weight: 500; cursor: pointer;
+}
+.btn-new:hover { background: #1A3352; }
+
+/* STATS */
+.stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat { background: white; padding: 14px 20px; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; line-height: 1; margin-bottom: 3px; }
+.stat-label { font-size: 11px; color: var(--muted); }
+.green { color: #16A34A; } .amber { color: #D97706; } .blue { color: #2563EB; }
+
+/* MAIN */
+.main { padding: 24px 28px; max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 16px;
+}
+
+/* NEW JOINER FORM */
+.new-joiner-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 24px; overflow: hidden;
+}
+.njc-header {
+  padding: 16px 20px; background: var(--navy);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.njc-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; color: white; }
+.njc-body { padding: 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px 18px; }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; margin-top: 14px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 11.5px; font-weight: 500; color: var(--sub); }
+.field input, .field select {
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--text);
+  border: 1.5px solid var(--border); border-radius: 7px;
+  padding: 8px 11px; background: var(--bg); outline: none;
+}
+.field input:focus, .field select:focus { border-color: #93C5FD; background: white; }
+.field .hint { font-size: 10.5px; color: var(--muted); }
+
+.start-btn {
+  margin-top: 18px; padding: 10px 24px; background: var(--navy);
+  color: white; border: none; border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: background 0.15s;
+}
+.start-btn:hover { background: #1A3352; }
+
+/* PHASE CARDS */
+.phase-section { margin-bottom: 28px; }
+.phase-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.phase-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+  color: white; flex-shrink: 0;
+}
+.p1 { background: #0369A1; }
+.p2 { background: #15803D; }
+.p3 { background: #7C3AED; }
+.p4 { background: #B45309; }
+
+.phase-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.phase-sub { font-size: 11.5px; color: var(--muted); margin-left: auto; }
+
+/* CHECKLIST */
+.checklist {
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+
+.check-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+.check-item:last-child { border-bottom: none; }
+.check-item.completed { background: #FAFFFE; }
+
+.check-box {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 2px solid var(--border); cursor: pointer;
+  flex-shrink: 0; margin-top: 1px; display: flex;
+  align-items: center; justify-content: center;
+  transition: all 0.15s; background: white;
+}
+.check-box.checked { background: #16A34A; border-color: #16A34A; }
+.check-box.checked::after { content: '✓'; font-size: 11px; color: white; font-weight: 600; }
+
+.check-content { flex: 1; }
+.check-title { font-size: 13.5px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.check-title.done { text-decoration: line-through; color: var(--muted); }
+.check-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+.check-meta {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 5px; flex-shrink: 0;
+}
+.owner-tag {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 8px; white-space: nowrap;
+}
+.ot-reetha  { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
+.ot-harrish { background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
+.ot-laxman  { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+.ot-accounts{ background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
+.ot-admin   { background: #FFF1F2; color: #9F1239; border: 1px solid #FECDD3; }
+.ot-manager { background: #ECFEFF; color: #0E7490; border: 1px solid #A5F3FC; }
+
+.timing-tag {
+  font-size: 10px; color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* PLACEHOLDER TAG */
+.placeholder-tag {
+  font-size: 10px; padding: 1px 7px; border-radius: 6px;
+  background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-b);
+  font-family: 'DM Mono', monospace; letter-spacing: 0.06em;
+  text-transform: uppercase; margin-left: 6px;
+}
+
+/* DOCUMENT PACK */
+.doc-pack {
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px; margin-top: 8px;
+}
+.doc-pack-title {
+  font-size: 12px; font-weight: 600; color: var(--sub);
+  font-family: 'DM Mono', monospace; letter-spacing: 0.08em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.doc-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.doc-row:last-child { border-bottom: none; }
+.doc-icon { font-size: 14px; }
+.doc-name { flex: 1; color: var(--text); }
+.doc-status { font-size: 11px; }
+.ds-ready { color: #16A34A; }
+.ds-placeholder { color: #D97706; }
+
+/* HANDOFF SECTION */
+.handoff-card {
+  background: var(--purple-l); border: 1.5px solid var(--purple-b);
+  border-radius: 12px; padding: 18px 20px; margin-top: 20px;
+}
+.handoff-title {
+  font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600;
+  color: var(--purple); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.handoff-desc { font-size: 13px; color: #6D28D9; line-height: 1.5; margin-bottom: 14px; }
+.handoff-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hf-item {
+  padding: 10px 12px; background: white;
+  border: 1px solid var(--purple-b); border-radius: 8px;
+}
+.hf-label { font-size: 10.5px; color: var(--purple); font-weight: 500; margin-bottom: 3px; }
+.hf-value { font-size: 13px; color: var(--text); }
+
+/* SIGN OFF */
+.signoff-bar {
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 20px; margin-top: 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.signoff-status { font-size: 13px; color: var(--sub); }
+.signoff-btn {
+  padding: 9px 24px; background: #15803D; color: white;
+  border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px; font-weight: 500; cursor: pointer;
+}
+.signoff-btn:disabled { background: var(--muted); cursor: default; }
+
+/* FOOTER */
+.footer {
+  background: var(--navy); padding: 14px 28px; margin-top: 40px;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 640px) {
+  .form-grid, .form-grid-2 { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2,1fr); }
+  .handoff-fields { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="xime">XIME</div>
+    <div class="hdiv"></div>
+    <div class="htitle" onclick="window.location.href='index.html'">← Integrated Centre</div>
+    <div class="hdiv"></div>
+    <div class="htitle">Onboarding Module · HRMS</div>
+  </div>
+  <div class="hright">
+    <div class="hdate" id="hdate"></div>
+    <div class="havatar">RJO</div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="page-title">Employee Onboarding</div>
+  <button class="btn-new" onclick="document.getElementById('new-joiner-section').scrollIntoView({behavior:'smooth'})">+ New Joiner</button>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num blue">1</div>
+    <div class="stat-label">Joining this week</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num amber">0</div>
+    <div class="stat-label">In progress</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num green">0</div>
+    <div class="stat-label">Completed this month</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Departments onboarded YTD</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- NEW JOINER SETUP -->
+  <div id="new-joiner-section" style="margin-bottom:28px;">
+    <div class="section-label">New Joiner Details</div>
+    <div class="new-joiner-card">
+      <div class="njc-header">
+        <div class="njc-title">Initiate Onboarding Checklist</div>
+        <span style="font-size:11px;color:rgba(255,255,255,0.5);">Triggered from Recruitment Step 13</span>
+      </div>
+      <div class="njc-body">
+        <div class="form-grid">
+          <div class="field">
+            <label>Employee Name <span style="color:#C8102E;">*</span></label>
+            <input type="text" placeholder="Full name" id="emp-name">
+          </div>
+          <div class="field">
+            <label>Designation <span style="color:#C8102E;">*</span></label>
+            <input type="text" placeholder="e.g. Assistant Professor — Marketing">
+          </div>
+          <div class="field">
+            <label>Department <span style="color:#C8102E;">*</span></label>
+            <select>
+              <option value="" disabled selected>Select department</option>
+              <option>Academics — Faculty</option>
+              <option>Corporate Relations</option>
+              <option>Finance & Accounts</option>
+              <option>IT & Technology</option>
+              <option>Marketing & External Programs</option>
+              <option>Student Affairs</option>
+              <option>Administration</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Campus <span style="color:#C8102E;">*</span></label>
+            <select id="emp-campus">
+              <option value="" disabled selected>Select campus</option>
+              <option value="Bengaluru">Bengaluru</option>
+              <option value="Kochi">Kochi</option>
+              <option value="Chennai">Chennai</option>
+              <option value="XIS">XIS</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Joining Date <span style="color:#C8102E;">*</span></label>
+            <input type="date" id="joining-date">
+          </div>
+          <div class="field">
+            <label>Reporting Manager <span style="color:#C8102E;">*</span></label>
+            <input type="text" placeholder="Name and designation">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="field">
+            <label>HRF Reference Number</label>
+            <input type="text" placeholder="e.g. HRF / 001 / 2026">
+            <div class="hint">From the Hiring Request Form — links this record to recruitment</div>
+          </div>
+          <div class="field">
+            <label>IT Equipment Required</label>
+            <select>
+              <option>Desktop</option>
+              <option>Laptop</option>
+              <option>Both</option>
+              <option>None — employee uses own device</option>
+            </select>
+          </div>
+        </div>
+        <button class="start-btn" onclick="startOnboarding()">Generate Onboarding Checklist →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 1: PRE-JOINING -->
+  <div class="phase-section" id="checklist-section" style="display:none;">
+
+    <div class="phase-header">
+      <div class="phase-num p1">1</div>
+      <div class="phase-title">Pre-Joining Preparation</div>
+      <div class="phase-sub">5 working days before joining · All stakeholders notified</div>
+    </div>
+    <div class="checklist">
+      <div class="check-item" id="ci-1">
+        <div class="check-box" onclick="toggle('ci-1')"></div>
+        <div class="check-content">
+          <div class="check-title">Appointment letter prepared by Harrish (Secretary)</div>
+          <div class="check-desc">Appointment letter drafted, signed, and ready for release on joining day. Original to be handed to employee, copy retained by Reetha.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-harrish">Harrish</span>
+          <span class="timing-tag">D-5</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-2">
+        <div class="check-box" onclick="toggle('ci-2')"></div>
+        <div class="check-content">
+          <div class="check-title">Reetha updates calendar with joining date</div>
+          <div class="check-desc">Joining date confirmed and blocked in Reetha's calendar. Onboarding slot reserved for Day 1 morning.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha</span>
+          <span class="timing-tag">D-5</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-3">
+        <div class="check-box" onclick="toggle('ci-3')"></div>
+        <div class="check-content">
+          <div class="check-title">Laxman (IT) notified — biometric registration</div>
+          <div class="check-desc">IT Support informed of new joiner name, role, and joining date. Biometric slot confirmed for Day 1 morning. Note: IT equipment is the employee's choice on Day 1 — Reetha to ask preference on joining day.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-laxman">Laxman · IT</span>
+          <span class="timing-tag">D-5</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-4">
+        <div class="check-box" onclick="toggle('ci-4')"></div>
+        <div class="check-content">
+          <div class="check-title">Reporting Manager confirms seat allocation with Dean Admin</div>
+          <div class="check-desc">Seat and workspace confirmed before joining day. Employee should not arrive to find no desk.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-manager">Reporting Mgr</span>
+          <span class="timing-tag">D-5</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-5">
+        <div class="check-box" onclick="toggle('ci-5')"></div>
+        <div class="check-content">
+          <div class="check-title">Accounts Department notified of incoming employee</div>
+          <div class="check-desc">Accounts informed in advance to prepare for Saral (payroll) registration. Prevents Day 1 delays.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-accounts">Accounts</span>
+          <span class="timing-tag">D-5</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-6">
+        <div class="check-box" onclick="toggle('ci-6')"></div>
+        <div class="check-content">
+          <div class="check-title">Document pack prepared by Reetha</div>
+          <div class="check-desc">Faculty Handbook, Student Handbook, and Programme Bulletin printed/compiled. Acknowledgement sign-off sheet attached.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha</span>
+          <span class="timing-tag">D-1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2: JOINING DAY -->
+    <div class="phase-header" style="margin-top:24px;">
+      <div class="phase-num p2">2</div>
+      <div class="phase-title">Joining Day</div>
+      <div class="phase-sub">Day 1 — Morning session with Reetha</div>
+    </div>
+    <div class="checklist">
+      <div class="check-item" id="ci-7">
+        <div class="check-box" onclick="toggle('ci-7')"></div>
+        <div class="check-content">
+          <div class="check-title">Appointment letter released to employee</div>
+          <div class="check-desc">Harrish releases original appointment letter. Employee signs acknowledgement. Reetha retains copy for records.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-harrish">Harrish</span>
+          <span class="timing-tag">Day 1 AM</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-8">
+        <div class="check-box" onclick="toggle('ci-8')"></div>
+        <div class="check-content">
+          <div class="check-title">Employee Information Form completed and submitted</div>
+          <div class="check-desc">Employee completes 23-field personal data form — name, address, PAN, Aadhaar, PF/UAN, bank details, emergency contact, photograph. Signed copy with attachments (PAN, Aadhaar, cancelled cheque) retained by Reetha.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha</span>
+          <span class="timing-tag">Day 1 AM</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-9">
+        <div class="check-box" onclick="toggle('ci-9')"></div>
+        <div class="check-content">
+          <div class="check-title">Joining Report submitted to Secretary</div>
+          <div class="check-desc">Employee writes and signs Joining Report addressed to <strong>The Secretary, XIME <span id="campus-display"></span></strong>, referencing offer letter date and role. CC'd to President's Office, Director, Dean Academics, and Accounts/Personal file. Reetha retains copy.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha</span>
+          <span class="timing-tag">Day 1 AM</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-10">
+        <div class="check-box" onclick="toggle('ci-10')"></div>
+        <div class="check-content">
+          <div class="check-title">Document pack handed over — acknowledgement signed</div>
+          <div class="check-desc">Faculty Handbook, Student Handbook, Programme Bulletin given to employee. Signed acknowledgement sheet returned to Reetha and filed.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha</span>
+          <span class="timing-tag">Day 1 AM</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-11">
+        <div class="check-box" onclick="toggle('ci-11')"></div>
+        <div class="check-content">
+          <div class="check-title">Employee added to attendance register</div>
+          <div class="check-desc">Name entered in physical attendance register by Reetha.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha</span>
+          <span class="timing-tag">Day 1 AM</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-12">
+        <div class="check-box" onclick="toggle('ci-12')"></div>
+        <div class="check-content">
+          <div class="check-title">Biometric registration completed — Laxman (IT)</div>
+          <div class="check-desc">Employee biometric registered in attendance system by Laxman.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-laxman">Laxman · IT</span>
+          <span class="timing-tag">Day 1 AM</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-12b">
+        <div class="check-box" onclick="toggle('ci-12b')"></div>
+        <div class="check-content">
+          <div class="check-title">IT equipment preference confirmed</div>
+          <div class="check-desc">Reetha asks employee: own device, or XIME desktop/laptop? If XIME equipment requested, Laxman is informed and equipment arranged. Employee's choice — no obligation either way.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha</span>
+          <span class="timing-tag">Day 1 AM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3: SYSTEM SETUP -->
+    <div class="phase-header" style="margin-top:24px;">
+      <div class="phase-num p3">3</div>
+      <div class="phase-title">System & Identity Setup</div>
+      <div class="phase-sub">Day 1 — To be completed before end of day</div>
+    </div>
+    <div class="checklist">
+      <div class="check-item" id="ci-13">
+        <div class="check-box" onclick="toggle('ci-13')"></div>
+        <div class="check-content">
+          <div class="check-title">Email ID generated by Laxman (IT)</div>
+          <div class="check-desc">XIME email ID created. Credentials shared with employee. Format: firstname@xime.org</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-laxman">Laxman · IT</span>
+          <span class="timing-tag">Day 1</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-14">
+        <div class="check-box" onclick="toggle('ci-14')"></div>
+        <div class="check-content">
+          <div class="check-title">Accounts registers employee and sends Saral form</div>
+          <div class="check-desc">Accounts department registers employee in Saral (payroll system). Saral form sent to employee's new XIME email ID for completion.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-accounts">Accounts</span>
+          <span class="timing-tag">Day 1</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-15">
+        <div class="check-box" onclick="toggle('ci-15')"></div>
+        <div class="check-content">
+          <div class="check-title">Saral form completed and returned by employee</div>
+          <div class="check-desc">Employee completes Saral payroll registration form and returns to Accounts. Payroll setup confirmed.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-accounts">Accounts</span>
+          <span class="timing-tag">Day 1–2</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-16">
+        <div class="check-box" onclick="toggle('ci-16')"></div>
+        <div class="check-content">
+          <div class="check-title">Employee ID created by Accounts — Admin notified</div>
+          <div class="check-desc">Employee ID assigned in system. Admin team notified to initiate ID badge process.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-accounts">Accounts</span>
+          <span class="timing-tag">Day 1–2</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-17">
+        <div class="check-box" onclick="toggle('ci-17')"></div>
+        <div class="check-content">
+          <div class="check-title">ID Badge form sent to employee — returned to Admin</div>
+          <div class="check-desc">Admin forwards ID badge form to employee. Completed form returned to Admin for badge production.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-admin">Admin</span>
+          <span class="timing-tag">Day 2</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-18">
+        <div class="check-box" onclick="toggle('ci-18')"></div>
+        <div class="check-content">
+          <div class="check-title">ID Badge produced and handed to employee</div>
+          <div class="check-desc">Physical ID badge produced by Admin team and given to employee.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-admin">Admin</span>
+          <span class="timing-tag">Day 3–5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4: REPORTING & INDUCTION -->
+    <div class="phase-header" style="margin-top:24px;">
+      <div class="phase-num p4">4</div>
+      <div class="phase-title">Reporting & Induction</div>
+      <div class="phase-sub">Reporting Manager takes over from Reetha</div>
+    </div>
+    <div class="checklist">
+      <div class="check-item" id="ci-19">
+        <div class="check-box" onclick="toggle('ci-19')"></div>
+        <div class="check-content">
+          <div class="check-title">Employee introduced to Reporting Manager</div>
+          <div class="check-desc">Reetha formally hands over to Reporting Manager. Handoff note shared — includes joining forms status, documents received, biometric done, email ID confirmed.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-reetha">Reetha → Mgr</span>
+          <span class="timing-tag">Day 1</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-20">
+        <div class="check-box" onclick="toggle('ci-20')"></div>
+        <div class="check-content">
+          <div class="check-title">Workspace and equipment confirmed at seat</div>
+          <div class="check-desc">Reporting Manager confirms seat is ready, equipment is set up, and employee is settled.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-manager">Reporting Mgr</span>
+          <span class="timing-tag">Day 1</span>
+        </div>
+      </div>
+      <div class="check-item" id="ci-21">
+        <div class="check-box" onclick="toggle('ci-21')"></div>
+        <div class="check-content">
+          <div class="check-title">Induction and orientation completed by Reporting Manager</div>
+          <div class="check-desc">Reporting Manager conducts institutional induction — key people, culture, expectations, systems, and schedule for first week.</div>
+        </div>
+        <div class="check-meta">
+          <span class="owner-tag ot-manager">Reporting Mgr</span>
+          <span class="timing-tag">Day 1–2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCUMENT PACK -->
+    <div style="margin-top:20px;">
+      <div class="section-label">Document Pack — Handed Over by Reetha on Joining Day</div>
+      <div class="doc-pack">
+        <div class="doc-row">
+          <span class="doc-icon">📘</span>
+          <span class="doc-name">Faculty Handbook</span>
+          <span class="doc-status ds-ready">Ready</span>
+        </div>
+        <div class="doc-row">
+          <span class="doc-icon">📗</span>
+          <span class="doc-name">Student Handbook</span>
+          <span class="doc-status ds-ready">Ready</span>
+        </div>
+        <div class="doc-row">
+          <span class="doc-icon">📙</span>
+          <span class="doc-name">Programme Bulletin</span>
+          <span class="doc-status ds-ready">Ready</span>
+        </div>
+        <div class="doc-row">
+          <span class="doc-icon">📄</span>
+          <span class="doc-name">Employee Information Form (23 fields — personal, bank, PAN, Aadhaar)</span>
+          <span class="doc-status ds-ready">Ready</span>
+        </div>
+        <div class="doc-row">
+          <span class="doc-icon">📄</span>
+          <span class="doc-name">Joining Report (letter to Secretary — ref offer letter, CC: President's Office, Director, Dean, Accounts)</span>
+          <span class="doc-status ds-ready">Ready</span>
+        </div>
+        <div class="doc-row">
+          <span class="doc-icon">✍️</span>
+          <span class="doc-name">Document Acknowledgement Sign-off Sheet</span>
+          <span class="doc-status ds-ready" style="color:#D97706;">To be created</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HANDOFF TO REPORTING MANAGER -->
+    <div class="handoff-card">
+      <div class="handoff-title">⟶ Handoff Note to Reporting Manager</div>
+      <div class="handoff-desc">When Reetha's onboarding checklist is complete, this summary is shared with the Reporting Manager before the employee is introduced.</div>
+      <div class="handoff-fields">
+        <div class="hf-item">
+          <div class="hf-label">Employee</div>
+          <div class="hf-value" id="ho-name">—</div>
+        </div>
+        <div class="hf-item">
+          <div class="hf-label">Joining Date</div>
+          <div class="hf-value" id="ho-date">—</div>
+        </div>
+        <div class="hf-item">
+          <div class="hf-label">Joining Forms</div>
+          <div class="hf-value">2 forms completed ✓</div>
+        </div>
+        <div class="hf-item">
+          <div class="hf-label">Documents</div>
+          <div class="hf-value">Handbook pack handed, signed ✓</div>
+        </div>
+        <div class="hf-item">
+          <div class="hf-label">Biometric</div>
+          <div class="hf-value">Registered by Laxman ✓</div>
+        </div>
+        <div class="hf-item">
+          <div class="hf-label">Email ID</div>
+          <div class="hf-value">Created by IT ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGN OFF -->
+    <div class="signoff-bar">
+      <div class="signoff-status">
+        <strong id="signoff-count">0 of 21</strong> checklist items completed ·
+        <span id="signoff-pct">0%</span> onboarding complete
+      </div>
+      <button class="signoff-btn" id="signoff-btn" disabled onclick="completeOnboarding()">
+        Mark Onboarding Complete →
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>XIME Bengaluru · HRMS · Onboarding Module</span>
+  <span>22 steps · 6 stakeholders · Reetha, President's Office</span>
+  <span>github.com/xime-bengaluru/integrated-centre</span>
+</div>
+
+<script>
+document.getElementById('hdate').textContent =
+  new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
+
+const total = 22;
+let checked = 0;
+
+function toggle(id) {
+  const item = document.getElementById(id);
+  const box = item.querySelector('.check-box');
+  const title = item.querySelector('.check-title');
+  const isChecked = box.classList.contains('checked');
+
+  if (isChecked) {
+    box.classList.remove('checked');
+    title.classList.remove('done');
+    item.classList.remove('completed');
+    checked--;
+  } else {
+    box.classList.add('checked');
+    title.classList.add('done');
+    item.classList.add('completed');
+    checked++;
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.round((checked / total) * 100);
+  document.getElementById('signoff-count').textContent = checked + ' of ' + total;
+  document.getElementById('signoff-pct').textContent = pct + '%';
+  document.getElementById('signoff-btn').disabled = checked < total;
+}
+
+function startOnboarding() {
+  const name = document.getElementById('emp-name').value.trim();
+  const date = document.getElementById('joining-date').value;
+  const campus = document.getElementById('emp-campus').value;
+  if (!name) { alert('Please enter the employee name to begin.'); return; }
+  if (!campus) { alert('Please select a campus.'); return; }
+  document.getElementById('ho-name').textContent = name;
+  document.getElementById('ho-date').textContent = date ?
+    new Date(date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+  document.getElementById('campus-display').textContent = '— ' + campus;
+  document.getElementById('checklist-section').style.display = 'block';
+  document.getElementById('checklist-section').scrollIntoView({behavior:'smooth'});
+}
+
+function completeOnboarding() {
+  document.getElementById('signoff-btn').textContent = '✓ Onboarding Complete';
+  document.getElementById('signoff-btn').style.background = '#15803D';
+  document.getElementById('signoff-btn').disabled = true;
+  alert('Onboarding complete. Handoff note sent to Reporting Manager.');
+}
+</script>
+</body>
+</html>
