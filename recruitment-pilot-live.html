@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIME Recruitment Pilot — MDP Associate</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy:#0D1F35;--navy-mid:#1A3352;--gold:#C9A84C;
+  --bg:#F4F5F7;--white:#FFFFFF;--text:#0D1F35;--sub:#4A5D72;--muted:#8496A9;
+  --border:#E0E6EE;
+  --green:#14532D;--green-l:#F0FDF4;--green-b:#86EFAC;
+  --amber:#92400E;--amber-l:#FFFBEB;--amber-b:#FCD34D;
+  --purple:#4C1D95;--purple-l:#F5F3FF;--purple-b:#A78BFA;
+  --red:#C8102E;--red-l:#FFF5F5;--red-b:#FEB2B2;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+.header{background:var(--navy);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.2);position:sticky;top:0;z-index:200;}
+.xime{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--gold);letter-spacing:0.06em;cursor:pointer;}
+.hdiv{width:1px;height:22px;background:rgba(255,255,255,0.12);margin:0 12px;}
+.htitle{font-size:12px;color:rgba(255,255,255,0.5);}
+.hstatus{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;}
+.hstatus-dot{width:7px;height:7px;border-radius:50%;background:#6B7280;}
+.hstatus-dot.live{background:#16A34A;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+.role-bar{background:var(--navy-mid);padding:12px 24px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.role-label{font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px;font-family:'DM Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;}
+.role-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.role-pill{padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12.5px;font-weight:500;border:1.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);transition:all 0.15s;background:transparent;}
+.role-pill:hover{border-color:rgba(255,255,255,0.4);color:rgba(255,255,255,0.8);}
+.role-pill.active{color:var(--navy);font-weight:600;}
+.rp-girish.active{background:#C9A84C;border-color:#C9A84C;}
+.rp-anjaly.active{background:#6B8CFF;border-color:#6B8CFF;}
+.rp-lavanya.active{background:#3DBF8A;border-color:#3DBF8A;}
+.rp-hirak.active{background:#F97316;border-color:#F97316;}
+.rp-anil.active{background:#E879F9;border-color:#E879F9;}
+.rp-roshni.active{background:#94A3B8;border-color:#94A3B8;}
+.rp-reetha.active{background:#FB7185;border-color:#FB7185;}
+
+.pipeline-strip{background:white;border-bottom:1px solid var(--border);padding:12px 24px;overflow-x:auto;}
+.pipeline-steps{display:flex;align-items:center;min-width:max-content;}
+.ps-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;flex-shrink:0;border:2px solid var(--border);background:white;color:var(--muted);transition:all 0.3s;}
+.ps-dot.gate{border-radius:6px;}
+.ps-dot.done{background:#16A34A;border-color:#16A34A;color:white;}
+.ps-dot.active{background:var(--navy);border-color:var(--navy);color:white;}
+.ps-dot.gate.active{background:var(--purple);border-color:var(--purple);}
+.ps-line{width:16px;height:2px;background:var(--border);transition:background 0.3s;}
+.ps-line.done{background:#16A34A;}
+
+.main{padding:20px 24px;max-width:900px;margin:0 auto;}
+
+.role-header{border-radius:12px;padding:20px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;border:1.5px solid;}
+.rh-name{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--text);}
+.rh-role{font-size:12px;color:var(--sub);margin-top:3px;}
+.rh-badge{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:500;}
+
+.task-card{background:white;border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden;transition:box-shadow 0.2s;}
+.task-card.pending-action{border-color:var(--navy);box-shadow:0 0 0 2px rgba(13,31,53,0.08);}
+.task-card.approval-gate{border-color:var(--purple-b);border-width:1.5px;}
+.task-card.complete{background:#FAFFFE;border-color:var(--green-b);}
+.task-card.waiting{opacity:0.55;}
+
+.tc-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.tc-step{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.tc-title{font-size:14px;font-weight:500;color:var(--text);}
+.status-badge{font-size:10.5px;padding:3px 10px;border-radius:10px;font-weight:500;white-space:nowrap;}
+.sb-pending{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
+.sb-waiting{background:#F8F9FB;color:var(--muted);border:1px solid var(--border);}
+.sb-done{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
+.sb-approval{background:var(--purple-l);color:var(--purple);border:1px solid var(--purple-b);}
+
+.tc-body{padding:14px 18px;border-top:1px solid var(--border);}
+.tc-desc{font-size:13px;color:var(--sub);line-height:1.5;margin-bottom:12px;}
+
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+.field label{font-size:11.5px;font-weight:500;color:var(--sub);}
+.field input,.field select,.field textarea{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);border:1.5px solid var(--border);border-radius:7px;padding:8px 11px;background:var(--bg);outline:none;transition:border-color 0.15s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#93C5FD;background:white;}
+.field textarea{resize:vertical;min-height:70px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;}
+.span2{grid-column:span 2;}
+
+.btn-primary{padding:9px 22px;background:var(--navy);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;}
+.btn-primary:hover{background:var(--navy-mid);}
+.btn-primary:disabled{background:var(--muted);cursor:not-allowed;}
+.btn-approve{padding:9px 22px;background:#15803D;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;}
+.btn-reject{padding:9px 18px;background:white;color:var(--red);border:1.5px solid var(--red-b);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;cursor:pointer;}
+.btn-row{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;}
+
+.notif-feed{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px;}
+.notif-title{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.notif-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:12.5px;color:var(--sub);}
+.notif-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.nd-green{background:#16A34A;}.nd-amber{background:#D97706;}.nd-blue{background:#185FA5;}.nd-purple{background:#7C3AED;}
+
+.candidate-card{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.cc-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;}
+
+.pipeline-overview{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.po-header{padding:14px 18px;background:var(--navy);color:white;font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
+.po-row{display:flex;align-items:center;padding:11px 18px;border-bottom:1px solid var(--border);gap:12px;font-size:13px;}
+.po-row:last-child{border-bottom:none;}
+.po-step{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);width:60px;flex-shrink:0;}
+.po-desc{flex:1;}
+.po-owner{font-size:11.5px;color:var(--muted);width:160px;flex-shrink:0;}
+
+.info-box{padding:10px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:12px;font-size:12.5px;line-height:1.5;}
+
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px;}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:white;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity 0.3s;border:1px solid rgba(201,168,76,0.3);}
+
+.footer{background:var(--navy);padding:14px 24px;margin-top:40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);}
+
+@media(max-width:640px){
+  .form-grid{grid-template-columns:1fr;}
+  .span2{grid-column:span 1;}
+  .role-pill{font-size:11px;padding:5px 10px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <div class="xime" id="xime-logo">XIME</div>
+    <div class="hdiv"></div>
+    <div class="htitle">Recruitment Pilot · MDP Associate</div>
+  </div>
+  <div class="hstatus">
+    <div class="hstatus-dot" id="status-dot"></div>
+    <span id="status-text">Connecting…</span>
+  </div>
+</div>
+
+<div class="role-bar">
+  <div class="role-label">Select your role</div>
+  <div class="role-pills">
+    <div class="role-pill rp-girish" onclick="switchRole('girish','Prof. Girish Vasudevan','Hiring Manager','#C9A84C')">Girish · Hiring Manager</div>
+    <div class="role-pill rp-anjaly" onclick="switchRole('anjaly','Anjaly','Recruitment Professional','#6B8CFF')">Anjaly · Recruitment</div>
+    <div class="role-pill rp-lavanya" onclick="switchRole('lavanya','Lavanya','HR Supervisor','#3DBF8A')">Lavanya · HR Supervisor</div>
+    <div class="role-pill rp-hirak" onclick="switchRole('hirak','Dr. Hirak','President\'s Designate','#F97316')">Dr. Hirak · Designate</div>
+    <div class="role-pill rp-anil" onclick="switchRole('anil','Anil J. Philip','President · XIME','#E879F9')">Anil · President</div>
+    <div class="role-pill rp-roshni" onclick="switchRole('roshni','Dr. Roshni James','Director · XIME Bengaluru','#94A3B8')">Dr. Roshni · Director</div>
+    <div class="role-pill rp-reetha" onclick="switchRole('reetha','Reetha Joseph','Secretary · Onboarding','#FB7185')">Reetha · Onboarding</div>
+  </div>
+</div>
+
+<div class="pipeline-strip">
+  <div class="pipeline-steps" id="pipeline-steps"></div>
+</div>
+
+<div class="main" id="main-content">
+  <div class="loading-screen">
+    <div class="loading-spinner"></div>
+    <div style="font-size:13px;color:var(--muted);">Connecting to live workflow…</div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>XIME Bengaluru · Recruitment Pilot · MDP Associate · Live</span>
+  <span>Supabase Real-time · Role-based workflow</span>
+  <span>github.com/xime-bengaluru/integrated-centre</span>
+</div>
+<div id="toast"></div>
+
+<script>
+// ── SUPABASE CONFIG ──
+const SUPA_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const RUN_ID = 'mdp-associate-pilot-001';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+// ── STATE ──
+let currentRole = null;
+let currentColor = '#C9A84C';
+let wfState = { current_step: '0', step_index: 0, data: {} };
+let notifications = [];
+
+const STEP_ORDER = ['0','ag1','1','2','ag2','3','4','5','ag3','7','ag4','9','10','ag5','11','onboard'];
+const STEP_LABELS = {
+  '0':'MRF','ag1':'AG1','1':'JA','2':'JD','ag2':'AG2',
+  '3':'Post','4':'Screen','5':'Interview','ag3':'AG3',
+  '7':'Offer','ag4':'AG4','9':'Accept','10':'Docs','ag5':'AG5','11':'Join','onboard':'OB→'
+};
+const GATE_STEPS = ['ag1','ag2','ag3','ag4','ag5'];
+
+// ── SUPABASE HELPERS ──
+async function loadState() {
+  const { data, error } = await db.from('workflow_state').select('*').eq('run_id', RUN_ID).single();
+  if (error) { console.error('Load state error:', error); return; }
+  wfState = data;
+}
+
+async function saveState(step, stepIndex, extraData = {}) {
+  const newData = { ...wfState.data, ...extraData };
+  const { error } = await db.from('workflow_state')
+    .update({ current_step: step, step_index: stepIndex, data: newData, updated_by: currentRole, updated_at: new Date().toISOString() })
+    .eq('run_id', RUN_ID);
+  if (error) { console.error('Save state error:', error); showToast('Error saving — check connection'); return false; }
+  wfState.current_step = step;
+  wfState.step_index = stepIndex;
+  wfState.data = newData;
+  return true;
+}
+
+async function addNotif(message, type = 'blue') {
+  await db.from('notifications').insert({ run_id: RUN_ID, message, type, created_by: currentRole });
+}
+
+async function loadNotifs() {
+  const { data } = await db.from('notifications').select('*').eq('run_id', RUN_ID).order('created_at', { ascending: false }).limit(8);
+  notifications = data || [];
+}
+
+// ── REAL-TIME SUBSCRIPTION ──
+function subscribeRealtime() {
+  db.channel('workflow-updates')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'workflow_state', filter: `run_id=eq.${RUN_ID}` },
+      async (payload) => {
+        wfState = payload.new;
+        await loadNotifs();
+        renderPipeline();
+        if (currentRole) renderMain();
+        showToast('Pipeline updated — ' + payload.new.updated_by + ' completed a step');
+      })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `run_id=eq.${RUN_ID}` },
+      async (payload) => {
+        notifications.unshift(payload.new);
+        if (notifications.length > 8) notifications.pop();
+        if (currentRole) {
+          const feed = document.getElementById('notif-feed-inner');
+          if (feed) feed.innerHTML = renderNotifItems();
+        }
+      })
+    .subscribe((status) => {
+      const dot = document.getElementById('status-dot');
+      const txt = document.getElementById('status-text');
+      if (status === 'SUBSCRIBED') {
+        dot.classList.add('live'); txt.textContent = 'Live';
+      } else if (status === 'TIMED_OUT' || status === 'CLOSED') {
+        dot.classList.remove('live'); txt.textContent = 'Reconnecting…';
+        setTimeout(subscribeRealtime, 2000);
+      } else {
+        dot.classList.remove('live'); txt.textContent = status;
+      }
+    });
+
+  // Heartbeat — poll every 25 seconds to keep free tier alive
+  setInterval(async () => {
+    await loadState();
+    await loadNotifs();
+    renderPipeline();
+    if (currentRole) renderMain();
+  }, 25000);
+}
+
+// ── PIPELINE RENDER ──
+function renderPipeline() {
+  const curIdx = wfState.step_index;
+  let html = '';
+  STEP_ORDER.forEach((s, i) => {
+    const isGate = GATE_STEPS.includes(s);
+    const isDone = i < curIdx;
+    const isActive = i === curIdx;
+    const cls = `ps-dot${isGate?' gate':''}${isDone?' done':isActive?' active':''}`;
+    if (i > 0) html += `<div class="ps-line${isDone||isActive?' done':''}"></div>`;
+    html += `<div class="${cls}" title="${STEP_LABELS[s]||s}">${STEP_LABELS[s]||s}</div>`;
+  });
+  document.getElementById('pipeline-steps').innerHTML = html;
+}
+
+// ── ROLE SWITCH ──
+function switchRole(role, name, roleTitle, color) {
+  currentRole = role;
+  currentColor = color;
+  document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.rp-${role}`).classList.add('active');
+  renderMain();
+}
+
+// ── NOTIF FEED ──
+function renderNotifItems() {
+  if (!notifications.length) return '<div style="font-size:12px;color:var(--muted);font-style:italic;">No activity yet</div>';
+  return notifications.map(n => {
+    const time = new Date(n.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="notif-item"><div class="notif-dot nd-${n.type||'blue'}"></div><span>${time} — ${n.message}</span></div>`;
+  }).join('');
+}
+
+function notifHTML() {
+  return `<div class="notif-feed"><div class="notif-title">Activity Feed — Live</div><div id="notif-feed-inner">${renderNotifItems()}</div></div>`;
+}
+
+// ── HELPERS ──
+function taskDone(title) {
+  return `<div class="task-card complete"><div class="tc-header"><div><div class="tc-title">${title}</div></div><span class="status-badge sb-done">✓ Complete</span></div></div>`;
+}
+function taskWaiting(title, who) {
+  return `<div class="task-card waiting"><div class="tc-header"><div><div class="tc-title">${title}</div></div><span class="status-badge sb-waiting">Waiting — ${who}</span></div></div>`;
+}
+function roleHeader(name, role) {
+  return `<div class="role-header" style="background:${currentColor}11;border-color:${currentColor}44;">
+    <div><div class="rh-name">${name}</div><div class="rh-role">${role}</div></div>
+    <div class="rh-badge" style="background:${currentColor}22;color:${currentColor};border:1px solid ${currentColor}44;">${role}</div>
+  </div>`;
+}
+function infoBox(html) { return `<div class="info-box">${html}</div>`; }
+
+// ── MAIN RENDER ──
+function renderMain() {
+  const el = document.getElementById('main-content');
+  const step = wfState.current_step;
+  const idx = wfState.step_index;
+  const d = wfState.data || {};
+
+  const views = { girish, anjaly, lavanya, hirak, anil, roshni, reetha };
+  if (views[currentRole]) el.innerHTML = views[currentRole](step, idx, d);
+}
+
+// ── GIRISH ──
+function girish(step, idx, d) {
+  let h = roleHeader('Prof. Girish Vasudevan', 'Hiring Manager');
+  h += notifHTML();
+
+  // Step 0 — MRF
+  if (step === '0') {
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 0 · Your Action</div><div class="tc-title">Submit Manpower Requisition Form</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Raise the MRF for <strong>MDP Associate</strong>. This goes to Dr. Hirak for AG1 sanction before recruitment begins.</div>
+        <div class="form-grid">
+          <div class="field"><label>Role Title</label><input id="mrf-role" value="MDP Associate"></div>
+          <div class="field"><label>Role Type</label><select id="mrf-type"><option>New Position</option><option>Backfill</option></select></div>
+          <div class="field"><label>Reporting To</label><input id="mrf-reporting" value="Prof. Girish Vasudevan · Dean External Programs"></div>
+          <div class="field"><label>Proposed Joining Date</label><input type="date" id="mrf-date"></div>
+          <div class="field span2"><label>Business Justification</label><textarea id="mrf-justify">The External Programs division requires a dedicated MDP Associate to support program coordination, corporate outreach, and MDP delivery. Current workload has exceeded capacity and this role is critical for the April–June MDP calendar.</textarea></div>
+        </div>
+        <div class="btn-row"><button class="btn-primary" id="btn-mrf" onclick="doSubmitMRF()">Submit Requisition →</button></div>
+      </div></div>`;
+  } else {
+    h += taskDone('Manpower Requisition Form — Submitted');
+  }
+
+  // Step 1 — Job Analysis
+  if (step === '1') {
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 1 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Submit Job Analysis</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">MRF sanctioned by Dr. Hirak. You must now submit the Job Analysis so Anjaly can draft the JD. <strong>SLA: 48 hours.</strong> Delays here stall the entire pipeline.</div>
+        <div class="form-grid">
+          <div class="field"><label>Minimum Qualification</label><input id="ja-qual" placeholder="e.g. MBA from recognised institution"></div>
+          <div class="field"><label>Experience Required</label><input id="ja-exp" placeholder="e.g. 2–4 years in MDP coordination"></div>
+          <div class="field span2"><label>Key Skills</label><textarea id="ja-skills" placeholder="Program coordination, client communication, MDP delivery support…"></textarea></div>
+          <div class="field"><label>Industry Preference</label><input id="ja-industry" placeholder="e.g. Training, Ed-Tech, Consulting"></div>
+          <div class="field"><label>Other Requirements</label><input id="ja-other" placeholder="e.g. Bengaluru-based, Kannada preferred"></div>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="doSubmitJA()">Submit Job Analysis →</button></div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('1') && idx > STEP_ORDER.indexOf('ag1')) {
+    h += taskDone('Job Analysis — Submitted to Anjaly');
+  } else if (idx <= STEP_ORDER.indexOf('ag1') && step !== '0') {
+    h += taskWaiting('Job Analysis', 'AG1 Sanction from Dr. Hirak');
+  }
+
+  // Step 5 — Interview
+  if (step === '5') {
+    const profiles = d.shortlisted_profiles || [];
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 5 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Conduct Interviews & Submit Feedback</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Anjaly has shared 3 shortlisted profiles. Interview candidates, submit structured feedback, and select your preferred candidate.</div>
+        ${profiles.map((p,i) => `
+        <div class="candidate-card">
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
+            <div class="cc-avatar">${p.name.split(' ').map(w=>w[0]).join('').substring(0,2)}</div>
+            <div><div style="font-size:14px;font-weight:500;">${p.name}</div><div style="font-size:12px;color:var(--muted);">${p.exp} · ${p.current}</div></div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <span style="font-size:10.5px;padding:2px 8px;border-radius:8px;background:#EBF4FF;color:var(--navy);">${p.qual}</span>
+            <span style="font-size:10.5px;padding:2px 8px;border-radius:8px;background:#EBF4FF;color:var(--navy);">Exp: ${p.salary}</span>
+          </div>
+          <div class="field"><label>Interview Notes — ${p.name}</label><textarea id="fb-${i}" placeholder="Communication, domain knowledge, cultural fit…"></textarea></div>
+        </div>`).join('')}
+        ${profiles.length ? `
+        <div class="field"><label>Select Preferred Candidate</label><select id="sel-cand"><option value="">— Select —</option>${profiles.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')}</select></div>
+        <div class="field"><label>Overall Recommendation</label><textarea id="overall-rec" placeholder="Why this candidate? Any concerns?"></textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="doSubmitInterview()">Submit & Pass to Dr. Hirak (AG3) →</button></div>` : '<div style="color:var(--muted);font-size:13px;">Waiting for Anjaly to share profiles…</div>'}
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('5')) {
+    h += taskDone('Interviews Conducted — Candidate Selected');
+  } else if (idx > STEP_ORDER.indexOf('ag2') && idx < STEP_ORDER.indexOf('5')) {
+    h += taskWaiting('Interviews', 'Anjaly completing shortlisting');
+  }
+
+  return h;
+}
+
+// ── ANJALY ──
+function anjaly(step, idx, d) {
+  let h = roleHeader('Anjaly', 'Recruitment Professional');
+  h += notifHTML();
+  const jaIdx = STEP_ORDER.indexOf('1');
+  const ag2Idx = STEP_ORDER.indexOf('ag2');
+
+  if (idx < STEP_ORDER.indexOf('ag1')) return h + taskWaiting('All Steps', 'MRF from Girish');
+  if (idx === STEP_ORDER.indexOf('ag1')) return h + taskWaiting('JD Drafting', 'AG1 Sanction — Dr. Hirak');
+  if (step === '1') return h + taskWaiting('JD Drafting', 'Job Analysis from Girish — 48hr SLA in progress');
+
+  if (step === '2') {
+    const ja = d.job_analysis || {};
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 2 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Draft Job Description</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Girish has submitted the Job Analysis. Draft the JD and send to Lavanya for approval.</div>
+        ${ja.qual ? infoBox(`<strong>From Girish:</strong> Qual: ${ja.qual} · Exp: ${ja.exp}<br>Skills: ${ja.skills||'—'}`) : ''}
+        <div class="field"><label>Job Description</label><textarea id="jd-text" style="min-height:140px;">Role: MDP Associate
+Reporting to: Dean, External Programs — XIME Bengaluru
+
+The MDP Associate will support the design, coordination, and delivery of Management Development Programmes at XIME Bengaluru.
+
+Key Responsibilities:
+• Coordinate MDP program logistics end-to-end
+• Manage corporate client communication
+• Support faculty during program delivery
+• Maintain participant records and feedback
+
+Qualifications: ${ja.qual||'MBA from recognised institution'}
+Experience: ${ja.exp||'2–4 years'}
+Skills: ${ja.skills||'Program coordination, corporate communication'}</textarea></div>
+        <div class="btn-row"><button class="btn-primary" onclick="doSubmitJD()">Send to Lavanya for Approval →</button></div>
+      </div></div>`;
+  } else if (idx > ag2Idx) {
+    h += taskDone('Job Description — Approved by Lavanya');
+  } else if (idx > jaIdx) {
+    h += taskDone('Job Description — Sent to Lavanya · Awaiting AG2');
+  }
+
+  if (step === '3') {
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 3 · Your Action</div><div class="tc-title">Post Role & Begin Sourcing</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">JD approved. Post the role and begin sourcing candidates.</div>
+        <div class="form-grid">
+          <div class="field"><label>Platforms</label><input value="LinkedIn, Naukri, Internal Board"></div>
+          <div class="field"><label>Target Profiles</label><input placeholder="MBA, 2–4 years, Training/Ed-Tech background"></div>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="doPostRole()">Confirm Posting →</button></div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('3')) h += taskDone('Role Posted — LinkedIn, Naukri');
+
+  if (step === '4') {
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 4 · Your Action</div><div class="tc-title">Shortlist & Share Profiles with Girish</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Review applications and shortlist 3 candidates. Share profiles with Girish — he has a 48hr SLA to review and respond.</div>
+        <div class="btn-row"><button class="btn-primary" onclick="doShortlist()">Share 3 Shortlisted Profiles with Girish →</button></div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('4')) h += taskDone('3 Profiles Shortlisted & Shared with Girish');
+
+  if (step === '7') {
+    const cand = d.selected_candidate || {};
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 7 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Salary Fitment & Offer Letter</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Dr. Hirak confirmed the selection. Complete salary fitment and prepare the offer letter for Designate sign-off.</div>
+        ${cand.name ? infoBox(`<strong>Selected:</strong> ${cand.name} · Salary expectation: ${cand.salary}`) : ''}
+        <div class="form-grid">
+          <div class="field"><label>Offered CTC (₹ p.a.)</label><input id="offer-ctc" placeholder="e.g. 5,50,000"></div>
+          <div class="field"><label>Band Check</label><select id="offer-band"><option>Within Band B ✓</option><option>Exception — needs approval</option></select></div>
+          <div class="field"><label>Proposed Joining Date</label><input type="date" id="offer-date"></div>
+          <div class="field"><label>Offer Valid For</label><select><option>5 working days</option><option>7 working days</option></select></div>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="doPrepareOffer()">Send to Dr. Hirak for Sign-off (AG4) →</button></div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('ag4')) h += taskDone('Offer Letter Prepared & Sent');
+
+  if (step === '9') {
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 9 · Your Action</div><div class="tc-title">Capture Candidate Response</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Offer letter has been sent to candidate. Capture their response.</div>
+        <div class="form-grid">
+          <div class="field"><label>Candidate Response</label><select id="cand-resp"><option>Accepted</option><option>Negotiating</option><option>Declined</option></select></div>
+          <div class="field"><label>Confirmed Joining Date</label><input type="date" id="conf-join"></div>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="doCandidateAccepts()">Confirm Acceptance →</button></div>
+      </div></div>`;
+  }
+
+  if (step === '10') {
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Step 10 · Your Action · AG5</div><div class="tc-title">Pre-Joining Document Collection</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Collect all pre-joining documents and clear before confirming joining date to Reetha.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+          ${['Educational Certificates','PAN Card','Aadhaar Card','Previous Employment Certificate','Relieving Letter','Bank Account Details','Passport Photos (2)']
+            .map(d=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="checkbox" style="accent-color:var(--navy);"> ${d}</label>`).join('')}
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="doClearDocs()">Confirm Document Clearance → Trigger Onboarding</button></div>
+      </div></div>`;
+  }
+
+  return h;
+}
+
+// ── LAVANYA ──
+function lavanya(step, idx, d) {
+  let h = roleHeader('Lavanya', 'HR Supervisor');
+  h += notifHTML();
+
+  if (idx < STEP_ORDER.indexOf('2')) return h + taskWaiting('JD Review', 'Anjaly drafting JD');
+
+  if (step === 'ag2') {
+    h += `<div class="task-card approval-gate">
+      <div class="tc-header"><div><div class="tc-step">AG 2 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Job Description — Sign-off Required</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Anjaly has submitted the JD for your review. Approve to release for posting, or return with comments.</div>
+        <div style="padding:12px 14px;background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:12px;font-size:13px;line-height:1.6;white-space:pre-line;max-height:220px;overflow-y:auto;">${d.jd_text||'JD not yet submitted'}</div>
+        <div class="field"><label>Comments</label><textarea id="lav-comments" placeholder="Any changes needed…"></textarea></div>
+        <div class="btn-row">
+          <button class="btn-approve" onclick="doLavanyaApprove()">Approve JD — Release for Posting →</button>
+          <button class="btn-reject" onclick="doLavanyaReject()">Return to Anjaly</button>
+        </div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('ag2')) {
+    h += taskDone('JD Approved — Role Released for Posting');
+  }
+
+  h += `<div style="margin-top:12px;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--sub);">
+    You will be notified if further input is required. Current pipeline step: <strong style="color:var(--text);">${step}</strong>
+  </div>`;
+  return h;
+}
+
+// ── HIRAK ──
+function hirak(step, idx, d) {
+  let h = roleHeader('Dr. Hirak', "President's Designate");
+  h += notifHTML();
+
+  // AG1
+  if (step === 'ag1') {
+    const mrf = d.mrf || {};
+    h += `<div class="task-card approval-gate">
+      <div class="tc-header"><div><div class="tc-step">AG 1 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Manpower Requisition — Sanction Decision</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Girish has raised an MRF. Review and sanction before recruitment begins.</div>
+        ${infoBox(`<strong>Role:</strong> ${mrf.role||'MDP Associate'} · <strong>Type:</strong> ${mrf.type||'New Position'}<br><strong>Reporting to:</strong> ${mrf.reporting||'Dean External Programs'}<br><strong>Justification:</strong> ${mrf.justify||'—'}`)}
+        <div class="field"><label>Remarks</label><textarea id="ag1-remarks" placeholder="Conditions or notes on this approval…"></textarea></div>
+        <div class="btn-row">
+          <button class="btn-approve" onclick="doHirakAG1()">Sanction — Proceed with Recruitment →</button>
+          <button class="btn-reject" onclick="showToast('Returned to Girish')">Return to Initiator</button>
+        </div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('ag1')) {
+    h += taskDone('AG1 — MRF Sanctioned');
+  } else {
+    h += taskWaiting('AG1 Sanction', 'MRF from Girish');
+  }
+
+  // AG3
+  if (step === 'ag3') {
+    const cand = d.selected_candidate || {};
+    const fb = d.interview_feedback || {};
+    h += `<div class="task-card approval-gate">
+      <div class="tc-header"><div><div class="tc-step">AG 3 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Selection Decision — Confirm Candidate</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Girish has completed interviews and submitted his recommendation. Confirm to proceed to offer.</div>
+        ${infoBox(`<strong>Recommended:</strong> ${cand.name||'—'}<br><strong>Salary expectation:</strong> ${cand.salary||'—'}<br><strong>Girish's recommendation:</strong> <em>${fb.recommendation||'—'}</em>`)}
+        <div class="btn-row">
+          <button class="btn-approve" onclick="doHirakAG3()">Confirm Selection — Proceed to Offer →</button>
+          <button class="btn-reject" onclick="showToast('Re-interview requested')">Request Re-interview</button>
+        </div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('ag3')) {
+    h += taskDone('AG3 — Selection Confirmed');
+  } else if (idx > STEP_ORDER.indexOf('ag1')) {
+    h += taskWaiting('AG3 Selection', 'Interviews by Girish');
+  }
+
+  // AG4
+  if (step === 'ag4') {
+    const offer = d.offer_details || {};
+    const cand = d.selected_candidate || {};
+    h += `<div class="task-card approval-gate">
+      <div class="tc-header"><div><div class="tc-step">AG 4 · Your Approval · ⏱ 24hr SLA</div><div class="tc-title">Offer Letter — Sign-off</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Anjaly has prepared the offer. Review and sign off before it is sent to the candidate.</div>
+        ${infoBox(`<strong>Candidate:</strong> ${cand.name||'—'}<br><strong>Offered CTC:</strong> ${offer.ctc||'—'}<br><strong>Band status:</strong> <span style="color:#16A34A;">${offer.band||'—'}</span><br><strong>Joining Date:</strong> ${offer.joining_date||'—'}`)}
+        <div class="btn-row">
+          <button class="btn-approve" onclick="doHirakAG4()">Sign Off Offer Letter →</button>
+          <button class="btn-reject" onclick="showToast('Returned to Anjaly')">Return for Revision</button>
+        </div>
+      </div></div>`;
+  } else if (idx > STEP_ORDER.indexOf('ag4')) {
+    h += taskDone('AG4 — Offer Letter Signed Off');
+  }
+
+  return h;
+}
+
+// ── ANIL ──
+function anil(step, idx, d) {
+  let h = roleHeader('Anil J. Philip', 'President · XIME Bengaluru');
+  const allSteps = [
+    {s:'0',label:'Manpower Requisition',owner:'Girish'},
+    {s:'ag1',label:'AG1 — Sanction',owner:'Dr. Hirak (Designate)'},
+    {s:'1',label:'Job Analysis',owner:'Girish · 48hr SLA'},
+    {s:'2',label:'JD Drafting',owner:'Anjaly'},
+    {s:'ag2',label:'AG2 — JD Approval',owner:'Lavanya'},
+    {s:'3',label:'Job Posting',owner:'Anjaly'},
+    {s:'4',label:'Shortlisting & Profiles',owner:'Anjaly'},
+    {s:'5',label:'Interviews & Selection',owner:'Girish · 48hr SLA'},
+    {s:'ag3',label:'AG3 — Selection Confirmation',owner:'Dr. Hirak (Designate)'},
+    {s:'7',label:'Salary Fitment & Offer',owner:'Anjaly · 48hr SLA'},
+    {s:'ag4',label:'AG4 — Offer Sign-off',owner:'Dr. Hirak (Designate) · 24hr SLA'},
+    {s:'9',label:'Candidate Response',owner:'Anjaly'},
+    {s:'10',label:'Pre-Joining Documents',owner:'Anjaly'},
+    {s:'ag5',label:'AG5 — Document Clearance',owner:'Anjaly'},
+    {s:'11',label:'Joining Confirmed',owner:'Anjaly → Reetha'},
+    {s:'onboard',label:'Onboarding Triggered',owner:'Reetha'},
+  ];
+
+  h += `<div class="pipeline-overview"><div class="po-header">Recruitment Pipeline — MDP Associate · Live View</div>`;
+  allSteps.forEach(({s,label,owner}) => {
+    const sIdx = STEP_ORDER.indexOf(s);
+    const isDone = sIdx < idx;
+    const isActive = sIdx === idx;
+    h += `<div class="po-row">
+      <div class="po-step">${s.includes('ag')?s:'Step '+s}</div>
+      <div class="po-desc">${label}</div>
+      <div class="po-owner">${owner}</div>
+      <div><span class="status-badge ${isDone?'sb-done':isActive?'sb-pending':'sb-waiting'}">${isDone?'✓ Done':isActive?'In Progress':'Pending'}</span></div>
+    </div>`;
+  });
+  h += `</div>`;
+  h += notifHTML();
+  h += `<div style="padding:14px;background:white;border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--sub);">
+    <strong style="color:var(--text);">Current step:</strong> ${step} ·
+    <strong style="color:var(--text);">Progress:</strong> ${Math.round((idx/STEP_ORDER.length)*100)}% complete ·
+    <strong style="color:var(--text);">Selected candidate:</strong> ${d.selected_candidate?.name||'Not yet selected'}
+  </div>`;
+  return h;
+}
+
+// ── ROSHNI ──
+function roshni(step, idx, d) {
+  let h = roleHeader('Dr. Roshni James', 'Director · XIME Bengaluru');
+  h += `<div style="padding:16px;background:white;border:1px solid var(--border);border-radius:12px;margin-bottom:16px;font-size:13px;color:var(--sub);">
+    <strong style="color:var(--text);">MDP Associate recruitment is in progress.</strong><br>You are notified at key milestones. No action required at this time.
+  </div>`;
+  h += notifHTML();
+  return h;
+}
+
+// ── REETHA ──
+function reetha(step, idx, d) {
+  let h = roleHeader('Reetha Joseph', "Secretary · President's Office · Onboarding");
+  if (step === 'onboard' || idx >= STEP_ORDER.indexOf('onboard')) {
+    const cand = d.selected_candidate || {};
+    h += `<div class="task-card pending-action">
+      <div class="tc-header"><div><div class="tc-step">Onboarding Triggered — Your Action</div><div class="tc-title">New Joiner: ${cand.name||'MDP Associate'}</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-body">
+        <div class="tc-desc">Recruitment complete. Candidate has accepted the offer and all pre-joining documents are cleared. Begin the onboarding process.</div>
+        ${infoBox(`<strong>Name:</strong> ${cand.name||'—'}<br><strong>Role:</strong> MDP Associate<br><strong>Salary expectation:</strong> ${cand.salary||'—'}<br><strong>Documents:</strong> <span style="color:#16A34A;">All cleared ✓</span>`)}
+        <div class="btn-row"><button class="btn-primary" onclick="window.location.href='onboarding-module.html'">Open Onboarding Checklist →</button></div>
+      </div></div>`;
+  } else {
+    h += `<div style="padding:24px;background:white;border:1px solid var(--border);border-radius:12px;text-align:center;color:var(--muted);">
+      <div style="font-size:24px;margin-bottom:8px;">◎</div>
+      <div style="font-size:14px;font-weight:500;color:var(--sub);margin-bottom:4px;">No action required yet</div>
+      <div style="font-size:13px;">You will be notified when recruitment is complete and the candidate has accepted the offer.</div>
+    </div>`;
+  }
+  h += notifHTML();
+  return h;
+}
+
+// ── ACTION HANDLERS ──
+async function doSubmitMRF() {
+  const btn = document.getElementById('btn-mrf');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+  const data = {
+    mrf: {
+      role: document.getElementById('mrf-role')?.value,
+      type: document.getElementById('mrf-type')?.value,
+      reporting: document.getElementById('mrf-reporting')?.value,
+      justify: document.getElementById('mrf-justify')?.value
+    }
+  };
+  const ok = await saveState('ag1', STEP_ORDER.indexOf('ag1'), data);
+  if (ok) {
+    await addNotif('Girish submitted MRF — Awaiting AG1 sanction from Dr. Hirak (48hr SLA)', 'amber');
+    renderMain(); renderPipeline(); showToast('MRF submitted → Dr. Hirak to sanction');
+  }
+}
+
+async function doHirakAG1() {
+  const ok = await saveState('1', STEP_ORDER.indexOf('1'), { ag1_remarks: document.getElementById('ag1-remarks')?.value });
+  if (ok) {
+    await addNotif('Dr. Hirak sanctioned MRF — Girish to submit Job Analysis (48hr SLA)', 'green');
+    await addNotif('Dr. Roshni notified: Recruitment opened for MDP Associate', 'blue');
+    renderMain(); renderPipeline(); showToast('AG1 Approved → Girish notified');
+  }
+}
+
+async function doSubmitJA() {
+  const data = { job_analysis: { qual: document.getElementById('ja-qual')?.value, exp: document.getElementById('ja-exp')?.value, skills: document.getElementById('ja-skills')?.value, industry: document.getElementById('ja-industry')?.value } };
+  const ok = await saveState('2', STEP_ORDER.indexOf('2'), data);
+  if (ok) {
+    await addNotif('Girish submitted Job Analysis — Anjaly to draft JD (48hr SLA)', 'blue');
+    renderMain(); renderPipeline(); showToast('Job Analysis submitted → Anjaly notified');
+  }
+}
+
+async function doSubmitJD() {
+  const data = { jd_text: document.getElementById('jd-text')?.value };
+  const ok = await saveState('ag2', STEP_ORDER.indexOf('ag2'), data);
+  if (ok) {
+    await addNotif('Anjaly submitted JD — Lavanya to approve (48hr SLA)', 'amber');
+    renderMain(); renderPipeline(); showToast('JD sent to Lavanya');
+  }
+}
+
+async function doLavanyaApprove() {
+  const ok = await saveState('3', STEP_ORDER.indexOf('3'));
+  if (ok) {
+    await addNotif('Lavanya approved JD — Anjaly to post role', 'green');
+    renderMain(); renderPipeline(); showToast('JD Approved → Anjaly to post role');
+  }
+}
+async function doLavanyaReject() {
+  const ok = await saveState('2', STEP_ORDER.indexOf('2'));
+  if (ok) { await addNotif('Lavanya returned JD to Anjaly with comments', 'amber'); renderMain(); renderPipeline(); }
+}
+
+async function doPostRole() {
+  const ok = await saveState('4', STEP_ORDER.indexOf('4'));
+  if (ok) { await addNotif('Role posted on LinkedIn and Naukri — Sourcing begins', 'blue'); renderMain(); renderPipeline(); showToast('Role posted'); }
+}
+
+async function doShortlist() {
+  const profiles = [
+    {name:'Priya Sharma', exp:'3 years', current:'Training Coordinator · InfoSys BPO', qual:'MBA HR — Symbiosis', salary:'₹5.5L'},
+    {name:'Rahul Menon', exp:'4 years', current:'Program Associate · ISB Hyderabad', qual:'MBA — XIMB', salary:'₹6.2L'},
+    {name:'Kavitha Nair', exp:'2 years', current:'L&D Executive · Deloitte', qual:'MBA — TAPMI', salary:'₹5L'}
+  ];
+  const ok = await saveState('5', STEP_ORDER.indexOf('5'), { shortlisted_profiles: profiles });
+  if (ok) {
+    await addNotif('Anjaly shortlisted 3 profiles — Girish to review and interview (48hr SLA)', 'amber');
+    renderMain(); renderPipeline(); showToast('3 profiles shared with Girish');
+  }
+}
+
+async function doSubmitInterview() {
+  const profiles = wfState.data.shortlisted_profiles || [];
+  const selIdx = parseInt(document.getElementById('sel-cand')?.value);
+  if (isNaN(selIdx)) { showToast('Please select a candidate'); return; }
+  const data = {
+    selected_candidate: profiles[selIdx],
+    interview_feedback: { recommendation: document.getElementById('overall-rec')?.value }
+  };
+  const ok = await saveState('ag3', STEP_ORDER.indexOf('ag3'), data);
+  if (ok) {
+    await addNotif(`Girish selected ${profiles[selIdx].name} — Dr. Hirak to confirm (AG3, 48hr SLA)`, 'amber');
+    renderMain(); renderPipeline(); showToast('Interview submitted → Dr. Hirak to confirm');
+  }
+}
+
+async function doHirakAG3() {
+  const ok = await saveState('7', STEP_ORDER.indexOf('7'));
+  if (ok) {
+    await addNotif('Dr. Hirak confirmed selection — Anjaly to prepare offer', 'green');
+    renderMain(); renderPipeline(); showToast('AG3 Approved → Anjaly preparing offer');
+  }
+}
+
+async function doPrepareOffer() {
+  const data = { offer_details: { ctc: document.getElementById('offer-ctc')?.value, band: document.getElementById('offer-band')?.value, joining_date: document.getElementById('offer-date')?.value } };
+  const ok = await saveState('ag4', STEP_ORDER.indexOf('ag4'), data);
+  if (ok) {
+    await addNotif('Offer letter prepared — Dr. Hirak to sign off (AG4, 24hr SLA)', 'amber');
+    renderMain(); renderPipeline(); showToast('Offer sent to Dr. Hirak');
+  }
+}
+
+async function doHirakAG4() {
+  const ok = await saveState('9', STEP_ORDER.indexOf('9'));
+  if (ok) {
+    await addNotif('Dr. Hirak signed offer letter — Anjaly to send to candidate', 'green');
+    await addNotif('Anil notified: Offer extended to candidate', 'purple');
+    renderMain(); renderPipeline(); showToast('Offer signed → Anjaly to send to candidate');
+  }
+}
+
+async function doCandidateAccepts() {
+  const ok = await saveState('10', STEP_ORDER.indexOf('10'));
+  if (ok) {
+    await addNotif('Candidate accepted offer — Pre-joining documents collection begins', 'green');
+    renderMain(); renderPipeline(); showToast('Accepted → collecting documents');
+  }
+}
+
+async function doClearDocs() {
+  const ok = await saveState('onboard', STEP_ORDER.indexOf('onboard'));
+  if (ok) {
+    await addNotif('Documents cleared — Joining confirmed → Reetha to begin onboarding', 'green');
+    await addNotif('Anil notified: MDP Associate joining XIME', 'purple');
+    await addNotif('Dr. Roshni notified: New team member joining', 'blue');
+    renderMain(); renderPipeline(); showToast('Onboarding triggered → Reetha notified');
+  }
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 2800);
+}
+
+// ── RESET ──
+let clicks = 0;
+document.getElementById('xime-logo').addEventListener('click', async () => {
+  clicks++;
+  if (clicks >= 3) {
+    if (!confirm('Reset the entire pilot workflow? This cannot be undone.')) { clicks=0; return; }
+    await db.from('workflow_state').update({ current_step:'0', step_index:0, data:{}, updated_by:'reset', updated_at: new Date().toISOString() }).eq('run_id', RUN_ID);
+    await db.from('notifications').delete().eq('run_id', RUN_ID);
+    location.reload();
+  }
+  setTimeout(() => clicks = 0, 1000);
+});
+
+// ── INIT ──
+async function init() {
+  await loadState();
+  await loadNotifs();
+  renderPipeline();
+  subscribeRealtime();
+  document.getElementById('main-content').innerHTML = `
+    <div style="text-align:center;padding:60px 20px;color:var(--muted);">
+      <div style="font-size:32px;margin-bottom:12px;">◎</div>
+      <div style="font-size:15px;font-weight:500;color:var(--sub);margin-bottom:6px;">Connected — Select your role above</div>
+      <div style="font-size:13px;">Each person sees only their pending tasks. Actions update in real time for all users.</div>
+    </div>`;
+}
+
+init();
+</script>
+</body>
+</html>

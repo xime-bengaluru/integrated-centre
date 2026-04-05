@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faculty Profile — XIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --parchment: #FAF7F0;
+  --parchment-d: #F0EBE0;
+  --navy:   #0D1F35;
+  --rust:   #8B2E16;
+  --gold:   #C9A84C;
+  --text:   #1A1410;
+  --sub:    #4A3C30;
+  --muted:  #8A7A68;
+  --border: #D8D0C0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Libre Baskerville', serif; background: var(--parchment); color: var(--text); }
+
+/* PRINT CONTROLS */
+.print-bar {
+  background: var(--navy); padding: 12px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.print-bar-title {
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: rgba(255,255,255,0.6);
+}
+.print-actions { display: flex; gap: 10px; }
+.btn-print {
+  padding: 7px 18px; background: var(--gold); color: var(--navy);
+  border: none; border-radius: 6px; font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.btn-back {
+  padding: 7px 14px; background: transparent; color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 12.5px; cursor: pointer;
+}
+
+/* PROFILE PAGE */
+.profile-page {
+  max-width: 800px; margin: 32px auto 60px; padding: 0 24px;
+}
+
+/* HEADER */
+.profile-header {
+  background: var(--navy); border-radius: 16px;
+  padding: 40px 44px; margin-bottom: 28px;
+  display: flex; gap: 32px; align-items: flex-start;
+  position: relative; overflow: hidden;
+}
+.profile-header::before {
+  content: 'XIME';
+  position: absolute; bottom: -20px; right: -10px;
+  font-family: 'Cormorant Garamond', serif; font-size: 140px;
+  font-weight: 600; color: rgba(201,168,76,0.05); line-height: 1;
+  pointer-events: none;
+}
+.ph-photo {
+  width: 100px; height: 100px; border-radius: 50%; flex-shrink: 0;
+  background: var(--navy); border: 3px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 36px;
+  font-weight: 600; color: var(--gold); overflow: hidden;
+}
+.ph-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.ph-info { flex: 1; }
+.ph-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 32px;
+  font-weight: 600; color: white; line-height: 1.1; margin-bottom: 4px;
+}
+.ph-desig { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--gold); margin-bottom: 8px; }
+.ph-dept { font-family: 'DM Sans', sans-serif; font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+.ph-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.ph-tag {
+  font-family: 'DM Sans', sans-serif; font-size: 11px;
+  padding: 3px 10px; border-radius: 20px;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.ph-badge {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em;
+  padding: 3px 10px; border-radius: 20px; font-weight: 500;
+  background: rgba(201,168,76,0.15); color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+}
+
+/* BIO */
+.profile-bio {
+  background: white; border-radius: 12px; padding: 24px 28px;
+  margin-bottom: 20px; border: 1px solid var(--border);
+  border-left: 4px solid var(--rust);
+}
+.profile-bio p {
+  font-size: 15px; line-height: 1.75; color: var(--sub);
+  font-style: italic;
+}
+
+/* SECTIONS */
+.profile-section {
+  background: white; border-radius: 12px; padding: 24px 28px;
+  margin-bottom: 20px; border: 1px solid var(--border);
+}
+.ps-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 20px;
+  font-weight: 600; color: var(--navy); margin-bottom: 4px;
+  border-bottom: 1px solid var(--border); padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+.ps-title::before {
+  content: ''; display: inline-block; width: 3px; height: 16px;
+  background: var(--rust); margin-right: 10px; vertical-align: middle;
+  border-radius: 2px;
+}
+
+/* PUB ITEM */
+.pub-item { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--parchment-d); }
+.pub-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.pub-title {
+  font-family: 'Libre Baskerville', serif; font-size: 14px;
+  font-weight: 400; color: var(--text); margin-bottom: 3px; line-height: 1.4;
+}
+.pub-meta {
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.pub-index {
+  font-size: 10px; padding: 1px 7px; border-radius: 6px;
+  background: #E6F1FB; color: #185FA5; font-weight: 500;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ENGAGEMENT ITEM */
+.eng-item {
+  display: flex; gap: 14px; margin-bottom: 12px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--parchment-d);
+  align-items: flex-start;
+}
+.eng-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.eng-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--rust); flex-shrink: 0; margin-top: 6px;
+}
+.eng-title {
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+  font-weight: 500; color: var(--text);
+}
+.eng-meta {
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  color: var(--muted); margin-top: 2px;
+}
+
+/* BADGE SHOWCASE */
+.badge-showcase {
+  display: flex; gap: 14px; flex-wrap: wrap;
+}
+.badge-card {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 16px 20px; background: var(--parchment); border-radius: 10px;
+  border: 1px solid var(--border); min-width: 100px;
+}
+.badge-icon { font-size: 24px; }
+.badge-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+.badge-value {
+  font-family: 'Cormorant Garamond', serif; font-size: 18px;
+  font-weight: 600; color: var(--navy);
+}
+
+/* XIME FOOTER */
+.profile-footer {
+  text-align: center; margin-top: 28px; padding: 20px;
+}
+.pf-logo {
+  font-family: 'Cormorant Garamond', serif; font-size: 28px;
+  font-weight: 600; color: var(--navy); letter-spacing: 0.06em;
+}
+.pf-tag {
+  font-family: 'DM Sans', sans-serif; font-size: 11px;
+  color: var(--muted); margin-top: 3px; letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.pf-line {
+  width: 60px; height: 2px; background: var(--gold);
+  margin: 12px auto;
+}
+
+/* EMPTY */
+.prof-empty {
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: var(--muted); font-style: italic; padding: 8px 0;
+}
+
+@media print {
+  .print-bar { display: none; }
+  .profile-page { margin: 0; padding: 16px; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+
+<!-- PRINT BAR -->
+<div class="print-bar">
+  <div class="print-bar-title">Faculty Public Profile · XIME Bengaluru</div>
+  <div class="print-actions">
+    <button class="btn-back" onclick="window.location.href='faculty-portfolio-home.html'">← Back to Portfolio</button>
+    <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="profile-page">
+
+  <!-- HEADER -->
+  <div class="profile-header">
+    <div class="ph-photo" id="pub-photo"><span id="pub-initials">?</span></div>
+    <div class="ph-info">
+      <div class="ph-name" id="pub-name">Faculty Name</div>
+      <div class="ph-desig" id="pub-desig">Designation</div>
+      <div class="ph-dept" id="pub-dept">Department · Campus</div>
+      <div class="ph-tags">
+        <span class="ph-tag" id="pub-qual">Qualification</span>
+        <span class="ph-tag" id="pub-exp">Experience</span>
+        <span class="ph-badge" id="pub-badge">Emerging</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <div class="profile-bio">
+    <p id="pub-bio">Professional biography will appear here once the faculty member completes their profile.</p>
+  </div>
+
+  <!-- RESEARCH -->
+  <div class="profile-section" id="sec-research">
+    <div class="ps-title">Research & Publications</div>
+    <div id="pub-research-list"><div class="prof-empty">No publications recorded yet.</div></div>
+  </div>
+
+  <!-- INDUSTRY -->
+  <div class="profile-section" id="sec-industry">
+    <div class="ps-title">Industry Engagement</div>
+    <div id="pub-industry-list"><div class="prof-empty">No industry engagements recorded yet.</div></div>
+  </div>
+
+  <!-- BADGES -->
+  <div class="profile-section" id="sec-badges">
+    <div class="ps-title">Development & Recognition</div>
+    <div class="badge-showcase" id="pub-badges">
+      <div class="badge-card">
+        <div class="badge-icon">◈</div>
+        <div class="badge-label">FDP Hours</div>
+        <div class="badge-value" id="pub-hours">0</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">◎</div>
+        <div class="badge-label">Publications</div>
+        <div class="badge-value" id="pub-pubs">0</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">◉</div>
+        <div class="badge-label">Industry Engagements</div>
+        <div class="badge-value" id="pub-engs">0</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon" id="pub-badge-icon">○</div>
+        <div class="badge-label">FDP Status</div>
+        <div class="badge-value" id="pub-badge-val">Emerging</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- XIME FOOTER -->
+  <div class="profile-footer">
+    <div class="pf-logo">XIME</div>
+    <div class="pf-line"></div>
+    <div class="pf-tag">Xavier Institute of Management & Entrepreneurship · Shaping Future Leaders</div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#C0B4A0;margin-top:6px;">Bengaluru · Kochi · Chennai · xime.org</div>
+  </div>
+
+</div>
+
+<script>
+const fac = localStorage.getItem('fdp_public_preview') || '';
+const KEY = (k) => 'fdp_' + fac + '_' + k;
+
+function init() {
+  const saved = localStorage.getItem(KEY('profile'));
+  if (saved) {
+    const p = JSON.parse(saved);
+    document.getElementById('pub-name').textContent = p.name || 'Faculty Member';
+    document.getElementById('pub-desig').textContent = p.desig || '';
+    document.getElementById('pub-dept').textContent = (p.dept||'') + (p.campus?' · '+p.campus:'');
+    document.getElementById('pub-bio').textContent = p.bio || 'Professional biography will appear here.';
+    document.getElementById('pub-qual').textContent = p.qual || 'Qualification';
+    document.getElementById('pub-exp').textContent = p.exp || 'Experience';
+    const initials = (p.name||'').split(' ').filter(w=>w.match(/^[A-Z]/)).slice(0,2).map(w=>w[0]).join('') || '?';
+    document.getElementById('pub-initials').textContent = initials;
+    document.title = (p.name||'Faculty') + ' — XIME';
+  }
+
+  const photo = localStorage.getItem(KEY('photo'));
+  if (photo) {
+    const pb = document.getElementById('pub-photo');
+    pb.querySelector('span').style.display = 'none';
+    const img = document.createElement('img');
+    img.src = photo;
+    pb.appendChild(img);
+  }
+
+  const logs = JSON.parse(localStorage.getItem(KEY('logs')) || '[]');
+  const totalHours = logs.reduce((s,e)=>s+e.hours,0);
+  document.getElementById('pub-hours').textContent = totalHours.toFixed(1) + 'h';
+  const badge = totalHours >= 50 ? 'Distinguished' : totalHours >= 46 ? 'Champion' :
+                totalHours >= 31 ? 'Proficient' : totalHours >= 16 ? 'Active' : 'Emerging';
+  document.getElementById('pub-badge').textContent = badge;
+  document.getElementById('pub-badge-val').textContent = badge;
+
+  const research = JSON.parse(localStorage.getItem(KEY('research')) || '[]');
+  document.getElementById('pub-pubs').textContent = research.length;
+  if (research.length) {
+    document.getElementById('pub-research-list').innerHTML = research.map(e => `
+      <div class="pub-item">
+        <div class="pub-title">${e.title}</div>
+        <div class="pub-meta">
+          <span>${e.type}</span>
+          ${e.journal?'<span>'+e.journal+'</span>':''}
+          ${e.year?'<span>'+e.year+'</span>':''}
+          <span class="pub-index">${e.index}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  const industry = JSON.parse(localStorage.getItem(KEY('industry')) || '[]');
+  document.getElementById('pub-engs').textContent = industry.length;
+  if (industry.length) {
+    document.getElementById('pub-industry-list').innerHTML = industry.map(e => `
+      <div class="eng-item">
+        <div class="eng-dot"></div>
+        <div>
+          <div class="eng-title">${e.org}</div>
+          <div class="eng-meta">${e.type}${e.period?' · '+e.period:''}${e.desc?' · '+e.desc:''}</div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

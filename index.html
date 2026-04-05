@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XIME Integrated Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:       #0D1F35;
+    --navy-mid:   #1A3352;
+    --navy-l:     #243D5C;
+    --gold:       #C9A84C;
+    --gold-l:     #E8C97A;
+    --gold-pale:  #F7EDD0;
+    --cream:      #FAF8F4;
+    --white:      #FFFFFF;
+    --text:       #0D1F35;
+    --sub:        #4A5D72;
+    --muted:      #7A8FA6;
+    --border:     #E2DDD4;
+    --red:        #C8102E;
+
+    --fdp-bg:     #0D2B1F;
+    --fdp-acc:    #3DBF8A;
+    --fdp-pale:   #E8F8F0;
+
+    --hrms-bg:    #1A1F35;
+    --hrms-acc:   #6B8CFF;
+    --hrms-pale:  #EBF0FF;
+
+    --erp-bg:     #2A2420;
+    --erp-acc:    #A0918A;
+    --erp-pale:   #F0EBE8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .xime-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  .header-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .header-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.04em;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--navy-l);
+    border: 1.5px solid rgba(201,168,76,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    padding: 48px 32px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-greeting {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 500;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.1s forwards;
+  }
+
+  .hero-name em {
+    color: var(--gold-l);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.15s forwards;
+  }
+
+  /* PILOT BADGE */
+  .pilot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--gold-l);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.2s forwards;
+  }
+
+  .pilot-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── SCORECARD STRIP ── */
+  .scorecard {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .score-item {
+    padding: 16px 24px;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+  }
+  .score-item:nth-child(1){animation-delay:0.25s}
+  .score-item:nth-child(2){animation-delay:0.3s}
+  .score-item:nth-child(3){animation-delay:0.35s}
+  .score-item:nth-child(4){animation-delay:0.4s}
+
+  .score-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .score-num .unit {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .score-label {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .score-green { color: #1A7A4A; }
+  .score-blue  { color: #2A4FA8; }
+  .score-amber { color: #B07A10; }
+
+  /* ── MODULES SECTION ── */
+  .modules-section {
+    padding: 40px 32px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* ── MODULE CARD ── */
+  .module-card {
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .module-card:nth-child(1){animation-delay:0.3s}
+  .module-card:nth-child(2){animation-delay:0.4s}
+  .module-card:nth-child(3){animation-delay:0.5s}
+
+  .module-card.active:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(0,0,0,0.15);
+  }
+
+  .module-card.locked {
+    cursor: default;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.5s forwards;
+  }
+
+  /* CARD BODY */
+  .card-body {
+    padding: 28px 26px 24px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-body::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  /* FDP */
+  .fdp .card-body {
+    background: #0D2B1F;
+  }
+  .fdp .card-body::after { background: #3DBF8A; }
+
+  /* HRMS */
+  .hrms .card-body {
+    background: #1A1F35;
+  }
+  .hrms .card-body::after { background: #6B8CFF; }
+
+  /* ERP */
+  .erp .card-body {
+    background: #2A2420;
+  }
+  .erp .card-body::after { background: #A0918A; }
+
+  .card-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 10px;
+    width: fit-content;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .fdp  .card-tag { background: rgba(61,191,138,0.15); color: #3DBF8A; }
+  .hrms .card-tag { background: rgba(107,140,255,0.15); color: #6B8CFF; }
+  .erp  .card-tag { background: rgba(160,145,138,0.15); color: #A0918A; }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .card-arrow {
+    margin-top: 20px;
+    font-size: 18px;
+    color: rgba(255,255,255,0.2);
+    transition: all 0.2s ease;
+    width: fit-content;
+  }
+  .module-card.active:hover .card-arrow {
+    color: rgba(255,255,255,0.7);
+    transform: translateX(4px);
+  }
+
+  /* CARD FOOTER */
+  .card-footer {
+    padding: 14px 26px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .fdp  .card-footer { background: rgba(61,191,138,0.05); }
+  .hrms .card-footer { background: rgba(107,140,255,0.05); }
+  .erp  .card-footer { background: rgba(160,145,138,0.05); }
+
+  .footer-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .footer-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .fdp  .footer-num { color: #3DBF8A; }
+  .hrms .footer-num { color: #6B8CFF; }
+  .erp  .footer-num { color: #A0918A; }
+
+  .footer-label {
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .footer-status {
+    font-size: 10.5px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .status-active   { background: rgba(61,191,138,0.12); color: #3DBF8A; }
+  .status-live     { background: rgba(107,140,255,0.12); color: #6B8CFF; }
+  .status-upcoming { background: rgba(160,145,138,0.12); color: #A0918A; }
+
+  /* LOCKED OVERLAY */
+  .locked-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(13,15,20,0.55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    backdrop-filter: blur(2px);
+    border-radius: 16px;
+  }
+
+  .lock-icon {
+    font-size: 22px;
+    opacity: 0.5;
+  }
+
+  .lock-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* ── PENDING APPROVALS ── */
+  .pending-section {
+    padding: 0 32px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .pending-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .pending-header {
+    padding: 14px 20px;
+    background: #FFFBF0;
+    border-bottom: 1px solid #F5E8C0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pending-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #7A5C00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pending-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #D4A017;
+    animation: pulse 2s infinite;
+  }
+
+  .pending-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: #F5E8C0;
+    color: #7A5C00;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .pending-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .pending-row:last-child { border-bottom: none; }
+
+  .pending-row-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .pending-module-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .pt-hrms { background: #EBF0FF; color: #2A4FA8; }
+  .pt-fdp  { background: #E8F8F0; color: #0F5C36; }
+
+  .pending-desc {
+    font-size: 13px;
+    color: var(--text);
+  }
+  .pending-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .approve-btn {
+    padding: 6px 16px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .approve-btn:hover { background: var(--navy-mid); }
+
+  /* ── MODULE DETAIL PANELS ── */
+  .panel {
+    display: none;
+    padding: 0 32px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .panel.open { display: block; }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .panel-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+  }
+
+  .panel-close {
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    transition: all 0.15s;
+  }
+  .panel-close:hover { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* FDP PANEL */
+  .faculty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .faculty-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .faculty-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    flex-shrink: 0;
+    color: white;
+  }
+  .av-blr  { background: #1A3352; }
+  .av-kochi { background: #0D2B1F; }
+
+  .faculty-info { flex: 1; }
+  .faculty-name { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .faculty-role { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .faculty-campus {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 8px;
+    padding: 2px 7px;
+    border-radius: 8px;
+    width: fit-content;
+  }
+  .fc-blr   { background: #EBF4FF; color: #1A3352; }
+  .fc-kochi { background: #E8F8F0; color: #0D2B1F; }
+
+  .faculty-progress {
+    margin-top: 10px;
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #3DBF8A;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .progress-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* HRMS PANEL */
+  .pipeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .pipeline-table th {
+    padding: 11px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: #F8F9FB;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-weight: 500;
+  }
+  .pipeline-table td {
+    padding: 13px 16px;
+    font-size: 13px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+  }
+  .pipeline-table tr:last-child td { border-bottom: none; }
+
+  .stage-badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .st-pending  { background: #FFFBEB; color: #92400E; }
+  .st-active   { background: #EBF4FF; color: #1A3352; }
+  .st-approval { background: #F5F3FF; color: #4C1D95; }
+  .st-offer    { background: #E8F8F0; color: #0D2B1F; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .footer-xime {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--gold);
+  }
+
+  .footer-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 700px) {
+    .header { padding: 0 16px; }
+    .header-date { display: none; }
+    .hero { padding: 32px 16px 40px; }
+    .scorecard { padding: 0 16px; }
+    .score-item { padding: 14px 16px; }
+    .modules-section { padding: 28px 16px 40px; }
+    .modules-grid { grid-template-columns: 1fr; gap: 14px; }
+    .pending-section { padding: 0 16px 32px; }
+    .panel { padding: 0 16px 40px; }
+    .faculty-grid { grid-template-columns: 1fr; }
+    .footer { padding: 14px 16px; }
+    .pending-row { flex-wrap: wrap; }
+  }
+
+  @media (min-width: 701px) and (max-width: 900px) {
+    .modules-grid { grid-template-columns: 1fr 1fr; }
+    .erp { grid-column: span 2; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="xime-logo">XIME</div>
+    <div class="header-divider"></div>
+    <div class="header-title">Integrated Centre</div>
+  </div>
+  <div class="header-right">
+    <div class="header-date" id="live-date"></div>
+    <div class="avatar">AJP</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-greeting">Good morning, President</div>
+  <div class="hero-name">Welcome back,<br><em>Anil J. Philip</em></div>
+  <div class="hero-sub">Xavier Institute of Management & Entrepreneurship · Bengaluru</div>
+  <div class="pilot-badge"><div class="pilot-dot"></div>Pilot Phase — Active</div>
+</div>
+
+<!-- SCORECARD -->
+<div class="scorecard">
+  <div class="score-item">
+    <div class="score-num score-green">6 <span class="unit">/ 6</span></div>
+    <div class="score-label">Faculty in FDP pilot</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num score-blue">1</div>
+    <div class="score-label">Recruitment in pipeline</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num score-amber">2</div>
+    <div class="score-label">Pending your approval</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num">3</div>
+    <div class="score-label">Active modules</div>
+  </div>
+</div>
+
+<!-- PENDING APPROVALS -->
+<div class="pending-section" style="padding-top:32px;">
+  <div class="pending-card">
+    <div class="pending-header">
+      <div class="pending-title">
+        <div class="pending-dot"></div>
+        Pending Your Approval
+      </div>
+      <div class="pending-count">2 actions</div>
+    </div>
+    <div class="pending-row">
+      <div class="pending-row-left">
+        <span class="pending-module-tag pt-hrms">HRMS</span>
+        <div>
+          <div class="pending-desc">Manpower Requisition — Assistant Professor, Marketing</div>
+          <div class="pending-sub">Submitted by Dean Academics · 14 hours ago · SLA: 48 hrs</div>
+        </div>
+      </div>
+      <button class="approve-btn" onclick="openPanel('hrms-panel')">Review →</button>
+    </div>
+    <div class="pending-row">
+      <div class="pending-row-left">
+        <span class="pending-module-tag pt-fdp">FDP</span>
+        <div>
+          <div class="pending-desc">FDP Pilot — 6 faculty profiles ready for review</div>
+          <div class="pending-sub">Bengaluru (3) · Kochi (3) · Profiles activated today</div>
+        </div>
+      </div>
+      <button class="approve-btn" onclick="window.location.href='faculty-portfolio-home.html'">View →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODULES -->
+<div class="modules-section">
+  <div class="section-label">Modules</div>
+  <div class="modules-grid">
+
+    <!-- FDP TILE -->
+    <div class="module-card fdp active" style="background:#0D2B1F;border-radius:16px;cursor:pointer;" onclick="window.location.href='faculty-portfolio-home.html'">
+      <div class="card-body" style="background:#0D2B1F;">
+        <div class="card-tag">Faculty Development</div>
+        <div class="card-icon">◈</div>
+        <div class="card-title">Faculty Development Portal</div>
+        <div class="card-desc">Track training, research, conferences, MDP delivery, and industry engagement across all faculty.</div>
+        <div class="card-arrow">→</div>
+      </div>
+      <div class="card-footer" style="background:rgba(61,191,138,0.08);border-top:1px solid rgba(61,191,138,0.15);">
+        <div class="footer-stat">
+          <div class="footer-num" style="color:#3DBF8A;">6</div>
+          <div class="footer-label">Active faculty</div>
+        </div>
+        <div class="footer-stat">
+          <div class="footer-num" style="color:#3DBF8A;">2</div>
+          <div class="footer-label">Campuses</div>
+        </div>
+        <span class="footer-status status-active">Active</span>
+      </div>
+    </div>
+
+    <!-- HRMS TILE -->
+    <div class="module-card hrms active" style="background:#1A1F35;border-radius:16px;cursor:pointer;" onclick="openPanel('hrms-panel')">
+      <div class="card-body" style="background:#1A1F35;">
+        <div class="card-tag">HR & Recruitment</div>
+        <div class="card-icon">◎</div>
+        <div class="card-title">HR & Recruitment Module</div>
+        <div class="card-desc">Manage recruitment pipeline, approve requisitions, track hiring progress from sanction to onboarding.</div>
+        <div class="card-arrow">→</div>
+      </div>
+      <div class="card-footer" style="background:rgba(107,140,255,0.08);border-top:1px solid rgba(107,140,255,0.15);">
+        <div class="footer-stat">
+          <div class="footer-num" style="color:#6B8CFF;">1</div>
+          <div class="footer-label">Live recruitment</div>
+        </div>
+        <div class="footer-stat">
+          <div class="footer-num" style="color:#6B8CFF;">2</div>
+          <div class="footer-label">Pending actions</div>
+        </div>
+        <span class="footer-status status-live">Live</span>
+      </div>
+    </div>
+
+    <!-- ERP TILE -->
+    <div class="module-card erp locked" style="background:#2A2420;border-radius:16px;">
+      <div class="card-body" style="background:#2A2420;">
+        <div class="card-tag">Operations</div>
+        <div class="card-icon">◇</div>
+        <div class="card-title">ERP Module</div>
+        <div class="card-desc">Institutional operations, finance, and administration. Coming in Phase 2.</div>
+      </div>
+      <div class="card-footer" style="background:rgba(160,145,138,0.08);border-top:1px solid rgba(160,145,138,0.15);">
+        <div class="footer-stat">
+          <div class="footer-num" style="color:#A0918A;">Phase 2</div>
+          <div class="footer-label">Planned</div>
+        </div>
+        <span class="footer-status status-upcoming">Upcoming</span>
+      </div>
+      <div class="locked-overlay">
+        <div class="lock-icon">⊘</div>
+        <div class="lock-text">Coming in Phase 2</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FDP PANEL -->
+<div class="panel" id="fdp-panel">
+  <div class="panel-header">
+    <div class="panel-title">Faculty Development Portal — Pilot Cohort</div>
+    <div class="panel-close" onclick="closePanel('fdp-panel')">← Back to overview</div>
+  </div>
+  <div class="faculty-grid">
+
+    <div class="faculty-card">
+      <div class="faculty-avatar av-blr">DC</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Dr. Christopher</div>
+        <div class="faculty-role">Faculty · Bengaluru</div>
+        <div class="faculty-campus fc-blr">Bengaluru</div>
+        <div class="faculty-progress">
+          <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+          <div class="progress-label"><span>Profile setup</span><span>40%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faculty-card">
+      <div class="faculty-avatar av-blr">DT</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Dr. Tijo</div>
+        <div class="faculty-role">Faculty · Bengaluru</div>
+        <div class="faculty-campus fc-blr">Bengaluru</div>
+        <div class="faculty-progress">
+          <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+          <div class="progress-label"><span>Profile setup</span><span>25%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faculty-card">
+      <div class="faculty-avatar av-blr">DC</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Dr. Christina</div>
+        <div class="faculty-role">Faculty · Bengaluru</div>
+        <div class="faculty-campus fc-blr">Bengaluru</div>
+        <div class="faculty-progress">
+          <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+          <div class="progress-label"><span>Profile setup</span><span>55%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faculty-card">
+      <div class="faculty-avatar av-kochi">RN</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Dr. Ranjith Nair</div>
+        <div class="faculty-role">Faculty · Kochi</div>
+        <div class="faculty-campus fc-kochi">Kochi</div>
+        <div class="faculty-progress">
+          <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+          <div class="progress-label"><span>Profile setup</span><span>30%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faculty-card">
+      <div class="faculty-avatar av-kochi">GT</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Prof. Geethika Thomas</div>
+        <div class="faculty-role">Faculty · Kochi</div>
+        <div class="faculty-campus fc-kochi">Kochi</div>
+        <div class="faculty-progress">
+          <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+          <div class="progress-label"><span>Profile setup</span><span>20%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faculty-card">
+      <div class="faculty-avatar av-kochi">LN</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Prof. Lavanya Nagarajan</div>
+        <div class="faculty-role">Faculty · Kochi</div>
+        <div class="faculty-campus fc-kochi">Kochi</div>
+        <div class="faculty-progress">
+          <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+          <div class="progress-label"><span>Profile setup</span><span>45%</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HRMS PANEL -->
+<div class="panel" id="hrms-panel">
+  <div class="panel-header">
+    <div class="panel-title">HR & Recruitment Module</div>
+    <div class="panel-close" onclick="closePanel('hrms-panel')">← Back to overview</div>
+  </div>
+
+  <!-- TWO SUB-MODULE CARDS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+
+    <!-- RECRUITMENT -->
+    <div onclick="window.location.href='anjaly-recruitment-pipeline.html'"
+      style="background:#1A1F35;border-radius:12px;padding:24px 22px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;"
+      onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.2)'"
+      onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#6B8CFF;margin-bottom:12px;background:rgba(107,140,255,0.12);padding:3px 9px;border-radius:8px;width:fit-content;">Recruitment</div>
+      <div style="font-size:22px;margin-bottom:8px;">◎</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:white;margin-bottom:6px;">Recruitment Pipeline</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:16px;">Active roles, candidate pipeline, approval gates, and offer management.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#6B8CFF;">1</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);">Active role</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#6B8CFF;">2</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);">Pending approval</div>
+        </div>
+        <div style="font-size:18px;color:rgba(255,255,255,0.25);">→</div>
+      </div>
+    </div>
+
+    <!-- ONBOARDING -->
+    <div onclick="window.location.href='onboarding-module.html'"
+      style="background:#0D2320;border-radius:12px;padding:24px 22px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;"
+      onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.2)'"
+      onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#3DBF8A;margin-bottom:12px;background:rgba(61,191,138,0.12);padding:3px 9px;border-radius:8px;width:fit-content;">Onboarding</div>
+      <div style="font-size:22px;margin-bottom:8px;">◈</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:white;margin-bottom:6px;">Employee Onboarding</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:16px;">22-step joining checklist — from pre-joining prep through biometric, ID, and reporting manager handoff.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#3DBF8A;">22</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);">Checklist steps</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#3DBF8A;">6</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);">Stakeholders</div>
+        </div>
+        <div style="font-size:18px;color:rgba(255,255,255,0.25);">→</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROCESS STATUS -->
+  <div style="padding:16px 18px;background:white;border:1px solid #E2DDD4;border-radius:10px;">
+    <div style="font-size:11px;font-family:'DM Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;color:#7A8FA6;margin-bottom:10px;">Active Recruitment — Process Status</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;">
+      <span style="padding:4px 10px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;color:#14532D;">✓ MRF Submitted</span>
+      <span style="color:#7A8FA6;">→</span>
+      <span style="padding:4px 10px;background:#F5F3FF;border:1px solid #A78BFA;border-radius:6px;color:#4C1D95;font-weight:500;">⏳ AG1: Presidential Sanction</span>
+      <span style="color:#7A8FA6;">→</span>
+      <span style="padding:4px 10px;background:#F8F9FB;border:1px solid #E2E8F0;border-radius:6px;color:#7A8FA6;">JD Prep</span>
+      <span style="color:#7A8FA6;">→</span>
+      <span style="padding:4px 10px;background:#F8F9FB;border:1px solid #E2E8F0;border-radius:6px;color:#7A8FA6;">Sourcing</span>
+      <span style="color:#7A8FA6;">→</span>
+      <span style="padding:4px 10px;background:#F8F9FB;border:1px solid #E2E8F0;border-radius:6px;color:#7A8FA6;">Interviews</span>
+      <span style="color:#7A8FA6;">→</span>
+      <span style="padding:4px 10px;background:#F8F9FB;border:1px solid #E2E8F0;border-radius:6px;color:#7A8FA6;">Offer</span>
+      <span style="color:#7A8FA6;">→</span>
+      <span style="padding:4px 10px;background:#F8F9FB;border:1px solid #E2E8F0;border-radius:6px;color:#7A8FA6;">Onboarding</span>
+    </div>
+    <div style="margin-top:10px;font-size:11.5px;color:#92400E;background:#FFFBEB;border:1px solid #FCD34D;border-radius:6px;padding:8px 12px;">
+      ⏱ SLA: Presidential sanction required within 48 hours · Submitted today
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">
+    <div class="footer-xime">XIME</div>
+    <div class="footer-text">Integrated Centre · Pilot Phase · Bengaluru</div>
+  </div>
+  <div class="footer-right">github.com/xime-bengaluru/integrated-centre</div>
+</div>
+
+<script>
+  // Live date
+  const d = new Date();
+  document.getElementById('live-date').textContent =
+    d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short', year:'numeric'}).toUpperCase();
+
+  function openPanel(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+    const panel = document.getElementById(id);
+    panel.classList.add('open');
+    panel.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function closePanel(id) {
+    document.getElementById(id).classList.remove('open');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function markApproved(btn) {
+    btn.textContent = '✓ Approved';
+    btn.style.background = '#1A7A4A';
+    btn.disabled = true;
+    const badge = btn.closest('.pending-row, tr')?.querySelector('.stage-badge');
+    if (badge) {
+      badge.textContent = 'Approved';
+      badge.className = 'stage-badge st-offer';
+    }
+  }
+</script>
+</body>
+</html>
