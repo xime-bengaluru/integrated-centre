@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Faculty Self-Assessment — XIME FDP</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --navy:     #0D1F35;
@@ -492,25 +493,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 </div>
 </div>
 
-<!-- NETLIFY HIDDEN FORM — captures submissions -->
-<form name="fdp-self-assessment" data-netlify="true" hidden>
-  <input type="hidden" name="form-name" value="fdp-self-assessment">
-  <input name="faculty-name">
-  <input name="campus">
-  <input name="submitted-at">
-  <input name="facilitation"><input name="content-knowledge">
-  <input name="content-development"><input name="case-simulation">
-  <input name="case-research"><input name="collaborative-research">
-  <input name="research-methodology">
-  <input name="consulting"><input name="mdp-delivery"><input name="student-mentoring">
-  <input name="knowledge-sharing"><input name="strategic-planning">
-  <input name="innovation"><input name="entrepreneurship">
-  <textarea name="industry-completed"></textarea>
-  <textarea name="industry-pursuing"></textarea>
-  <textarea name="growth-goals"></textarea>
-  <textarea name="support-needed"></textarea>
-  <textarea name="institutional-tasks"></textarea>
-</form>
+
 
 <!-- FOOTER -->
 <div class="footer">
@@ -520,6 +503,11 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 </div>
 
 <script>
+const SUPA_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
 document.getElementById('hdate').textContent =
   new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
 
@@ -599,32 +587,39 @@ function submitAssessment() {
   idpData.institutionalTasks = textareas[4]?.value || '';
   localStorage.setItem('fdp_' + portfolioKey + '_idp', JSON.stringify(idpData));
 
-  const formData = new FormData();
-  formData.append('form-name', 'fdp-self-assessment');
-  formData.append('faculty-name', facultyName);
-  formData.append('campus', campus);
-  formData.append('submitted-at', new Date().toISOString());
+  const record = {
+    faculty_name: facultyName,
+    faculty_key: portfolioKey,
+    campus: campus,
+    submitted_at: new Date().toISOString(),
+    facilitation: ratings['fac'] || null,
+    content_knowledge: ratings['ck'] || null,
+    content_development: ratings['cd'] || null,
+    case_simulation: ratings['cs'] || null,
+    case_research: ratings['cr'] || null,
+    collaborative_research: ratings['co'] || null,
+    research_methodology: ratings['rm'] || null,
+    consulting: ratings['con'] || null,
+    mdp_delivery: ratings['mdp'] || null,
+    student_mentoring: ratings['sm'] || null,
+    knowledge_sharing: ratings['ks'] || null,
+    strategic_planning: ratings['sp'] || null,
+    innovation: ratings['inn'] || null,
+    entrepreneurship: ratings['ent'] || null,
+    industry_completed: textareas[0]?.value || '',
+    industry_pursuing: textareas[1]?.value || '',
+    growth_goals: textareas[2]?.value || '',
+    support_needed: textareas[3]?.value || '',
+    institutional_tasks: textareas[4]?.value || ''
+  };
 
-  for(const [key, field] of Object.entries(skillLabels)) {
-    formData.append(field, labels[(ratings[key] || 1) - 1]);
-  }
-  textareas.forEach((ta, i) => {
-    formData.append(narratives[i], ta.value || '');
+  db.from('fdp_assessments').insert(record).then(({ error }) => {
+    document.getElementById('success-bar').style.display = 'block';
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').textContent = '✓ Submitted';
+    window.scrollTo({top:0,behavior:'smooth'});
+    if (error) console.error('Supabase error:', error);
   });
-
-  fetch('/', { method: 'POST', body: formData })
-    .then(() => {
-      document.getElementById('success-bar').style.display = 'block';
-      document.getElementById('submit-btn').disabled = true;
-      document.getElementById('submit-btn').textContent = '✓ Submitted';
-      window.scrollTo({top:0,behavior:'smooth'});
-    })
-    .catch(() => {
-      document.getElementById('success-bar').style.display = 'block';
-      document.getElementById('submit-btn').disabled = true;
-      document.getElementById('submit-btn').textContent = '✓ Submitted';
-      window.scrollTo({top:0,behavior:'smooth'});
-    });
 }
 </script>
 </body>
