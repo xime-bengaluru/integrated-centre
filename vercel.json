@@ -2,6 +2,7 @@
   "redirects": [
     { "source": "/hrms", "destination": "/recruitment-pilot-live.html" },
     { "source": "/fdp", "destination": "/faculty-self-assessment.html" },
-    { "source": "/hub", "destination": "/index.html" }
+    { "source": "/hub", "destination": "/index.html" },
+    { "source": "/login", "destination": "/login.html" }
   ]
 }
