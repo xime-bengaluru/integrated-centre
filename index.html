@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XIME Integrated Centre</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --navy:       #0D1F35;
@@ -114,6 +115,60 @@
     font-weight: 500;
     color: var(--gold);
     letter-spacing: 0.05em;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .avatar-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    min-width: 180px;
+    z-index: 200;
+    overflow: hidden;
+  }
+
+  .avatar-menu.open { display: block; }
+
+  .avatar-menu-header {
+    padding: 12px 16px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .avatar-menu-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .avatar-menu-email {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .avatar-menu-item {
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.1s;
+  }
+
+  .avatar-menu-item:hover { background: var(--cream); }
+
+  .avatar-menu-item.signout {
+    color: #C8102E;
+    border-top: 1px solid var(--border);
   }
 
   /* ── HERO ── */
@@ -756,7 +811,17 @@
   </div>
   <div class="header-right">
     <div class="header-date" id="live-date"></div>
-    <div class="avatar">AJP</div>
+    <div class="avatar" id="user-avatar" onclick="toggleMenu()">
+      <span id="avatar-initials">—</span>
+      <div class="avatar-menu" id="avatar-menu">
+        <div class="avatar-menu-header">
+          <div class="avatar-menu-name" id="menu-name">Loading...</div>
+          <div class="avatar-menu-email" id="menu-email"></div>
+        </div>
+        <div class="avatar-menu-item" onclick="changePassword()">🔑 Change Password</div>
+        <div class="avatar-menu-item signout" onclick="doSignOut()">→ Sign Out</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1073,6 +1138,46 @@
 </div>
 
 <script>
+const SUPA_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+async function initAuth() {
+  const { data: { session } } = await db.auth.getSession();
+  if (!session) { window.location.href = '/login.html'; return; }
+
+  const { data: profile } = await db.from('user_profiles').select('full_name, email, role').eq('id', session.user.id).single();
+  if (profile) {
+    const initials = (profile.full_name || '').split(' ').filter(w => w.match(/^[A-Z]/)).slice(0,2).map(w=>w[0]).join('') || '?';
+    document.getElementById('avatar-initials').textContent = initials;
+    document.getElementById('menu-name').textContent = profile.full_name || profile.email;
+    document.getElementById('menu-email').textContent = profile.email;
+  }
+}
+
+function toggleMenu() {
+  const menu = document.getElementById('avatar-menu');
+  menu.classList.toggle('open');
+}
+
+async function doSignOut() {
+  await db.auth.signOut();
+  window.location.href = '/login.html';
+}
+
+function changePassword() {
+  window.location.href = '/login.html?action=change-password';
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('user-avatar').contains(e.target)) {
+    document.getElementById('avatar-menu').classList.remove('open');
+  }
+});
+
+initAuth();
   // Live date
   const d = new Date();
   document.getElementById('live-date').textContent =
