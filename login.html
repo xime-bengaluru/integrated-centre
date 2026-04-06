@@ -432,12 +432,7 @@ const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
 
 // Role → redirect map
-const roleRedirect = {
-  'super_admin': '/index.html',
-  'org_admin':   '/index.html',
-  'hrms_user':   '/recruitment-pilot-live.html',
-  'fdp_user':    '/faculty-portfolio-home.html'
-};
+
 
 // Check if already logged in
 async function checkSession() {
@@ -459,9 +454,18 @@ async function checkSession() {
 }
 
 async function redirectByRole(userId) {
-  const { data, error } = await db.from('user_profiles').select('role').eq('id', userId).single();
+  const { data } = await db.from('user_profiles')
+    .select('role, module_access').eq('id', userId).single();
   if (data) {
-    window.location.href = roleRedirect[data.role] || '/index.html';
+    const isAdmin = ['super_admin','org_admin'].includes(data.role);
+    const multiModule = data.module_access && data.module_access.length > 1;
+    if (isAdmin || multiModule) {
+      window.location.href = '/index.html';
+    } else if (data.role === 'hrms_user') {
+      window.location.href = '/recruitment-pilot-live.html';
+    } else {
+      window.location.href = '/faculty-portfolio-home.html';
+    }
   }
 }
 
