@@ -872,13 +872,26 @@ function seedGirish() {
   localStorage.setItem(k+'seeded', '1');
 }
 
-const KEY = (k) => 'fdp_' + (document.getElementById('facultySelect').value || 'default') + '_' + k;
+const KEY = (k) => 'fdp_' + (document.getElementById('facultySelect').value || localStorage.getItem('fdp_current_key') || 'default') + '_' + k;
 
 document.getElementById('hdate').textContent =
   new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
 
+// Restore last selected faculty on page load
+const savedKey = localStorage.getItem('fdp_current_key');
+if (savedKey) {
+  const sel = document.getElementById('facultySelect');
+  if (sel) {
+    sel.value = savedKey;
+    if (sel.value === savedKey) loadFaculty();
+  }
+}
+
 function loadFaculty() {
-  if (document.getElementById('facultySelect').value === 'gv') seedGirish();
+  const sel = document.getElementById('facultySelect');
+  const key = sel.value;
+  if (key) localStorage.setItem('fdp_current_key', key); // persist selection
+  if (key === 'gv') seedGirish();
   const sel = document.getElementById('facultySelect');
   const name = sel.options[sel.selectedIndex]?.text || '';
   const initials = name.split(' ').filter(w => w.match(/^[A-Z]/)).slice(0,2).map(w=>w[0]).join('') || '?';
