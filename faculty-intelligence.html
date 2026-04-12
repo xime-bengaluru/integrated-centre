@@ -68,6 +68,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .p-row{display:flex;align-items:center;gap:10px}
 .p-label{font-size:11px;color:var(--muted);width:140px;flex-shrink:0;text-align:right}
 .p-bars{flex:1;background:var(--bg2);border-radius:var(--rs);overflow:hidden;padding:2px 0}
+.p-bars-flex{flex:1;display:flex;height:28px;border-radius:var(--rs);overflow:hidden;gap:1px}
 .seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;min-width:0;cursor:default}
 .seg-ind{background:#1D9E75;color:#04342C}
 .seg-aca{background:#85B7EB;color:#0C447C}
@@ -581,7 +582,7 @@ function buildExpPyramid(data) {
     const divider = i===1 ? '<div class="p-divider"></div>' : '';
     return `${i===2?'<div class="p-divider"></div>':''}<div class="p-row">
       <div class="p-label">${b.label}</div>
-      <div class="p-bars">
+      <div class="p-bars-flex">
         ${ind>0?`<div class="seg seg-ind" style="flex:${ind}">${ind}</div>`:''}
         ${aca>0?`<div class="seg seg-aca" style="flex:${aca}">${aca}</div>`:''}
         ${mix>0?`<div class="seg seg-mix" style="flex:${mix}">${mix}</div>`:''}
