@@ -67,7 +67,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .pyramid{display:flex;flex-direction:column;gap:7px}
 .p-row{display:flex;align-items:center;gap:10px}
 .p-label{font-size:11px;color:var(--muted);width:140px;flex-shrink:0;text-align:right}
-.p-bars{flex:1;height:28px;border-radius:var(--rs);overflow:hidden;background:var(--bg2)}
+.p-bars{flex:1;background:var(--bg2);border-radius:var(--rs);overflow:hidden;padding:2px 0}
 .seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;min-width:0;cursor:default}
 .seg-ind{background:#1D9E75;color:#04342C}
 .seg-aca{background:#85B7EB;color:#0C447C}
@@ -541,20 +541,24 @@ function buildOverview(data) {
 
 function buildPyramid(data) {
   const bands = [
-    {key:'professor',label:'Professor & above',color:'#E1F5EE',tc:'#085041'},
-    {key:'assoc',label:'Associate Professor',color:'#E6F1FB',tc:'#0C447C'},
-    {key:'srasst',label:'Sr. Asst. Professor',color:'#FAEEDA',tc:'#633806'},
-    {key:'asst',label:'Asst. Professor',color:'#F1EFE8',tc:'#5F5E5A'},
-    {key:'jr',label:'Jr. Asst. Professor',color:'#FCEBEB',tc:'#501313'},
-    {key:'staff',label:'Associates / Research',color:'#EEEDFE',tc:'#3C3489'},
+    {key:'professor',label:'Professor & above',color:'#5DCAA5',tc:'#04342C'},
+    {key:'assoc',label:'Associate Professor',color:'#85B7EB',tc:'#042C53'},
+    {key:'srasst',label:'Sr. Asst. Professor',color:'#EF9F27',tc:'#412402'},
+    {key:'asst',label:'Asst. Professor',color:'#B4B2A9',tc:'#2C2C2A'},
+    {key:'jr',label:'Jr. Asst. Professor',color:'#F09595',tc:'#501313'},
+    {key:'staff',label:'Associates / Research',color:'#AFA9EC',tc:'#26215C'},
   ];
   const max = Math.max(...bands.map(b=>data.filter(f=>f.band===b.key).length));
-  document.getElementById('pyramid').innerHTML = bands.map(b=>{
+  const dividerIdx = 4;
+  document.getElementById('pyramid').innerHTML = bands.map((b,i)=>{
     const count = data.filter(f=>f.band===b.key).length;
-    const pct = Math.round((count/max)*95)+5;
-    return `<div class="p-row">
+    const pct = Math.round((count/max)*90)+10;
+    const div = i===dividerIdx ? '<div style="height:.5px;background:var(--border2);margin:4px 0 4px 150px"></div>' : '';
+    return `${div}<div class="p-row">
       <div class="p-label">${b.label}</div>
-      <div class="p-bars" style="background:var(--bg2)"><div class="seg" style="width:${pct}%;background:${b.color};color:${b.tc}">${count}</div></div>
+      <div class="p-bars">
+        <div style="width:${pct}%;height:28px;border-radius:var(--rs);background:${b.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:${b.tc};margin:0 auto">${count}</div>
+      </div>
       <div class="p-count">${count}</div>
     </div>`;
   }).join('');
