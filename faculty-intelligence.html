@@ -230,6 +230,7 @@ tr:hover td{background:var(--cream)}
   <div class="nav">
     <button class="tab active" onclick="switchTab('overview')">Overview</button>
     <button class="tab" onclick="switchTab('directory')">Faculty directory</button>
+    <button class="tab" onclick="switchTab('ep')">EP intelligence</button>
     <button class="tab" onclick="switchTab('next')">What comes next</button>
   </div>
 
@@ -328,6 +329,98 @@ tr:hover td{background:var(--cream)}
           <div class="no-results" id="no-results" style="display:none">No faculty match the current filters.</div>
         </div>
       </div>
+    </div>
+
+    <!-- EP INTELLIGENCE -->
+    <div id="view-ep" class="view">
+
+      <div class="metrics" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+        <div class="metric"><div class="metric-label">Total EP revenue</div><div class="metric-val" style="font-size:22px">₹14.2L</div><div class="metric-sub">AY 2025–26</div></div>
+        <div class="metric"><div class="metric-label">Programs on calendar</div><div class="metric-val">24</div><div class="metric-sub">8 cancelled or postponed</div></div>
+        <div class="metric"><div class="metric-label">Conversion rate</div><div class="metric-val">67%</div><div class="metric-sub">16 of 24 ran or planned</div></div>
+        <div class="metric"><div class="metric-label" style="color:var(--coral)">Revenue concentration</div><div class="metric-val" style="color:var(--coral)">82%</div><div class="metric-sub">from one faculty member</div></div>
+      </div>
+
+      <div class="sec-title">Revenue by channel</div>
+      <div class="chart-card" style="padding:0 16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:.5px solid var(--border)">
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Dr. NMK Bhatta — MDPs</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Design Thinking 1 & 2 · Innovations · 3 programs</div></div>
+          <div style="text-align:right"><div style="font-size:15px;font-weight:500;color:var(--teal)">₹11,60,000</div><div style="font-size:11px;color:var(--muted)">82% of total</div></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:.5px solid var(--border)">
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">ACMA OBPs</div><div style="font-size:11px;color:var(--muted);margin-top:2px">AI in Marketing · HR Technology Toolkit · 2 programs</div></div>
+          <div style="text-align:right"><div style="font-size:15px;font-weight:500;color:var(--purple)">₹3,39,000</div><div style="font-size:11px;color:var(--muted)">24% of total</div></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:.5px solid var(--border)">
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">FDPs</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Jamovi / PLS-SEM · Experimental Design · 2 programs</div></div>
+          <div style="text-align:right"><div style="font-size:15px;font-weight:500;color:var(--blue)">₹1,39,240</div><div style="font-size:11px;color:var(--muted)">10% of total</div></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0">
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Other MDPs</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Advanced Research Analysis · 1 program</div></div>
+          <div style="text-align:right"><div style="font-size:15px;font-weight:500;color:var(--text)">₹1,16,500</div><div style="font-size:11px;color:var(--muted)">8% of total</div></div>
+        </div>
+      </div>
+
+      <div class="sec-title">Revenue concentration</div>
+      <div class="chart-card">
+        <div style="height:28px;border-radius:var(--rs);overflow:hidden;display:flex;gap:1px;margin-bottom:10px">
+          <div style="flex:82;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#04342C">Bhatta 82%</div>
+          <div style="flex:24;background:#7F77DD;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#EEEDFE">ACMA 24%</div>
+          <div style="flex:18;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--faint)">Other</div>
+        </div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></div>Dr. Bhatta MDPs</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#7F77DD"></div>ACMA channel</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#378ADD"></div>FDPs</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--bg2);border:.5px solid var(--border2)"></div>Other</div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.6">Two sources — one faculty member and one channel partner — account for all meaningful EP revenue. Every program that ran had pre-committed participants. Every program that cancelled had none.</div>
+      </div>
+
+      <div class="sec-title">All 24 programs ranked by revenue</div>
+      <div class="chart-card" style="padding:0 16px">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">Design Thinking Part 2</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:#1D9E75"></div></div></div><div style="font-size:11px;font-weight:500;color:#085041;width:72px;text-align:right">₹5,10,000</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#E1F5EE;color:#085041;flex-shrink:0">Completed</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">Innovations</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:67%;height:100%;background:#1D9E75"></div></div></div><div style="font-size:11px;font-weight:500;color:#085041;width:72px;text-align:right">₹3,40,000</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#E1F5EE;color:#085041;flex-shrink:0">Completed</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">Design Thinking Part 1</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:61%;height:100%;background:#1D9E75"></div></div></div><div style="font-size:11px;font-weight:500;color:#085041;width:72px;text-align:right">₹3,10,000</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#E1F5EE;color:#085041;flex-shrink:0">Completed</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">AI in Marketing</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:35%;height:100%;background:#7F77DD"></div></div></div><div style="font-size:11px;font-weight:500;color:#3C3489;width:72px;text-align:right">₹1,77,000</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#EEEDFE;color:#3C3489;flex-shrink:0">ACMA</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">HR Technology Toolkit</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:32%;height:100%;background:#7F77DD"></div></div></div><div style="font-size:11px;font-weight:500;color:#3C3489;width:72px;text-align:right">₹1,62,000</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#EEEDFE;color:#3C3489;flex-shrink:0">ACMA</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">Advanced Research Analysis</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:23%;height:100%;background:#378ADD"></div></div></div><div style="font-size:11px;font-weight:500;color:#0C447C;width:72px;text-align:right">₹1,16,500</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#E6F1FB;color:#0C447C;flex-shrink:0">Completed</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">Experimental Design & Text Analytics</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:15%;height:100%;background:#378ADD"></div></div></div><div style="font-size:11px;font-weight:500;color:#0C447C;width:72px;text-align:right">₹77,290</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#E6F1FB;color:#0C447C;flex-shrink:0">FDP</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--text);flex:1">Jamovi and PLS-SEM</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px;overflow:hidden"><div style="width:12%;height:100%;background:#378ADD"></div></div></div><div style="font-size:11px;font-weight:500;color:#0C447C;width:72px;text-align:right">₹61,950</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:#E6F1FB;color:#0C447C;flex-shrink:0">FDP</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--muted);flex:1">Storytelling for Marketers</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--coral);width:72px;text-align:right">₹0</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--coral-l);color:var(--coral-d);flex-shrink:0">Cancelled</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--muted);flex:1">Advanced Crisis Communication</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--coral);width:72px;text-align:right">₹0</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--coral-l);color:var(--coral-d);flex-shrink:0">Cancelled</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--muted);flex:1">HR Analytics & Information Systems</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--coral);width:72px;text-align:right">₹0</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--coral-l);color:var(--coral-d);flex-shrink:0">Cancelled</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0"><div style="font-size:12px;color:var(--muted);flex:1">5 programs planned — Q1 2026</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--faint);width:72px;text-align:right">TBD</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);flex-shrink:0">Planned</div></div>
+      </div>
+
+      <div class="sec-title">Intelligence</div>
+      <div style="background:var(--amber-l);border:.5px solid #FAC775;border-radius:var(--rs);padding:12px 14px;margin-bottom:12px">
+        <div style="font-size:12px;font-weight:500;color:var(--amber-d);margin-bottom:3px">Single-point-of-failure alert</div>
+        <div style="font-size:11px;color:#854F0B;line-height:1.6">82% of EP revenue is generated by one faculty member. Dr. Bhatta's absence, overload, or departure would reduce XIME's external program income to near zero. This is not an MDP practice — it is one practitioner operating without an institutional support structure.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:12px">
+        <div class="chart-card" style="margin-bottom:0">
+          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">What works — the pattern</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.7">Every program that ran had pre-committed participants. Bhatta brings his own network. ACMA brings its members. Programs built on market assumptions cancelled every time.</div>
+        </div>
+        <div class="chart-card" style="margin-bottom:0">
+          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">What fails — the pattern</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.7">8 of 24 programs didn't run. All cancelled MDPs show zero revenue — designed from the faculty side, not the market side. No confirmed demand before the date was set.</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:12px">The next three channel partners to activate</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">MMA Chennai — via Vijayakumar</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Association channel. Pre-committed membership base. Same model as ACMA — demand comes with the partner.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">KSUM Kerala</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Startup ecosystem channel. Entrepreneurship and innovation programs. Kochi campus delivery advantage.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">Electronic City corporates — direct</div><div style="font-size:11px;color:var(--muted);margin-top:2px">200+ IT companies within 5km. Mid-manager cohorts. Requires corporate sales capacity Bhatta should not carry alone.</div></div></div>
+        </div>
+        <div style="margin-top:12px;background:var(--teal-l);border:.5px solid #9FE1CB;border-radius:var(--rs);padding:10px 12px">
+          <div style="font-size:11px;font-weight:500;color:var(--teal-d);margin-bottom:3px">The target for next year</div>
+          <div style="font-size:11px;color:#0F6E56;line-height:1.6">If two new channel partners are activated and three existing faculty are brought into MDP delivery, Bhatta's contribution stays constant but drops from 82% to around 40% of a much larger total. That is what a sustainable EP P&L looks like.</div>
+        </div>
+      </div>
+
     </div>
 
     <!-- NEXT -->
@@ -619,7 +712,7 @@ function setDirView(v) {
 }
 
 function switchTab(id) {
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','directory','next'][i]===id));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','directory','ep','next'][i]===id));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+id));
   if(id==='directory') { renderTable(filteredFaculty); renderCards(filteredFaculty); }
 }
