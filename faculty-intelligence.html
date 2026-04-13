@@ -174,7 +174,7 @@ tr:hover td{background:var(--cream)}
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:500;align-items:center;justify-content:center;padding:20px}
 .modal-backdrop.open{display:flex;animation:bIn .18s ease}
 @keyframes bIn{from{opacity:0}to{opacity:1}}
-.modal-panel{background:var(--white);border-radius:var(--r);padding:22px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;animation:mIn .2s ease;position:relative}
+.modal-panel{background:var(--white);border-radius:var(--r);padding:22px;width:100%;max-width:620px;max-height:88vh;overflow-y:auto;animation:mIn .2s ease;position:relative}
 @keyframes mIn{from{opacity:0;transform:scale(.97) translateY(6px)}to{opacity:1;transform:none}}
 .dd-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:.5px solid var(--border)}
 .dd-avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500}
@@ -722,24 +722,118 @@ function openCard(i) {
   const total=(f.exp_industry||0)+(f.exp_academic||0);
   const indPct=total>0?Math.round((f.exp_industry/total)*100):0;
   const av=avColor(i);
-  const expNote = f.exp_industry>=15?`<strong>Industry veteran.</strong> ${f.exp_industry} years of corporate experience. Strong MDP delivery candidate.`:f.exp_academic>=15?`<strong>Academic practitioner.</strong> ${f.exp_academic} years in academia. Research and curriculum depth — opportunity to build industry engagement.`:total>0?`${f.exp_industry>0?f.exp_industry+' yrs industry':''} ${f.exp_industry>0&&f.exp_academic>0?'·':''} ${f.exp_academic>0?f.exp_academic+' yrs academia':''}.`:'Early-career faculty.';
+
+  const phdText = f.phd==='yes'?`PhD ${f.phd_year||''}`:f.phd==='pursuing'?'Pursuing PhD':'No PhD';
+  const phdColor = f.phd==='yes'?'var(--teal)':f.phd==='pursuing'?'var(--amber-d)':'var(--faint)';
+
   document.getElementById('modal-panel').innerHTML = `
     <button class="dd-close" onclick="closeModal()">Close</button>
+
     <div class="dd-header">
       <div class="dd-avatar ${av}">${initials(f.name)}</div>
-      <div><div class="dd-name">${f.name}</div><div class="dd-sub">${f.designation}${f.admin_role?' · '+f.admin_role:''} · ${f.campus}</div></div>
+      <div style="flex:1">
+        <div class="dd-name">${f.name}</div>
+        <div class="dd-sub">${f.designation}${f.admin_role?' · '+f.admin_role:''} · ${f.campus}</div>
+      </div>
     </div>
+
     <div class="dd-stats">
       <div class="dd-stat"><div class="dd-stat-label">Campus</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500">${f.campus}</div></div>
       <div class="dd-stat"><div class="dd-stat-label">Joined XIME</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif">${f.joined||'—'}</div></div>
-      <div class="dd-stat"><div class="dd-stat-label">PhD status</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif;${f.phd==='yes'?'color:var(--teal)':f.phd==='pursuing'?'color:var(--amber-d);font-style:italic':'color:var(--faint)'}">${f.phd==='yes'?'PhD '+(f.phd_year||''):f.phd==='pursuing'?'Pursuing':'No PhD'}</div></div>
-      <div class="dd-stat"><div class="dd-stat-label">Total experience</div><div class="dd-stat-val">${total||'—'}${total?' yrs':''}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">PhD status</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif;color:${phdColor}">${phdText}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">Experience</div><div class="dd-stat-val">${total||'—'}${total?' yrs':''}</div></div>
     </div>
-    ${total>0?`<div style="margin-bottom:12px">
+
+    ${total>0?`<div style="margin-bottom:16px">
       <div style="font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Experience breakdown</div>
-      <div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;border-radius:4px;overflow:hidden;background:var(--cream);display:flex"><div style="width:${indPct}%;background:#1D9E75;height:100%"></div><div style="width:${100-indPct}%;background:#378ADD;height:100%"></div></div><span style="font-size:11px;color:var(--muted);white-space:nowrap">${f.exp_industry>0?f.exp_industry+' ind.':''} ${f.exp_industry>0&&f.exp_academic>0?'·':''} ${f.exp_academic>0?f.exp_academic+' aca.':''}</span></div>
+      <div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:7px;border-radius:4px;overflow:hidden;background:var(--bg2);display:flex"><div style="width:${indPct}%;background:#1D9E75;height:100%"></div><div style="width:${100-indPct}%;background:#378ADD;height:100%"></div></div><span style="font-size:11px;color:var(--muted);white-space:nowrap">${f.exp_industry>0?f.exp_industry+' ind.':''} ${f.exp_industry>0&&f.exp_academic>0?'·':''} ${f.exp_academic>0?f.exp_academic+' aca.':''}</span></div>
     </div>`:''}
-    <div class="dd-note">${expNote}<br><br><span style="color:var(--faint);font-style:italic">Teaching effectiveness, publications, and MDP activity will appear here in Rung 2.</span></div>`;
+
+    <div style="height:.5px;background:var(--border);margin:4px 0 16px"></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Evaluation · Capabilities</div>
+      <div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:#FAEEDA;color:#633806;border:.5px solid #FAC775">Awaiting evaluation data</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:14px">
+
+      <div style="border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden">
+        <div style="background:#0A3D62;padding:8px 10px">
+          <div style="font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px">Performance</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5)">AY 2024–25</div>
+        </div>
+        <div style="padding:10px;background:var(--bg2)">
+          <div style="margin-bottom:8px">
+            <div style="font-size:10px;color:var(--faint);margin-bottom:3px">Credit points</div>
+            <div style="height:6px;background:var(--border);border-radius:3px;position:relative;overflow:hidden">
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,var(--border2) 0,var(--border2) 4px,transparent 4px,transparent 8px);border-radius:3px"></div>
+            </div>
+            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-style:italic">Awaiting appraisal forms</div>
+          </div>
+          <div style="margin-bottom:8px">
+            <div style="font-size:10px;color:var(--faint);margin-bottom:3px">Teaching effectiveness</div>
+            <div style="height:6px;background:var(--border);border-radius:3px;position:relative;overflow:hidden">
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,var(--border2) 0,var(--border2) 4px,transparent 4px,transparent 8px);border-radius:3px"></div>
+            </div>
+            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-style:italic">Dean Academics · each campus</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--faint);margin-bottom:3px">MDP revenue</div>
+            <div style="height:6px;background:var(--border);border-radius:3px;position:relative;overflow:hidden">
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,var(--border2) 0,var(--border2) 4px,transparent 4px,transparent 8px);border-radius:3px"></div>
+            </div>
+            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-style:italic">EP records · 3 campuses</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden">
+        <div style="background:#2D3436;padding:8px 10px">
+          <div style="font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px">Achievements</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5)">Logged activities</div>
+        </div>
+        <div style="padding:10px;background:var(--bg2)">
+          ${['Teaching · courses & load','Research · publications','MDPs & OBPs delivered','Institution building'].map(label=>`
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;padding-bottom:7px;border-bottom:.5px solid var(--border)">
+            <div style="width:5px;height:5px;border-radius:50%;background:var(--border2);flex-shrink:0"></div>
+            <div>
+              <div style="font-size:10px;font-weight:500;color:var(--muted)">${label}</div>
+              <div style="font-size:10px;color:var(--faint);font-style:italic">Awaiting appraisal forms</div>
+            </div>
+          </div>`).join('')}
+          <div style="font-size:10px;color:var(--faint);font-style:italic;margin-top:2px">Source: Director · each campus</div>
+        </div>
+      </div>
+
+      <div style="border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden">
+        <div style="background:#0A3D62;padding:8px 10px">
+          <div style="font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px">Evaluation</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5)">Signals &amp; flags</div>
+        </div>
+        <div style="padding:10px;background:var(--bg2)">
+          <div style="background:var(--white);border:.5px dashed var(--border2);border-radius:var(--rs);padding:8px 10px;margin-bottom:8px;text-align:center">
+            <div style="font-size:11px;font-weight:500;color:var(--muted);margin-bottom:2px">Promotion signal</div>
+            <div style="font-size:10px;color:var(--faint);font-style:italic">Will auto-generate from performance data</div>
+          </div>
+          <div style="background:var(--white);border:.5px dashed var(--border2);border-radius:var(--rs);padding:8px 10px;margin-bottom:8px;text-align:center">
+            <div style="font-size:11px;font-weight:500;color:var(--muted);margin-bottom:2px">Development flag</div>
+            <div style="font-size:10px;color:var(--faint);font-style:italic">Pattern identified from activity log</div>
+          </div>
+          <div style="background:var(--white);border:.5px dashed var(--border2);border-radius:var(--rs);padding:8px 10px;text-align:center">
+            <div style="font-size:11px;font-weight:500;color:var(--muted);margin-bottom:2px">Early warning</div>
+            <div style="font-size:10px;color:var(--faint);font-style:italic">Teaching eff. · point trajectory</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background:#F9F9F9;border:.5px solid #D4AF37;border-radius:var(--rs);padding:10px 12px">
+      <div style="font-size:10px;font-weight:500;color:#633806;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">How to unlock this view</div>
+      <div style="font-size:11px;color:#854F0B;line-height:1.6">Completed appraisal forms are with the Director at each campus. Once retrieved and loaded, every panel above populates automatically — including promotion flags, early warning signals, and the running 300-point credit total.</div>
+    </div>`;
+
   document.getElementById('faculty-modal').classList.add('open');
 }
 
