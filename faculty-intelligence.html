@@ -708,6 +708,7 @@ function renderCards(data) {
         <span class="fc-pill ${campusClass[f.campus]}">${f.campus}</span>
         <span class="fc-pill ${bandClass[f.band]}">${bandLabel[f.band]}</span>
         ${f.phd==='yes'?`<span class="fc-pill" style="background:#E1F5EE;color:#085041">PhD ${f.phd_year||''}</span>`:f.phd==='pursuing'?`<span class="fc-pill" style="background:#FAEEDA;color:#633806">Pursuing PhD</span>`:''}
+        ${f.subject_area?`<span class="fc-pill" style="background:#E6F1FB;color:#0C447C">${f.subject_area}</span>`:''}
       </div>
       ${total>0?`<div class="fc-exp"><div class="fc-exp-bar"><div class="fc-exp-ind" style="width:${indPct}%"></div><div class="fc-exp-aca" style="width:${100-indPct}%"></div></div><span class="fc-exp-label">${total} yrs</span></div>`:''}
     </div>`;
@@ -733,7 +734,7 @@ function openCard(i) {
       <div class="dd-avatar ${av}">${initials(f.name)}</div>
       <div style="flex:1">
         <div class="dd-name">${f.name}</div>
-        <div class="dd-sub">${f.designation}${f.admin_role?' · '+f.admin_role:''} · ${f.campus}</div>
+        <div class="dd-sub">${f.designation}${f.admin_role?' · '+f.admin_role:''} · ${f.campus}${f.subject_area?' · '+f.subject_area:''}</div>
       </div>
     </div>
 
@@ -794,7 +795,17 @@ function openCard(i) {
           <div style="font-size:10px;color:rgba(255,255,255,.5)">Logged activities</div>
         </div>
         <div style="padding:10px;background:var(--bg2)">
-          ${['Teaching · courses & load','Research · publications','MDPs & OBPs delivered','Institution building'].map(label=>`
+          ${f.subject_area ? `
+          <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:.5px solid var(--border)">
+            <div style="font-size:10px;font-weight:500;color:var(--muted);margin-bottom:2px">Subject area</div>
+            <div style="font-size:12px;font-weight:500;color:#0A3D62">${f.subject_area}</div>
+          </div>` : ''}
+          ${f.courses_taught ? `
+          <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:.5px solid var(--border)">
+            <div style="font-size:10px;font-weight:500;color:var(--muted);margin-bottom:3px">Courses taught · AY 2025–26</div>
+            <div style="font-size:11px;color:var(--text);line-height:1.6">${f.courses_taught.split(' · ').map(c=>`<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><div style="width:4px;height:4px;border-radius:50%;background:#D4AF37;flex-shrink:0"></div>${c}</div>`).join('')}</div>
+          </div>` : ''}
+          ${['Research · publications','MDPs & OBPs delivered','Institution building'].map(label=>`
           <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;padding-bottom:7px;border-bottom:.5px solid var(--border)">
             <div style="width:5px;height:5px;border-radius:50%;background:var(--border2);flex-shrink:0"></div>
             <div>
