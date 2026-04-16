@@ -4,946 +4,529 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Magis Centre · Annual Evaluation</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --navy:#111827; --red:#E8241C; --gold:#c9a84c; --gold-l:#f0dfa0; --gold-d:#8a6e1e;
-  --parchment:#faf8f3; --cream:#f4f0e8; --white:#ffffff;
-  --border:rgba(0,0,0,0.09); --border-gold:rgba(201,168,76,0.35);
-  --text:#1a1a18; --muted:#5a5a56; --faint:#9a9a94;
-  --teal:#1D9E75; --teal-l:#E1F5EE;
-  --amber:#EF9F27; --amber-l:#FAEEDA;
-  --r:10px; --rs:6px;
-}
+:root{--navy:#111827;--red:#E8241C;--gold:#c9a84c;--gold-l:#f0dfa0;--gold-d:#8a6e1e;--parchment:#faf8f3;--cream:#f4f0e8;--white:#fff;--border:rgba(0,0,0,.09);--border-g:rgba(201,168,76,.35);--text:#1a1a18;--muted:#5a5a56;--faint:#9a9a94;--teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#085041;--amber:#EF9F27;--amber-l:#FAEEDA;--amber-d:#633806;--blue:#378ADD;--blue-l:#E6F1FB;--r:10px;--rs:6px;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
-
-/* Top bar */
-.topbar{background:var(--navy);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(201,168,76,0.2)}
-.tb-left{display:flex;align-items:center;gap:12px}
+.topbar{background:var(--navy);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(201,168,76,.2)}
+.tb-l{display:flex;align-items:center;gap:12px}
 .wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
 .wm em{color:var(--red);font-style:normal}
-.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
-.tb-title{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em}
-.tb-right{display:flex;align-items:center;gap:10px}
-.status-pill{font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
-.status-draft{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15)}
-.status-submitted{background:#FAEEDA;color:#633806}
-.status-validated{background:#E1F5EE;color:#085041}
-.btn-save{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.75);cursor:pointer;transition:all .15s}
-.btn-save:hover{background:rgba(255,255,255,.1);color:#fff}
-.btn-submit{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 16px;border-radius:var(--rs);border:none;background:var(--gold);color:var(--navy);cursor:pointer;transition:all .15s}
-.btn-submit:hover{background:var(--gold-l)}
-
-/* Layout */
-.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px)}
-
-/* Sidebar */
-.sidebar{background:var(--cream);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
-.sidebar-head{padding:0 20px 16px;border-bottom:1px solid var(--border-gold);margin-bottom:12px}
-.sidebar-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--navy);line-height:1.2;margin-bottom:2px}
-.sidebar-role{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
-.sidebar-year{font-size:10px;color:var(--gold-d);font-weight:500;margin-top:6px;display:flex;align-items:center;gap:5px}
-.sidebar-year::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
-.progress-wrap{padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:12px}
-.progress-label{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
-.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease}
-.progress-pct{font-size:11px;color:var(--gold-d);font-weight:500;margin-top:4px;text-align:right}
-.nav-group{margin-bottom:4px}
-.nav-group-label{font-size:9px;font-weight:500;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;padding:8px 20px 4px}
-.nav-item{display:flex;align-items:center;gap:8px;padding:7px 20px;cursor:pointer;transition:all .12s;border-left:2px solid transparent}
-.nav-item:hover{background:rgba(0,0,0,.04)}
-.nav-item.active{background:rgba(201,168,76,.1);border-left-color:var(--gold)}
-.nav-item-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .15s}
-.nav-item.done .nav-item-dot{background:var(--teal)}
-.nav-item.active .nav-item-dot{background:var(--gold)}
-.nav-item-text{font-size:12px;color:var(--muted)}
-.nav-item.active .nav-item-text{color:var(--navy);font-weight:500}
-
-/* Main */
-.main{padding:40px 48px 80px;max-width:760px}
-.doc-header{margin-bottom:48px}
-.doc-eyebrow{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.doc-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
-.doc-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:var(--navy);line-height:1.15;margin-bottom:12px}
-.doc-title em{font-style:italic;color:var(--red)}
-.doc-lead{font-size:13px;color:var(--muted);line-height:1.8;max-width:520px;border-left:2px solid var(--border-gold);padding-left:16px;font-style:italic}
-
-/* Sections */
-.section{margin-bottom:52px;scroll-margin-top:72px}
-.section-header{display:flex;align-items:center;gap:16px;margin-bottom:24px}
-.section-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--border-gold);line-height:1;flex-shrink:0;margin-top:-4px}
-.section-info{flex:1}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--navy);line-height:1.2}
-.section-sub{font-size:11px;color:var(--faint);margin-top:2px}
-.section-rule{height:.5px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);margin-top:12px}
-
-/* Field types */
-.field{margin-bottom:20px}
-.field-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.auto-badge{font-size:9px;font-weight:400;color:var(--gold-d);background:rgba(201,168,76,.12);border:1px solid var(--border-gold);padding:1px 6px;border-radius:10px;letter-spacing:.03em;text-transform:none}
-.field-input{width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);transition:border-color .15s;resize:none}
-.field-input:focus{outline:none;border-color:rgba(201,168,76,.5)}
-.field-input.auto-populated{background:var(--parchment);border-color:var(--border-gold);color:var(--muted);pointer-events:none}
-textarea.field-input{line-height:1.65}
-.field-hint{font-size:11px;color:var(--faint);margin-top:5px;line-height:1.5;font-style:italic}
-
-/* Two column */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-
-/* Auto-filled block */
-.auto-block{background:var(--parchment);border:.5px solid var(--border-gold);border-radius:var(--rs);padding:14px 16px;margin-bottom:16px}
-.auto-block-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.auto-block-label::before{content:'';display:block;width:12px;height:1px;background:var(--gold)}
-.auto-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid rgba(0,0,0,.05);font-size:12px}
-.auto-row:last-child{border-bottom:none}
-.auto-row-key{color:var(--muted)}
-.auto-row-val{font-weight:500;color:var(--navy);text-align:right;max-width:60%}
-
-/* Courses list */
-.course-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.course-pill{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--cream);border:.5px solid var(--border-gold);color:var(--navy)}
-
-/* Star rating */
-.star-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:10px;padding:8px 0;border-bottom:.5px solid var(--border)}
-.star-grid:last-child{border-bottom:none}
-.star-label{font-size:12px;color:var(--muted)}
-.stars{display:flex;gap:4px}
-.star{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:9px;font-weight:500;font-family:'DM Mono',monospace;color:var(--faint)}
-.star.filled{background:var(--gold);border-color:var(--gold);color:var(--navy)}
-.star:hover{border-color:var(--gold-d);color:var(--gold-d)}
-
-/* IKIGAI statement box */
-.ikigai-box{background:var(--navy);border-radius:var(--r);padding:24px 28px;margin-top:8px;position:relative;overflow:hidden}
-.ikigai-box::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(201,168,76,.07)}
-.ikigai-prompt{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(255,255,255,.5);margin-bottom:12px;line-height:1.6}
-.ikigai-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,.3);padding:8px 0;font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:#fff;font-weight:300;line-height:1.6;resize:none;min-height:100px}
-.ikigai-input:focus{outline:none;border-bottom-color:var(--gold)}
-.ikigai-input::placeholder{color:rgba(255,255,255,.2)}
-
-/* Allocation blocks */
-.alloc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
-.alloc-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:12px;text-align:center}
-.alloc-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.alloc-input{width:100%;border:none;background:transparent;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--navy);text-align:center;padding:0}
-.alloc-input:focus{outline:none}
-.alloc-pct{font-size:11px;color:var(--faint);margin-top:2px}
-.alloc-total{text-align:right;font-size:12px;color:var(--faint);margin-top:4px}
-.alloc-total.valid{color:var(--teal)}
-.alloc-total.invalid{color:var(--red)}
-.alloc-min{font-size:10px;color:var(--amber);margin-top:6px;text-align:center}
-
-/* Action plan cards */
-.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.action-card{border-radius:var(--rs);padding:16px;border:.5px solid var(--border)}
-.action-card.start{background:#E1F5EE;border-color:rgba(29,158,117,.25)}
-.action-card.stop{background:#FCEBEB;border-color:rgba(226,75,74,.25)}
-.action-card.cont{background:#E6F1FB;border-color:rgba(55,138,221,.25)}
-.action-card.goal{grid-column:span 2;background:var(--navy);border:none}
-.action-card-head{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-.action-card.start .action-card-head{color:#085041}
-.action-card.stop .action-card-head{color:#501313}
-.action-card.cont .action-card-head{color:#0C447C}
-.action-card.goal .action-card-head{color:var(--gold)}
-.action-prompt{font-size:11px;font-style:italic;margin-bottom:8px;line-height:1.5}
-.action-card.start .action-prompt{color:#0F6E56}
-.action-card.stop .action-prompt{color:#A32D2D}
-.action-card.cont .action-prompt{color:#185FA5}
-.action-card.goal .action-prompt{color:rgba(255,255,255,.5)}
-.action-ta{width:100%;border:none;border-bottom:.5px solid;background:transparent;padding:4px 0;font-family:'DM Sans',sans-serif;font-size:12px;resize:none;line-height:1.6;min-height:56px}
-.action-ta:focus{outline:none}
-.action-card.start .action-ta{color:#085041;border-bottom-color:rgba(29,158,117,.3)}
-.action-card.stop .action-ta{color:#501313;border-bottom-color:rgba(226,75,74,.3)}
-.action-card.cont .action-ta{color:#0C447C;border-bottom-color:rgba(55,138,221,.3)}
-.action-card.goal .action-ta{color:#fff;border-bottom-color:rgba(201,168,76,.3);font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;min-height:48px}
-
-/* Support field */
-.support-card{background:var(--cream);border:.5px solid var(--border-gold);border-radius:var(--rs);padding:16px}
-.support-head{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
-.support-prompt{font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px;line-height:1.5}
-
-/* Submit area */
-.submit-area{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;margin-top:40px;display:flex;align-items:center;justify-content:space-between}
-.submit-info{max-width:400px}
-.submit-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--navy);margin-bottom:4px}
-.submit-note{font-size:12px;color:var(--muted);line-height:1.6}
-.btn-submit-lg{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:12px 28px;border-radius:var(--rs);border:none;background:var(--navy);color:#fff;cursor:pointer;transition:all .15s}
-.btn-submit-lg:hover{background:var(--gold);color:var(--navy)}
-
-/* Toast */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:10px 16px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s ease;z-index:999;pointer-events:none}
+.sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.ttl{font-size:11px;color:rgba(255,255,255,.55)}
+.tb-r{display:flex;align-items:center;gap:10px}
+.spill{font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+.sp-draft{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15)}
+.sp-locked{background:#FAEEDA;color:#633806}
+.sp-done{background:#E1F5EE;color:#085041}
+.sp-sub{background:#E6F1FB;color:#0C447C}
+.tbtn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:var(--rs);cursor:pointer;transition:all .15s}
+.bsave{border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.75)}
+.bsave:hover{background:rgba(255,255,255,.1);color:#fff}
+.bsub{border:none;background:var(--gold);color:var(--navy)}
+.bsub:hover{background:var(--gold-l)}
+.layout{display:grid;grid-template-columns:210px 1fr;min-height:calc(100vh - 56px)}
+.sidebar{background:var(--cream);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sbh{padding:0 18px 14px;border-bottom:1px solid var(--border-g);margin-bottom:10px}
+.sbn{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--navy)}
+.sbr{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+.sby{font-size:10px;color:var(--gold-d);font-weight:500;margin-top:6px}
+.pw{padding:0 18px 12px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.pb{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.pf{height:100%;background:var(--gold);border-radius:2px;transition:width .4s}
+.pp{font-size:11px;color:var(--gold-d);font-weight:500;margin-top:3px;text-align:right}
+.gi{margin:0 18px 10px;padding:9px 11px;border-radius:var(--rs);border:.5px solid}
+.gi-open{background:rgba(29,158,117,.06);border-color:rgba(29,158,117,.25)}
+.gi-locked{background:rgba(239,159,39,.06);border-color:rgba(239,159,39,.3)}
+.gil{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.gi-open .gil{color:var(--teal-d)}
+.gi-locked .gil{color:var(--amber-d)}
+.gis{font-size:11px;font-weight:500}
+.gi-open .gis{color:var(--teal)}
+.gi-locked .gis{color:var(--amber-d)}
+.gid{font-size:10px;color:var(--faint);margin-top:1px}
+.ngl{font-size:9px;font-weight:500;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;padding:6px 18px 3px}
+.ni{display:flex;align-items:center;gap:7px;padding:6px 18px;cursor:pointer;transition:all .12s;border-left:2px solid transparent}
+.ni:hover{background:rgba(0,0,0,.03)}
+.ni.active{background:rgba(201,168,76,.1);border-left-color:var(--gold)}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0}
+.ni.done .ndot{background:var(--teal)}
+.ni.active .ndot{background:var(--gold)}
+.nt{font-size:11px;color:var(--muted)}
+.ni.active .nt{color:var(--navy);font-weight:500}
+.main{padding:36px 44px 80px;max-width:740px}
+.gb{border-radius:var(--r);padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
+.gb1{background:var(--navy)}
+.gb2{background:#1a2535}
+.gbl{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.gbt{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:#fff}
+.gbs{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px}
+.gbst{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px}
+.gst-open{background:rgba(29,158,117,.2);color:#9FE1CB;border:1px solid rgba(29,158,117,.3)}
+.gst-locked{background:rgba(239,159,39,.2);color:#FAC775;border:1px solid rgba(239,159,39,.3)}
+.sec{margin-bottom:44px;scroll-margin-top:68px}
+.sh{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.sn{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:rgba(201,168,76,.3);line-height:1;flex-shrink:0}
+.si-t{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--navy)}
+.si-s{font-size:11px;color:var(--faint);margin-top:1px}
+.srl{height:.5px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);margin-top:8px}
+.ls{position:relative}
+.ls.locked::after{content:'Locked — Gate 1 submitted';position:absolute;inset:0;background:rgba(250,248,243,.88);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--amber-d);font-weight:500;letter-spacing:.04em;border:.5px solid rgba(239,159,39,.3);pointer-events:none;z-index:2}
+.f{margin-bottom:16px}
+.fl{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.ab{font-size:9px;font-weight:400;color:var(--gold-d);background:rgba(201,168,76,.1);border:1px solid var(--border-g);padding:1px 5px;border-radius:10px;text-transform:none;letter-spacing:.02em}
+.fi{width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);transition:border-color .15s;resize:none}
+.fi:focus{outline:none;border-color:rgba(201,168,76,.5)}
+.fi[readonly],.fi.lk{background:var(--parchment);border-color:var(--border-g);color:var(--muted);pointer-events:none}
+.fh{font-size:11px;color:var(--faint);margin-top:3px;font-style:italic}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.thc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.ablock{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;margin-bottom:12px}
+.abl{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);margin-bottom:7px}
+.ar{display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid rgba(0,0,0,.05);font-size:12px}
+.ar:last-child{border-bottom:none}
+.ark{color:var(--muted)}
+.arv{font-weight:500;color:var(--navy)}
+.cpills{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.cpill{font-size:11px;padding:3px 8px;border-radius:20px;background:var(--cream);border:.5px solid var(--border-g);color:var(--navy)}
+.sr{display:grid;gap:0;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:12px 16px;margin-bottom:14px}
+.srow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:.5px solid var(--border)}
+.srow:last-child{border-bottom:none}
+.slbl{font-size:12px;color:var(--muted)}
+.sbtns{display:flex;gap:3px}
+.sb{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:9px;font-family:'DM Mono',monospace;color:var(--faint);transition:all .12s;display:flex;align-items:center;justify-content:center}
+.sb.on{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.ib{background:var(--navy);border-radius:var(--r);padding:20px 24px;margin-top:6px;position:relative;overflow:hidden}
+.ib::before{content:'';position:absolute;top:-16px;right:-16px;width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,.06)}
+.ibp{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.4);margin-bottom:8px;line-height:1.6}
+.ibi{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,.3);padding:7px 0;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:#fff;font-weight:300;line-height:1.6;resize:none;min-height:80px}
+.ibi:focus{outline:none;border-bottom-color:var(--gold)}
+.ibi::placeholder{color:rgba(255,255,255,.16)}
+.ag{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.ac{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:10px;text-align:center}
+.ac.hl{border-color:rgba(239,159,39,.35);background:#FAEEDA}
+.acl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.ai{width:100%;border:none;background:transparent;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--navy);text-align:center;padding:0}
+.ai:focus{outline:none}
+.acp{font-size:10px;color:var(--faint);margin-top:1px}
+.at{text-align:right;font-size:12px;color:var(--faint);margin-top:5px}
+.at.ok{color:var(--teal)}
+.at.bad{color:var(--red)}
+.acg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.acard{border-radius:var(--rs);padding:13px;border:.5px solid}
+.ast{background:#E1F5EE;border-color:rgba(29,158,117,.25)}
+.asp{background:#FCEBEB;border-color:rgba(226,75,74,.25)}
+.acn{border-color:var(--border);background:var(--white);grid-column:span 2}
+.agl{background:var(--navy);border:none;grid-column:span 2}
+.ach{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.ast .ach{color:var(--teal-d)}
+.asp .ach{color:#501313}
+.acn .ach{color:var(--muted)}
+.agl .ach{color:var(--gold)}
+.acp{font-size:11px;font-style:italic;margin-bottom:6px;line-height:1.5}
+.ast .acp{color:var(--teal)}
+.asp .acp{color:#A32D2D}
+.acn .acp{color:var(--muted)}
+.agl .acp{color:rgba(255,255,255,.4)}
+.ata{width:100%;border:none;border-bottom:.5px solid;background:transparent;padding:3px 0;font-family:'DM Sans',sans-serif;font-size:12px;resize:none;line-height:1.6;min-height:48px}
+.ata:focus{outline:none}
+.ast .ata{color:var(--teal-d);border-bottom-color:rgba(29,158,117,.3)}
+.asp .ata{color:#501313;border-bottom-color:rgba(226,75,74,.3)}
+.acn .ata{color:var(--text);border-bottom-color:var(--border)}
+.agl .ata{color:#fff;border-bottom-color:rgba(201,168,76,.3);font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic}
+.subbox{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;margin-top:28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.sbt{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--navy);margin-bottom:3px}
+.sbn2{font-size:12px;color:var(--muted);line-height:1.6;max-width:360px}
+.subbtn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:10px 22px;border-radius:var(--rs);border:none;background:var(--navy);color:#fff;cursor:pointer;transition:all .15s;white-space:nowrap}
+.subbtn:hover{background:var(--gold);color:var(--navy)}
+.subbtn:disabled{opacity:.4;cursor:not-allowed;background:var(--navy)}
+.rmbox{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--r);padding:14px 18px;margin-top:20px}
+.rml{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);margin-bottom:5px}
+.rmt{font-size:13px;color:var(--teal-d);line-height:1.7;font-style:italic}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:9px 14px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
-
-/* Divider */
-.field-divider{height:.5px;background:var(--border);margin:24px 0}
-
-@media(max-width:800px){
-  .layout{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .main{padding:24px 20px 60px}
-  .alloc-grid{grid-template-columns:1fr 1fr}
-  .action-card.goal{grid-column:span 1}
-}
+.fdiv{height:.5px;background:var(--border);margin:16px 0}
+@media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:20px 18px 60px}.ag{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-
 <div class="topbar">
-  <div class="tb-left">
-    <div class="wm">X<em>I</em>ME</div>
-    <div class="tb-sep"></div>
-    <div class="tb-title">Magis Centre · Annual Evaluation</div>
+  <div class="tb-l">
+    <div class="wm">X<em>I</em>ME</div><div class="sep"></div>
+    <div class="ttl">Magis Centre · Annual Evaluation</div>
   </div>
-  <div class="tb-right">
-    <div class="status-pill status-draft" id="status-display">Draft</div>
-    <button class="btn-save" onclick="saveDraft()">Save draft</button>
-    <button class="btn-submit" onclick="submitEval()">Submit for validation</button>
+  <div class="tb-r">
+    <div class="spill sp-draft" id="spill">Draft</div>
+    <button class="tbtn bsave" onclick="saveDraft()">Save draft</button>
+    <button class="tbtn bsub" id="subbtn" onclick="handleSubmit()">Submit Gate 1</button>
   </div>
 </div>
 
 <div class="layout">
+<aside class="sidebar">
+  <div class="sbh">
+    <div class="sbn" id="sb-name">Loading...</div>
+    <div class="sbr" id="sb-role"></div>
+    <div class="sby">AY 2025–26</div>
+  </div>
+  <div class="pw">
+    <div class="fl">Completion</div>
+    <div class="pb"><div class="pf" id="pf" style="width:0%"></div></div>
+    <div class="pp" id="pp">0%</div>
+  </div>
+  <div class="gi gi-open" id="g1i">
+    <div class="gil gi-open">Gate 1 · Mid-Year</div>
+    <div class="gis gi-open" id="g1s">Open</div>
+    <div class="gid">Due 16 December 2025</div>
+  </div>
+  <div class="gi gi-open" id="g2i">
+    <div class="gil gi-open">Gate 2 · Annual</div>
+    <div class="gis gi-open" id="g2s">Open</div>
+    <div class="gid">Due 15 June 2026</div>
+  </div>
+  <div class="ngl">Performance Record</div>
+  <div class="ni active" onclick="goTo('s1')" id="n-s1"><div class="ndot"></div><div class="nt">Profile</div></div>
+  <div class="ni" onclick="goTo('s2')" id="n-s2"><div class="ndot"></div><div class="nt">Teaching</div></div>
+  <div class="ni" onclick="goTo('s3')" id="n-s3"><div class="ndot"></div><div class="nt">Research</div></div>
+  <div class="ni" onclick="goTo('s4')" id="n-s4"><div class="ndot"></div><div class="nt">Industry & MDP</div></div>
+  <div class="ni" onclick="goTo('s5')" id="n-s5"><div class="ndot"></div><div class="nt">Institution Building</div></div>
+  <div class="ngl">IKIGAI · Purpose</div>
+  <div class="ni" onclick="goTo('s6')" id="n-s6"><div class="ndot"></div><div class="nt">What You Love</div></div>
+  <div class="ni" onclick="goTo('s7')" id="n-s7"><div class="ndot"></div><div class="nt">Strengths</div></div>
+  <div class="ni" onclick="goTo('s8')" id="n-s8"><div class="ndot"></div><div class="nt">Contribution</div></div>
+  <div class="ni" onclick="goTo('s9')" id="n-s9"><div class="ndot"></div><div class="nt">Purpose Statement</div></div>
+  <div class="ngl">Development</div>
+  <div class="ni" onclick="goTo('s10')" id="n-s10"><div class="ndot"></div><div class="nt">Time Allocation</div></div>
+  <div class="ni" onclick="goTo('s11')" id="n-s11"><div class="ndot"></div><div class="nt">Goals for XIME</div></div>
+  <div class="ni" onclick="goTo('s12')" id="n-s12"><div class="ndot"></div><div class="nt">Action Plan</div></div>
+</aside>
 
-  <aside class="sidebar">
-    <div class="sidebar-head">
-      <div class="sidebar-name" id="sb-name">Faculty Member</div>
-      <div class="sidebar-role" id="sb-role">Loading...</div>
-      <div class="sidebar-year">AY 2025–26 · Annual</div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-label">Completion</div>
-      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-      <div class="progress-pct" id="prog-pct">0%</div>
-    </div>
-    <div class="nav-group">
-      <div class="nav-group-label">Your record</div>
-      <div class="nav-item active" onclick="scrollTo('s-profile')" id="nav-profile">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Profile</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-teaching')" id="nav-teaching">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Teaching</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-research')" id="nav-research">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Research</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-industry')" id="nav-industry">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Industry & MDP</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-institution')" id="nav-institution">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Institution Building</div>
-      </div>
-    </div>
-    <div class="nav-group">
-      <div class="nav-group-label">IKIGAI · Purpose</div>
-      <div class="nav-item" onclick="scrollTo('s-passion')" id="nav-passion">
-        <div class="nav-item-dot"></div><div class="nav-item-text">What You Love</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-strengths')" id="nav-strengths">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Your Strengths</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-contribution')" id="nav-contribution">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Contribution</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-convergence')" id="nav-convergence">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Convergence</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-statement')" id="nav-statement">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Purpose Statement</div>
-      </div>
-    </div>
-    <div class="nav-group">
-      <div class="nav-group-label">Development</div>
-      <div class="nav-item" onclick="scrollTo('s-allocation')" id="nav-allocation">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Time Allocation</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-goals')" id="nav-goals">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Goals for XIME</div>
-      </div>
-      <div class="nav-item" onclick="scrollTo('s-action')" id="nav-action">
-        <div class="nav-item-dot"></div><div class="nav-item-text">Action Plan</div>
-      </div>
-    </div>
-  </aside>
+<main class="main">
 
-  <main class="main">
-    <div class="doc-header">
-      <div class="doc-eyebrow">Annual Performance Evaluation · 2025–26</div>
-      <div class="doc-title">Your year, your <em>purpose</em>,<br>your direction.</div>
-      <div class="doc-lead">This is not a compliance document. It is a professional record and a reflection instrument — designed to capture what you have done and what drives you forward. Fields marked with a gold label have been auto-filled from Digii Campus and XIME records. Everything else is your voice.</div>
-    </div>
-
-    <!-- SECTION 1: PROFILE -->
-    <section class="section" id="s-profile">
-      <div class="section-header">
-        <div class="section-num">01</div>
-        <div class="section-info">
-          <div class="section-title">Your Profile</div>
-          <div class="section-sub">Auto-populated from XIME HR records · review and confirm</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="auto-block">
-          <div class="auto-block-label">From XIME Faculty Master</div>
-          <div id="profile-auto-rows"></div>
-        </div>
-        <div class="two-col">
-          <div class="field">
-            <div class="field-label">Google Scholar URL</div>
-            <input class="field-input" id="f-scholar" type="url" placeholder="scholar.google.com/citations?user=...">
-          </div>
-          <div class="field">
-            <div class="field-label">ORCID / Scopus ID</div>
-            <input class="field-input" id="f-orcid" type="text" placeholder="0000-0000-0000-0000">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 2: TEACHING -->
-    <section class="section" id="s-teaching">
-      <div class="section-header">
-        <div class="section-num">02</div>
-        <div class="section-info">
-          <div class="section-title">Teaching</div>
-          <div class="section-sub">Courses and effectiveness · AY 2025–26</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="field">
-          <div class="field-label">Courses Taught This Year <span class="auto-badge">Auto-filled · Digii Campus</span></div>
-          <div class="course-pills" id="courses-pills"></div>
-        </div>
-        <div class="two-col" style="margin-top:16px">
-          <div class="field">
-            <div class="field-label">Teaching Effectiveness Score <span class="auto-badge">Dean Academics</span></div>
-            <input class="field-input auto-populated" id="f-te-score" placeholder="Awaiting Dean Academics" readonly>
-            <div class="field-hint">Filled by Dean of Academics after student feedback analysis. Not self-reported.</div>
-          </div>
-          <div class="field">
-            <div class="field-label">Terms Taught</div>
-            <input class="field-input" id="f-terms" type="text" placeholder="e.g. Terms 1, 3, 5">
-          </div>
-        </div>
-        <div class="field">
-          <div class="field-label">Teaching Notes</div>
-          <textarea class="field-input" id="f-teaching-notes" rows="3" placeholder="New pedagogical approaches, case studies developed, classroom innovations this year..."></textarea>
-          <div class="field-hint">Optional — use this to document anything about your teaching practice worth recording.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 3: RESEARCH -->
-    <section class="section" id="s-research">
-      <div class="section-header">
-        <div class="section-num">03</div>
-        <div class="section-info">
-          <div class="section-title">Research & Publications</div>
-          <div class="section-sub">Validated by Dean of Research · last 10 years</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="three-col">
-          <div class="field">
-            <div class="field-label">Scopus Publications</div>
-            <input class="field-input" id="f-scopus" type="number" min="0" placeholder="0">
-          </div>
-          <div class="field">
-            <div class="field-label">ABDC Ranked</div>
-            <input class="field-input" id="f-abdc" type="number" min="0" placeholder="0">
-          </div>
-          <div class="field">
-            <div class="field-label">Web of Science</div>
-            <input class="field-input" id="f-wos" type="number" min="0" placeholder="0">
-          </div>
-        </div>
-        <div class="two-col">
-          <div class="field">
-            <div class="field-label">h-Index</div>
-            <input class="field-input" id="f-hindex" type="number" min="0" placeholder="0">
-          </div>
-          <div class="field">
-            <div class="field-label">Conference Papers This Year</div>
-            <input class="field-input" id="f-conf" type="number" min="0" placeholder="0">
-          </div>
-        </div>
-        <div class="field">
-          <div class="field-label">Publications Detail</div>
-          <textarea class="field-input" id="f-pub-detail" rows="4" placeholder="List your key publications this year — title, journal, indexing. Most recent first.&#10;&#10;Example:&#10;Nallur, K.K. (2025). AI-Augmented Decision Making in SMEs. Journal of Business Strategy. Scopus."></textarea>
-          <div class="field-hint">Dean of Research will validate journal ratings before this section is confirmed.</div>
-        </div>
-        <div class="field">
-          <div class="field-label">Work in Progress</div>
-          <textarea class="field-input" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects, planned submissions..."></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 4: INDUSTRY -->
-    <section class="section" id="s-industry">
-      <div class="section-header">
-        <div class="section-num">04</div>
-        <div class="section-info">
-          <div class="section-title">Industry Engagement & External Programs</div>
-          <div class="section-sub">MDPs, consulting, speaking, advisory roles · validated by Dean EP</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="two-col">
-          <div class="field">
-            <div class="field-label">MDPs / OBPs Delivered</div>
-            <input class="field-input" id="f-mdp-count" type="number" min="0" placeholder="0" oninput="updateMdpRevenue()">
-          </div>
-          <div class="field">
-            <div class="field-label">MDP Revenue Generated <span class="auto-badge">EP Records</span></div>
-            <input class="field-input" id="f-mdp-rev" type="text" placeholder="₹ —" readonly style="background:var(--parchment);border-color:var(--border-gold);color:var(--muted)">
-          </div>
-        </div>
-        <div class="field">
-          <div class="field-label">MDP / OBP Details</div>
-          <textarea class="field-input" id="f-mdp-detail" rows="3" placeholder="Program title · Client organisation · Role (organiser / faculty) · Approximate dates&#10;&#10;Example:&#10;Design Thinking for Innovation · Titan Industries · Faculty · Feb 2025"></textarea>
-        </div>
-        <div class="field-divider"></div>
-        <div class="field">
-          <div class="field-label">Other Industry Engagements This Year</div>
-          <textarea class="field-input" id="f-industry-other" rows="3" placeholder="Consulting engagements, advisory board roles, speaking at industry events, live projects with companies, professional association work..."></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Summary</div>
-          <textarea class="field-input" id="f-industry-summary" rows="2" placeholder="One or two sentences describing the overall nature and depth of your industry engagement this year..."></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 5: INSTITUTION -->
-    <section class="section" id="s-institution">
-      <div class="section-header">
-        <div class="section-num">05</div>
-        <div class="section-info">
-          <div class="section-title">Institution Building</div>
-          <div class="section-sub">Administrative roles, committees, accreditation, student development</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="field">
-          <div class="field-label">Current Administrative Role <span class="auto-badge">HR Records</span></div>
-          <input class="field-input auto-populated" id="f-admin-role" readonly>
-        </div>
-        <div class="field">
-          <div class="field-label">Institution Contributions This Year</div>
-          <textarea class="field-input" id="f-institution" rows="4" placeholder="Describe your contributions beyond teaching and research:&#10;&#10;• Committees or governance roles&#10;• Accreditation work (EFMD, NBA, AACSB)&#10;• Student mentoring, placement, admissions&#10;• Programme development or curriculum design&#10;• Events, conferences hosted&#10;• Any other institutional work"></textarea>
-        </div>
-      </div>
-    </section>
-
-    <div class="field-divider" style="border-top:2px solid var(--border-gold);margin:48px 0 0"></div>
-    <div style="text-align:center;padding:24px 0;margin-bottom:8px">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--faint);letter-spacing:.06em;text-transform:uppercase">IKIGAI · Your Professional Purpose</div>
-      <div style="font-size:11px;color:var(--faint);margin-top:4px">The sections below are reflective. Write in your own voice.</div>
-    </div>
-
-    <!-- SECTION 6: PASSION -->
-    <section class="section" id="s-passion">
-      <div class="section-header">
-        <div class="section-num">06</div>
-        <div class="section-info">
-          <div class="section-title">What You Love</div>
-          <div class="section-sub">IKIGAI 2.1 · Passion — the activities where time disappears</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="field">
-          <div class="field-label">Teaching that energises you</div>
-          <textarea class="field-input" id="f-p-teaching" rows="3" placeholder="What kind of teaching makes you come alive? The classroom moments, the student interactions, the kinds of questions that pull you in..."></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Research questions that pull you back</div>
-          <textarea class="field-input" id="f-p-research" rows="3" placeholder="The questions you keep returning to. The problems you find yourself thinking about even when you are not supposed to be working..."></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Industry engagement that feels alive</div>
-          <textarea class="field-input" id="f-p-industry" rows="3" placeholder="What kind of industry interaction feels most meaningful? Speaking, consulting, building programs, advising leaders — what genuinely energises you here?"></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Institutional work that gives you purpose</div>
-          <textarea class="field-input" id="f-p-institution" rows="2" placeholder="Beyond the classroom — where in XIME do you feel most purposeful?"></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 7: STRENGTHS -->
-    <section class="section" id="s-strengths">
-      <div class="section-header">
-        <div class="section-num">07</div>
-        <div class="section-info">
-          <div class="section-title">Your Strengths</div>
-          <div class="section-sub">IKIGAI 2.2 · Honest self-assessment — 1 still building, 5 genuinely exceptional</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:16px 20px;margin-bottom:20px">
-        <div class="star-grid" id="star-teaching">
-          <div class="star-label">Teaching Effectiveness</div>
-          <div class="stars" data-dim="teaching"></div>
-        </div>
-        <div class="star-grid" id="star-research">
-          <div class="star-label">Research Capability</div>
-          <div class="stars" data-dim="research"></div>
-        </div>
-        <div class="star-grid" id="star-industry">
-          <div class="star-label">Industry Engagement</div>
-          <div class="stars" data-dim="industry"></div>
-        </div>
-        <div class="star-grid" id="star-institution">
-          <div class="star-label">Institution Building</div>
-          <div class="stars" data-dim="institution"></div>
-        </div>
-      </div>
-      <div class="field">
-        <div class="field-label">What you are genuinely known for</div>
-        <textarea class="field-input" id="f-strengths" rows="3" placeholder="List up to five capabilities others would point to as distinctively yours. These are the things you do better than most..."></textarea>
-      </div>
-      <div class="field">
-        <div class="field-label">Areas of intended growth</div>
-        <textarea class="field-input" id="f-growth" rows="3" placeholder="Name at least three capabilities you want to develop over the next one to two years. Be specific about the capability, not just the domain..."></textarea>
-      </div>
-    </section>
-
-    <!-- SECTION 8: CONTRIBUTION -->
-    <section class="section" id="s-contribution">
-      <div class="section-header">
-        <div class="section-num">08</div>
-        <div class="section-info">
-          <div class="section-title">What You Contribute</div>
-          <div class="section-sub">IKIGAI 2.3 · The visible, valued output you already create</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="field">
-          <div class="field-label">Your industry interaction — now and aspired</div>
-          <textarea class="field-input" id="f-contrib-industry" rows="3" placeholder="What forms of industry engagement are you currently doing? What do you aspire to build? Be specific about organisations, frequency, and the kind of value you bring..."></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Your research pathway</div>
-          <textarea class="field-input" id="f-contrib-research" rows="3" placeholder="If research is meaningful to you — describe your planned pathway. Target journals, conferences, collaborators. If it is not a current focus, write honestly about why."></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Institution building contributions</div>
-          <textarea class="field-input" id="f-contrib-institution" rows="2" placeholder="What roles are you currently playing in holding XIME together? What would you like to take on?"></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 9: CONVERGENCE -->
-    <section class="section" id="s-convergence">
-      <div class="section-header">
-        <div class="section-num">09</div>
-        <div class="section-info">
-          <div class="section-title">Where Energy Meets Impact</div>
-          <div class="section-sub">IKIGAI 2.4 · Where your passion and your contribution converge</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="field">
-          <div class="field-label">Your convergence</div>
-          <textarea class="field-input" id="f-convergence" rows="4" placeholder="Looking across all four pillars — where does your energy and your impact most naturally converge? What does that tell you about where you can contribute most distinctively to your students and to XIME?&#10;&#10;A few specific, true sentences are worth more than a polished paragraph."></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 10: IKIGAI STATEMENT -->
-    <section class="section" id="s-statement">
-      <div class="section-header">
-        <div class="section-num">10</div>
-        <div class="section-info">
-          <div class="section-title">Your Purpose Statement</div>
-          <div class="section-sub">IKIGAI 3 · Two to four sentences that are genuinely yours</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="ikigai-box">
-          <div class="ikigai-prompt">My purpose as an XIME faculty member is to...</div>
-          <textarea class="ikigai-input" id="f-ikigai" rows="4" placeholder="Write in your own voice. Avoid abstract phrases like 'inspire students' or 'advance knowledge' — push past the general to what is genuinely yours.&#10;&#10;This statement belongs only to you."></textarea>
-        </div>
-        <div class="field-hint" style="margin-top:8px">This statement is private — visible only to you, your Dean, and the Director. It is not published to any dashboard.</div>
-      </div>
-    </section>
-
-    <!-- SECTION 11: TIME ALLOCATION -->
-    <section class="section" id="s-allocation">
-      <div class="section-header">
-        <div class="section-num">11</div>
-        <div class="section-info">
-          <div class="section-title">Time Allocation</div>
-          <div class="section-sub">How you actually spend your professional time · must total 100%</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:14px;font-style:italic">Industry Interaction carries a mandatory minimum of 10%. Be honest — this reflects your actual current allocation, not what looks good.</div>
-        <div class="alloc-grid">
-          <div class="alloc-card">
-            <div class="alloc-label">Teaching</div>
-            <input class="alloc-input" id="alloc-teaching" type="number" min="0" max="100" placeholder="—" oninput="checkAlloc()">
-            <div class="alloc-pct">%</div>
-          </div>
-          <div class="alloc-card">
-            <div class="alloc-label">Research</div>
-            <input class="alloc-input" id="alloc-research" type="number" min="0" max="100" placeholder="—" oninput="checkAlloc()">
-            <div class="alloc-pct">%</div>
-          </div>
-          <div class="alloc-card" style="border-color:rgba(201,168,76,.3);background:#FAEEDA">
-            <div class="alloc-label" style="color:var(--amber-d)">Industry</div>
-            <input class="alloc-input" id="alloc-industry" type="number" min="10" max="100" placeholder="—" oninput="checkAlloc()" style="color:#633806">
-            <div class="alloc-pct" style="color:var(--amber)">% (min 10)</div>
-          </div>
-          <div class="alloc-card">
-            <div class="alloc-label">Institution</div>
-            <input class="alloc-input" id="alloc-institution" type="number" min="0" max="100" placeholder="—" oninput="checkAlloc()">
-            <div class="alloc-pct">%</div>
-          </div>
-        </div>
-        <div class="alloc-total" id="alloc-total">Total: 0%</div>
-        <div class="alloc-min" id="alloc-warn" style="display:none">Industry Interaction must be at least 10%</div>
-      </div>
-    </section>
-
-    <!-- SECTION 12: GOALS FOR XIME -->
-    <section class="section" id="s-goals">
-      <div class="section-header">
-        <div class="section-num">12</div>
-        <div class="section-info">
-          <div class="section-title">Goals for XIME</div>
-          <div class="section-sub">What you want to contribute, build, and achieve</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="field">
-          <div class="field-label">How you want to contribute to XIME's growth</div>
-          <textarea class="field-input" id="f-xime-contrib" rows="3" placeholder="Not what XIME should do — what you specifically want to build, change, or strengthen here. What difference do you want to make to this institution?"></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Primary objectives this academic year</div>
-          <textarea class="field-input" id="f-obj-primary" rows="3" placeholder="What are the two or three things you are most committed to delivering this year? Be specific enough that at year-end you will know clearly whether you did them."></textarea>
-        </div>
-        <div class="field">
-          <div class="field-label">Objectives for next academic year</div>
-          <textarea class="field-input" id="f-obj-next" rows="3" placeholder="Looking ahead — what do you want to be working on that you are not working on today?"></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 13: ACTION PLAN -->
-    <section class="section" id="s-action">
-      <div class="section-header">
-        <div class="section-num">13</div>
-        <div class="section-info">
-          <div class="section-title">The Year Ahead</div>
-          <div class="section-sub">Where reflection becomes commitment</div>
-        </div>
-      </div>
-      <div class="section-rule"></div>
-      <div style="margin-top:20px">
-        <div class="action-grid">
-          <div class="action-card start">
-            <div class="action-card-head">Start</div>
-            <div class="action-prompt">What new practice, activity, or commitment will you begin this year?</div>
-            <textarea class="action-ta" id="f-start" rows="3" placeholder="A course redesign, a research partnership, a new industry engagement..."></textarea>
-          </div>
-          <div class="action-card stop">
-            <div class="action-card-head">Stop</div>
-            <div class="action-prompt">What are you doing that no longer serves your growth or your students?</div>
-            <textarea class="action-ta" id="f-stop" rows="3" placeholder="This takes honesty — what should you let go of or phase out?"></textarea>
-          </div>
-          <div class="action-card cont" style="grid-column:span 2">
-            <div class="action-card-head">Continue</div>
-            <div class="action-prompt">What are you doing well that you want to sustain and deepen?</div>
-            <textarea class="action-ta" id="f-continue" rows="2" placeholder="Acknowledge what is working — and commit to protecting it."></textarea>
-          </div>
-          <div class="action-card goal">
-            <div class="action-card-head">Key Goal</div>
-            <div class="action-prompt">The single most important outcome you want to achieve this year. One goal only. Make it count.</div>
-            <textarea class="action-ta" id="f-key-goal" rows="2" placeholder="One goal. State it clearly."></textarea>
-          </div>
-        </div>
-        <div class="support-card">
-          <div class="support-head">What XIME needs to do differently</div>
-          <div class="support-prompt">What resources, mentoring, or institutional backing would help you succeed? Be specific — what would XIME doing differently actually make possible for you?</div>
-          <textarea class="field-input" id="f-support" rows="3" style="margin:0"></textarea>
-        </div>
-      </div>
-    </section>
-
-    <!-- Submit area -->
-    <div class="submit-area">
-      <div class="submit-info">
-        <div class="submit-title">Ready to submit?</div>
-        <div class="submit-note">Once submitted, your evaluation goes to your Dean for validation. You will not be able to edit it until validation is complete. Make sure all sections reflect what you genuinely want to record.</div>
-      </div>
-      <button class="btn-submit-lg" onclick="submitEval()">Submit for Dean validation →</button>
-    </div>
-
-  </main>
+<div class="gb gb1">
+  <div><div class="gbl">Gate 1 · Mid-Year Performance Record</div>
+  <div class="gbt">What you did · June to December</div>
+  <div class="gbs">Locks permanently on submission</div></div>
+  <div class="gbst gst-open" id="g1bs">Open</div>
 </div>
 
+<section class="sec ls" id="s1">
+  <div class="sh"><div class="sn">01</div><div><div class="si-t">Your Profile</div><div class="si-s">Auto-populated from XIME records</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="ablock"><div class="abl">From Faculty Master</div><div id="prof-rows"></div></div>
+    <div class="tc">
+      <div class="f"><div class="fl">Google Scholar URL</div><input class="fi" id="f-scholar" type="url" placeholder="scholar.google.com/..."></div>
+      <div class="f"><div class="fl">ORCID / Scopus ID</div><input class="fi" id="f-orcid" placeholder="0000-0000-0000-0000"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec ls" id="s2">
+  <div class="sh"><div class="sn">02</div><div><div class="si-t">Teaching</div><div class="si-s">Validated by Dean Academics</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="f"><div class="fl">Courses Taught <span class="ab">Digii Campus</span></div><div class="cpills" id="cpills"><span style="font-size:12px;color:var(--faint);font-style:italic">Loading...</span></div></div>
+    <div class="tc" style="margin-top:12px">
+      <div class="f"><div class="fl">Teaching Effectiveness <span class="ab">Dean Academics</span></div><input class="fi lk" id="f-te" readonly placeholder="Awaiting Dean Academics"></div>
+      <div class="f"><div class="fl">Terms Taught</div><input class="fi" id="f-terms" placeholder="e.g. Terms 1, 3, 5"></div>
+    </div>
+    <div class="f"><div class="fl">Teaching Notes</div><textarea class="fi" id="f-tnotes" rows="3" placeholder="New approaches, innovations, case studies developed..."></textarea></div>
+  </div>
+</section>
+
+<section class="sec ls" id="s3">
+  <div class="sh"><div class="sn">03</div><div><div class="si-t">Research & Publications</div><div class="si-s">Validated by Dean Research</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="thc">
+      <div class="f"><div class="fl">Scopus</div><input class="fi" id="f-scopus" type="number" min="0" placeholder="0"></div>
+      <div class="f"><div class="fl">ABDC Ranked</div><input class="fi" id="f-abdc" type="number" min="0" placeholder="0"></div>
+      <div class="f"><div class="fl">Web of Science</div><input class="fi" id="f-wos" type="number" min="0" placeholder="0"></div>
+    </div>
+    <div class="tc">
+      <div class="f"><div class="fl">h-Index</div><input class="fi" id="f-hi" type="number" min="0" placeholder="0"></div>
+      <div class="f"><div class="fl">Conference Papers</div><input class="fi" id="f-conf" type="number" min="0" placeholder="0"></div>
+    </div>
+    <div class="f"><div class="fl">Publications Detail</div><textarea class="fi" id="f-pub" rows="4" placeholder="Title · Journal · Indexing · Year. Most recent first."></textarea></div>
+    <div class="f"><div class="fl">Work in Progress</div><textarea class="fi" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects..."></textarea></div>
+  </div>
+</section>
+
+<section class="sec ls" id="s4">
+  <div class="sh"><div class="sn">04</div><div><div class="si-t">Industry & External Programs</div><div class="si-s">Validated by Dean EP</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="tc">
+      <div class="f"><div class="fl">MDPs / OBPs Delivered</div><input class="fi" id="f-mdpc" type="number" min="0" placeholder="0"></div>
+      <div class="f"><div class="fl">MDP Revenue <span class="ab">EP Records</span></div><input class="fi lk" id="f-mdpr" readonly placeholder="₹ —"></div>
+    </div>
+    <div class="f"><div class="fl">MDP Details</div><textarea class="fi" id="f-mdpd" rows="3" placeholder="Program · Client · Role · Dates"></textarea></div>
+    <div class="fdiv"></div>
+    <div class="f"><div class="fl">Other Industry Engagements</div><textarea class="fi" id="f-ind" rows="3" placeholder="Consulting, advisory boards, speaking, live projects..."></textarea></div>
+  </div>
+</section>
+
+<section class="sec ls" id="s5">
+  <div class="sh"><div class="sn">05</div><div><div class="si-t">Institution Building</div><div class="si-s">Admin roles, committees, accreditation</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="f"><div class="fl">Administrative Role <span class="ab">HR Records</span></div><input class="fi lk" id="f-admin" readonly></div>
+    <div class="f"><div class="fl">Institution Contributions This Year</div><textarea class="fi" id="f-inst" rows="4" placeholder="Committees · Accreditation · Mentoring · Placement · Events..."></textarea></div>
+  </div>
+</section>
+
+<div class="subbox" id="g1box">
+  <div><div class="sbt">Submit Gate 1 — Mid-Year Record</div>
+  <div class="sbn2">Sections 01–05 will lock permanently. Gate 2 remains open until 15 June 2026.</div></div>
+  <button class="subbtn" onclick="submitGate1()" id="g1btn">Lock & Submit Gate 1 →</button>
+</div>
+
+<div class="gb gb2" style="margin-top:44px" id="gb2">
+  <div><div class="gbl">Gate 2 · Annual Evaluation</div>
+  <div class="gbt">Purpose, direction, year ahead</div>
+  <div class="gbs">IKIGAI · development goals · action plan · due 15 June 2026</div></div>
+  <div class="gbst gst-open" id="g2bs">Open</div>
+</div>
+
+<section class="sec" id="s6">
+  <div class="sh"><div class="sn">06</div><div><div class="si-t">What You Love</div><div class="si-s">IKIGAI 2.1 · Activities where time disappears</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="f"><div class="fl">Teaching that energises you</div><textarea class="fi" id="f-pt" rows="3" placeholder="What kind of teaching makes you come alive?"></textarea></div>
+    <div class="f"><div class="fl">Research questions that pull you back</div><textarea class="fi" id="f-pr" rows="3" placeholder="The questions you keep returning to..."></textarea></div>
+    <div class="f"><div class="fl">Industry engagement that feels alive</div><textarea class="fi" id="f-pi" rows="2" placeholder="What kind of industry interaction energises you?"></textarea></div>
+    <div class="f"><div class="fl">Institutional work that gives you purpose</div><textarea class="fi" id="f-ps" rows="2" placeholder="Where in XIME do you feel most purposeful?"></textarea></div>
+  </div>
+</section>
+
+<section class="sec" id="s7">
+  <div class="sh"><div class="sn">07</div><div><div class="si-t">Your Strengths</div><div class="si-s">IKIGAI 2.2 · 1 still building → 5 exceptional</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="sr" id="star-grid"></div>
+    <div class="f"><div class="fl">What you are genuinely known for</div><textarea class="fi" id="f-str" rows="3" placeholder="Up to five capabilities others would point to as distinctively yours..."></textarea></div>
+    <div class="f"><div class="fl">Areas of intended growth</div><textarea class="fi" id="f-gr" rows="3" placeholder="At least three capabilities you want to develop over the next 1–2 years..."></textarea></div>
+  </div>
+</section>
+
+<section class="sec" id="s8">
+  <div class="sh"><div class="sn">08</div><div><div class="si-t">What You Contribute</div><div class="si-s">IKIGAI 2.3 · Visible, valued output</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="f"><div class="fl">Industry interaction — now and aspired</div><textarea class="fi" id="f-ci" rows="3" placeholder="What are you currently doing? What do you aspire to build?"></textarea></div>
+    <div class="f"><div class="fl">Research pathway</div><textarea class="fi" id="f-cr" rows="3" placeholder="Target journals, conferences, collaborators. Or explain why research is not a current focus."></textarea></div>
+    <div class="f"><div class="fl">Institution building contributions</div><textarea class="fi" id="f-cs" rows="2" placeholder="What roles are you playing? What would you like to take on?"></textarea></div>
+  </div>
+</section>
+
+<section class="sec" id="s9">
+  <div class="sh"><div class="sn">09</div><div><div class="si-t">Your Purpose Statement</div><div class="si-s">Private · visible only to Director and President</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="ib">
+      <div class="ibp">My purpose as an XIME faculty member is to...</div>
+      <textarea class="ibi" id="f-iki" rows="4" placeholder="Write in your own voice. Push past the general to what is genuinely yours."></textarea>
+    </div>
+    <div class="fh" style="margin-top:6px">Not visible to Deans. Visible only to your Director and the President after submission.</div>
+  </div>
+</section>
+
+<section class="sec" id="s10">
+  <div class="sh"><div class="sn">10</div><div><div class="si-t">Time Allocation</div><div class="si-s">Must total 100% · Industry minimum 10%</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="ag">
+      <div class="ac"><div class="acl">Teaching</div><input class="ai" id="al-t" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
+      <div class="ac"><div class="acl">Research</div><input class="ai" id="al-r" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
+      <div class="ac hl"><div class="acl" style="color:var(--amber-d)">Industry</div><input class="ai" id="al-i" type="number" min="10" max="100" placeholder="—" oninput="chkAlloc()" style="color:var(--amber-d)"><div class="acp" style="color:var(--amber)">% min 10</div></div>
+      <div class="ac"><div class="acl">Institution</div><input class="ai" id="al-s" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
+    </div>
+    <div class="at" id="at">Total: 0%</div>
+  </div>
+</section>
+
+<section class="sec" id="s11">
+  <div class="sh"><div class="sn">11</div><div><div class="si-t">Goals for XIME</div><div class="si-s">What you want to contribute and improve</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="f"><div class="fl">How you want to contribute to XIME's growth</div><textarea class="fi" id="f-xc" rows="3" placeholder="Not what XIME should do — what you specifically want to build or change here..."></textarea></div>
+    <div class="f"><div class="fl">Primary objectives this academic year</div><textarea class="fi" id="f-op" rows="3" placeholder="Two or three specific commitments. Concrete enough to verify at year-end."></textarea></div>
+    <div class="f"><div class="fl">Objectives for next academic year</div><textarea class="fi" id="f-on" rows="3" placeholder="What do you want to be working on that you are not working on today?"></textarea></div>
+  </div>
+</section>
+
+<section class="sec" id="s12">
+  <div class="sh"><div class="sn">12</div><div><div class="si-t">The Year Ahead</div><div class="si-s">Where reflection becomes commitment</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+    <div class="acg">
+      <div class="acard ast"><div class="ach">Start</div><div class="acp" style="color:var(--teal)">New commitment this year?</div><textarea class="ata ast" id="f-sta" rows="3" placeholder="A course redesign, research partnership..."></textarea></div>
+      <div class="acard asp"><div class="ach">Stop</div><div class="acp" style="color:#A32D2D">What no longer serves growth?</div><textarea class="ata asp" id="f-stp" rows="3" placeholder="This takes honesty..."></textarea></div>
+      <div class="acard acn"><div class="ach">Continue</div><div class="acp" style="color:var(--muted)">What is working to sustain?</div><textarea class="ata acn" id="f-cnt" rows="2" placeholder="Protect what works..."></textarea></div>
+      <div class="acard agl"><div class="ach">Key Goal</div><div class="acp" style="color:rgba(255,255,255,.4)">Single most important outcome. One goal only.</div><textarea class="ata agl" id="f-kg" rows="2" placeholder="State it clearly."></textarea></div>
+    </div>
+    <div style="background:var(--cream);border:.5px solid var(--border-g);border-radius:var(--rs);padding:13px 15px">
+      <div class="fl" style="margin-bottom:5px">What XIME needs to do differently for you</div>
+      <textarea class="fi" id="f-sup" rows="3" style="margin:0" placeholder="Specific support that would make a difference..."></textarea>
+    </div>
+  </div>
+</section>
+
+<div id="rmbox" style="display:none">
+  <div class="rmbox"><div class="rml">Director's Remarks</div><div class="rmt" id="rmtxt"></div></div>
+</div>
+
+<div class="subbox" id="g2box" style="margin-top:28px">
+  <div><div class="sbt">Submit Annual Evaluation</div>
+  <div class="sbn2">Sent to your Deans for validation, then Director, then President for endorsement. Cannot edit after submission.</div></div>
+  <button class="subbtn" onclick="submitGate2()" id="g2btn">Submit Annual Evaluation →</button>
+</div>
+
+</main>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+let DEANS=[]; // loaded from dean_registry by campus on init
+let fac=null,eid=null,erec=null;
+const R={t:0,r:0,i:0,s:0};
+const dims=[{k:'t',l:'Teaching Effectiveness'},{k:'r',l:'Research Capability'},{k:'i',l:'Industry Engagement'},{k:'s',l:'Institution Building'}];
 
-let faculty = null;
-let evalId = null;
-const ratings = {teaching:0, research:0, industry:0, institution:0};
-const fieldIds = ['f-scholar','f-orcid','f-teaching-notes','f-terms','f-scopus','f-abdc','f-wos','f-hindex','f-conf','f-pub-detail','f-wip','f-mdp-count','f-mdp-detail','f-industry-other','f-industry-summary','f-institution','f-p-teaching','f-p-research','f-p-industry','f-p-institution','f-strengths','f-growth','f-contrib-industry','f-contrib-research','f-contrib-institution','f-convergence','f-ikigai','alloc-teaching','alloc-research','alloc-industry','alloc-institution','f-xime-contrib','f-obj-primary','f-obj-next','f-start','f-stop','f-continue','f-key-goal','f-support'];
+function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('n-'+id)?.classList.add('active');}
 
-function toast(msg, ok=true) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.borderLeftColor = ok ? 'var(--gold)' : 'var(--red)';
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2800);
-}
-
-function scrollTo(id) {
-  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const navId = id.replace('s-','nav-');
-  document.getElementById(navId)?.classList.add('active');
-}
-
-function buildStars() {
-  document.querySelectorAll('.stars').forEach(container => {
-    const dim = container.dataset.dim;
-    for (let i=1; i<=5; i++) {
-      const s = document.createElement('div');
-      s.className = 'star';
-      s.textContent = i;
-      s.onclick = () => setRating(dim, i);
-      container.appendChild(s);
-    }
+function buildStars(){
+  const g=document.getElementById('star-grid');
+  dims.forEach(d=>{
+    const row=document.createElement('div');row.className='srow';
+    row.innerHTML=`<div class="slbl">${d.l}</div><div class="sbtns" data-k="${d.k}"></div>`;
+    const btns=row.querySelector('.sbtns');
+    for(let i=1;i<=5;i++){const b=document.createElement('button');b.className='sb';b.textContent=i;b.onclick=()=>{R[d.k]=i;rStars(d.k);upProg();};btns.appendChild(b);}
+    g.appendChild(row);
   });
 }
+function rStars(k){document.querySelectorAll(`.sbtns[data-k="${k}"] .sb`).forEach((b,i)=>b.classList.toggle('on',i<R[k]));}
+function chkAlloc(){const t=['al-t','al-r','al-i','al-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);const el=document.getElementById('at');el.textContent=`Total: ${t}%`;el.className='at '+(t===100?'ok':'bad');upProg();}
 
-function setRating(dim, val) {
-  ratings[dim] = val;
-  const container = document.querySelector(`.stars[data-dim="${dim}"]`);
-  container.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('filled', i < val));
-  updateProgress();
+function upProg(){
+  const fids=['f-tnotes','f-terms','f-scopus','f-abdc','f-wos','f-hi','f-conf','f-pub','f-mdpc','f-mdpd','f-ind','f-inst','f-pt','f-pr','f-pi','f-ps','f-str','f-gr','f-ci','f-cr','f-cs','f-iki','al-t','al-r','al-i','al-s','f-xc','f-op','f-on','f-sta','f-stp','f-cnt','f-kg','f-sup'];
+  let filled=0;
+  fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&el.value.trim()&&el.value!=='0')filled++;});
+  Object.values(R).forEach(v=>{if(v>0)filled++;});
+  const pct=Math.round((filled/(fids.length+4))*100);
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pp').textContent=pct+'%';
 }
 
-function checkAlloc() {
-  const t = ['alloc-teaching','alloc-research','alloc-industry','alloc-institution']
-    .reduce((s,id) => s + (parseInt(document.getElementById(id).value)||0), 0);
-  const el = document.getElementById('alloc-total');
-  el.textContent = `Total: ${t}%`;
-  el.className = 'alloc-total ' + (t===100?'valid':'invalid');
-  const warn = document.getElementById('alloc-warn');
-  const ind = parseInt(document.getElementById('alloc-industry').value)||0;
-  warn.style.display = ind < 10 && ind > 0 ? 'block' : 'none';
-  updateProgress();
-}
+function g1Locked(){return erec?.gate1_locked===true;}
+function g2Locked(){return erec?.gate2_locked===true;}
 
-function updateProgress() {
-  let filled = 0, total = 0;
-  fieldIds.forEach(id => { total++; const el=document.getElementById(id); if(el&&el.value&&el.value.trim()&&el.value!=='0') filled++; });
-  Object.values(ratings).forEach(v=>{total++;if(v>0)filled++;});
-  const pct = Math.round((filled/total)*100);
-  document.getElementById('prog-fill').style.width = pct+'%';
-  document.getElementById('prog-pct').textContent = pct+'%';
-}
-
-function populateProfile(f) {
-  faculty = f;
-  document.getElementById('sb-name').textContent = f.name;
-  document.getElementById('sb-role').textContent = `${f.designation}${f.admin_role?' · '+f.admin_role:''} · ${f.campus}`;
-  document.getElementById('f-admin-role').value = f.admin_role || '—';
-
-  const rows = [
-    ['Name', f.name],
-    ['Designation', f.designation],
-    ['Campus', f.campus],
-    ['Date Joined', f.joined||'—'],
-    ['PhD Status', f.phd==='yes'?`PhD ${f.phd_year||''}`:f.phd==='pursuing'?'Pursuing PhD':'—'],
-    ['Industry Experience', f.exp_industry?f.exp_industry+' years':'—'],
-    ['Academic Experience', f.exp_academic?f.exp_academic+' years':'—'],
-  ];
-  document.getElementById('profile-auto-rows').innerHTML = rows.map(([k,v])=>
-    `<div class="auto-row"><span class="auto-row-key">${k}</span><span class="auto-row-val">${v}</span></div>`
-  ).join('');
-
-  const pills = document.getElementById('courses-pills');
-  if (f.courses_taught) {
-    pills.innerHTML = f.courses_taught.split(' · ').map(c=>
-      `<div class="course-pill">${c}</div>`).join('');
-  } else {
-    pills.innerHTML = '<div style="font-size:12px;color:var(--faint);font-style:italic">No course data from Digii Campus yet for this faculty member.</div>';
+function applyLocks(){
+  const s=erec?.workflow_status||'draft';
+  if(g1Locked()){
+    document.querySelectorAll('.ls').forEach(el=>el.classList.add('locked'));
+    ['f-scholar','f-orcid','f-terms','f-tnotes','f-scopus','f-abdc','f-wos','f-hi','f-conf','f-pub','f-wip','f-mdpc','f-mdpd','f-ind','f-inst'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
+    document.getElementById('g1box').style.display='none';
+    document.getElementById('g1s').textContent='Locked';
+    document.getElementById('g1bs').textContent='Locked';
+    document.getElementById('g1bs').className='gbst gst-locked';
+    document.getElementById('g1i').className='gi gi-locked';
+    document.getElementById('subbtn').textContent='Submit Gate 2';
   }
-}
-
-async function loadOrCreateEval(facultyId) {
-  const { data } = await sb.from('faculty_evaluations')
-    .select('*').eq('faculty_master_id', facultyId).eq('academic_year','2025-26').single();
-  if (data) {
-    evalId = data.id;
-    restoreForm(data);
-    updateStatusPill(data.status);
+  if(g2Locked()){
+    ['f-pt','f-pr','f-pi','f-ps','f-str','f-gr','f-ci','f-cr','f-cs','f-iki','al-t','al-r','al-i','al-s','f-xc','f-op','f-on','f-sta','f-stp','f-cnt','f-kg','f-sup'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
+    document.getElementById('g2box').style.display='none';
+    document.getElementById('g2s').textContent='Submitted';
+    document.getElementById('g2bs').textContent='Submitted';
+    document.getElementById('g2bs').className='gbst gst-locked';
+    document.getElementById('subbtn').textContent='Submitted';
+    document.getElementById('subbtn').disabled=true;
   }
+  const pm={draft:'sp-draft',mid_year_locked:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked'};
+  const pl={draft:'Draft',mid_year_locked:'Gate 1 Locked',mid_year_validated:'Mid-Year Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
+  const pill=document.getElementById('spill');
+  pill.className='spill '+(pm[s]||'sp-draft');
+  pill.textContent=pl[s]||s;
+  if(s==='endorsed')loadRemarks();
 }
 
-function restoreForm(d) {
-  const map = {
-    'f-scopus': d.publications_count,
-    'f-pub-detail': d.publications_details,
-    'f-mdp-count': d.mdp_details,
-    'f-mdp-detail': d.mdp_details,
-    'f-industry-summary': d.industry_summary,
-    'f-institution': d.institution_contributions,
-    'f-p-teaching': d.ikigai_passion,
-    'f-strengths': d.ikigai_strengths_text,
-    'f-growth': d.ikigai_growth_areas,
-    'f-contrib-industry': d.ikigai_contribution,
-    'f-convergence': d.ikigai_convergence,
-    'f-ikigai': d.ikigai_statement,
-    'alloc-teaching': d.alloc_teaching,
-    'alloc-research': d.alloc_research,
-    'alloc-industry': d.alloc_industry,
-    'alloc-institution': d.alloc_institution,
-    'f-xime-contrib': d.xime_contribution,
-    'f-obj-primary': d.primary_objectives,
-    'f-obj-next': d.next_year_objectives,
-    'f-start': d.action_start,
-    'f-stop': d.action_stop,
-    'f-continue': d.action_continue,
-    'f-key-goal': d.action_key_goal,
-    'f-support': d.action_support,
-  };
-  Object.entries(map).forEach(([id,val])=>{ const el=document.getElementById(id); if(el&&val!=null) el.value=val; });
-  if (d.ikigai_strength_teaching) setRating('teaching', d.ikigai_strength_teaching);
-  if (d.ikigai_strength_research) setRating('research', d.ikigai_strength_research);
-  if (d.ikigai_strength_industry) setRating('industry', d.ikigai_strength_industry);
-  if (d.ikigai_strength_institution) setRating('institution', d.ikigai_strength_institution);
-  checkAlloc();
-  updateProgress();
+async function loadRemarks(){
+  const{data}=await sb.from('evaluation_director_reviews').select('faculty_remarks').eq('evaluation_id',eid).single();
+  if(data?.faculty_remarks){document.getElementById('rmbox').style.display='block';document.getElementById('rmtxt').textContent=data.faculty_remarks;}
 }
 
-function gatherFormData() {
-  return {
-    faculty_master_id: faculty?.id,
-    academic_year: '2025-26',
-    cycle: 'annual',
-    snap_name: faculty?.name,
-    snap_designation: faculty?.designation,
-    snap_campus: faculty?.campus,
-    snap_subject_area: faculty?.subject_area,
-    snap_courses_taught: faculty?.courses_taught,
-    snap_admin_role: faculty?.admin_role,
-    publications_count: parseInt(document.getElementById('f-scopus').value)||null,
-    publications_details: document.getElementById('f-pub-detail').value||null,
-    mdp_revenue: null,
-    mdp_details: document.getElementById('f-mdp-detail').value||null,
-    industry_summary: document.getElementById('f-industry-summary').value||null,
-    institution_contributions: document.getElementById('f-institution').value||null,
-    ikigai_passion: [
-      document.getElementById('f-p-teaching').value,
-      document.getElementById('f-p-research').value,
-      document.getElementById('f-p-industry').value,
-      document.getElementById('f-p-institution').value
-    ].filter(Boolean).join('\n\n')||null,
-    ikigai_strength_teaching: ratings.teaching||null,
-    ikigai_strength_research: ratings.research||null,
-    ikigai_strength_industry: ratings.industry||null,
-    ikigai_strength_institution: ratings.institution||null,
-    ikigai_strengths_text: document.getElementById('f-strengths').value||null,
-    ikigai_growth_areas: document.getElementById('f-growth').value||null,
-    ikigai_contribution: document.getElementById('f-contrib-industry').value||null,
-    ikigai_convergence: document.getElementById('f-convergence').value||null,
-    ikigai_statement: document.getElementById('f-ikigai').value||null,
-    alloc_teaching: parseInt(document.getElementById('alloc-teaching').value)||null,
-    alloc_research: parseInt(document.getElementById('alloc-research').value)||null,
-    alloc_industry: parseInt(document.getElementById('alloc-industry').value)||null,
-    alloc_institution: parseInt(document.getElementById('alloc-institution').value)||null,
-    xime_contribution: document.getElementById('f-xime-contrib').value||null,
-    primary_objectives: document.getElementById('f-obj-primary').value||null,
-    next_year_objectives: document.getElementById('f-obj-next').value||null,
-    action_start: document.getElementById('f-start').value||null,
-    action_stop: document.getElementById('f-stop').value||null,
-    action_continue: document.getElementById('f-continue').value||null,
-    action_key_goal: document.getElementById('f-key-goal').value||null,
-    action_support: document.getElementById('f-support').value||null,
-    updated_at: new Date().toISOString()
-  };
+function g1Data(){return{snap_name:fac?.name,snap_designation:fac?.designation,snap_campus:fac?.campus,snap_subject_area:fac?.subject_area,snap_courses_taught:fac?.courses_taught,snap_admin_role:fac?.admin_role,publications_count:parseInt(document.getElementById('f-scopus').value)||null,publications_details:document.getElementById('f-pub').value||null,mdp_details:document.getElementById('f-mdpd').value||null,industry_summary:document.getElementById('f-ind').value||null,institution_contributions:document.getElementById('f-inst').value||null,teaching_notes:document.getElementById('f-tnotes').value||null,updated_at:new Date().toISOString()};}
+function g2Data(){return{ikigai_passion:[document.getElementById('f-pt').value,document.getElementById('f-pr').value,document.getElementById('f-pi').value,document.getElementById('f-ps').value].filter(Boolean).join('\n\n')||null,ikigai_strength_teaching:R.t||null,ikigai_strength_research:R.r||null,ikigai_strength_industry:R.i||null,ikigai_strength_institution:R.s||null,ikigai_strengths_text:document.getElementById('f-str').value||null,ikigai_growth_areas:document.getElementById('f-gr').value||null,ikigai_contribution:document.getElementById('f-ci').value||null,ikigai_statement:document.getElementById('f-iki').value||null,alloc_teaching:parseInt(document.getElementById('al-t').value)||null,alloc_research:parseInt(document.getElementById('al-r').value)||null,alloc_industry:parseInt(document.getElementById('al-i').value)||null,alloc_institution:parseInt(document.getElementById('al-s').value)||null,xime_contribution:document.getElementById('f-xc').value||null,primary_objectives:document.getElementById('f-op').value||null,next_year_objectives:document.getElementById('f-on').value||null,action_start:document.getElementById('f-sta').value||null,action_stop:document.getElementById('f-stp').value||null,action_continue:document.getElementById('f-cnt').value||null,action_key_goal:document.getElementById('f-kg').value||null,action_support:document.getElementById('f-sup').value||null,updated_at:new Date().toISOString()};}
+
+async function upsert(data){
+  if(eid){const{error}=await sb.from('faculty_evaluations').update(data).eq('id',eid);if(error)throw error;}
+  else{const{data:d,error}=await sb.from('faculty_evaluations').insert({...data,faculty_master_id:fac.id,academic_year:'2025-26',cycle:'annual'}).select().single();if(error)throw error;eid=d.id;erec=d;}
 }
 
-async function saveDraft() {
-  if (!faculty) { toast('No faculty loaded', false); return; }
-  const data = {...gatherFormData(), status:'draft'};
-  let res;
-  if (evalId) {
-    res = await sb.from('faculty_evaluations').update(data).eq('id', evalId);
-  } else {
-    res = await sb.from('faculty_evaluations').insert(data).select().single();
-    if (res.data) evalId = res.data.id;
-  }
-  if (res.error) { toast('Could not save — ' + res.error.message, false); return; }
-  toast('Draft saved');
-  updateProgress();
+async function saveDraft(){if(!fac){toast('No faculty loaded',false);return;}try{await upsert({...g1Data(),...g2Data(),status:'draft',workflow_status:'draft'});toast('Draft saved');upProg();}catch(e){toast('Save failed',false);}}
+
+async function submitGate1(){
+  if(!fac){toast('No faculty loaded',false);return;}
+  if(!confirm('Lock and submit Gate 1? Sections 1–5 cannot be edited after this.'))return;
+  try{
+    await upsert({...g1Data(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
+    erec={...erec,gate1_locked:true,workflow_status:'mid_year_locked'};
+    for(const d of DEANS){await sb.from('evaluation_dean_reviews').upsert({evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,campus:fac.campus,gate:'mid_year',validated:false},{onConflict:'evaluation_id,dean_email,gate'});}
+    applyLocks();toast('Gate 1 submitted and locked. Deans notified.');
+  }catch(e){toast('Submission failed',false);}
 }
 
-async function submitEval() {
-  if (!faculty) { toast('No faculty loaded', false); return; }
-  if (!document.getElementById('f-ikigai').value.trim()) {
-    toast('Please complete your Purpose Statement before submitting', false); return; }
-  const data = {...gatherFormData(), status:'submitted', submitted_at: new Date().toISOString()};
-  let res;
-  if (evalId) {
-    res = await sb.from('faculty_evaluations').update(data).eq('id', evalId);
-  } else {
-    res = await sb.from('faculty_evaluations').insert(data).select().single();
-    if (res.data) evalId = res.data.id;
-  }
-  if (res.error) { toast('Submission failed — ' + res.error.message, false); return; }
-  updateStatusPill('submitted');
-  toast('Submitted for Dean validation');
-  document.querySelectorAll('.field-input, textarea').forEach(el => el.setAttribute('readonly',''));
-  document.querySelectorAll('.btn-save, .btn-submit, .btn-submit-lg').forEach(b=>b.style.opacity='.4');
+async function submitGate2(){
+  if(!fac){toast('No faculty loaded',false);return;}
+  if(!g1Locked()){toast('Please submit Gate 1 first.',false);return;}
+  if(!document.getElementById('f-iki').value.trim()){toast('Please complete your Purpose Statement first.',false);return;}
+  if(!confirm('Submit your complete annual evaluation? This cannot be undone.'))return;
+  try{
+    await upsert({...g2Data(),gate2_locked:true,gate2_submitted_at:new Date().toISOString(),workflow_status:'annual_submitted',status:'submitted'});
+    erec={...erec,gate2_locked:true,workflow_status:'annual_submitted'};
+    for(const d of DEANS){await sb.from('evaluation_dean_reviews').upsert({evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,campus:fac.campus,gate:'annual',validated:false},{onConflict:'evaluation_id,dean_email,gate'});}
+    await sb.from('evaluation_director_reviews').upsert({evaluation_id:eid,director_email:'roshni@xime.org',director_name:'Dr. Roshni James',campus:fac.campus,status:'pending'},{onConflict:'evaluation_id'});
+    applyLocks();toast('Annual evaluation submitted. Your Deans have been notified.');
+  }catch(e){toast('Submission failed',false);}
 }
 
-function updateStatusPill(status) {
-  const el = document.getElementById('status-display');
-  el.textContent = status.charAt(0).toUpperCase()+status.slice(1);
-  el.className = 'status-pill status-'+status;
+function handleSubmit(){if(!g1Locked())submitGate1();else submitGate2();}
+
+function restore(d){
+  const m={'f-pub':d.publications_details,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,'f-inst':d.institution_contributions,'f-tnotes':d.teaching_notes,'f-scopus':d.publications_count,'f-pt':d.ikigai_passion,'f-str':d.ikigai_strengths_text,'f-gr':d.ikigai_growth_areas,'f-ci':d.ikigai_contribution,'f-iki':d.ikigai_statement,'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-i':d.alloc_industry,'al-s':d.alloc_institution,'f-xc':d.xime_contribution,'f-op':d.primary_objectives,'f-on':d.next_year_objectives,'f-sta':d.action_start,'f-stp':d.action_stop,'f-cnt':d.action_continue,'f-kg':d.action_key_goal,'f-sup':d.action_support};
+  Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;});
+  if(d.ikigai_strength_teaching){R.t=d.ikigai_strength_teaching;rStars('t');}
+  if(d.ikigai_strength_research){R.r=d.ikigai_strength_research;rStars('r');}
+  if(d.ikigai_strength_industry){R.i=d.ikigai_strength_industry;rStars('i');}
+  if(d.ikigai_strength_institution){R.s=d.ikigai_strength_institution;rStars('s');}
+  chkAlloc();upProg();
 }
 
-async function init() {
+async function init(){
   buildStars();
-  document.querySelectorAll('.field-input, textarea').forEach(el =>
-    el.addEventListener('input', updateProgress));
-
-  const { data: session } = await sb.auth.getSession();
-  if (session?.session) {
-    const { data: fac } = await sb.from('faculty_master').select('*').limit(1).single();
-    if (fac) { populateProfile(fac); await loadOrCreateEval(fac.id); }
-  } else {
-    const { data: fac } = await sb.from('faculty_master')
-      .select('*').eq('campus','Bengaluru').order('name').limit(1).single();
-    if (fac) { populateProfile(fac); }
-  }
-  updateProgress();
+  document.querySelectorAll('.fi,.ai,.ata,.ibi').forEach(el=>el.addEventListener('input',upProg));
+  const{data:f}=await sb.from('faculty_master').select('*').eq('campus','Bengaluru').order('name').limit(1).single();
+  if(!f)return;
+  fac=f;
+  // Load deans for this campus from registry
+  const{data:deans}=await sb.from('dean_registry').select('*').eq('campus',f.campus);
+  if(deans) DEANS=deans.map(d=>({email:d.email,name:d.name,role:d.role}));
+  document.getElementById('sb-name').textContent=f.name;
+  document.getElementById('sb-role').textContent=`${f.designation} · ${f.campus}`;
+  document.getElementById('f-admin').value=f.admin_role||'—';
+  document.getElementById('cpills').innerHTML=f.courses_taught?f.courses_taught.split(' · ').map(c=>`<div class="cpill">${c}</div>`).join(''):'<span style="font-size:12px;color:var(--faint);font-style:italic">No Digii data yet</span>';
+  const rows=[['Name',f.name],['Designation',f.designation],['Campus',f.campus],['Joined',f.joined||'—'],['PhD',f.phd==='yes'?`PhD ${f.phd_year||''}`:f.phd==='pursuing'?'Pursuing':'—'],['Subject',f.subject_area||'—']];
+  document.getElementById('prof-rows').innerHTML=rows.map(([k,v])=>`<div class="ar"><span class="ark">${k}</span><span class="arv">${v}</span></div>`).join('');
+  const{data:ev}=await sb.from('faculty_evaluations').select('*').eq('faculty_master_id',f.id).eq('academic_year','2025-26').maybeSingle();
+  if(ev){eid=ev.id;erec=ev;restore(ev);}else erec={gate1_locked:false,gate2_locked:false,workflow_status:'draft'};
+  applyLocks();
 }
-
 init();
 </script>
 </body>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magis Centre · Dean Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --navy:#111827;--red:#E8241C;--gold:#c9a84c;--gold-l:#f0dfa0;--gold-d:#8a6e1e;
+  --parchment:#faf8f3;--cream:#f4f0e8;--white:#fff;
+  --border:rgba(0,0,0,.09);--border-g:rgba(201,168,76,.35);
+  --text:#1a1a18;--muted:#5a5a56;--faint:#9a9a94;
+  --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#085041;
+  --amber:#EF9F27;--amber-l:#FAEEDA;--amber-d:#633806;
+  --blue:#378ADD;--blue-l:#E6F1FB;--blue-d:#0C447C;
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--text);font-size:14px;min-height:100vh}
+
+.topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.2)}
+.tb-l{display:flex;align-items:center;gap:12px}
+.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
+.wm em{color:var(--red);font-style:normal}
+.sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.ttl{font-size:11px;color:rgba(255,255,255,.55)}
+.dean-badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px}
+.back-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer}
+.back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+.main{padding:28px;max-width:960px}
+
+/* Dean context banner */
+.dean-banner{border-radius:var(--r);padding:16px 22px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between}
+.db-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#fff}
+.db-role{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.db-scope{font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid;margin-top:6px;display:inline-block}
+.db-right{text-align:right}
+.db-stat-val{font-family:'DM Mono',monospace;font-size:22px;color:#fff}
+.db-stat-label{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+
+/* Stats strip */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.stat{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:12px 16px}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--navy);line-height:1}
+.stat-label{font-size:10px;color:var(--faint);margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+
+/* Queue */
+.queue-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.queue-label::after{content:'';flex:1;height:.5px;background:var(--border-g)}
+.queue{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+
+.qcard{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .12s,box-shadow .12s}
+.qcard:hover{border-color:rgba(201,168,76,.4);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.qcard.validated{background:var(--parchment);border-color:rgba(29,158,117,.2)}
+.qcard-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;background:var(--cream);color:var(--navy)}
+.qcard-name{font-size:13px;font-weight:500;color:var(--navy)}
+.qcard-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.qcard-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.status-chip{font-size:10px;font-weight:500;padding:3px 8px;border-radius:10px}
+.chip-pending{background:var(--amber-l);color:var(--amber-d)}
+.chip-validated{background:var(--teal-l);color:var(--teal-d)}
+.chip-submitted{background:var(--blue-l);color:var(--blue-d)}
+.gate-chip{font-size:9px;color:var(--faint);font-family:'DM Mono',monospace}
+.empty-queue{background:var(--white);border:.5px dashed var(--border);border-radius:var(--r);padding:32px;text-align:center;color:var(--faint);font-size:13px}
+
+/* Detail panel */
+.detail-wrap{display:none;position:fixed;inset:0;background:rgba(17,24,39,.5);z-index:200;align-items:flex-start;justify-content:flex-end}
+.detail-wrap.open{display:flex}
+.detail-panel{width:520px;height:100vh;background:var(--white);overflow-y:auto;box-shadow:-8px 0 32px rgba(0,0,0,.15);animation:slideIn .2s ease}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+
+.dp-head{background:var(--navy);padding:20px 22px;position:sticky;top:0;z-index:10}
+.dp-close{font-size:11px;color:rgba(255,255,255,.5);cursor:pointer;margin-bottom:10px;display:inline-block}
+.dp-close:hover{color:#fff}
+.dp-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:#fff}
+.dp-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:3px}
+.dp-gate{display:flex;gap:8px;margin-top:10px}
+.dp-gate-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;transition:all .12s;border:.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5)}
+.dp-gate-btn.on{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+
+.dp-body{padding:18px 22px}
+.dp-section{margin-bottom:20px}
+.dp-section-title{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.dp-section-title::after{content:'';flex:1;height:.5px;background:var(--border)}
+.dp-domain-title{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:var(--rs);margin-bottom:10px;display:inline-block}
+
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:12px}
+.ir-label{font-size:12px;color:var(--muted);flex-shrink:0}
+.ir-value{font-size:12px;font-weight:500;color:var(--text);text-align:right;line-height:1.5}
+
+.field-block{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:12px 14px;margin-bottom:10px}
+.fb-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+.fb-value{font-size:13px;color:var(--text);line-height:1.65}
+.fb-empty{font-size:12px;color:var(--faint);font-style:italic}
+
+/* Score pills */
+.score-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:.5px solid var(--border)}
+.score-row:last-child{border-bottom:none}
+.score-label{font-size:12px;color:var(--muted)}
+.score-dots{display:flex;gap:3px}
+.sdot{width:10px;height:10px;border-radius:50%;background:var(--border)}
+.sdot.on{background:var(--gold)}
+
+/* Dean notes area */
+.notes-wrap{margin-bottom:16px}
+.notes-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.notes-ta{width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:80px;transition:border-color .15s}
+.notes-ta:focus{outline:none;border-color:rgba(201,168,76,.5)}
+.notes-hint{font-size:11px;color:var(--faint);margin-top:4px;font-style:italic}
+
+/* Validate button */
+.validate-btn{width:100%;padding:12px;background:var(--teal);color:#fff;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.validate-btn:hover{background:var(--teal-d)}
+.validate-btn:disabled{opacity:.4;cursor:not-allowed;background:var(--teal)}
+.validated-state{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:var(--teal-d)}
+.vs-icon{font-size:16px}
+
+/* History panel */
+.history-wrap{margin-top:14px}
+.history-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.history-item{background:var(--cream);border-radius:var(--rs);padding:9px 12px;margin-bottom:6px}
+.hi-meta{font-size:10px;color:var(--faint);margin-bottom:3px}
+.hi-text{font-size:12px;color:var(--text);line-height:1.6}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:9px 14px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+.domain-restricted{background:var(--cream);border:.5px dashed var(--border-g);border-radius:var(--rs);padding:16px;text-align:center;color:var(--faint);font-size:12px;margin-bottom:12px}
+.dr-icon{font-size:20px;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <div class="wm">X<em>I</em>ME</div><div class="sep"></div>
+    <div class="ttl">Magis Centre · Dean Validation</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="dean-badge" id="dean-badge" style="background:rgba(201,168,76,.15);color:var(--gold)">Loading...</div>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+  </div>
+</div>
+
+<div class="main" id="main-content">
+  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading your validation queue...</div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-wrap" id="detail-wrap" onclick="handleBackdrop(event)">
+  <div class="detail-panel" id="detail-panel">
+    <div class="dp-head">
+      <div class="dp-close" onclick="closePanel()">← Close</div>
+      <div class="dp-name" id="dp-name">Faculty Member</div>
+      <div class="dp-sub" id="dp-sub">Loading...</div>
+      <div class="dp-gate">
+        <button class="dp-gate-btn on" onclick="switchGate('mid_year',this)" id="btn-mid">Mid-Year</button>
+        <button class="dp-gate-btn" onclick="switchGate('annual',this)" id="btn-annual">Annual</button>
+      </div>
+    </div>
+    <div class="dp-body" id="dp-body">Loading...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+
+// Demo: inject dean identity here. In production this comes from session auth.
+// Switch this to test different dean views.
+const DEMO_DEAN = {
+  email: 'rajagopalan@xime.org',
+  name: 'Dr. A.R. Rajagopalan',
+  role: 'academics',
+  campus: 'Bengaluru'
+};
+
+const ROLE_CONFIG = {
+  academics: {
+    label: 'Dean Academics',
+    color: '#1D9E75',
+    bg: 'rgba(29,158,117,.15)',
+    scopeLabel: 'Validates: Teaching & Effectiveness',
+    domainColor: '#E1F5EE',
+    domainText: '#085041'
+  },
+  research: {
+    label: 'Dean Research',
+    color: '#378ADD',
+    bg: 'rgba(55,138,221,.15)',
+    scopeLabel: 'Validates: Research & Publications',
+    domainColor: '#E6F1FB',
+    domainText: '#0C447C'
+  },
+  ep: {
+    label: 'Dean External Programs',
+    color: '#c9a84c',
+    bg: 'rgba(201,168,76,.15)',
+    scopeLabel: 'Validates: Industry Engagement & MDPs',
+    domainColor: '#FAEEDA',
+    domainText: '#633806'
+  }
+};
+
+let dean = DEMO_DEAN;
+let allReviews = [];
+let currentEval = null;
+let currentGate = 'mid_year';
+let currentReviewId = null;
+
+function toast(m, ok=true){
+  const t=document.getElementById('toast');
+  t.textContent=m;
+  t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function initials(name){return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
+function cfg(){return ROLE_CONFIG[dean.role]||ROLE_CONFIG.academics}
+
+async function loadQueue(){
+  // Fetch dean review rows for this dean
+  const{data:reviews, error}=await sb
+    .from('evaluation_dean_reviews')
+    .select('*, faculty_evaluations(*)')
+    .eq('dean_email', dean.email)
+    .order('created_at', {ascending:false});
+
+  if(error||!reviews){
+    document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load your review queue.</div>';
+    return;
+  }
+  allReviews=reviews;
+  renderPage();
+}
+
+function renderPage(){
+  const c=cfg();
+  const pending=allReviews.filter(r=>!r.validated);
+  const done=allReviews.filter(r=>r.validated);
+
+  document.getElementById('dean-badge').textContent=`${c.label} · ${dean.campus}`;
+  document.getElementById('dean-badge').style.background=c.bg;
+  document.getElementById('dean-badge').style.color=c.color;
+
+  const mainEl=document.getElementById('main-content');
+  mainEl.innerHTML=`
+    <div class="dean-banner" style="background:${dean.role==='academics'?'#0D2B1F':dean.role==='research'?'#0D1F35':'#2B200D'}">
+      <div>
+        <div style="font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:${c.color};margin-bottom:4px">Magis Centre · Dean Validation</div>
+        <div class="db-name">${dean.name}</div>
+        <div class="db-role">${c.label} · ${dean.campus} · AY 2025–26</div>
+        <div class="db-scope" style="color:${c.color};border-color:${c.color}40;background:${c.bg}">${c.scopeLabel}</div>
+      </div>
+      <div class="db-right">
+        <div class="db-stat-val">${pending.length}</div>
+        <div class="db-stat-label">Pending validation</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val">${allReviews.length}</div>
+        <div class="stat-label">Total in queue</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--amber-d)">${pending.length}</div>
+        <div class="stat-label">Awaiting review</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:var(--teal)">${done.length}</div>
+        <div class="stat-label">Validated</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">${allReviews.filter(r=>r.gate==='annual').length}</div>
+        <div class="stat-label">Annual submissions</div>
+      </div>
+    </div>
+
+    <div class="queue-label">Pending Validation</div>
+    <div class="queue">
+      ${pending.length===0
+        ? `<div class="empty-queue">
+            <div style="font-size:20px;margin-bottom:8px">✓</div>
+            All evaluations in your queue have been validated.
+           </div>`
+        : pending.map(r=>queueCard(r)).join('')}
+    </div>
+
+    ${done.length>0?`
+    <div class="queue-label">Validated</div>
+    <div class="queue">${done.map(r=>queueCard(r)).join('')}</div>
+    `:''}
+  `;
+}
+
+function queueCard(r){
+  const ev=r.faculty_evaluations;
+  const name=ev?.snap_name||'Unknown Faculty';
+  const desig=ev?.snap_designation||'—';
+  const campus=ev?.snap_campus||dean.campus;
+  const status=r.validated?'validated':'pending';
+  const gate=r.gate==='mid_year'?'Mid-Year':'Annual';
+  return`<div class="qcard${r.validated?' validated':''}" onclick="openPanel('${r.id}')">
+    <div class="qcard-av">${initials(name)}</div>
+    <div style="flex:1">
+      <div class="qcard-name">${name}</div>
+      <div class="qcard-meta">${desig} · ${campus}</div>
+    </div>
+    <div class="qcard-right">
+      <div class="status-chip ${status==='validated'?'chip-validated':'chip-pending'}">${status==='validated'?'Validated':'Pending'}</div>
+      <div class="gate-chip">${gate} evaluation</div>
+      ${r.validated&&r.validated_at?`<div style="font-size:10px;color:var(--faint)">${new Date(r.validated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>`:''}
+    </div>
+  </div>`;
+}
+
+async function openPanel(reviewId){
+  const review=allReviews.find(r=>r.id===reviewId);
+  if(!review)return;
+  currentReviewId=reviewId;
+  currentEval=review.faculty_evaluations;
+  currentGate=review.gate||'mid_year';
+
+  document.getElementById('dp-name').textContent=currentEval?.snap_name||'—';
+  document.getElementById('dp-sub').textContent=`${currentEval?.snap_designation||'—'} · ${currentEval?.snap_campus||dean.campus}`;
+
+  // Gate tabs — show which gate this review belongs to
+  document.getElementById('btn-mid').classList.toggle('on', currentGate==='mid_year');
+  document.getElementById('btn-annual').classList.toggle('on', currentGate==='annual');
+
+  await renderDomainView(review);
+  document.getElementById('detail-wrap').classList.add('open');
+}
+
+async function switchGate(gate, btn){
+  currentGate=gate;
+  document.querySelectorAll('.dp-gate-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const review=allReviews.find(r=>r.id===currentReviewId);
+  if(review) await renderDomainView(review, gate);
+}
+
+async function renderDomainView(review, gateOverride){
+  const gate=gateOverride||review.gate;
+  const ev=review.faculty_evaluations;
+  const c=cfg();
+  let html='';
+
+  // Profile snapshot (always visible)
+  html+=`<div class="dp-section">
+    <div class="dp-section-title">Faculty Profile</div>
+    ${infoRows([
+      ['Name', ev?.snap_name||'—'],
+      ['Designation', ev?.snap_designation||'—'],
+      ['Campus', ev?.snap_campus||'—'],
+      ['Subject Area', ev?.snap_subject_area||'—'],
+      ['Admin Role', ev?.snap_admin_role||'—']
+    ])}
+  </div>`;
+
+  // Domain-specific section
+  html+=`<div class="dp-section">
+    <div class="dp-section-title">Your Domain · ${c.scopeLabel}</div>
+    <div class="dp-domain-title" style="background:${c.domainColor};color:${c.domainText}">${c.label} Review</div>
+    ${buildDomainContent(ev, gate)}
+  </div>`;
+
+  // Restricted sections notice
+  html+=`<div class="domain-restricted">
+    <div class="dr-icon">🔒</div>
+    Other sections of this evaluation are not visible to Deans.<br>
+    IKIGAI reflection, development goals, and XIME objectives are<br>visible only to the Director and President.
+  </div>`;
+
+  // Dean notes
+  html+=`<div class="notes-wrap">
+    <div class="notes-label">Your Notes <span style="font-weight:400;color:var(--faint);text-transform:none;letter-spacing:0;font-size:10px">— internal, visible only to Director and above</span></div>
+    <textarea class="notes-ta" id="dean-notes" rows="4" placeholder="Add your observations on this faculty member's ${c.scopeLabel.split(':')[1]?.trim().toLowerCase()||'domain'} performance. These notes are internal and not shared with the faculty member.">${review.notes||''}</textarea>
+    <div class="notes-hint">These notes travel with the evaluation to the Director. The faculty member never sees them.</div>
+  </div>`;
+
+  // Validation action
+  if(review.validated){
+    html+=`<div class="validated-state">
+      <span class="vs-icon">✓</span>
+      Validated on ${new Date(review.validated_at).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}
+    </div>`;
+    if(review.notes){
+      html+=`<div class="history-wrap">
+        <div class="history-label">Your notes on this evaluation</div>
+        <div class="history-item">
+          <div class="hi-meta">Saved · ${new Date(review.updated_at||review.validated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+          <div class="hi-text">${review.notes}</div>
+        </div>
+      </div>`;
+    }
+    html+=`<div style="margin-top:12px"><button class="validate-btn" style="background:var(--muted)" onclick="reopenValidation('${review.id}')">Reopen for correction</button></div>`;
+  } else {
+    html+=`<button class="validate-btn" onclick="validateDomain('${review.id}')">
+      ✓ &nbsp;Validate ${c.label.replace('Dean ','')} Section
+    </button>`;
+  }
+
+  document.getElementById('dp-body').innerHTML=html;
+}
+
+function buildDomainContent(ev, gate){
+  if(!ev) return '<div class="fb-empty">Evaluation data not available.</div>';
+  const c=cfg();
+
+  if(dean.role==='academics'){
+    return`
+      ${fieldBlock('Courses Taught', ev.snap_courses_taught ? ev.snap_courses_taught.split(' · ').join(', ') : null)}
+      ${fieldBlock('Teaching Notes', ev.teaching_notes)}
+      ${fieldBlock('Terms Taught', ev.teaching_notes)}
+      <div class="field-block">
+        <div class="fb-label">Teaching Effectiveness Score</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
+          <div style="font-family:'DM Mono',monospace;font-size:22px;color:var(--teal-d)">${ev.teaching_effectiveness||'—'}</div>
+          <div style="font-size:11px;color:var(--faint)">Student feedback score · you may enter below</div>
+        </div>
+        <input style="margin-top:8px;width:100%;border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px" id="te-score" type="number" min="0" max="5" step="0.1" placeholder="Enter score (0.0 – 5.0)" value="${ev.teaching_effectiveness||''}">
+        <div style="font-size:11px;color:var(--faint);margin-top:4px;font-style:italic">This score is auto-populated to the faculty member's record once you validate.</div>
+      </div>`;
+  }
+
+  if(dean.role==='research'){
+    return`
+      ${fieldBlock('Publications Detail', ev.publications_details)}
+      ${fieldBlock('Work in Progress', ev.wip_details)}
+      <div class="field-block">
+        <div class="fb-label">Publication Counts (Self-Reported)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+          ${[['Scopus',ev.publications_count],['ABDC',ev.abdc_count],['Web of Science',ev.wos_count]].map(([l,v])=>`
+          <div style="background:var(--white);border:.5px solid var(--border-g);border-radius:var(--rs);padding:8px;text-align:center">
+            <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--blue-d)">${v||'0'}</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
+          </div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--faint);margin-top:8px;font-style:italic">Verify these counts against XIME research records before validating.</div>
+      </div>`;
+  }
+
+  if(dean.role==='ep'){
+    return`
+      ${fieldBlock('MDP / OBP Details', ev.mdp_details)}
+      ${fieldBlock('Other Industry Engagements', ev.industry_summary)}
+      <div class="field-block">
+        <div class="fb-label">MDPs Delivered (Self-Reported)</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:6px">
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:22px;color:var(--amber-d)">${ev.mdp_count||'0'}</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:2px">Programs</div>
+          </div>
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:22px;color:var(--amber-d)">${ev.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'—'}</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:2px">Revenue (from EP records)</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--faint);margin-top:8px;font-style:italic">Cross-check against EP calendar records before validating.</div>
+      </div>`;
+  }
+
+  return '<div class="fb-empty">Domain content not available.</div>';
+}
+
+function fieldBlock(label, value){
+  return`<div class="field-block">
+    <div class="fb-label">${label}</div>
+    ${value?`<div class="fb-value">${value}</div>`:`<div class="fb-empty">Not entered by faculty</div>`}
+  </div>`;
+}
+
+function infoRows(rows){
+  return`<div style="background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:10px 14px">${rows.map(([k,v])=>`
+    <div class="info-row"><span class="ir-label">${k}</span><span class="ir-value">${v}</span></div>`).join('')}
+  </div>`;
+}
+
+async function validateDomain(reviewId){
+  const notes=document.getElementById('dean-notes')?.value||'';
+
+  // Save teaching effectiveness if Dean Academics
+  if(dean.role==='academics'){
+    const score=document.getElementById('te-score')?.value;
+    if(score&&currentEval?.id){
+      await sb.from('faculty_evaluations').update({teaching_effectiveness:parseFloat(score),updated_at:new Date().toISOString()}).eq('id',currentEval.id);
+    }
+  }
+
+  const{error}=await sb.from('evaluation_dean_reviews').update({
+    validated:true,
+    validated_at:new Date().toISOString(),
+    notes:notes||null,
+    updated_at:new Date().toISOString()
+  }).eq('id',reviewId);
+
+  if(error){toast('Could not save validation',false);return;}
+
+  // Update local state
+  const r=allReviews.find(x=>x.id===reviewId);
+  if(r){r.validated=true;r.validated_at=new Date().toISOString();r.notes=notes;}
+
+  // Check if all 3 deans for this evaluation have validated — if so update eval status
+  if(currentEval?.id){
+    const gate=allReviews.find(r=>r.id===reviewId)?.gate;
+    const evalReviews=allReviews.filter(r=>r.faculty_evaluations?.id===currentEval.id&&r.gate===gate);
+    // Reload from DB to get latest
+    const{data:dbReviews}=await sb.from('evaluation_dean_reviews').select('validated').eq('evaluation_id',currentEval.id).eq('gate',gate);
+    const allDone=dbReviews&&dbReviews.every(r=>r.validated);
+    if(allDone){
+      const newStatus=gate==='mid_year'?'mid_year_validated':'dean_validated';
+      await sb.from('faculty_evaluations').update({workflow_status:newStatus,updated_at:new Date().toISOString()}).eq('id',currentEval.id);
+    }
+  }
+
+  toast('Validated. Notes saved.');
+  renderPage();
+  await renderDomainView(allReviews.find(r=>r.id===reviewId));
+}
+
+async function reopenValidation(reviewId){
+  if(!confirm('Reopen this validation? Your previous validation will be removed.'))return;
+  const{error}=await sb.from('evaluation_dean_reviews').update({validated:false,validated_at:null,updated_at:new Date().toISOString()}).eq('id',reviewId);
+  if(error){toast('Could not reopen',false);return;}
+  const r=allReviews.find(x=>x.id===reviewId);
+  if(r){r.validated=false;r.validated_at=null;}
+  toast('Reopened for correction.');
+  renderPage();
+  await renderDomainView(r);
+}
+
+function closePanel(){document.getElementById('detail-wrap').classList.remove('open');}
+function handleBackdrop(e){if(e.target===document.getElementById('detail-wrap'))closePanel();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+
+async function init(){
+  // In production: detect dean from session email
+  // const{data:session}=await sb.auth.getSession();
+  // const email=session?.session?.user?.email;
+  // if(email){const{data:d}=await sb.from('dean_registry').select('*').eq('email',email).single();if(d)dean=d;}
+  await loadQueue();
+}
+
+init();
+</script>
+</body>
+</html>

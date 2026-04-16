@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magis Centre · Presidential Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --navy:#111827;--red:#E8241C;--gold:#c9a84c;--gold-l:#f0dfa0;--gold-d:#8a6e1e;
+  --parchment:#faf8f3;--cream:#f4f0e8;--white:#fff;
+  --border:rgba(0,0,0,.09);--border-g:rgba(201,168,76,.35);
+  --text:#1a1a18;--muted:#5a5a56;--faint:#9a9a94;
+  --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#085041;
+  --amber:#EF9F27;--amber-l:#FAEEDA;--amber-d:#633806;
+  --blue:#378ADD;--blue-l:#E6F1FB;--blue-d:#0C447C;
+  --purple:#7F77DD;--purple-l:#EEEDFE;--purple-d:#3C3489;
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--text);font-size:14px;min-height:100vh}
+
+.topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.3)}
+.tb-l{display:flex;align-items:center;gap:12px}
+.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
+.wm em{color:var(--red);font-style:normal}
+.sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.ttl{font-size:11px;color:rgba(255,255,255,.55)}
+.pres-badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;background:rgba(201,168,76,.2);color:var(--gold);border:1px solid rgba(201,168,76,.3)}
+.back-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer}
+.back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+.main{padding:28px;max-width:1020px}
+
+/* Presidential banner */
+.pres-banner{background:linear-gradient(135deg,#0A1628 0%,#1a2535 100%);border-radius:var(--r);padding:20px 26px;margin-bottom:22px;border:.5px solid rgba(201,168,76,.2)}
+.pb-eyebrow{font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.pb-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#fff;line-height:1.2}
+.pb-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:4px}
+.pb-right{text-align:right}
+.pb-num{font-family:'DM Mono',monospace;font-size:28px;color:var(--gold)}
+.pb-numl{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.stat{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:12px 16px}
+.sv{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--navy);line-height:1}
+.sl{font-size:10px;color:var(--faint);margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+
+/* Campus filter tabs */
+.campus-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.ct{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 14px;border-radius:20px;border:.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);transition:all .12s}
+.ct.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:500}
+
+.ql{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.ql::after{content:'';flex:1;height:.5px;background:var(--border-g)}
+.queue{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+
+.qcard{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .12s,box-shadow .12s}
+.qcard:hover{border-color:rgba(201,168,76,.4);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.qcard.endorsed{background:var(--parchment);border-color:rgba(29,158,117,.2)}
+.qcard.returned{background:#FFF8F8;border-color:rgba(226,75,74,.2)}
+.qcard.needs-action{border-left:3px solid var(--gold)}
+.qav{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.av-blr{background:#E1F5EE;color:#085041}
+.av-chn{background:#E6F1FB;color:#0C447C}
+.av-koc{background:#EEEDFE;color:#3C3489}
+.qname{font-size:13px;font-weight:500;color:var(--navy)}
+.qmeta{font-size:11px;color:var(--muted);margin-top:2px}
+.qright{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.chip{font-size:10px;font-weight:500;padding:3px 8px;border-radius:10px}
+.chip-action{background:#FAEEDA;color:#633806}
+.chip-endorsed{background:#E1F5EE;color:#085041}
+.chip-returned{background:#FCEBEB;color:#501313}
+.chip-sub{font-size:9px;color:var(--faint);font-family:'DM Mono',monospace}
+
+.empty-q{background:var(--white);border:.5px dashed var(--border);border-radius:var(--r);padding:32px;text-align:center;color:var(--faint);font-size:13px}
+
+/* Full-page evaluation view */
+.eval-view{display:none;position:fixed;inset:0;background:var(--parchment);z-index:200;overflow-y:auto;animation:fIn .2s ease}
+.eval-view.open{display:block}
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+
+.ev-header{background:var(--navy);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(201,168,76,.2)}
+.ev-close{font-size:11px;color:rgba(255,255,255,.5);cursor:pointer;display:flex;align-items:center;gap:6px}
+.ev-close:hover{color:#fff}
+.ev-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:#fff}
+.ev-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
+.ev-tabs{display:flex;gap:2px;margin-top:10px}
+.ev-tab{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 14px;border-radius:20px;cursor:pointer;border:.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5);transition:all .12s}
+.ev-tab.on{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+
+.ev-layout{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 120px)}
+.ev-main{padding:28px 32px;overflow-y:auto}
+.ev-sidebar{border-left:.5px solid var(--border);background:var(--white);padding:22px;display:flex;flex-direction:column;gap:14px;position:sticky;top:120px;height:calc(100vh - 120px);overflow-y:auto}
+
+/* Sidebar action area */
+.action-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin-bottom:10px}
+.dir-channel{background:var(--blue-l);border:.5px solid rgba(55,138,221,.25);border-radius:var(--rs);padding:12px 14px;margin-bottom:12px}
+.dc-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-d);margin-bottom:6px}
+.dc-text{font-size:13px;color:var(--blue-d);line-height:1.65;font-style:italic}
+.dc-from{font-size:10px;color:var(--blue-d);margin-top:6px;font-family:'DM Mono',monospace;opacity:.7}
+
+.endorse-btn{width:100%;padding:13px;background:#166534;color:#fff;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.endorse-btn:hover{background:#14532D}
+.endorse-btn:disabled{opacity:.4;cursor:not-allowed;background:#166534}
+
+.return-section{margin-top:8px}
+.return-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.return-ta{width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);resize:none;min-height:80px;transition:border-color .15s;line-height:1.6}
+.return-ta:focus{outline:none;border-color:rgba(226,75,74,.4)}
+.return-hint{font-size:10px;color:var(--faint);margin-top:4px;font-style:italic;line-height:1.5}
+.return-btn{width:100%;padding:10px;background:var(--white);color:#991B1B;border:1.5px solid #FCA5A5;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;margin-top:6px}
+.return-btn:hover{background:#FEF2F2}
+
+.endorsed-state{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:12px 14px;font-size:12px;font-weight:500;color:var(--teal-d);display:flex;align-items:center;gap:8px}
+
+/* Evaluation content styles */
+.sec-head{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-head::after{content:'';flex:1;height:.5px;background:var(--border)}
+.evf{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;margin-bottom:8px}
+.evfl{font-size:9px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
+.evfv{font-size:13px;color:var(--text);line-height:1.65}
+.evfe{font-size:12px;color:var(--faint);font-style:italic}
+.ev-section{margin-bottom:24px}
+.irow{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:12px}
+.irl{font-size:12px;color:var(--muted)}
+.irv{font-size:12px;font-weight:500;color:var(--text);text-align:right}
+.ikigai-hero{background:var(--navy);border-radius:var(--r);padding:20px 24px;margin-bottom:8px}
+.iki-l{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.iki-t{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:#fff;line-height:1.7}
+.str-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--border)}
+.str-row:last-child{border-bottom:none}
+.strl{font-size:12px;color:var(--muted)}
+.strd{display:flex;gap:3px}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--border)}
+.sdot.on{background:var(--gold)}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:9px 14px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <div class="wm">X<em>I</em>ME</div><div class="sep"></div>
+    <div class="ttl">Magis Centre · Presidential Review</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="pres-badge">President · All Campuses</div>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+  </div>
+</div>
+
+<div class="main" id="main-content">
+  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading evaluations...</div>
+</div>
+
+<!-- Full evaluation view -->
+<div class="eval-view" id="eval-view">
+  <div class="ev-header">
+    <div>
+      <div class="ev-close" onclick="closeEval()">← Back to Review Queue</div>
+      <div class="ev-name" id="ev-name">Faculty</div>
+      <div class="ev-sub" id="ev-sub"></div>
+      <div class="ev-tabs">
+        <button class="ev-tab on" onclick="switchEvTab('record',this)">Performance Record</button>
+        <button class="ev-tab" onclick="switchEvTab('ikigai',this)">IKIGAI & Goals</button>
+      </div>
+    </div>
+  </div>
+  <div class="ev-layout">
+    <div class="ev-main" id="ev-main"></div>
+    <div class="ev-sidebar" id="ev-sidebar"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+
+let allEvals=[], currentEval=null, currentDirReview=null, currentPresReview=null, activeCampus='all', activeEvTab='record';
+const campuses=['Bengaluru','Chennai','Kochi'];
+const avClass={Bengaluru:'av-blr',Chennai:'av-chn',Kochi:'av-koc'};
+
+function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function initials(n){return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
+function evf(label,val){return`<div class="evf"><div class="evfl">${label}</div>${val?`<div class="evfv">${val}</div>`:`<div class="evfe">Not entered</div>`}</div>`}
+function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'—'}</span></div>`}
+
+async function loadAll(){
+  const{data,error}=await sb.from('faculty_evaluations')
+    .select('*')
+    .in('workflow_status',['director_forwarded','president_review','endorsed','returned_to_director'])
+    .order('updated_at',{ascending:false});
+  if(error||!data){document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load evaluations.</div>';return;}
+  allEvals=data;
+  renderPage();
+}
+
+function renderPage(){
+  const filtered=activeCampus==='all'?allEvals:allEvals.filter(e=>e.snap_campus===activeCampus);
+  const pending=filtered.filter(e=>['director_forwarded','president_review'].includes(e.workflow_status));
+  const done=filtered.filter(e=>['endorsed','returned_to_director'].includes(e.workflow_status));
+
+  document.getElementById('main-content').innerHTML=`
+    <div class="pres-banner" style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div class="pb-eyebrow">Magis Centre · Presidential Review</div>
+        <div class="pb-title">Faculty Evaluations<br>AY 2025–26</div>
+        <div class="pb-sub">Review, endorse, or return to Director. Your endorsement publishes the evaluation to the faculty member.</div>
+      </div>
+      <div class="pb-right">
+        <div class="pb-num">${pending.length}</div>
+        <div class="pb-numl">Awaiting endorsement</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="sv">${allEvals.length}</div><div class="sl">Total forwarded</div></div>
+      <div class="stat"><div class="sv" style="color:var(--gold-d)">${pending.length}</div><div class="sl">Pending endorsement</div></div>
+      <div class="stat"><div class="sv" style="color:var(--teal)">${allEvals.filter(e=>e.workflow_status==='endorsed').length}</div><div class="sl">Endorsed</div></div>
+      <div class="stat"><div class="sv" style="color:var(--red)">${allEvals.filter(e=>e.workflow_status==='returned_to_director').length}</div><div class="sl">Returned to Director</div></div>
+    </div>
+
+    <div class="campus-tabs">
+      <button class="ct${activeCampus==='all'?' on':''}" onclick="setCampus('all',this)">All Campuses</button>
+      ${campuses.map(c=>`<button class="ct${activeCampus===c?' on':''}" onclick="setCampus('${c}',this)" style="color:${activeCampus===c?'#fff':''}">${c}</button>`).join('')}
+    </div>
+
+    ${pending.length>0?`
+    <div class="ql">Awaiting Your Endorsement</div>
+    <div class="queue">${pending.map(e=>qCard(e,true)).join('')}</div>`:''}
+
+    ${done.length>0?`
+    <div class="ql">Reviewed</div>
+    <div class="queue">${done.map(e=>qCard(e,false)).join('')}</div>`:''}
+
+    ${filtered.length===0?`<div class="empty-q">No evaluations forwarded yet${activeCampus!=='all'?' for '+activeCampus:''}.</div>`:''}
+  `;
+}
+
+function qCard(e,needsAction){
+  const s=e.workflow_status;
+  const cls=s==='endorsed'?'chip-endorsed':s==='returned_to_director'?'chip-returned':'chip-action';
+  const label=s==='endorsed'?'Endorsed':s==='returned_to_director'?'Returned to Director':'Awaiting Endorsement';
+  return`<div class="qcard${s==='endorsed'?' endorsed':s==='returned_to_director'?' returned':''} ${needsAction?'needs-action':''}" onclick="openEval('${e.id}')">
+    <div class="qav ${avClass[e.snap_campus]||'av-blr'}">${initials(e.snap_name||'?')}</div>
+    <div style="flex:1">
+      <div class="qname">${e.snap_name||'Unknown'}</div>
+      <div class="qmeta">${e.snap_designation||'—'} · ${e.snap_campus||'—'}</div>
+    </div>
+    <div class="qright">
+      <div class="chip ${cls}">${label}</div>
+      <div class="chip-sub">AY 2025–26</div>
+    </div>
+  </div>`;
+}
+
+function setCampus(c,btn){
+  activeCampus=c;
+  renderPage();
+}
+
+async function openEval(evalId){
+  const ev=allEvals.find(e=>e.id===evalId);
+  if(!ev)return;
+  currentEval=ev;
+  activeEvTab='record';
+
+  const{data:dr}=await sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',evalId).maybeSingle();
+  currentDirReview=dr||null;
+  const{data:pr}=await sb.from('evaluation_president_reviews').select('*').eq('evaluation_id',evalId).maybeSingle();
+  currentPresReview=pr||null;
+
+  document.getElementById('ev-name').textContent=ev.snap_name||'Faculty';
+  document.getElementById('ev-sub').textContent=`${ev.snap_designation||'—'} · ${ev.snap_campus||'—'} · ${ev.workflow_status==='endorsed'?'Endorsed':ev.workflow_status==='returned_to_director'?'Returned to Director':'Forwarded for Endorsement'}`;
+
+  document.querySelectorAll('.ev-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.ev-tab').classList.add('on');
+
+  renderEvContent();
+  renderSidebar();
+  document.getElementById('eval-view').classList.add('open');
+}
+
+function switchEvTab(tab,btn){
+  activeEvTab=tab;
+  document.querySelectorAll('.ev-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderEvContent();
+}
+
+function renderEvContent(){
+  const ev=currentEval;
+  const main=document.getElementById('ev-main');
+  let html='';
+
+  if(activeEvTab==='record'){
+    html+=`<div class="ev-section">
+      <div class="sec-head">Faculty Profile</div>
+      <div style="background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;margin-bottom:8px">
+        ${[['Name',ev.snap_name],['Designation',ev.snap_designation],['Campus',ev.snap_campus],['Subject Area',ev.snap_subject_area],['Admin Role',ev.snap_admin_role]].map(([k,v])=>irow(k,v)).join('')}
+      </div>
+    </div>`;
+
+    html+=`<div class="ev-section">
+      <div class="sec-head" style="color:var(--teal-d)">Teaching</div>
+      ${evf('Courses Taught',ev.snap_courses_taught?.replace(/ · /g,', '))}
+      ${evf('Teaching Effectiveness',ev.teaching_effectiveness?ev.teaching_effectiveness+' / 5.0':null)}
+      ${evf('Teaching Notes',ev.teaching_notes)}
+    </div>`;
+
+    html+=`<div class="ev-section">
+      <div class="sec-head" style="color:var(--blue-d)">Research</div>
+      ${evf('Publications Detail',ev.publications_details)}
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:8px">
+        ${[['Scopus',ev.publications_count],['ABDC',ev.abdc_count],['WoS',ev.wos_count],['h-Index',ev.h_index]].map(([l,v])=>`
+        <div class="evf" style="text-align:center;padding:8px">
+          <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--blue-d)">${v||'0'}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+    html+=`<div class="ev-section">
+      <div class="sec-head" style="color:var(--amber-d)">Industry & MDP</div>
+      ${evf('MDP Details',ev.mdp_details)}
+      ${evf('Other Industry Engagements',ev.industry_summary)}
+    </div>`;
+
+    html+=`<div class="ev-section">
+      <div class="sec-head">Institution Building</div>
+      ${evf('Contributions',ev.institution_contributions)}
+    </div>`;
+
+  } else {
+    // IKIGAI & Goals tab
+    if(ev.ikigai_statement){
+      html+=`<div class="ev-section">
+        <div class="sec-head">Purpose Statement</div>
+        <div class="ikigai-hero">
+          <div class="iki-l">IKIGAI · Personal Purpose</div>
+          <div class="iki-t">${ev.ikigai_statement}</div>
+        </div>
+      </div>`;
+    }
+
+    html+=`<div class="ev-section">
+      <div class="sec-head">What Energises This Faculty Member</div>
+      ${evf('Teaching Energy',ev.ikigai_passion?.split('\n\n')[0])}
+      ${evf('Research Pull',ev.ikigai_passion?.split('\n\n')[1])}
+      ${evf('Industry Engagement',ev.ikigai_passion?.split('\n\n')[2])}
+    </div>`;
+
+    html+=`<div class="ev-section">
+      <div class="sec-head">Self-Rated Strengths</div>
+      <div style="background:var(--white);border:.5px solid var(--border);border-radius:var(--rs);padding:12px 16px;margin-bottom:8px">
+        ${[['Teaching',ev.ikigai_strength_teaching],['Research',ev.ikigai_strength_research],['Industry',ev.ikigai_strength_industry],['Institution',ev.ikigai_strength_institution]].map(([l,v])=>`
+        <div class="str-row">
+          <span class="strl">${l}</span>
+          <div class="strd">${[1,2,3,4,5].map(i=>`<div class="sdot${(v&&i<=v)?' on':''}"></div>`).join('')}</div>
+        </div>`).join('')}
+      </div>
+      ${evf('Known For',ev.ikigai_strengths_text)}
+      ${evf('Growth Areas',ev.ikigai_growth_areas)}
+    </div>`;
+
+    if(ev.alloc_teaching||ev.alloc_industry){
+      html+=`<div class="ev-section">
+        <div class="sec-head">Time Allocation</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px">
+          ${[['Teaching',ev.alloc_teaching],['Research',ev.alloc_research],['Industry',ev.alloc_industry],['Institution',ev.alloc_institution]].map(([l,v])=>`
+          <div class="evf" style="text-align:center;padding:8px">
+            <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--navy)">${v||'0'}%</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
+          </div>`).join('')}
+        </div>
+        ${ev.alloc_industry&&ev.alloc_industry<10?`<div style="background:var(--amber-l);border:.5px solid rgba(239,159,39,.3);border-radius:var(--rs);padding:8px 12px;font-size:11px;color:var(--amber-d)">Industry allocation is below the 10% minimum.</div>`:''}
+      </div>`;
+    }
+
+    html+=`<div class="ev-section">
+      <div class="sec-head">Goals for XIME</div>
+      ${evf('How They Want to Contribute',ev.xime_contribution)}
+      ${evf('Primary Objectives This Year',ev.primary_objectives)}
+      ${evf('Objectives for Next Year',ev.next_year_objectives)}
+    </div>`;
+
+    html+=`<div class="ev-section">
+      <div class="sec-head">Action Plan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="evf" style="background:#E1F5EE;border-color:rgba(29,158,117,.25)"><div class="evfl" style="color:var(--teal-d)">Start</div><div class="evfv" style="color:var(--teal-d)">${ev.action_start||'<span class="evfe">Not entered</span>'}</div></div>
+        <div class="evf" style="background:#FCEBEB;border-color:rgba(226,75,74,.25)"><div class="evfl" style="color:#501313">Stop</div><div class="evfv" style="color:#501313">${ev.action_stop||'<span class="evfe">Not entered</span>'}</div></div>
+      </div>
+      ${evf('Key Goal',ev.action_key_goal)}
+      ${evf('Support Requested from XIME',ev.action_support)}
+    </div>`;
+  }
+
+  main.innerHTML=html;
+}
+
+function renderSidebar(){
+  const ev=currentEval;
+  const s=ev.workflow_status;
+  const sidebar=document.getElementById('ev-sidebar');
+  let html='';
+
+  // Director's message to President
+  if(currentDirReview?.president_comments){
+    html+=`<div>
+      <div class="action-title">From the Director</div>
+      <div class="dir-channel">
+        <div class="dc-label">Director · ${ev.snap_campus}</div>
+        <div class="dc-text">${currentDirReview.president_comments}</div>
+        <div class="dc-from">${currentDirReview.director_name||'Director'}</div>
+      </div>
+    </div>`;
+  }
+
+  // Director's faculty remarks (read-only for President)
+  if(currentDirReview?.faculty_remarks){
+    html+=`<div>
+      <div class="action-title">Director's Remarks to Faculty</div>
+      <div style="background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px">
+        <div style="font-size:11px;color:var(--gold-d);margin-bottom:4px;font-family:'DM Mono',monospace;font-weight:500;letter-spacing:.06em">WILL BE PUBLISHED AFTER ENDORSEMENT</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.65">${currentDirReview.faculty_remarks}</div>
+      </div>
+    </div>`;
+  }
+
+  if(s==='endorsed'){
+    html+=`<div class="endorsed-state"><span style="font-size:16px">✓</span>Endorsed · ${currentPresReview?.endorsed_at?new Date(currentPresReview.endorsed_at).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):''}</div>`;
+  } else if(s==='returned_to_director'){
+    html+=`<div style="background:#FCEBEB;border:.5px solid rgba(226,75,74,.3);border-radius:var(--rs);padding:11px 14px;font-size:12px;font-weight:500;color:#501313;display:flex;align-items:center;gap:8px"><span style="font-size:16px">↩</span>Returned to Director</div>`;
+    if(currentPresReview?.return_comments){
+      html+=`<div style="background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;font-size:12px;color:var(--muted);font-style:italic">${currentPresReview.return_comments}</div>`;
+    }
+  } else {
+    html+=`<div>
+      <div class="action-title">Your Action</div>
+      <button class="endorse-btn" onclick="endorseEval()">✓ &nbsp;Endorse Evaluation</button>
+    </div>`;
+
+    html+=`<div class="return-section">
+      <div style="height:.5px;background:var(--border);margin:4px 0 12px"></div>
+      <div class="return-label">Return to Director</div>
+      <textarea class="return-ta" id="return-comment" placeholder="Comment to Director only. Explain what you would like reconsidered or revised. The faculty member will not see this." rows="4"></textarea>
+      <div class="return-hint">This comment goes to the Director only. It does not appear in the faculty member's record.</div>
+      <button class="return-btn" onclick="returnToDirector()">↩ Return with Comments</button>
+    </div>`;
+  }
+
+  sidebar.innerHTML=html;
+}
+
+async function endorseEval(){
+  if(!currentEval)return;
+  if(!confirm('Endorse this evaluation? The Director\'s remarks will be published to the faculty member.'))return;
+  const now=new Date().toISOString();
+  await sb.from('evaluation_president_reviews').upsert({evaluation_id:currentEval.id,endorsement_status:'endorsed',endorsed_at:now,updated_at:now},{onConflict:'evaluation_id'});
+  await sb.from('faculty_evaluations').update({workflow_status:'endorsed',updated_at:now}).eq('id',currentEval.id);
+  currentEval.workflow_status='endorsed';
+  const idx=allEvals.findIndex(e=>e.id===currentEval.id);
+  if(idx>=0)allEvals[idx].workflow_status='endorsed';
+  document.getElementById('ev-sub').textContent=`${currentEval.snap_designation} · ${currentEval.snap_campus} · Endorsed`;
+  currentPresReview={...currentPresReview,endorsement_status:'endorsed',endorsed_at:now};
+  renderSidebar();
+  toast('Endorsed. Faculty member will now see their Director\'s remarks.');
+}
+
+async function returnToDirector(){
+  const comment=document.getElementById('return-comment')?.value?.trim();
+  if(!comment){toast('Please write a comment before returning.',false);return;}
+  if(!confirm('Return to Director with your comments?'))return;
+  const now=new Date().toISOString();
+  const history=currentPresReview?.return_comments_history||[];
+  history.push({text:comment,returned_at:now});
+  await sb.from('evaluation_president_reviews').upsert({evaluation_id:currentEval.id,endorsement_status:'returned',return_comments:comment,return_comments_history:history,returned_at:now,updated_at:now},{onConflict:'evaluation_id'});
+  await sb.from('evaluation_director_reviews').update({status:'returned_from_president',updated_at:now}).eq('evaluation_id',currentEval.id);
+  await sb.from('faculty_evaluations').update({workflow_status:'returned_to_director',updated_at:now}).eq('id',currentEval.id);
+  currentEval.workflow_status='returned_to_director';
+  const idx=allEvals.findIndex(e=>e.id===currentEval.id);
+  if(idx>=0)allEvals[idx].workflow_status='returned_to_director';
+  currentPresReview={...currentPresReview,return_comments:comment,endorsement_status:'returned',returned_at:now};
+  renderSidebar();
+  toast('Returned to Director with your comments.');
+}
+
+function closeEval(){
+  document.getElementById('eval-view').classList.remove('open');
+  renderPage();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('eval-view').classList.contains('open'))closeEval();});
+
+async function init(){
+  await loadAll();
+}
+init();
+</script>
+</body>
+</html>

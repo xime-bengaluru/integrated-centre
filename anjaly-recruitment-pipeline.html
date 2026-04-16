@@ -432,72 +432,63 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     <div class="col col-1">
       <div class="col-header">
         <div class="col-title">Requisition</div>
-        <div class="col-count" id="col1-count">1</div>
+        <div class="col-count" id="col-count-1">1</div>
       </div>
-      <div class="gate-card" id="gate-ap-marketing" style="animation-delay:0.1s">
-        <div class="gate-label"><div class="gate-dot"></div>AG 1 · Director Approval</div>
-        <div class="gate-title">Asst. Professor — Marketing</div>
-        <div class="gate-sub">MRF submitted · Bengaluru · 14 hrs · SLA: 48 hrs</div>
-        <button class="btn-approve" onclick="approveRequisition('ap-marketing')" id="btn-approve-main">
-          <span class="btn-approve-icon">✓</span> Approve · Director, Bengaluru
-        </button>
-        <button class="btn-reject" onclick="rejectRequisition('ap-marketing')" id="btn-reject-main">Return for revision</button>
-        <button class="gate-action" style="margin-top:6px;background:transparent;color:#6D28D9;border:1px solid #DDD6FE;" onclick="openDetail('ap-marketing')">Review full requisition →</button>
-      </div>
+      <div id="col-body-1"></div>
     </div>
 
     <!-- COL 2: JD & SOURCING -->
     <div class="col col-2">
       <div class="col-header">
         <div class="col-title">JD & Sourcing</div>
-        <div class="col-count">0</div>
+        <div class="col-count" id="col-count-2">0</div>
       </div>
-      <div class="empty-col">No active roles</div>
+      <div id="col-body-2"></div>
     </div>
 
     <!-- COL 3: SCREENING -->
     <div class="col col-3">
       <div class="col-header">
         <div class="col-title">Screening</div>
-        <div class="col-count">0</div>
+        <div class="col-count" id="col-count-3">0</div>
       </div>
-      <div class="empty-col">No candidates</div>
+      <div id="col-body-3"></div>
     </div>
 
     <!-- COL 4: INTERVIEWS -->
     <div class="col col-4">
       <div class="col-header">
         <div class="col-title">Interviews</div>
-        <div class="col-count">0</div>
+        <div class="col-count" id="col-count-4">0</div>
       </div>
-      <div class="empty-col">No candidates</div>
+      <div id="col-body-4"></div>
     </div>
 
     <!-- COL 5: FINAL -->
     <div class="col col-5">
       <div class="col-header">
         <div class="col-title">Final Round</div>
-        <div class="col-count">0</div>
+        <div class="col-count" id="col-count-5">0</div>
       </div>
-      <div class="empty-col">No candidates</div>
+      <div id="col-body-5"></div>
     </div>
 
     <!-- COL 6: OFFER -->
     <div class="col col-6">
       <div class="col-header">
         <div class="col-title">Offer</div>
-        <div class="col-count">0</div>
+        <div class="col-count" id="col-count-6">0</div>
       </div>
-      <div class="empty-col">No offers</div>
+      <div id="col-body-6"></div>
     </div>
 
     <!-- COL 7: PRE-JOINING -->
     <div class="col col-7">
       <div class="col-header">
         <div class="col-title">Pre-Joining</div>
-        <div class="col-count">0</div>
+        <div class="col-count" id="col-count-7">0</div>
       </div>
-      <div class="empty-col">No joiners</div>
+      <div id="col-body-7"></div>
     </div>
 
   </div>
@@ -581,44 +572,151 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 document.getElementById('hdate').textContent =
   new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
 
-const approvalState = {};
+// Step definitions — what each step means for kanban position
+const STEPS = {
+  requisition_pending: { col: 1, label: 'Requisition', status: 'Awaiting Director Approval' },
+  jd_sourcing:        { col: 2, label: 'JD & Sourcing', status: 'JD in preparation' },
+  screening:          { col: 3, label: 'Screening', status: 'Screening candidates' },
+  interviews:         { col: 4, label: 'Interviews', status: 'Interviews underway' },
+  final_round:        { col: 5, label: 'Final Round', status: 'Final assessment' },
+  offer:              { col: 6, label: 'Offer', status: 'Offer extended' },
+  pre_joining:        { col: 7, label: 'Pre-Joining', status: 'Pre-joining clearance' },
+};
 
-function approveRequisition(id) {
-  approvalState[id] = 'approved';
-  const gate = document.getElementById('gate-ap-marketing');
-  if (gate) {
-    gate.style.background = '#F0FDF4';
-    gate.style.borderColor = '#86EFAC';
-    gate.querySelector('.gate-label').innerHTML = '<span style="color:#166534;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Approved by Director</span>';
-    gate.querySelector('.gate-title').style.color = '#166534';
-    gate.querySelector('.gate-sub').textContent = 'Director, Bengaluru approved · Proceeding to JD preparation';
-    const approveBtn = document.getElementById('btn-approve-main');
-    if (approveBtn) approveBtn.outerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#DCFCE7;border-radius:6px;font-size:12px;font-weight:600;color:#166534;text-align:center;border:1px solid #86EFAC">✓ Approved by Director, Bengaluru</div>';
-    const rejectBtn = document.getElementById('btn-reject-main');
-    if (rejectBtn) rejectBtn.remove();
+const RUN_ID = 'mdp-associate-pilot-001';
+let currentStep = 'requisition_pending';
+let approvalState = {};
+
+// Card HTML for each stage
+function gateCardHtml(step) {
+  if (step === 'requisition_pending') {
+    return `<div class="gate-card" id="gate-ap-marketing">
+      <div class="gate-label"><div class="gate-dot"></div>AG 1 · Director Approval</div>
+      <div class="gate-title">Asst. Professor — Marketing</div>
+      <div class="gate-sub">MRF submitted · Bengaluru · 14 hrs · SLA: 48 hrs</div>
+      <button class="btn-approve" onclick="approveRequisition()" id="btn-approve-main">
+        <span class="btn-approve-icon">✓</span> Approve · Director, Bengaluru
+      </button>
+      <button class="btn-reject" onclick="rejectRequisition()" id="btn-reject-main">Return for revision</button>
+      <button class="gate-action" style="margin-top:6px;background:transparent;color:#6D28D9;border:1px solid #DDD6FE;" onclick="openDetail('ap-marketing')">Review full requisition →</button>
+    </div>`;
   }
-  const block = document.getElementById('approval-block');
-  if (block) {
-    block.innerHTML = '<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by Director, Bengaluru · ' + new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) + '</div>';
+  if (step === 'jd_sourcing') {
+    return `<div class="ccard" style="animation-delay:0.1s;border-left:3px solid #0D47A1">
+      <div class="ccard-name">Asst. Professor — Marketing</div>
+      <div class="ccard-role">Faculty · Full Time · Bengaluru</div>
+      <div class="ccard-meta">
+        <div class="cmeta-row"><span class="cmeta-icon">✓</span>Approved by Director, Bengaluru</div>
+        <div class="cmeta-row"><span class="cmeta-icon">→</span>JD preparation in progress</div>
+      </div>
+      <div class="ccard-footer">
+        <span class="campus-tag ct-blr">Bengaluru</span>
+        <span class="sla-ok sla-badge">On track</span>
+      </div>
+    </div>`;
   }
-  document.getElementById('stat-pending').textContent = '0';
-  showToast('Requisition approved. Recruiter notified to prepare JD.');
+  return '';
 }
 
-function rejectRequisition(id) {
-  approvalState[id] = 'returned';
+function emptyColHtml(label) {
+  return `<div class="empty-col">No ${label.toLowerCase()}</div>`;
+}
+
+async function approveRequisition() {
+  currentStep = 'jd_sourcing';
+  approvalState['ap-marketing'] = 'approved';
+
+  // Save to Supabase
+  await sb.from('workflow_state').update({
+    current_step: 'jd_sourcing',
+    step_index: 2,
+    updated_by: 'Director · Bengaluru',
+    updated_at: new Date().toISOString(),
+    data: { campus:'Bengaluru', role_title:'Assistant Professor — Marketing', role:'faculty', status:'jd_sourcing', approved_by:'Director, Bengaluru', approved_at: new Date().toISOString() }
+  }).eq('run_id', RUN_ID);
+
+  renderKanban();
+  updateStats();
+
+  // Update detail panel if open
+  const block = document.getElementById('approval-block');
+  if (block) {
+    block.innerHTML = `<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by Director, Bengaluru · ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>`;
+  }
+  // Update stage flow in panel
+  const sf = document.querySelector('.stage-flow');
+  if (sf) {
+    sf.children[0].className = 'sf-step done';
+    sf.children[0].innerHTML = '<span class="sf-icon">✓</span>AG1 — Director Headcount Approval · Approved';
+    sf.children[1].className = 'sf-step current';
+  }
+
+  showToast('Approved. Moved to JD & Sourcing.');
+}
+
+function rejectRequisition() {
+  approvalState['ap-marketing'] = 'returned';
   const gate = document.getElementById('gate-ap-marketing');
   if (gate) {
     gate.style.background = '#FEF2F2';
     gate.style.borderColor = '#FCA5A5';
     gate.querySelector('.gate-label').innerHTML = '<span style="color:#991B1B;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Returned for revision</span>';
     gate.querySelector('.gate-sub').textContent = 'Returned by Director, Bengaluru · Requester to revise and resubmit';
-    const approveBtn = document.getElementById('btn-approve-main');
-    if (approveBtn) approveBtn.remove();
-    const rejectBtn = document.getElementById('btn-reject-main');
-    if (rejectBtn) { rejectBtn.textContent = 'Returned — awaiting revision'; rejectBtn.disabled = true; }
+    const ab = document.getElementById('btn-approve-main');
+    if (ab) ab.remove();
+    const rb = document.getElementById('btn-reject-main');
+    if (rb) { rb.textContent = 'Returned — awaiting revision'; rb.disabled = true; }
   }
   showToast('Requisition returned. Dean notified to revise.');
+}
+
+function renderKanban() {
+  const colDefs = [
+    { id:'col1', step:'requisition_pending', label:'Requisition' },
+    { id:'col2', step:'jd_sourcing',         label:'JD & Sourcing' },
+    { id:'col3', step:'screening',           label:'Screening' },
+    { id:'col4', step:'interviews',          label:'Interviews' },
+    { id:'col5', step:'final_round',         label:'Final Round' },
+    { id:'col6', step:'offer',               label:'Offer' },
+    { id:'col7', step:'pre_joining',         label:'Pre-Joining' },
+  ];
+
+  colDefs.forEach((def, i) => {
+    const body = document.getElementById('col-body-'+(i+1));
+    const count = document.getElementById('col-count-'+(i+1));
+    if (!body) return;
+    const isActive = def.step === currentStep;
+    const cardHtml = gateCardHtml(def.step);
+    if (isActive && cardHtml) {
+      body.innerHTML = cardHtml;
+      if (count) count.textContent = '1';
+    } else {
+      body.innerHTML = emptyColHtml(def.label);
+      if (count) count.textContent = '0';
+    }
+  });
+}
+
+function updateStats() {
+  const pendingEl = document.getElementById('stat-pending');
+  const pendingLabelEl = document.getElementById('stat-pending-label');
+  if (currentStep === 'requisition_pending') {
+    if (pendingEl) pendingEl.textContent = '1';
+    if (pendingLabelEl) pendingLabelEl.textContent = 'Awaiting Director approval';
+  } else {
+    if (pendingEl) pendingEl.textContent = '0';
+    if (pendingLabelEl) pendingLabelEl.textContent = 'Awaiting Director approval';
+  }
+}
+
+async function loadState() {
+  const { data } = await sb.from('workflow_state')
+    .select('current_step, step_index, data')
+    .eq('run_id', RUN_ID)
+    .single();
+  if (data) currentStep = data.current_step || 'requisition_pending';
+  renderKanban();
+  updateStats();
 }
 
 function showToast(msg) {
