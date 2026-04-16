@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magis Centre · Annual Evaluation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy:#111827; --red:#E8241C; --gold:#c9a84c; --gold-l:#f0dfa0; --gold-d:#8a6e1e;
+  --parchment:#faf8f3; --cream:#f4f0e8; --white:#ffffff;
+  --border:rgba(0,0,0,0.09); --border-gold:rgba(201,168,76,0.35);
+  --text:#1a1a18; --muted:#5a5a56; --faint:#9a9a94;
+  --teal:#1D9E75; --teal-l:#E1F5EE;
+  --amber:#EF9F27; --amber-l:#FAEEDA;
+  --r:10px; --rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* Top bar */
+.topbar{background:var(--navy);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(201,168,76,0.2)}
+.tb-left{display:flex;align-items:center;gap:12px}
+.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
+.wm em{color:var(--red);font-style:normal}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.tb-title{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.06em}
+.tb-right{display:flex;align-items:center;gap:10px}
+.status-pill{font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
+.status-draft{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15)}
+.status-submitted{background:#FAEEDA;color:#633806}
+.status-validated{background:#E1F5EE;color:#085041}
+.btn-save{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.75);cursor:pointer;transition:all .15s}
+.btn-save:hover{background:rgba(255,255,255,.1);color:#fff}
+.btn-submit{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 16px;border-radius:var(--rs);border:none;background:var(--gold);color:var(--navy);cursor:pointer;transition:all .15s}
+.btn-submit:hover{background:var(--gold-l)}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px)}
+
+/* Sidebar */
+.sidebar{background:var(--cream);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sidebar-head{padding:0 20px 16px;border-bottom:1px solid var(--border-gold);margin-bottom:12px}
+.sidebar-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--navy);line-height:1.2;margin-bottom:2px}
+.sidebar-role{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.sidebar-year{font-size:10px;color:var(--gold-d);font-weight:500;margin-top:6px;display:flex;align-items:center;gap:5px}
+.sidebar-year::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
+.progress-wrap{padding:0 20px 16px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.progress-label{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease}
+.progress-pct{font-size:11px;color:var(--gold-d);font-weight:500;margin-top:4px;text-align:right}
+.nav-group{margin-bottom:4px}
+.nav-group-label{font-size:9px;font-weight:500;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;padding:8px 20px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 20px;cursor:pointer;transition:all .12s;border-left:2px solid transparent}
+.nav-item:hover{background:rgba(0,0,0,.04)}
+.nav-item.active{background:rgba(201,168,76,.1);border-left-color:var(--gold)}
+.nav-item-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .15s}
+.nav-item.done .nav-item-dot{background:var(--teal)}
+.nav-item.active .nav-item-dot{background:var(--gold)}
+.nav-item-text{font-size:12px;color:var(--muted)}
+.nav-item.active .nav-item-text{color:var(--navy);font-weight:500}
+
+/* Main */
+.main{padding:40px 48px 80px;max-width:760px}
+.doc-header{margin-bottom:48px}
+.doc-eyebrow{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.doc-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
+.doc-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:var(--navy);line-height:1.15;margin-bottom:12px}
+.doc-title em{font-style:italic;color:var(--red)}
+.doc-lead{font-size:13px;color:var(--muted);line-height:1.8;max-width:520px;border-left:2px solid var(--border-gold);padding-left:16px;font-style:italic}
+
+/* Sections */
+.section{margin-bottom:52px;scroll-margin-top:72px}
+.section-header{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.section-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--border-gold);line-height:1;flex-shrink:0;margin-top:-4px}
+.section-info{flex:1}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--navy);line-height:1.2}
+.section-sub{font-size:11px;color:var(--faint);margin-top:2px}
+.section-rule{height:.5px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);margin-top:12px}
+
+/* Field types */
+.field{margin-bottom:20px}
+.field-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.auto-badge{font-size:9px;font-weight:400;color:var(--gold-d);background:rgba(201,168,76,.12);border:1px solid var(--border-gold);padding:1px 6px;border-radius:10px;letter-spacing:.03em;text-transform:none}
+.field-input{width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);transition:border-color .15s;resize:none}
+.field-input:focus{outline:none;border-color:rgba(201,168,76,.5)}
+.field-input.auto-populated{background:var(--parchment);border-color:var(--border-gold);color:var(--muted);pointer-events:none}
+textarea.field-input{line-height:1.65}
+.field-hint{font-size:11px;color:var(--faint);margin-top:5px;line-height:1.5;font-style:italic}
+
+/* Two column */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* Auto-filled block */
+.auto-block{background:var(--parchment);border:.5px solid var(--border-gold);border-radius:var(--rs);padding:14px 16px;margin-bottom:16px}
+.auto-block-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.auto-block-label::before{content:'';display:block;width:12px;height:1px;background:var(--gold)}
+.auto-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid rgba(0,0,0,.05);font-size:12px}
+.auto-row:last-child{border-bottom:none}
+.auto-row-key{color:var(--muted)}
+.auto-row-val{font-weight:500;color:var(--navy);text-align:right;max-width:60%}
+
+/* Courses list */
+.course-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.course-pill{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--cream);border:.5px solid var(--border-gold);color:var(--navy)}
+
+/* Star rating */
+.star-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:10px;padding:8px 0;border-bottom:.5px solid var(--border)}
+.star-grid:last-child{border-bottom:none}
+.star-label{font-size:12px;color:var(--muted)}
+.stars{display:flex;gap:4px}
+.star{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:9px;font-weight:500;font-family:'DM Mono',monospace;color:var(--faint)}
+.star.filled{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.star:hover{border-color:var(--gold-d);color:var(--gold-d)}
+
+/* IKIGAI statement box */
+.ikigai-box{background:var(--navy);border-radius:var(--r);padding:24px 28px;margin-top:8px;position:relative;overflow:hidden}
+.ikigai-box::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(201,168,76,.07)}
+.ikigai-prompt{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(255,255,255,.5);margin-bottom:12px;line-height:1.6}
+.ikigai-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,.3);padding:8px 0;font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:#fff;font-weight:300;line-height:1.6;resize:none;min-height:100px}
+.ikigai-input:focus{outline:none;border-bottom-color:var(--gold)}
+.ikigai-input::placeholder{color:rgba(255,255,255,.2)}
+
+/* Allocation blocks */
+.alloc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.alloc-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:12px;text-align:center}
+.alloc-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.alloc-input{width:100%;border:none;background:transparent;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--navy);text-align:center;padding:0}
+.alloc-input:focus{outline:none}
+.alloc-pct{font-size:11px;color:var(--faint);margin-top:2px}
+.alloc-total{text-align:right;font-size:12px;color:var(--faint);margin-top:4px}
+.alloc-total.valid{color:var(--teal)}
+.alloc-total.invalid{color:var(--red)}
+.alloc-min{font-size:10px;color:var(--amber);margin-top:6px;text-align:center}
+
+/* Action plan cards */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.action-card{border-radius:var(--rs);padding:16px;border:.5px solid var(--border)}
+.action-card.start{background:#E1F5EE;border-color:rgba(29,158,117,.25)}
+.action-card.stop{background:#FCEBEB;border-color:rgba(226,75,74,.25)}
+.action-card.cont{background:#E6F1FB;border-color:rgba(55,138,221,.25)}
+.action-card.goal{grid-column:span 2;background:var(--navy);border:none}
+.action-card-head{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.action-card.start .action-card-head{color:#085041}
+.action-card.stop .action-card-head{color:#501313}
+.action-card.cont .action-card-head{color:#0C447C}
+.action-card.goal .action-card-head{color:var(--gold)}
+.action-prompt{font-size:11px;font-style:italic;margin-bottom:8px;line-height:1.5}
+.action-card.start .action-prompt{color:#0F6E56}
+.action-card.stop .action-prompt{color:#A32D2D}
+.action-card.cont .action-prompt{color:#185FA5}
+.action-card.goal .action-prompt{color:rgba(255,255,255,.5)}
+.action-ta{width:100%;border:none;border-bottom:.5px solid;background:transparent;padding:4px 0;font-family:'DM Sans',sans-serif;font-size:12px;resize:none;line-height:1.6;min-height:56px}
+.action-ta:focus{outline:none}
+.action-card.start .action-ta{color:#085041;border-bottom-color:rgba(29,158,117,.3)}
+.action-card.stop .action-ta{color:#501313;border-bottom-color:rgba(226,75,74,.3)}
+.action-card.cont .action-ta{color:#0C447C;border-bottom-color:rgba(55,138,221,.3)}
+.action-card.goal .action-ta{color:#fff;border-bottom-color:rgba(201,168,76,.3);font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;min-height:48px}
+
+/* Support field */
+.support-card{background:var(--cream);border:.5px solid var(--border-gold);border-radius:var(--rs);padding:16px}
+.support-head{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+.support-prompt{font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px;line-height:1.5}
+
+/* Submit area */
+.submit-area{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;margin-top:40px;display:flex;align-items:center;justify-content:space-between}
+.submit-info{max-width:400px}
+.submit-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--navy);margin-bottom:4px}
+.submit-note{font-size:12px;color:var(--muted);line-height:1.6}
+.btn-submit-lg{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:12px 28px;border-radius:var(--rs);border:none;background:var(--navy);color:#fff;cursor:pointer;transition:all .15s}
+.btn-submit-lg:hover{background:var(--gold);color:var(--navy)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:10px 16px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s ease;z-index:999;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* Divider */
+.field-divider{height:.5px;background:var(--border);margin:24px 0}
+
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:24px 20px 60px}
+  .alloc-grid{grid-template-columns:1fr 1fr}
+  .action-card.goal{grid-column:span 1}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-left">
+    <div class="wm">X<em>I</em>ME</div>
+    <div class="tb-sep"></div>
+    <div class="tb-title">Magis Centre · Annual Evaluation</div>
+  </div>
+  <div class="tb-right">
+    <div class="status-pill status-draft" id="status-display">Draft</div>
+    <button class="btn-save" onclick="saveDraft()">Save draft</button>
+    <button class="btn-submit" onclick="submitEval()">Submit for validation</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-name" id="sb-name">Faculty Member</div>
+      <div class="sidebar-role" id="sb-role">Loading...</div>
+      <div class="sidebar-year">AY 2025–26 · Annual</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">Completion</div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="progress-pct" id="prog-pct">0%</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Your record</div>
+      <div class="nav-item active" onclick="scrollTo('s-profile')" id="nav-profile">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Profile</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-teaching')" id="nav-teaching">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Teaching</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-research')" id="nav-research">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Research</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-industry')" id="nav-industry">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Industry & MDP</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-institution')" id="nav-institution">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Institution Building</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">IKIGAI · Purpose</div>
+      <div class="nav-item" onclick="scrollTo('s-passion')" id="nav-passion">
+        <div class="nav-item-dot"></div><div class="nav-item-text">What You Love</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-strengths')" id="nav-strengths">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Your Strengths</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-contribution')" id="nav-contribution">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Contribution</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-convergence')" id="nav-convergence">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Convergence</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-statement')" id="nav-statement">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Purpose Statement</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Development</div>
+      <div class="nav-item" onclick="scrollTo('s-allocation')" id="nav-allocation">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Time Allocation</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-goals')" id="nav-goals">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Goals for XIME</div>
+      </div>
+      <div class="nav-item" onclick="scrollTo('s-action')" id="nav-action">
+        <div class="nav-item-dot"></div><div class="nav-item-text">Action Plan</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="doc-header">
+      <div class="doc-eyebrow">Annual Performance Evaluation · 2025–26</div>
+      <div class="doc-title">Your year, your <em>purpose</em>,<br>your direction.</div>
+      <div class="doc-lead">This is not a compliance document. It is a professional record and a reflection instrument — designed to capture what you have done and what drives you forward. Fields marked with a gold label have been auto-filled from Digii Campus and XIME records. Everything else is your voice.</div>
+    </div>
+
+    <!-- SECTION 1: PROFILE -->
+    <section class="section" id="s-profile">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-info">
+          <div class="section-title">Your Profile</div>
+          <div class="section-sub">Auto-populated from XIME HR records · review and confirm</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="auto-block">
+          <div class="auto-block-label">From XIME Faculty Master</div>
+          <div id="profile-auto-rows"></div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <div class="field-label">Google Scholar URL</div>
+            <input class="field-input" id="f-scholar" type="url" placeholder="scholar.google.com/citations?user=...">
+          </div>
+          <div class="field">
+            <div class="field-label">ORCID / Scopus ID</div>
+            <input class="field-input" id="f-orcid" type="text" placeholder="0000-0000-0000-0000">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: TEACHING -->
+    <section class="section" id="s-teaching">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-info">
+          <div class="section-title">Teaching</div>
+          <div class="section-sub">Courses and effectiveness · AY 2025–26</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="field">
+          <div class="field-label">Courses Taught This Year <span class="auto-badge">Auto-filled · Digii Campus</span></div>
+          <div class="course-pills" id="courses-pills"></div>
+        </div>
+        <div class="two-col" style="margin-top:16px">
+          <div class="field">
+            <div class="field-label">Teaching Effectiveness Score <span class="auto-badge">Dean Academics</span></div>
+            <input class="field-input auto-populated" id="f-te-score" placeholder="Awaiting Dean Academics" readonly>
+            <div class="field-hint">Filled by Dean of Academics after student feedback analysis. Not self-reported.</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Terms Taught</div>
+            <input class="field-input" id="f-terms" type="text" placeholder="e.g. Terms 1, 3, 5">
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Teaching Notes</div>
+          <textarea class="field-input" id="f-teaching-notes" rows="3" placeholder="New pedagogical approaches, case studies developed, classroom innovations this year..."></textarea>
+          <div class="field-hint">Optional — use this to document anything about your teaching practice worth recording.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: RESEARCH -->
+    <section class="section" id="s-research">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-info">
+          <div class="section-title">Research & Publications</div>
+          <div class="section-sub">Validated by Dean of Research · last 10 years</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="three-col">
+          <div class="field">
+            <div class="field-label">Scopus Publications</div>
+            <input class="field-input" id="f-scopus" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <div class="field-label">ABDC Ranked</div>
+            <input class="field-input" id="f-abdc" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <div class="field-label">Web of Science</div>
+            <input class="field-input" id="f-wos" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <div class="field-label">h-Index</div>
+            <input class="field-input" id="f-hindex" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <div class="field-label">Conference Papers This Year</div>
+            <input class="field-input" id="f-conf" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Publications Detail</div>
+          <textarea class="field-input" id="f-pub-detail" rows="4" placeholder="List your key publications this year — title, journal, indexing. Most recent first.&#10;&#10;Example:&#10;Nallur, K.K. (2025). AI-Augmented Decision Making in SMEs. Journal of Business Strategy. Scopus."></textarea>
+          <div class="field-hint">Dean of Research will validate journal ratings before this section is confirmed.</div>
+        </div>
+        <div class="field">
+          <div class="field-label">Work in Progress</div>
+          <textarea class="field-input" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects, planned submissions..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INDUSTRY -->
+    <section class="section" id="s-industry">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-info">
+          <div class="section-title">Industry Engagement & External Programs</div>
+          <div class="section-sub">MDPs, consulting, speaking, advisory roles · validated by Dean EP</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="two-col">
+          <div class="field">
+            <div class="field-label">MDPs / OBPs Delivered</div>
+            <input class="field-input" id="f-mdp-count" type="number" min="0" placeholder="0" oninput="updateMdpRevenue()">
+          </div>
+          <div class="field">
+            <div class="field-label">MDP Revenue Generated <span class="auto-badge">EP Records</span></div>
+            <input class="field-input" id="f-mdp-rev" type="text" placeholder="₹ —" readonly style="background:var(--parchment);border-color:var(--border-gold);color:var(--muted)">
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">MDP / OBP Details</div>
+          <textarea class="field-input" id="f-mdp-detail" rows="3" placeholder="Program title · Client organisation · Role (organiser / faculty) · Approximate dates&#10;&#10;Example:&#10;Design Thinking for Innovation · Titan Industries · Faculty · Feb 2025"></textarea>
+        </div>
+        <div class="field-divider"></div>
+        <div class="field">
+          <div class="field-label">Other Industry Engagements This Year</div>
+          <textarea class="field-input" id="f-industry-other" rows="3" placeholder="Consulting engagements, advisory board roles, speaking at industry events, live projects with companies, professional association work..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Summary</div>
+          <textarea class="field-input" id="f-industry-summary" rows="2" placeholder="One or two sentences describing the overall nature and depth of your industry engagement this year..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: INSTITUTION -->
+    <section class="section" id="s-institution">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-info">
+          <div class="section-title">Institution Building</div>
+          <div class="section-sub">Administrative roles, committees, accreditation, student development</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="field">
+          <div class="field-label">Current Administrative Role <span class="auto-badge">HR Records</span></div>
+          <input class="field-input auto-populated" id="f-admin-role" readonly>
+        </div>
+        <div class="field">
+          <div class="field-label">Institution Contributions This Year</div>
+          <textarea class="field-input" id="f-institution" rows="4" placeholder="Describe your contributions beyond teaching and research:&#10;&#10;• Committees or governance roles&#10;• Accreditation work (EFMD, NBA, AACSB)&#10;• Student mentoring, placement, admissions&#10;• Programme development or curriculum design&#10;• Events, conferences hosted&#10;• Any other institutional work"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <div class="field-divider" style="border-top:2px solid var(--border-gold);margin:48px 0 0"></div>
+    <div style="text-align:center;padding:24px 0;margin-bottom:8px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--faint);letter-spacing:.06em;text-transform:uppercase">IKIGAI · Your Professional Purpose</div>
+      <div style="font-size:11px;color:var(--faint);margin-top:4px">The sections below are reflective. Write in your own voice.</div>
+    </div>
+
+    <!-- SECTION 6: PASSION -->
+    <section class="section" id="s-passion">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-info">
+          <div class="section-title">What You Love</div>
+          <div class="section-sub">IKIGAI 2.1 · Passion — the activities where time disappears</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="field">
+          <div class="field-label">Teaching that energises you</div>
+          <textarea class="field-input" id="f-p-teaching" rows="3" placeholder="What kind of teaching makes you come alive? The classroom moments, the student interactions, the kinds of questions that pull you in..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Research questions that pull you back</div>
+          <textarea class="field-input" id="f-p-research" rows="3" placeholder="The questions you keep returning to. The problems you find yourself thinking about even when you are not supposed to be working..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Industry engagement that feels alive</div>
+          <textarea class="field-input" id="f-p-industry" rows="3" placeholder="What kind of industry interaction feels most meaningful? Speaking, consulting, building programs, advising leaders — what genuinely energises you here?"></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Institutional work that gives you purpose</div>
+          <textarea class="field-input" id="f-p-institution" rows="2" placeholder="Beyond the classroom — where in XIME do you feel most purposeful?"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: STRENGTHS -->
+    <section class="section" id="s-strengths">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div class="section-info">
+          <div class="section-title">Your Strengths</div>
+          <div class="section-sub">IKIGAI 2.2 · Honest self-assessment — 1 still building, 5 genuinely exceptional</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:16px 20px;margin-bottom:20px">
+        <div class="star-grid" id="star-teaching">
+          <div class="star-label">Teaching Effectiveness</div>
+          <div class="stars" data-dim="teaching"></div>
+        </div>
+        <div class="star-grid" id="star-research">
+          <div class="star-label">Research Capability</div>
+          <div class="stars" data-dim="research"></div>
+        </div>
+        <div class="star-grid" id="star-industry">
+          <div class="star-label">Industry Engagement</div>
+          <div class="stars" data-dim="industry"></div>
+        </div>
+        <div class="star-grid" id="star-institution">
+          <div class="star-label">Institution Building</div>
+          <div class="stars" data-dim="institution"></div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">What you are genuinely known for</div>
+        <textarea class="field-input" id="f-strengths" rows="3" placeholder="List up to five capabilities others would point to as distinctively yours. These are the things you do better than most..."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">Areas of intended growth</div>
+        <textarea class="field-input" id="f-growth" rows="3" placeholder="Name at least three capabilities you want to develop over the next one to two years. Be specific about the capability, not just the domain..."></textarea>
+      </div>
+    </section>
+
+    <!-- SECTION 8: CONTRIBUTION -->
+    <section class="section" id="s-contribution">
+      <div class="section-header">
+        <div class="section-num">08</div>
+        <div class="section-info">
+          <div class="section-title">What You Contribute</div>
+          <div class="section-sub">IKIGAI 2.3 · The visible, valued output you already create</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="field">
+          <div class="field-label">Your industry interaction — now and aspired</div>
+          <textarea class="field-input" id="f-contrib-industry" rows="3" placeholder="What forms of industry engagement are you currently doing? What do you aspire to build? Be specific about organisations, frequency, and the kind of value you bring..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Your research pathway</div>
+          <textarea class="field-input" id="f-contrib-research" rows="3" placeholder="If research is meaningful to you — describe your planned pathway. Target journals, conferences, collaborators. If it is not a current focus, write honestly about why."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Institution building contributions</div>
+          <textarea class="field-input" id="f-contrib-institution" rows="2" placeholder="What roles are you currently playing in holding XIME together? What would you like to take on?"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 9: CONVERGENCE -->
+    <section class="section" id="s-convergence">
+      <div class="section-header">
+        <div class="section-num">09</div>
+        <div class="section-info">
+          <div class="section-title">Where Energy Meets Impact</div>
+          <div class="section-sub">IKIGAI 2.4 · Where your passion and your contribution converge</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="field">
+          <div class="field-label">Your convergence</div>
+          <textarea class="field-input" id="f-convergence" rows="4" placeholder="Looking across all four pillars — where does your energy and your impact most naturally converge? What does that tell you about where you can contribute most distinctively to your students and to XIME?&#10;&#10;A few specific, true sentences are worth more than a polished paragraph."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 10: IKIGAI STATEMENT -->
+    <section class="section" id="s-statement">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-info">
+          <div class="section-title">Your Purpose Statement</div>
+          <div class="section-sub">IKIGAI 3 · Two to four sentences that are genuinely yours</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="ikigai-box">
+          <div class="ikigai-prompt">My purpose as an XIME faculty member is to...</div>
+          <textarea class="ikigai-input" id="f-ikigai" rows="4" placeholder="Write in your own voice. Avoid abstract phrases like 'inspire students' or 'advance knowledge' — push past the general to what is genuinely yours.&#10;&#10;This statement belongs only to you."></textarea>
+        </div>
+        <div class="field-hint" style="margin-top:8px">This statement is private — visible only to you, your Dean, and the Director. It is not published to any dashboard.</div>
+      </div>
+    </section>
+
+    <!-- SECTION 11: TIME ALLOCATION -->
+    <section class="section" id="s-allocation">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <div class="section-info">
+          <div class="section-title">Time Allocation</div>
+          <div class="section-sub">How you actually spend your professional time · must total 100%</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:14px;font-style:italic">Industry Interaction carries a mandatory minimum of 10%. Be honest — this reflects your actual current allocation, not what looks good.</div>
+        <div class="alloc-grid">
+          <div class="alloc-card">
+            <div class="alloc-label">Teaching</div>
+            <input class="alloc-input" id="alloc-teaching" type="number" min="0" max="100" placeholder="—" oninput="checkAlloc()">
+            <div class="alloc-pct">%</div>
+          </div>
+          <div class="alloc-card">
+            <div class="alloc-label">Research</div>
+            <input class="alloc-input" id="alloc-research" type="number" min="0" max="100" placeholder="—" oninput="checkAlloc()">
+            <div class="alloc-pct">%</div>
+          </div>
+          <div class="alloc-card" style="border-color:rgba(201,168,76,.3);background:#FAEEDA">
+            <div class="alloc-label" style="color:var(--amber-d)">Industry</div>
+            <input class="alloc-input" id="alloc-industry" type="number" min="10" max="100" placeholder="—" oninput="checkAlloc()" style="color:#633806">
+            <div class="alloc-pct" style="color:var(--amber)">% (min 10)</div>
+          </div>
+          <div class="alloc-card">
+            <div class="alloc-label">Institution</div>
+            <input class="alloc-input" id="alloc-institution" type="number" min="0" max="100" placeholder="—" oninput="checkAlloc()">
+            <div class="alloc-pct">%</div>
+          </div>
+        </div>
+        <div class="alloc-total" id="alloc-total">Total: 0%</div>
+        <div class="alloc-min" id="alloc-warn" style="display:none">Industry Interaction must be at least 10%</div>
+      </div>
+    </section>
+
+    <!-- SECTION 12: GOALS FOR XIME -->
+    <section class="section" id="s-goals">
+      <div class="section-header">
+        <div class="section-num">12</div>
+        <div class="section-info">
+          <div class="section-title">Goals for XIME</div>
+          <div class="section-sub">What you want to contribute, build, and achieve</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="field">
+          <div class="field-label">How you want to contribute to XIME's growth</div>
+          <textarea class="field-input" id="f-xime-contrib" rows="3" placeholder="Not what XIME should do — what you specifically want to build, change, or strengthen here. What difference do you want to make to this institution?"></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Primary objectives this academic year</div>
+          <textarea class="field-input" id="f-obj-primary" rows="3" placeholder="What are the two or three things you are most committed to delivering this year? Be specific enough that at year-end you will know clearly whether you did them."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Objectives for next academic year</div>
+          <textarea class="field-input" id="f-obj-next" rows="3" placeholder="Looking ahead — what do you want to be working on that you are not working on today?"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 13: ACTION PLAN -->
+    <section class="section" id="s-action">
+      <div class="section-header">
+        <div class="section-num">13</div>
+        <div class="section-info">
+          <div class="section-title">The Year Ahead</div>
+          <div class="section-sub">Where reflection becomes commitment</div>
+        </div>
+      </div>
+      <div class="section-rule"></div>
+      <div style="margin-top:20px">
+        <div class="action-grid">
+          <div class="action-card start">
+            <div class="action-card-head">Start</div>
+            <div class="action-prompt">What new practice, activity, or commitment will you begin this year?</div>
+            <textarea class="action-ta" id="f-start" rows="3" placeholder="A course redesign, a research partnership, a new industry engagement..."></textarea>
+          </div>
+          <div class="action-card stop">
+            <div class="action-card-head">Stop</div>
+            <div class="action-prompt">What are you doing that no longer serves your growth or your students?</div>
+            <textarea class="action-ta" id="f-stop" rows="3" placeholder="This takes honesty — what should you let go of or phase out?"></textarea>
+          </div>
+          <div class="action-card cont" style="grid-column:span 2">
+            <div class="action-card-head">Continue</div>
+            <div class="action-prompt">What are you doing well that you want to sustain and deepen?</div>
+            <textarea class="action-ta" id="f-continue" rows="2" placeholder="Acknowledge what is working — and commit to protecting it."></textarea>
+          </div>
+          <div class="action-card goal">
+            <div class="action-card-head">Key Goal</div>
+            <div class="action-prompt">The single most important outcome you want to achieve this year. One goal only. Make it count.</div>
+            <textarea class="action-ta" id="f-key-goal" rows="2" placeholder="One goal. State it clearly."></textarea>
+          </div>
+        </div>
+        <div class="support-card">
+          <div class="support-head">What XIME needs to do differently</div>
+          <div class="support-prompt">What resources, mentoring, or institutional backing would help you succeed? Be specific — what would XIME doing differently actually make possible for you?</div>
+          <textarea class="field-input" id="f-support" rows="3" style="margin:0"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Submit area -->
+    <div class="submit-area">
+      <div class="submit-info">
+        <div class="submit-title">Ready to submit?</div>
+        <div class="submit-note">Once submitted, your evaluation goes to your Dean for validation. You will not be able to edit it until validation is complete. Make sure all sections reflect what you genuinely want to record.</div>
+      </div>
+      <button class="btn-submit-lg" onclick="submitEval()">Submit for Dean validation →</button>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let faculty = null;
+let evalId = null;
+const ratings = {teaching:0, research:0, industry:0, institution:0};
+const fieldIds = ['f-scholar','f-orcid','f-teaching-notes','f-terms','f-scopus','f-abdc','f-wos','f-hindex','f-conf','f-pub-detail','f-wip','f-mdp-count','f-mdp-detail','f-industry-other','f-industry-summary','f-institution','f-p-teaching','f-p-research','f-p-industry','f-p-institution','f-strengths','f-growth','f-contrib-industry','f-contrib-research','f-contrib-institution','f-convergence','f-ikigai','alloc-teaching','alloc-research','alloc-industry','alloc-institution','f-xime-contrib','f-obj-primary','f-obj-next','f-start','f-stop','f-continue','f-key-goal','f-support'];
+
+function toast(msg, ok=true) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderLeftColor = ok ? 'var(--gold)' : 'var(--red)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navId = id.replace('s-','nav-');
+  document.getElementById(navId)?.classList.add('active');
+}
+
+function buildStars() {
+  document.querySelectorAll('.stars').forEach(container => {
+    const dim = container.dataset.dim;
+    for (let i=1; i<=5; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.textContent = i;
+      s.onclick = () => setRating(dim, i);
+      container.appendChild(s);
+    }
+  });
+}
+
+function setRating(dim, val) {
+  ratings[dim] = val;
+  const container = document.querySelector(`.stars[data-dim="${dim}"]`);
+  container.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('filled', i < val));
+  updateProgress();
+}
+
+function checkAlloc() {
+  const t = ['alloc-teaching','alloc-research','alloc-industry','alloc-institution']
+    .reduce((s,id) => s + (parseInt(document.getElementById(id).value)||0), 0);
+  const el = document.getElementById('alloc-total');
+  el.textContent = `Total: ${t}%`;
+  el.className = 'alloc-total ' + (t===100?'valid':'invalid');
+  const warn = document.getElementById('alloc-warn');
+  const ind = parseInt(document.getElementById('alloc-industry').value)||0;
+  warn.style.display = ind < 10 && ind > 0 ? 'block' : 'none';
+  updateProgress();
+}
+
+function updateProgress() {
+  let filled = 0, total = 0;
+  fieldIds.forEach(id => { total++; const el=document.getElementById(id); if(el&&el.value&&el.value.trim()&&el.value!=='0') filled++; });
+  Object.values(ratings).forEach(v=>{total++;if(v>0)filled++;});
+  const pct = Math.round((filled/total)*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-pct').textContent = pct+'%';
+}
+
+function populateProfile(f) {
+  faculty = f;
+  document.getElementById('sb-name').textContent = f.name;
+  document.getElementById('sb-role').textContent = `${f.designation}${f.admin_role?' · '+f.admin_role:''} · ${f.campus}`;
+  document.getElementById('f-admin-role').value = f.admin_role || '—';
+
+  const rows = [
+    ['Name', f.name],
+    ['Designation', f.designation],
+    ['Campus', f.campus],
+    ['Date Joined', f.joined||'—'],
+    ['PhD Status', f.phd==='yes'?`PhD ${f.phd_year||''}`:f.phd==='pursuing'?'Pursuing PhD':'—'],
+    ['Industry Experience', f.exp_industry?f.exp_industry+' years':'—'],
+    ['Academic Experience', f.exp_academic?f.exp_academic+' years':'—'],
+  ];
+  document.getElementById('profile-auto-rows').innerHTML = rows.map(([k,v])=>
+    `<div class="auto-row"><span class="auto-row-key">${k}</span><span class="auto-row-val">${v}</span></div>`
+  ).join('');
+
+  const pills = document.getElementById('courses-pills');
+  if (f.courses_taught) {
+    pills.innerHTML = f.courses_taught.split(' · ').map(c=>
+      `<div class="course-pill">${c}</div>`).join('');
+  } else {
+    pills.innerHTML = '<div style="font-size:12px;color:var(--faint);font-style:italic">No course data from Digii Campus yet for this faculty member.</div>';
+  }
+}
+
+async function loadOrCreateEval(facultyId) {
+  const { data } = await sb.from('faculty_evaluations')
+    .select('*').eq('faculty_master_id', facultyId).eq('academic_year','2025-26').single();
+  if (data) {
+    evalId = data.id;
+    restoreForm(data);
+    updateStatusPill(data.status);
+  }
+}
+
+function restoreForm(d) {
+  const map = {
+    'f-scopus': d.publications_count,
+    'f-pub-detail': d.publications_details,
+    'f-mdp-count': d.mdp_details,
+    'f-mdp-detail': d.mdp_details,
+    'f-industry-summary': d.industry_summary,
+    'f-institution': d.institution_contributions,
+    'f-p-teaching': d.ikigai_passion,
+    'f-strengths': d.ikigai_strengths_text,
+    'f-growth': d.ikigai_growth_areas,
+    'f-contrib-industry': d.ikigai_contribution,
+    'f-convergence': d.ikigai_convergence,
+    'f-ikigai': d.ikigai_statement,
+    'alloc-teaching': d.alloc_teaching,
+    'alloc-research': d.alloc_research,
+    'alloc-industry': d.alloc_industry,
+    'alloc-institution': d.alloc_institution,
+    'f-xime-contrib': d.xime_contribution,
+    'f-obj-primary': d.primary_objectives,
+    'f-obj-next': d.next_year_objectives,
+    'f-start': d.action_start,
+    'f-stop': d.action_stop,
+    'f-continue': d.action_continue,
+    'f-key-goal': d.action_key_goal,
+    'f-support': d.action_support,
+  };
+  Object.entries(map).forEach(([id,val])=>{ const el=document.getElementById(id); if(el&&val!=null) el.value=val; });
+  if (d.ikigai_strength_teaching) setRating('teaching', d.ikigai_strength_teaching);
+  if (d.ikigai_strength_research) setRating('research', d.ikigai_strength_research);
+  if (d.ikigai_strength_industry) setRating('industry', d.ikigai_strength_industry);
+  if (d.ikigai_strength_institution) setRating('institution', d.ikigai_strength_institution);
+  checkAlloc();
+  updateProgress();
+}
+
+function gatherFormData() {
+  return {
+    faculty_master_id: faculty?.id,
+    academic_year: '2025-26',
+    cycle: 'annual',
+    snap_name: faculty?.name,
+    snap_designation: faculty?.designation,
+    snap_campus: faculty?.campus,
+    snap_subject_area: faculty?.subject_area,
+    snap_courses_taught: faculty?.courses_taught,
+    snap_admin_role: faculty?.admin_role,
+    publications_count: parseInt(document.getElementById('f-scopus').value)||null,
+    publications_details: document.getElementById('f-pub-detail').value||null,
+    mdp_revenue: null,
+    mdp_details: document.getElementById('f-mdp-detail').value||null,
+    industry_summary: document.getElementById('f-industry-summary').value||null,
+    institution_contributions: document.getElementById('f-institution').value||null,
+    ikigai_passion: [
+      document.getElementById('f-p-teaching').value,
+      document.getElementById('f-p-research').value,
+      document.getElementById('f-p-industry').value,
+      document.getElementById('f-p-institution').value
+    ].filter(Boolean).join('\n\n')||null,
+    ikigai_strength_teaching: ratings.teaching||null,
+    ikigai_strength_research: ratings.research||null,
+    ikigai_strength_industry: ratings.industry||null,
+    ikigai_strength_institution: ratings.institution||null,
+    ikigai_strengths_text: document.getElementById('f-strengths').value||null,
+    ikigai_growth_areas: document.getElementById('f-growth').value||null,
+    ikigai_contribution: document.getElementById('f-contrib-industry').value||null,
+    ikigai_convergence: document.getElementById('f-convergence').value||null,
+    ikigai_statement: document.getElementById('f-ikigai').value||null,
+    alloc_teaching: parseInt(document.getElementById('alloc-teaching').value)||null,
+    alloc_research: parseInt(document.getElementById('alloc-research').value)||null,
+    alloc_industry: parseInt(document.getElementById('alloc-industry').value)||null,
+    alloc_institution: parseInt(document.getElementById('alloc-institution').value)||null,
+    xime_contribution: document.getElementById('f-xime-contrib').value||null,
+    primary_objectives: document.getElementById('f-obj-primary').value||null,
+    next_year_objectives: document.getElementById('f-obj-next').value||null,
+    action_start: document.getElementById('f-start').value||null,
+    action_stop: document.getElementById('f-stop').value||null,
+    action_continue: document.getElementById('f-continue').value||null,
+    action_key_goal: document.getElementById('f-key-goal').value||null,
+    action_support: document.getElementById('f-support').value||null,
+    updated_at: new Date().toISOString()
+  };
+}
+
+async function saveDraft() {
+  if (!faculty) { toast('No faculty loaded', false); return; }
+  const data = {...gatherFormData(), status:'draft'};
+  let res;
+  if (evalId) {
+    res = await sb.from('faculty_evaluations').update(data).eq('id', evalId);
+  } else {
+    res = await sb.from('faculty_evaluations').insert(data).select().single();
+    if (res.data) evalId = res.data.id;
+  }
+  if (res.error) { toast('Could not save — ' + res.error.message, false); return; }
+  toast('Draft saved');
+  updateProgress();
+}
+
+async function submitEval() {
+  if (!faculty) { toast('No faculty loaded', false); return; }
+  if (!document.getElementById('f-ikigai').value.trim()) {
+    toast('Please complete your Purpose Statement before submitting', false); return; }
+  const data = {...gatherFormData(), status:'submitted', submitted_at: new Date().toISOString()};
+  let res;
+  if (evalId) {
+    res = await sb.from('faculty_evaluations').update(data).eq('id', evalId);
+  } else {
+    res = await sb.from('faculty_evaluations').insert(data).select().single();
+    if (res.data) evalId = res.data.id;
+  }
+  if (res.error) { toast('Submission failed — ' + res.error.message, false); return; }
+  updateStatusPill('submitted');
+  toast('Submitted for Dean validation');
+  document.querySelectorAll('.field-input, textarea').forEach(el => el.setAttribute('readonly',''));
+  document.querySelectorAll('.btn-save, .btn-submit, .btn-submit-lg').forEach(b=>b.style.opacity='.4');
+}
+
+function updateStatusPill(status) {
+  const el = document.getElementById('status-display');
+  el.textContent = status.charAt(0).toUpperCase()+status.slice(1);
+  el.className = 'status-pill status-'+status;
+}
+
+async function init() {
+  buildStars();
+  document.querySelectorAll('.field-input, textarea').forEach(el =>
+    el.addEventListener('input', updateProgress));
+
+  const { data: session } = await sb.auth.getSession();
+  if (session?.session) {
+    const { data: fac } = await sb.from('faculty_master').select('*').limit(1).single();
+    if (fac) { populateProfile(fac); await loadOrCreateEval(fac.id); }
+  } else {
+    const { data: fac } = await sb.from('faculty_master')
+      .select('*').eq('campus','Bengaluru').order('name').limit(1).single();
+    if (fac) { populateProfile(fac); }
+  }
+  updateProgress();
+}
+
+init();
+</script>
+</body>
+</html>
