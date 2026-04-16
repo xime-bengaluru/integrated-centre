@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magis Centre · Director View</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --navy:#111827;--red:#E8241C;--gold:#c9a84c;--gold-l:#f0dfa0;--gold-d:#8a6e1e;
+  --parchment:#faf8f3;--cream:#f3f0e8;--white:#ffffff;
+  --border:rgba(0,0,0,0.08);--border-g:rgba(201,168,76,0.3);
+  --text:#1a1a18;--muted:#5a5a56;--faint:#9a9a94;
+  --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#085041;
+  --amber:#EF9F27;--amber-l:#FAEEDA;--amber-d:#633806;
+  --blue:#378ADD;--blue-l:#E6F1FB;--blue-d:#0C447C;
+  --purple:#7F77DD;--purple-l:#EEEDFE;--purple-d:#3C3489;
+  --coral:#E24B4A;--coral-l:#FCEBEB;--coral-d:#501313;
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--text);font-size:14px;min-height:100vh}
+
+.topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.2)}
+.tb-left{display:flex;align-items:center;gap:12px}
+.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
+.wm em{color:var(--red);font-style:normal}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.tb-title{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.05em}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-campus-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500}
+.back-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s}
+.back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+.nav{background:var(--white);border-bottom:.5px solid var(--border);padding:0 28px;display:flex;gap:2px}
+.tab{font-family:'DM Sans',sans-serif;font-size:13px;padding:12px 16px;border:none;background:transparent;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--navy);font-weight:500;border-bottom-color:var(--gold)}
+
+.main{padding:28px;max-width:1080px}
+.view{display:none}
+.view.active{display:block}
+
+/* Director banner */
+.dir-banner{background:var(--navy);border-radius:var(--r);padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
+.dir-info{}
+.dir-label{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px}
+.dir-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff}
+.dir-role{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.dir-meta{text-align:right;font-size:11px;color:rgba(255,255,255,.35)}
+.dir-meta span{display:block;color:rgba(255,255,255,.55);font-family:'DM Mono',monospace;font-size:16px;font-weight:400;margin-bottom:2px}
+
+/* Leaderboard */
+.lb-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.lb-title::after{content:'';flex:1;height:.5px;background:var(--border-g)}
+.lb-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:28px}
+
+.lb-card{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:box-shadow .15s;cursor:default}
+.lb-card.own{border:1.5px solid var(--gold);box-shadow:0 4px 20px rgba(201,168,76,.12)}
+.lb-card.rank-1{border-top:3px solid var(--teal)}
+.lb-card.rank-2{border-top:3px solid var(--blue)}
+.lb-card.rank-3{border-top:3px solid var(--amber)}
+
+.lb-card-head{padding:14px 16px 12px;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.lb-campus-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy)}
+.lb-rank{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px}
+.rank-1 .lb-rank{background:var(--teal-l);color:var(--teal-d)}
+.rank-2 .lb-rank{background:var(--blue-l);color:var(--blue-d)}
+.rank-3 .lb-rank{background:var(--amber-l);color:var(--amber-d)}
+.lb-own-tag{font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;background:rgba(201,168,76,.1);color:var(--gold-d);padding:2px 8px;border-radius:10px;border:.5px solid var(--border-g)}
+
+.lb-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:.5px solid var(--border)}
+.lb-metric{padding:10px 14px;border-right:.5px solid var(--border);text-align:center}
+.lb-metric:last-child{border-right:none}
+.lb-metric-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--navy);line-height:1}
+.lb-metric-label{font-size:9px;color:var(--faint);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+
+.lb-bars{padding:12px 14px}
+.lb-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.lb-bar-row:last-child{margin-bottom:0}
+.lb-bar-label{font-size:10px;color:var(--muted);width:70px;flex-shrink:0}
+.lb-bar-track{flex:1;height:5px;background:var(--parchment);border-radius:3px;overflow:hidden}
+.lb-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.lb-bar-val{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace;width:28px;text-align:right;flex-shrink:0}
+
+/* Mini pyramids row */
+.pyramids-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:28px}
+.pyramid-card{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.pyramid-card.own{border:1.5px solid var(--gold)}
+.pyramid-head{padding:12px 16px 8px;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pyramid-campus{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--navy)}
+.pyramid-total{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint)}
+.pyramid-svg{width:100%;padding:8px 0 4px}
+
+/* Faculty directory */
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 14px;border-radius:20px;border:.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);transition:all .12s}
+.filter-btn:hover{border-color:var(--gold);color:var(--navy)}
+.filter-btn.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:500}
+.filter-own{background:rgba(201,168,76,.1);border-color:var(--border-g);color:var(--gold-d);font-weight:500}
+.filter-own.on{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.search-input{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 12px;border:.5px solid var(--border);border-radius:20px;background:var(--white);color:var(--text);outline:none;width:180px;transition:border-color .15s}
+.search-input:focus{border-color:var(--gold)}
+
+.fcard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fcard{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:border-color .12s,box-shadow .12s}
+.fcard:hover{border-color:rgba(201,168,76,.4);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.fcard.own-campus{border-left:2px solid var(--gold)}
+.fc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fc-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.fc-name{font-size:12px;font-weight:500;color:var(--navy);line-height:1.3}
+.fc-role{font-size:10px;color:var(--muted);margin-top:1px}
+.fc-pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.pill{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.pill-phd{background:var(--teal-l);color:var(--teal-d)}
+.pill-pursuing{background:var(--amber-l);color:var(--amber-d)}
+.pill-subject{background:var(--blue-l);color:var(--blue-d)}
+.pill-admin{background:var(--cream);color:var(--muted);border:.5px solid var(--border)}
+.pill-blr{background:#E1F5EE;color:#085041}
+.pill-chn{background:#E6F1FB;color:#0C447C}
+.pill-koc{background:#EEEDFE;color:#3C3489}
+.fc-exp{display:flex;align-items:center;gap:6px;margin-top:4px}
+.fc-exp-bar{flex:1;height:4px;background:var(--parchment);border-radius:2px;overflow:hidden;display:flex}
+.fc-exp-ind{height:100%;background:var(--teal)}
+.fc-exp-aca{height:100%;background:var(--blue)}
+.fc-exp-label{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace}
+
+/* Modal */
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(17,24,39,.5);z-index:200;align-items:center;justify-content:center}
+.modal-wrap.open{display:flex}
+.modal-panel{background:var(--white);border-radius:var(--r);padding:24px;width:100%;max-width:580px;max-height:88vh;overflow-y:auto;animation:mIn .2s ease;position:relative}
+@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dd-close{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--faint);background:none;border:none;cursor:pointer;margin-bottom:14px;padding:0;display:block}
+.dd-close:hover{color:var(--navy)}
+.dd-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:.5px solid var(--border)}
+.dd-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex-shrink:0}
+.dd-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy)}
+.dd-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.dd-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.dd-stat{background:var(--parchment);border-radius:var(--rs);padding:10px}
+.dd-stat-label{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.dd-stat-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--navy)}
+
+/* Three panel cards in modal */
+.modal-panels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.mp{border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden}
+.mp-head{padding:8px 10px}
+.mp-head-navy{background:#0A3D62}
+.mp-head-charcoal{background:#2D3436}
+.mp-head-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px}
+.mp-head-sub{font-size:10px;color:rgba(255,255,255,.45)}
+.mp-body{padding:10px;background:var(--parchment)}
+.mp-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:6px;padding-bottom:6px;border-bottom:.5px solid var(--border)}
+.mp-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.mp-dot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;margin-top:4px}
+.mp-row-label{font-size:10px;font-weight:500;color:var(--muted)}
+.mp-row-val{font-size:10px;color:var(--faint);font-style:italic;margin-top:1px}
+.mp-hatched{height:5px;background:repeating-linear-gradient(90deg,var(--border) 0,var(--border) 3px,transparent 3px,transparent 6px);border-radius:2px;margin-top:3px}
+.unlock-box{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:10px 12px}
+.unlock-label{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-d);margin-bottom:3px}
+.unlock-text{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* av colors */
+.av-a{background:#E1F5EE;color:#085041}
+.av-b{background:#E6F1FB;color:#0C447C}
+.av-c{background:#FAEEDA;color:#633806}
+.av-d{background:#EEEDFE;color:#3C3489}
+.av-e{background:#FCEBEB;color:#501313}
+
+.section-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:.5px;background:var(--border)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-left">
+    <div class="wm">X<em>I</em>ME</div>
+    <div class="tb-sep"></div>
+    <div class="tb-title">Magis Centre · Director View</div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-campus-badge" id="tb-badge" style="background:rgba(201,168,76,.15);color:var(--gold)">Loading...</div>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="tab active" onclick="switchTab('overview')">Overview & Leaderboard</button>
+  <button class="tab" onclick="switchTab('faculty')">Faculty Directory</button>
+</div>
+
+<div class="main" id="main-content">
+  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading campus data...</div>
+</div>
+
+<div class="modal-wrap" id="faculty-modal" onclick="handleBackdropClick(event)">
+  <div class="modal-panel" id="modal-panel"></div>
+</div>
+
+<script>
+const SB_URL='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+// Director email→campus map (mirrors DB, used for demo without login)
+const DIRECTOR_MAP={
+  'roshni@xime.org':{campus:'Bengaluru',name:'Dr. Roshni James'},
+  'drravi_v@xime.org':{campus:'Chennai',name:'Dr. Ravi Veeraraghavan'},
+  'alok@xime.org':{campus:'Kochi',name:'Prof. Alok K.'}
+};
+
+const CAMPUS_COLORS={Bengaluru:'#1D9E75',Chennai:'#378ADD',Kochi:'#7F77DD'};
+const CAMPUS_RANKS={Bengaluru:'BLR',Chennai:'CHN',Kochi:'KOC'};
+const bandOrder={professor:1,assoc:2,srasst:3,asst:4,jr:5,staff:6};
+const bandLabel={professor:'Professors',assoc:'Assoc. Professors',srasst:'Sr. Asst. Professors',asst:'Asst. Professors',jr:'Jr. Asst. Professors',staff:'Associates'};
+
+let allData=[], myDirector=null, filteredData=[], activeTab='overview';
+
+function initials(name){return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
+function avClass(i){return['av-a','av-b','av-c','av-d','av-e'][i%5]}
+
+function phdLabel(f){
+  if(f.phd_type==='dba')return'DBA';
+  if(f.phd_type==='fpm')return'FPM';
+  if(f.phd==='yes')return`PhD ${f.phd_year||''}`;
+  if(f.phd==='pursuing')return'Pursuing';
+  return '';
+}
+
+function campusPill(campus){
+  const cls={Bengaluru:'pill-blr',Chennai:'pill-chn',Kochi:'pill-koc'};
+  return `<span class="pill ${cls[campus]||''}">${CAMPUS_RANKS[campus]||campus}</span>`;
+}
+
+// ---- LEADERBOARD ----
+function buildLeaderboard(campuses){
+  // Score each campus: PhD% (40) + Senior% (40) + PhDAbsolute (20)
+  const scored=campuses.map(c=>{
+    const phdPct=c.total?Math.round((c.phds/c.total)*100):0;
+    const seniorPct=c.total?Math.round(((c.profs+c.assocs)/c.total)*100):0;
+    const score=Math.round(phdPct*0.4+seniorPct*0.4+(c.phds/Math.max(...campuses.map(x=>x.phds)))*20);
+    return{...c,phdPct,seniorPct,score};
+  }).sort((a,b)=>b.score-a.score);
+
+  return`
+    <div class="lb-title">Three-Campus Leaderboard &nbsp;·&nbsp; AY 2025–26</div>
+    <div class="lb-grid">
+      ${scored.map((c,rank)=>{
+        const isOwn=myDirector&&c.campus===myDirector.campus;
+        const maxTotal=Math.max(...campuses.map(x=>x.total));
+        const maxPhds=Math.max(...campuses.map(x=>x.phds));
+        const maxSenior=Math.max(...campuses.map(x=>x.profs+x.assocs));
+        return`<div class="lb-card rank-${rank+1}${isOwn?' own':''}">
+          <div class="lb-card-head">
+            <div>
+              <div class="lb-campus-name" style="color:${CAMPUS_COLORS[c.campus]}">${c.campus}</div>
+              <div style="font-size:10px;color:var(--faint);margin-top:2px">${c.campus==='Bengaluru'?'Karnataka · Electronic City':c.campus==='Chennai'?'Tamil Nadu':'Kerala'}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+              <div class="lb-rank">${rank===0?'#1 · Leading':rank===1?'#2':'#3'}</div>
+              ${isOwn?'<div class="lb-own-tag">Your campus</div>':''}
+            </div>
+          </div>
+          <div class="lb-metrics">
+            <div class="lb-metric">
+              <div class="lb-metric-val">${c.total}</div>
+              <div class="lb-metric-label">Faculty</div>
+            </div>
+            <div class="lb-metric">
+              <div class="lb-metric-val" style="color:var(--teal)">${c.phds}</div>
+              <div class="lb-metric-label">Research PhDs</div>
+            </div>
+            <div class="lb-metric">
+              <div class="lb-metric-val" style="color:var(--blue)">${c.profs+c.assocs}</div>
+              <div class="lb-metric-label">Senior Faculty</div>
+            </div>
+          </div>
+          <div class="lb-bars">
+            <div class="lb-bar-row">
+              <div class="lb-bar-label">Faculty</div>
+              <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${Math.round((c.total/maxTotal)*100)}%;background:${CAMPUS_COLORS[c.campus]}80"></div></div>
+              <div class="lb-bar-val">${c.total}</div>
+            </div>
+            <div class="lb-bar-row">
+              <div class="lb-bar-label">PhD density</div>
+              <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${c.phdPct}%;background:var(--teal)"></div></div>
+              <div class="lb-bar-val">${c.phdPct}%</div>
+            </div>
+            <div class="lb-bar-row">
+              <div class="lb-bar-label">Senior %</div>
+              <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${c.seniorPct}%;background:var(--blue)"></div></div>
+              <div class="lb-bar-val">${c.seniorPct}%</div>
+            </div>
+            <div class="lb-bar-row">
+              <div class="lb-bar-label">Pursuing PhD</div>
+              <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${c.pursuing>0?Math.round((c.pursuing/Math.max(...campuses.map(x=>x.pursuing)))*100):0}%;background:var(--amber)"></div></div>
+              <div class="lb-bar-val">${c.pursuing}</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ---- MINI PYRAMID ----
+function buildMiniPyramid(campusData, campus, isOwn){
+  const cx=130, gold='#D4AF37', white='rgba(255,255,255,0.75)';
+  const prof=campusData.filter(f=>f.band==='professor').length;
+  const assoc=campusData.filter(f=>f.band==='assoc').length;
+  const srasst=campusData.filter(f=>f.band==='srasst').length;
+  const asst=campusData.filter(f=>f.band==='asst').length;
+  const jr=campusData.filter(f=>f.band==='jr').length;
+  const staff=campusData.filter(f=>f.band==='staff').length;
+
+  const shapes=[
+    {y1:28,y2:72,hw1:18,hw2:52,count:prof,label:'PROFESSOR',color:'#0A3D62'},
+    {y1:75,y2:118,hw1:52,hw2:86,count:assoc,label:'ASSOCIATE',color:'#2D3436'},
+    {y1:121,y2:164,hw1:86,hw2:115,count:srasst,label:'SR. ASST.',color:'#0A3D62'},
+    {y1:167,y2:208,hw1:115,hw2:130,count:asst,label:'ASST. PROF',color:'#2D3436'},
+  ];
+
+  let svg=`<polygon points="${cx},4 ${cx-16},25 ${cx+16},25" fill="${gold}"/>`;
+  shapes.forEach(s=>{
+    const pts=`${cx-s.hw1},${s.y1} ${cx+s.hw1},${s.y1} ${cx+s.hw2},${s.y2} ${cx-s.hw2},${s.y2}`;
+    const cy=Math.round((s.y1+s.y2)/2);
+    svg+=`<polygon points="${pts}" fill="${s.color}"/>`;
+    svg+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif" fill="${gold}">${s.count}</text>`;
+    svg+=`<text x="${cx}" y="${cy+9}" text-anchor="middle" font-size="7" font-family="sans-serif" fill="${white}" letter-spacing="0.06em">${s.label}</text>`;
+  });
+  // Support roles
+  if(jr+staff>0){
+    svg+=`<line x1="20" y1="218" x2="240" y2="218" stroke="${gold}" stroke-width="0.5" stroke-dasharray="4,3"/>`;
+    svg+=`<polygon points="${cx-50},222 ${cx+50},222 ${cx+62},248 ${cx-62},248" fill="#2D3436"/>`;
+    svg+=`<text x="${cx}" y="${235}" text-anchor="middle" font-size="11" font-weight="bold" font-family="sans-serif" fill="${gold}">${jr+staff}</text>`;
+    svg+=`<text x="${cx}" y="${246}" text-anchor="middle" font-size="7" font-family="sans-serif" fill="${white}" letter-spacing="0.06em">ASSOCIATES</text>`;
+  }
+
+  const h=jr+staff>0?260:220;
+  return`
+    <div class="pyramid-card${isOwn?' own':''}">
+      <div class="pyramid-head">
+        <div class="pyramid-campus" style="color:${CAMPUS_COLORS[campus]}">${campus}</div>
+        <div class="pyramid-total">${campusData.length} faculty</div>
+      </div>
+      <svg width="100%" viewBox="0 0 260 ${h}" class="pyramid-svg" style="background:#111827;display:block">
+        ${svg}
+      </svg>
+    </div>`;
+}
+
+// ---- FACULTY CARDS ----
+function renderCards(data){
+  if(!data.length)return'<div style="padding:40px;text-align:center;color:var(--faint);font-size:13px">No faculty match this filter.</div>';
+  return`<div class="fcard-grid">${data.map((f,i)=>{
+    const total=(f.exp_industry||0)+(f.exp_academic||0);
+    const indPct=total>0?Math.round((f.exp_industry/total)*100):0;
+    const isOwn=myDirector&&f.campus===myDirector.campus;
+    const ph=phdLabel(f);
+    return`<div class="fcard${isOwn?' own-campus':''}" onclick="openCard(${f.id})">
+      <div class="fc-top">
+        <div class="fc-av ${avClass(i)}">${initials(f.name)}</div>
+        <div>
+          <div class="fc-name">${f.name}</div>
+          <div class="fc-role">${f.designation}${f.admin_role?' · '+f.admin_role:''}</div>
+        </div>
+      </div>
+      <div class="fc-pills">
+        ${campusPill(f.campus)}
+        ${ph?`<span class="pill ${f.phd==='pursuing'?'pill-pursuing':'pill-phd'}">${ph}</span>`:''}
+        ${f.subject_area?`<span class="pill pill-subject">${f.subject_area}</span>`:''}
+        ${f.admin_role?`<span class="pill pill-admin">${f.admin_role}</span>`:''}
+      </div>
+      ${total>0?`<div class="fc-exp">
+        <div class="fc-exp-bar"><div class="fc-exp-ind" style="width:${indPct}%"></div><div class="fc-exp-aca" style="width:${100-indPct}%"></div></div>
+        <span class="fc-exp-label">${total}y</span>
+      </div>`:''}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ---- CARD MODAL (no industry mix chart) ----
+function openCard(id){
+  const f=allData.find(x=>x.id===id);
+  if(!f)return;
+  const total=(f.exp_industry||0)+(f.exp_academic||0);
+  const indPct=total>0?Math.round((f.exp_industry/total)*100):0;
+  const ph=phdLabel(f);
+  const isOwn=myDirector&&f.campus===myDirector.campus;
+  document.getElementById('modal-panel').innerHTML=`
+    <button class="dd-close" onclick="closeModal()">← Close</button>
+    <div class="dd-header">
+      <div class="dd-av ${avClass(id%5)}">${initials(f.name)}</div>
+      <div style="flex:1">
+        <div class="dd-name">${f.name}</div>
+        <div class="dd-sub">${f.designation}${f.admin_role?' · '+f.admin_role:''} · ${f.campus}${f.subject_area?' · '+f.subject_area:''}</div>
+      </div>
+      ${isOwn?`<div style="font-size:10px;background:rgba(201,168,76,.1);color:var(--gold-d);padding:3px 8px;border-radius:10px;border:.5px solid var(--border-g);align-self:flex-start">Your campus</div>`:''}
+    </div>
+    <div class="dd-stats">
+      <div class="dd-stat"><div class="dd-stat-label">Campus</div><div class="dd-stat-val" style="font-size:14px;font-weight:500;color:${CAMPUS_COLORS[f.campus]}">${f.campus}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">Joined XIME</div><div class="dd-stat-val" style="font-size:14px">${f.joined||'—'}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">PhD / Doctorate</div><div class="dd-stat-val" style="font-size:14px;color:${f.phd==='yes'?'var(--teal)':f.phd==='pursuing'?'var(--amber-d)':'var(--faint)'}">${ph||'—'}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">Experience</div><div class="dd-stat-val" style="font-size:14px">${total||'—'}${total?' yrs':''}</div></div>
+    </div>
+    ${total>0?`<div style="margin-bottom:14px">
+      <div style="font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Experience</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:6px;border-radius:3px;overflow:hidden;background:var(--parchment);display:flex">
+          <div style="width:${indPct}%;background:var(--teal)"></div>
+          <div style="width:${100-indPct}%;background:var(--blue)"></div>
+        </div>
+        <span style="font-size:11px;color:var(--muted)">${f.exp_industry>0?f.exp_industry+'y industry':''} ${f.exp_academic>0?f.exp_academic+'y academic':''}</span>
+      </div>
+    </div>`:''}
+    <div style="height:.5px;background:var(--border);margin:4px 0 14px"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Evaluation · Capabilities</div>
+      <div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);border:.5px solid rgba(239,159,39,.3)">Awaiting evaluation data</div>
+    </div>
+    <div class="modal-panels">
+      <div class="mp">
+        <div class="mp-head mp-head-navy">
+          <div class="mp-head-label">Performance</div>
+          <div class="mp-head-sub">AY 2024–25</div>
+        </div>
+        <div class="mp-body">
+          ${['Credit points','Teaching effectiveness','MDP revenue'].map(l=>`
+          <div class="mp-row"><div><div class="mp-row-label">${l}</div><div class="mp-hatched" style="width:${40+Math.random()*20|0}px"></div><div class="mp-row-val">Awaiting appraisal</div></div></div>`).join('')}
+        </div>
+      </div>
+      <div class="mp">
+        <div class="mp-head mp-head-charcoal">
+          <div class="mp-head-label">Achievements</div>
+          <div class="mp-head-sub">Logged activities</div>
+        </div>
+        <div class="mp-body">
+          ${f.subject_area?`<div class="mp-row"><div><div class="mp-row-label">Subject area</div><div style="font-size:11px;font-weight:500;color:var(--blue-d);margin-top:2px">${f.subject_area}</div></div></div>`:''}
+          ${f.courses_taught?`<div class="mp-row"><div><div class="mp-row-label">Courses taught</div><div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.5">${f.courses_taught.split(' · ').slice(0,3).join(' · ')}</div></div></div>`:''}
+          ${['Research · publications','MDPs & OBPs'].map(l=>`
+          <div class="mp-row"><div><div class="mp-row-label">${l}</div><div class="mp-hatched" style="width:32px"></div><div class="mp-row-val">Awaiting forms</div></div></div>`).join('')}
+        </div>
+      </div>
+      <div class="mp">
+        <div class="mp-head mp-head-navy">
+          <div class="mp-head-label">Evaluation</div>
+          <div class="mp-head-sub">Signals & flags</div>
+        </div>
+        <div class="mp-body">
+          ${['Promotion signal','Development flag','Early warning'].map(l=>`
+          <div class="mp-row"><div><div class="mp-row-label">${l}</div><div style="border:.5px dashed var(--border);border-radius:4px;padding:4px 6px;margin-top:3px;font-size:10px;color:var(--faint);text-align:center">Pending evaluation data</div></div></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="unlock-box">
+      <div class="unlock-label">How to unlock this view</div>
+      <div class="unlock-text">Completed appraisal forms are with the Director at each campus. Once retrieved and loaded, every panel above populates automatically — promotion flags, early warning signals, and running credit points.</div>
+    </div>`;
+  document.getElementById('faculty-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('faculty-modal').classList.remove('open')}
+function handleBackdropClick(e){if(e.target===document.getElementById('faculty-modal'))closeModal()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// ---- TAB ----
+function switchTab(id){
+  activeTab=id;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','faculty'][i]===id));
+  if(id==='overview')renderOverview();
+  else renderFaculty();
+}
+
+// ---- CAMPUS STATS ----
+function campusStats(campus){
+  const d=allData.filter(f=>f.campus===campus);
+  return{
+    campus,data:d,total:d.length,
+    phds:d.filter(f=>f.phd==='yes').length,
+    pursuing:d.filter(f=>f.phd==='pursuing').length,
+    profs:d.filter(f=>f.band==='professor').length,
+    assocs:d.filter(f=>f.band==='assoc').length,
+    withSpec:d.filter(f=>f.subject_area).length
+  };
+}
+
+// ---- RENDER OVERVIEW ----
+function renderOverview(){
+  const campuses=['Bengaluru','Chennai','Kochi'].map(campusStats);
+  const myCampus=myDirector?.campus||'Bengaluru';
+  document.getElementById('main-content').innerHTML=`
+    <div class="dir-banner">
+      <div class="dir-info">
+        <div class="dir-label">Magis Centre · Director Access</div>
+        <div class="dir-name">${myDirector?.name||'Director'}</div>
+        <div class="dir-role">${myCampus} Campus · AY 2025–26</div>
+      </div>
+      <div class="dir-meta">
+        <span>${allData.length}</span>faculty across 3 campuses
+      </div>
+    </div>
+    ${buildLeaderboard(campuses)}
+    <div class="section-title">Designation Pyramid · By Campus</div>
+    <div class="pyramids-row">
+      ${campuses.map(c=>buildMiniPyramid(c.data,c.campus,c.campus===myCampus)).join('')}
+    </div>`;
+}
+
+// ---- RENDER FACULTY ----
+let activeCampusFilter='own', searchVal='';
+function renderFaculty(){
+  const myCampus=myDirector?.campus||'Bengaluru';
+  filteredData=allData.filter(f=>{
+    if(activeCampusFilter==='own'&&f.campus!==myCampus)return false;
+    if(activeCampusFilter==='blr'&&f.campus!=='Bengaluru')return false;
+    if(activeCampusFilter==='chn'&&f.campus!=='Chennai')return false;
+    if(activeCampusFilter==='koc'&&f.campus!=='Kochi')return false;
+    if(searchVal&&!f.name.toLowerCase().includes(searchVal.toLowerCase()))return false;
+    return true;
+  });
+  document.getElementById('main-content').innerHTML=`
+    <div class="filter-bar">
+      <button class="filter-btn filter-own${activeCampusFilter==='own'?' on':''}" onclick="setCampusFilter('own',this)">My Campus (${myCampus})</button>
+      <button class="filter-btn${activeCampusFilter==='all'?' on':''}" onclick="setCampusFilter('all',this)">All Campuses</button>
+      <button class="filter-btn${activeCampusFilter==='blr'?' on':''}" onclick="setCampusFilter('blr',this)" style="color:var(--teal-d)">Bengaluru</button>
+      <button class="filter-btn${activeCampusFilter==='chn'?' on':''}" onclick="setCampusFilter('chn',this)" style="color:var(--blue-d)">Chennai</button>
+      <button class="filter-btn${activeCampusFilter==='koc'?' on':''}" onclick="setCampusFilter('koc',this)" style="color:var(--purple-d)">Kochi</button>
+      <input class="search-input" placeholder="Search faculty..." value="${searchVal}" oninput="setSearch(this.value)">
+      <span style="font-size:11px;color:var(--faint);margin-left:auto">${filteredData.length} faculty</span>
+    </div>
+    ${renderCards(filteredData)}`;
+}
+
+function setCampusFilter(val,btn){
+  activeCampusFilter=val;
+  renderFaculty();
+}
+function setSearch(val){
+  searchVal=val;
+  renderFaculty();
+}
+
+// ---- INIT ----
+async function init(){
+  // Detect director from session or default to demo
+  const{data:session}=await sb.auth.getSession();
+  const email=session?.session?.user?.email;
+  if(email&&DIRECTOR_MAP[email]){
+    myDirector=DIRECTOR_MAP[email];
+  } else {
+    // Demo mode — default to Bengaluru
+    myDirector={campus:'Bengaluru',name:'Dr. Roshni James'};
+  }
+
+  // Update topbar badge
+  const badge=document.getElementById('tb-badge');
+  badge.textContent=`${myDirector.campus} · Director`;
+  badge.style.background=CAMPUS_COLORS[myDirector.campus]+'22';
+  badge.style.color=CAMPUS_COLORS[myDirector.campus];
+
+  // Load all faculty
+  const{data,error}=await sb.from('faculty_master').select('*').order('campus').order('band');
+  if(error||!data?.length){
+    document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load faculty data.</div>';
+    return;
+  }
+  allData=data;
+  renderOverview();
+}
+
+init();
+</script>
+</body>
+</html>
