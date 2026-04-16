@@ -437,12 +437,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       <div class="gate-card" id="gate-ap-marketing" style="animation-delay:0.1s">
         <div class="gate-label"><div class="gate-dot"></div>AG 1 · Director Approval</div>
         <div class="gate-title">Asst. Professor — Marketing</div>
-        <div class="gate-sub">MRF submitted · Bengaluru · Awaiting Director headcount approval · 14 hrs · SLA: 48 hrs</div>
-        <button class="gate-action" onclick="openDetail('ap-marketing')">Review Requisition →</button>
-        <button class="btn-approve" onclick="approveRequisition('ap-marketing')">
+        <div class="gate-sub">MRF submitted · Bengaluru · 14 hrs · SLA: 48 hrs</div>
+        <button class="btn-approve" onclick="approveRequisition('ap-marketing')" id="btn-approve-main">
           <span class="btn-approve-icon">✓</span> Approve · Director, Bengaluru
         </button>
-        <button class="btn-reject" onclick="rejectRequisition('ap-marketing')">Return for revision</button>
+        <button class="btn-reject" onclick="rejectRequisition('ap-marketing')" id="btn-reject-main">Return for revision</button>
+        <button class="gate-action" style="margin-top:6px;background:transparent;color:#6D28D9;border:1px solid #DDD6FE;" onclick="openDetail('ap-marketing')">Review full requisition →</button>
       </div>
     </div>
 
@@ -589,12 +589,13 @@ function approveRequisition(id) {
   if (gate) {
     gate.style.background = '#F0FDF4';
     gate.style.borderColor = '#86EFAC';
-    gate.querySelector('.gate-label').innerHTML = '<span style="color:#166534;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Approved</span>';
+    gate.querySelector('.gate-label').innerHTML = '<span style="color:#166534;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Approved by Director</span>';
     gate.querySelector('.gate-title').style.color = '#166534';
     gate.querySelector('.gate-sub').textContent = 'Director, Bengaluru approved · Proceeding to JD preparation';
-    gate.querySelector('.gate-action').textContent = 'View Approved Requisition →';
-    gate.querySelector('.btn-approve').outerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#DCFCE7;border-radius:6px;font-size:12px;font-weight:600;color:#166534;text-align:center">✓ Approved by Director, Bengaluru</div>';
-    gate.querySelector('.btn-reject').remove();
+    const approveBtn = document.getElementById('btn-approve-main');
+    if (approveBtn) approveBtn.outerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#DCFCE7;border-radius:6px;font-size:12px;font-weight:600;color:#166534;text-align:center;border:1px solid #86EFAC">✓ Approved by Director, Bengaluru</div>';
+    const rejectBtn = document.getElementById('btn-reject-main');
+    if (rejectBtn) rejectBtn.remove();
   }
   const block = document.getElementById('approval-block');
   if (block) {
@@ -612,9 +613,10 @@ function rejectRequisition(id) {
     gate.style.borderColor = '#FCA5A5';
     gate.querySelector('.gate-label').innerHTML = '<span style="color:#991B1B;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Returned for revision</span>';
     gate.querySelector('.gate-sub').textContent = 'Returned by Director, Bengaluru · Requester to revise and resubmit';
-    gate.querySelector('.btn-approve').remove();
-    gate.querySelector('.btn-reject').textContent = 'Returned — awaiting revision';
-    gate.querySelector('.btn-reject').disabled = true;
+    const approveBtn = document.getElementById('btn-approve-main');
+    if (approveBtn) approveBtn.remove();
+    const rejectBtn = document.getElementById('btn-reject-main');
+    if (rejectBtn) { rejectBtn.textContent = 'Returned — awaiting revision'; rejectBtn.disabled = true; }
   }
   showToast('Requisition returned. Dean notified to revise.');
 }
