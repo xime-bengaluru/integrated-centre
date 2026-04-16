@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Faculty Intelligence — XIME</title>
+<title>Magis Centre · Faculty Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -220,7 +220,7 @@ tr:hover td{background:var(--cream)}
     <div style="display:flex;align-items:center">
       <div class="wm">X<em>I</em>ME</div>
       <div class="wm-sep"></div>
-      <div class="wm-title">Faculty Intelligence Centre</div>
+      <div class="wm-title">Magis Centre · Faculty Intelligence</div>
     </div>
     <div class="topbar-r">
       <div class="badge-president">President's View</div>
@@ -241,11 +241,19 @@ tr:hover td{background:var(--cream)}
     <div id="view-overview" class="view active">
       <div class="metrics" id="metrics-row">
         <div class="metric"><div class="metric-label">Total faculty</div><div class="metric-val" id="m-total">—</div><div class="metric-sub">across 3 campuses</div></div>
-        <div class="metric"><div class="metric-label">Confirmed PhDs</div><div class="metric-val" id="m-phd">—</div><div class="metric-sub" id="m-phd-sub">+ pursuing</div></div>
         <div class="metric"><div class="metric-label">Bengaluru</div><div class="metric-val" id="m-blr">—</div><div class="metric-sub" id="m-blr-sub"></div></div>
         <div class="metric"><div class="metric-label">Chennai</div><div class="metric-val" id="m-chn">—</div><div class="metric-sub" id="m-chn-sub"></div></div>
         <div class="metric"><div class="metric-label">Kochi</div><div class="metric-val" id="m-koc">—</div><div class="metric-sub" id="m-koc-sub"></div></div>
-        <div class="metric"><div class="metric-label">Industry veterans</div><div class="metric-val" id="m-ind">—</div><div class="metric-sub">15+ yrs industry</div></div>
+        <div class="metric" style="border-left:2px solid var(--gold);padding-left:12px">
+          <div class="metric-label">Research PhD</div>
+          <div class="metric-val" id="m-phd-res">—</div>
+          <div class="metric-sub" id="m-phd-pursuing">+ — pursuing</div>
+        </div>
+        <div class="metric" style="border-left:2px solid rgba(201,168,76,.3);padding-left:12px">
+          <div class="metric-label">DBA · FPM</div>
+          <div class="metric-val" id="m-phd-prof">—</div>
+          <div class="metric-sub">professional doctorates</div>
+        </div>
       </div>
 
       <div class="sec-title">Designation pyramid — all campuses</div>
@@ -457,7 +465,7 @@ tr:hover td{background:var(--cream)}
 
   <div class="footer">
     <div class="footer-l">Source: Faculty Details, XIME · All Three Units · 11 April 2026 · Compiled by Reetha Joseph, Senior Secretary</div>
-    <div class="footer-r">XIME Faculty Intelligence Centre · Restricted</div>
+    <div class="footer-r">Magis Centre · Restricted</div>
   </div>
 
   <div class="modal-backdrop" id="faculty-modal" onclick="handleBackdropClick(event)">
@@ -528,15 +536,22 @@ function buildOverview(data) {
   const indVets = data.filter(f=>f.exp_industry>=15).length;
 
   document.getElementById('m-total').textContent = total;
-  document.getElementById('m-phd').textContent = phds;
-  document.getElementById('m-phd-sub').textContent = `+ ${pursuing} pursuing`;
+
+  const phdRes = data.filter(f=>f.phd==='yes' && !['dba','fpm'].includes(f.phd_type)).length;
+  const phdDba = data.filter(f=>f.phd_type==='dba').length;
+  const phdFpm = data.filter(f=>f.phd_type==='fpm').length;
+  const phdProf = phdDba + phdFpm;
+
+  document.getElementById('m-phd-res').textContent = phdRes;
+  document.getElementById('m-phd-pursuing').textContent = `+ ${pursuing} pursuing`;
+  document.getElementById('m-phd-prof').textContent = phdProf > 0 ? phdProf : '—';
+
   document.getElementById('m-blr').textContent = blr.length;
-  document.getElementById('m-blr-sub').textContent = blr.filter(f=>f.phd==='yes').length + ' PhDs confirmed';
+  document.getElementById('m-blr-sub').textContent = blr.filter(f=>f.band==='professor'||f.band==='assoc').length + ' senior faculty';
   document.getElementById('m-chn').textContent = chn.length;
-  document.getElementById('m-chn-sub').textContent = chn.filter(f=>f.phd==='yes').length + ' PhDs confirmed';
+  document.getElementById('m-chn-sub').textContent = chn.filter(f=>f.band==='professor'||f.band==='assoc').length + ' senior faculty';
   document.getElementById('m-koc').textContent = koc.length;
-  document.getElementById('m-koc-sub').textContent = koc.filter(f=>f.phd==='yes').length + ' PhDs confirmed';
-  document.getElementById('m-ind').textContent = indVets;
+  document.getElementById('m-koc-sub').textContent = koc.filter(f=>f.band==='professor'||f.band==='assoc').length + ' senior faculty';
 
   buildPyramid(data);
   buildExpPyramid(data);
@@ -688,7 +703,8 @@ function renderTable(data) {
   tbody.innerHTML = data.map(f=>{
     const total = (f.exp_industry||0)+(f.exp_academic||0);
     const indPct = total>0?Math.round((f.exp_industry/total)*100):0;
-    const phdHtml = f.phd==='yes'?`<span class="phd-yes">PhD ${f.phd_year||''}</span>`:f.phd==='pursuing'?`<span class="phd-pursuing">Pursuing</span>`:`<span class="phd-no">—</span>`;
+    const phdLabel = f.phd_type==='dba'?'DBA':f.phd_type==='fpm'?'FPM':'PhD';
+    const phdHtml = f.phd==='yes'?`<span class="phd-yes">${phdLabel} ${f.phd_year||''}</span>`:f.phd==='pursuing'?`<span class="phd-pursuing">Pursuing</span>`:`<span class="phd-no">—</span>`;
     const expHtml = total>0?`<div style="display:flex;align-items:center;gap:6px"><div class="exp-bar"><div class="exp-ind" style="width:${indPct}%"></div><div class="exp-aca" style="width:${100-indPct}%"></div></div><span style="font-size:11px;color:var(--muted)">${total} yrs</span></div>`:`<span style="font-size:11px;color:var(--faint)">—</span>`;
     return `<tr><td><div class="name-cell">${f.name}</div>${f.admin_role?`<div class="admin-role">${f.admin_role}</div>`:''}</td><td><span class="badge ${campusClass[f.campus]}">${f.campus}</span></td><td><span class="badge ${bandClass[f.band]}">${bandLabel[f.band]}</span></td><td style="color:var(--muted);font-size:12px">${f.joined||''}</td><td>${phdHtml}</td><td>${expHtml}</td></tr>`;
   }).join('');
@@ -707,7 +723,9 @@ function renderCards(data) {
       <div class="fc-pills">
         <span class="fc-pill ${campusClass[f.campus]}">${f.campus}</span>
         <span class="fc-pill ${bandClass[f.band]}">${bandLabel[f.band]}</span>
-        ${f.phd==='yes'?`<span class="fc-pill" style="background:#E1F5EE;color:#085041">PhD ${f.phd_year||''}</span>`:f.phd==='pursuing'?`<span class="fc-pill" style="background:#FAEEDA;color:#633806">Pursuing PhD</span>`:''}
+        ${f.phd==='yes'
+          ? `<span class="fc-pill" style="background:#E1F5EE;color:#085041">${f.phd_type==='dba'?'DBA':f.phd_type==='fpm'?'FPM':'PhD'} ${f.phd_year||''}</span>`
+          : f.phd==='pursuing'?`<span class="fc-pill" style="background:#FAEEDA;color:#633806">Pursuing PhD</span>`:''}
         ${f.subject_area?`<span class="fc-pill" style="background:#E6F1FB;color:#0C447C">${f.subject_area}</span>`:''}
       </div>
       ${total>0?`<div class="fc-exp"><div class="fc-exp-bar"><div class="fc-exp-ind" style="width:${indPct}%"></div><div class="fc-exp-aca" style="width:${100-indPct}%"></div></div><span class="fc-exp-label">${total} yrs</span></div>`:''}
@@ -724,7 +742,8 @@ function openCard(i) {
   const indPct=total>0?Math.round((f.exp_industry/total)*100):0;
   const av=avColor(i);
 
-  const phdText = f.phd==='yes'?`PhD ${f.phd_year||''}`:f.phd==='pursuing'?'Pursuing PhD':'No PhD';
+  const phdTypeLabel = f.phd_type==='dba'?'DBA':f.phd_type==='fpm'?'FPM (IIM)':'PhD';
+  const phdText = f.phd==='yes'?`${phdTypeLabel} ${f.phd_year||''}`:f.phd==='pursuing'?'Pursuing PhD':'No PhD';
   const phdColor = f.phd==='yes'?'var(--teal)':f.phd==='pursuing'?'var(--amber-d)':'var(--faint)';
 
   document.getElementById('modal-panel').innerHTML = `
