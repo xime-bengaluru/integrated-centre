@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XIME Recruitment Pipeline — HRMS</title>
+<title>Magis Centre · Recruitment Pipeline</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -204,6 +204,30 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 }
 .gate-action:hover { background: #3C1D80; }
 
+/* DIRECTOR APPROVE BUTTON — prominent green */
+.btn-approve {
+  margin-top: 8px; padding: 9px 12px;
+  background: #166534; color: white;
+  border: none; border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  font-weight: 600; cursor: pointer; width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background 0.15s;
+}
+.btn-approve:hover { background: #14532d; }
+.btn-approve-icon { font-size: 13px; }
+
+.btn-reject {
+  margin-top: 6px; padding: 7px 12px;
+  background: white; color: #991B1B;
+  border: 1.5px solid #FCA5A5;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+  font-weight: 500; cursor: pointer; width: 100%;
+  transition: all 0.15s;
+}
+.btn-reject:hover { background: #FEF2F2; }
+
 /* EMPTY COL */
 .empty-col {
   background: var(--bg); border: 1.5px dashed var(--border);
@@ -221,7 +245,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .detail-overlay.open { display: flex; }
 
 .detail-panel {
-  width: 380px; height: 100vh; background: white;
+  width: 400px; height: 100vh; background: white;
   overflow-y: auto; padding: 0;
   box-shadow: -8px 0 32px rgba(0,0,0,0.15);
   animation: slideIn 0.2s ease;
@@ -265,6 +289,36 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .sf-step.pending { background: var(--bg); color: var(--muted); }
 .sf-icon { font-size: 11px; width: 16px; text-align: center; }
 
+/* Director approval block inside panel */
+.approve-block {
+  background: #F0FDF4; border: 1.5px solid #86EFAC;
+  border-radius: 9px; padding: 14px 16px; margin-bottom: 16px;
+}
+.approve-block-head {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #166534; margin-bottom: 6px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+.approve-block-dot { width: 6px; height: 6px; border-radius: 50%; background: #16A34A; animation: pulse 2s infinite; }
+.approve-block-title { font-size: 13px; font-weight: 500; color: #14532D; margin-bottom: 4px; }
+.approve-block-sub { font-size: 11.5px; color: #15803D; line-height: 1.5; margin-bottom: 12px; }
+.dp-btn-approve {
+  width: 100%; padding: 10px; background: #166534; color: white;
+  border: none; border-radius: 7px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.dp-btn-approve:hover { background: #14532D; }
+.dp-btn-reject {
+  width: 100%; padding: 8px; background: white; color: #991B1B;
+  border: 1.5px solid #FCA5A5; border-radius: 7px;
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  font-weight: 500; cursor: pointer; margin-top: 8px;
+  transition: all 0.15s;
+}
+.dp-btn-reject:hover { background: #FEF2F2; }
+
 .notes-area {
   width: 100%; border: 1px solid var(--border); border-radius: 7px;
   padding: 9px 11px; font-family: 'DM Sans', sans-serif;
@@ -284,6 +338,16 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   background: white; color: var(--sub);
   border: 1px solid var(--border); margin-top: 8px;
 }
+
+/* Approved state */
+.approved-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: #F0FDF4; border: 1px solid #86EFAC;
+  border-radius: 7px; padding: 10px 14px;
+  font-size: 13px; font-weight: 500; color: #166534;
+  margin-bottom: 12px;
+}
+.approved-badge-icon { font-size: 16px; }
 
 /* SECTION LABEL */
 .section-label {
@@ -315,7 +379,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   <div class="header-left">
     <div class="xime">XIME</div>
     <div class="hdiv"></div>
-    <div class="htitle" style="cursor:pointer;" onclick="window.location.href='index.html'">← Integrated Centre</div>
+    <div class="htitle" style="cursor:pointer;" onclick="window.location.href='index.html'">← Magis Centre</div>
     <div class="hdiv"></div>
     <div class="htitle">Recruitment Pipeline · HRMS</div>
   </div>
@@ -341,12 +405,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     <div class="stat-label">Active roles</div>
   </div>
   <div class="stat">
-    <div class="stat-num blue">1</div>
-    <div class="stat-label">Awaiting sanction</div>
+    <div class="stat-num blue" id="stat-pending">1</div>
+    <div class="stat-label">Awaiting Director approval</div>
   </div>
   <div class="stat">
     <div class="stat-num amber">2</div>
-    <div class="stat-label">Pending approval</div>
+    <div class="stat-label">Pending actions</div>
   </div>
   <div class="stat">
     <div class="stat-num green">0</div>
@@ -360,7 +424,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
 <!-- MAIN -->
 <div class="main">
-  <div class="section-label">Recruitment Kanban — 13-Step Process · 5 Approval Gates</div>
+  <div class="section-label">Recruitment Kanban — 13-Step Process · 5 Approval Gates · Director Headcount Approval</div>
 
   <div class="kanban">
 
@@ -368,13 +432,17 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     <div class="col col-1">
       <div class="col-header">
         <div class="col-title">Requisition</div>
-        <div class="col-count">1</div>
+        <div class="col-count" id="col1-count">1</div>
       </div>
-      <div class="gate-card" style="animation-delay:0.1s">
-        <div class="gate-label"><div class="gate-dot"></div>AG 1 · Awaiting</div>
+      <div class="gate-card" id="gate-ap-marketing" style="animation-delay:0.1s">
+        <div class="gate-label"><div class="gate-dot"></div>AG 1 · Director Approval</div>
         <div class="gate-title">Asst. Professor — Marketing</div>
-        <div class="gate-sub">MRF submitted · Bengaluru · Awaiting Presidential sanction or Designate approval · 14 hrs · SLA: 48 hrs</div>
+        <div class="gate-sub">MRF submitted · Bengaluru · Awaiting Director headcount approval · 14 hrs · SLA: 48 hrs</div>
         <button class="gate-action" onclick="openDetail('ap-marketing')">Review Requisition →</button>
+        <button class="btn-approve" onclick="approveRequisition('ap-marketing')">
+          <span class="btn-approve-icon">✓</span> Approve · Director, Bengaluru
+        </button>
+        <button class="btn-reject" onclick="rejectRequisition('ap-marketing')">Return for revision</button>
       </div>
     </div>
 
@@ -464,10 +532,24 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         <div class="dp-row"><span class="dp-row-label">Salary band</span><span class="dp-row-value">Ref: XIME Faculty Band 2</span></div>
       </div>
 
+      <!-- DIRECTOR APPROVAL BLOCK -->
+      <div class="approve-block" id="approval-block">
+        <div class="approve-block-head">
+          <div class="approve-block-dot"></div>
+          AG1 · Awaiting Director Approval
+        </div>
+        <div class="approve-block-title">Headcount Approval Required</div>
+        <div class="approve-block-sub">This requisition requires Director approval before the JD can be prepared and the role posted. The Director holds headcount sanction authority for their campus.</div>
+        <button class="dp-btn-approve" onclick="approveRequisition('ap-marketing');closeDetailDirect()">
+          ✓ &nbsp;Approve Requisition · Director, Bengaluru
+        </button>
+        <button class="dp-btn-reject" onclick="rejectRequisition('ap-marketing');closeDetailDirect()">Return for revision</button>
+      </div>
+
       <div class="dp-section">
         <div class="dp-section-title">Process Stage</div>
         <div class="stage-flow">
-          <div class="sf-step current"><span class="sf-icon">⏳</span>AG1 — Presidential Sanction or Designate · Pending</div>
+          <div class="sf-step current"><span class="sf-icon">⏳</span>AG1 — Director Headcount Approval · Bengaluru · Pending</div>
           <div class="sf-step pending"><span class="sf-icon">○</span>JD Preparation & AG2 Sign-off</div>
           <div class="sf-step pending"><span class="sf-icon">○</span>Job Posting & Sourcing</div>
           <div class="sf-step pending"><span class="sf-icon">○</span>Screening & Shortlisting</div>
@@ -483,7 +565,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         <textarea class="notes-area" placeholder="Add notes about this role or candidate…"></textarea>
       </div>
 
-      <button class="dp-btn" onclick="alert('Approval notification sent to President')">Send Reminder to President →</button>
       <button class="dp-btn secondary" onclick="closeDetailDirect()">Close</button>
     </div>
   </div>
@@ -491,17 +572,74 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
 <!-- FOOTER -->
 <div class="footer">
-  <span>XIME Bengaluru · HRMS · Recruitment Module</span>
-  <span>Recruiter: Anjaly · 5 Approval Gates · 48hr SLA Standard</span>
-  <span>github.com/xime-bengaluru/integrated-centre</span>
+  <span>XIME · Magis Centre · HRMS · Recruitment Module</span>
+  <span>Recruiter: Anjaly · Director Headcount Approval · 5 Gates · 48hr SLA</span>
+  <span>centre.forteen.in</span>
 </div>
 
 <script>
 document.getElementById('hdate').textContent =
   new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
 
+const approvalState = {};
+
+function approveRequisition(id) {
+  approvalState[id] = 'approved';
+  const gate = document.getElementById('gate-ap-marketing');
+  if (gate) {
+    gate.style.background = '#F0FDF4';
+    gate.style.borderColor = '#86EFAC';
+    gate.querySelector('.gate-label').innerHTML = '<span style="color:#166534;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Approved</span>';
+    gate.querySelector('.gate-title').style.color = '#166534';
+    gate.querySelector('.gate-sub').textContent = 'Director, Bengaluru approved · Proceeding to JD preparation';
+    gate.querySelector('.gate-action').textContent = 'View Approved Requisition →';
+    gate.querySelector('.btn-approve').outerHTML = '<div style="margin-top:8px;padding:8px 12px;background:#DCFCE7;border-radius:6px;font-size:12px;font-weight:600;color:#166534;text-align:center">✓ Approved by Director, Bengaluru</div>';
+    gate.querySelector('.btn-reject').remove();
+  }
+  const block = document.getElementById('approval-block');
+  if (block) {
+    block.innerHTML = '<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by Director, Bengaluru · ' + new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) + '</div>';
+  }
+  document.getElementById('stat-pending').textContent = '0';
+  showToast('Requisition approved. Recruiter notified to prepare JD.');
+}
+
+function rejectRequisition(id) {
+  approvalState[id] = 'returned';
+  const gate = document.getElementById('gate-ap-marketing');
+  if (gate) {
+    gate.style.background = '#FEF2F2';
+    gate.style.borderColor = '#FCA5A5';
+    gate.querySelector('.gate-label').innerHTML = '<span style="color:#991B1B;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Returned for revision</span>';
+    gate.querySelector('.gate-sub').textContent = 'Returned by Director, Bengaluru · Requester to revise and resubmit';
+    gate.querySelector('.btn-approve').remove();
+    gate.querySelector('.btn-reject').textContent = 'Returned — awaiting revision';
+    gate.querySelector('.btn-reject').disabled = true;
+  }
+  showToast('Requisition returned. Dean notified to revise.');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position:'fixed', bottom:'24px', right:'24px',
+    background:'#0D1F35', color:'white', fontSize:'12px',
+    padding:'10px 16px', borderRadius:'8px',
+    borderLeft:'3px solid #C9A84C', zIndex:'999',
+    fontFamily:'DM Sans,sans-serif', boxShadow:'0 4px 16px rgba(0,0,0,0.2)',
+    animation:'fadeUp .3s ease'
+  });
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
 function openDetail(id) {
   document.getElementById('detail-overlay').classList.add('open');
+  if (approvalState[id] === 'approved') {
+    const block = document.getElementById('approval-block');
+    if (block) block.innerHTML = '<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by Director, Bengaluru</div>';
+  }
 }
 function closeDetail(e) {
   if (e.target === document.getElementById('detail-overlay')) closeDetailDirect();
