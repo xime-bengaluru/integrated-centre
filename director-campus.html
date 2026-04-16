@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magis Centre · Campus View</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --navy:#111827;--red:#E8241C;--gold:#c9a84c;--gold-l:#f0dfa0;--gold-d:#8a6e1e;
+  --parchment:#faf8f3;--cream:#f3f0e8;--white:#ffffff;
+  --border:rgba(0,0,0,0.08);--border-g:rgba(201,168,76,0.3);
+  --text:#1a1a18;--muted:#5a5a56;--faint:#9a9a94;
+  --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#085041;
+  --amber:#EF9F27;--amber-l:#FAEEDA;--amber-d:#633806;
+  --blue:#378ADD;--blue-l:#E6F1FB;--blue-d:#0C447C;
+  --coral:#E24B4A;--coral-l:#FCEBEB;
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--text);font-size:14px;min-height:100vh}
+
+/* Topbar */
+.topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.2)}
+.tb-left{display:flex;align-items:center;gap:12px}
+.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
+.wm em{color:var(--red);font-style:normal}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.tb-title{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.05em}
+.tb-right{font-size:11px;color:rgba(255,255,255,.35)}
+
+/* Campus switcher */
+.campus-bar{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:0}
+.campus-btn{font-family:'DM Sans',sans-serif;font-size:13px;padding:14px 24px;border:none;background:transparent;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:8px}
+.campus-btn:hover{color:var(--text)}
+.campus-btn.active{color:var(--navy);font-weight:500;border-bottom-color:var(--gold)}
+.campus-dot{width:7px;height:7px;border-radius:50%}
+.dot-blr{background:#1D9E75}
+.dot-chn{background:#378ADD}
+.dot-koc{background:#7F77DD}
+
+/* Main */
+.main{padding:28px 28px 60px;max-width:1080px}
+
+/* Campus header */
+.campus-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.ch-left{}
+.ch-campus{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--navy);line-height:1}
+.ch-sub{font-size:12px;color:var(--faint);margin-top:4px}
+.ch-right{font-size:11px;color:var(--faint);text-align:right}
+
+/* Metrics */
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:24px}
+.metric{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.metric.gold-left{border-left:2px solid var(--gold);padding-left:14px}
+.metric-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
+.metric-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--navy);line-height:1}
+.metric-sub{font-size:11px;color:var(--faint);margin-top:3px}
+
+/* Two column layout */
+.two-col{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:start;margin-bottom:20px}
+
+/* Roster */
+.roster-card{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.roster-header{padding:14px 18px;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.roster-title{font-size:12px;font-weight:500;color:var(--navy)}
+.roster-sub{font-size:11px;color:var(--faint)}
+.band-group{}
+.band-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding:8px 18px 4px;background:var(--parchment);border-bottom:.5px solid var(--border);display:flex;align-items:center;gap:8px}
+.band-label span{font-family:'DM Mono',monospace;color:var(--gold-d)}
+.roster-row{display:grid;grid-template-columns:28px 1fr auto auto;gap:8px;align-items:center;padding:9px 18px;border-bottom:.5px solid var(--border);transition:background .1s}
+.roster-row:last-child{border-bottom:none}
+.roster-row:hover{background:var(--parchment)}
+.r-rank{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);text-align:center}
+.r-name{font-size:12px;font-weight:500;color:var(--navy)}
+.r-role{font-size:10px;color:var(--muted);margin-top:1px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.r-mid{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.r-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.pill{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.pill-phd{background:var(--teal-l);color:var(--teal-d)}
+.pill-pursuing{background:var(--amber-l);color:var(--amber-d)}
+.pill-dba{background:#EEEDFE;color:#3C3489}
+.pill-fpm{background:#EEEDFE;color:#3C3489}
+.pill-none{}
+.pill-subject{background:var(--blue-l);color:var(--blue-d)}
+.pill-admin{background:var(--cream);color:var(--muted);border:.5px solid var(--border)}
+.exp-bar{display:flex;align-items:center;gap:5px}
+.exp-track{width:48px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.exp-fill-ind{height:100%;background:var(--teal);border-radius:2px}
+.exp-fill-aca{height:100%;background:var(--blue);border-radius:2px}
+.exp-val{font-size:10px;color:var(--faint);white-space:nowrap;font-family:'DM Mono',monospace}
+
+/* Right panel */
+.right-panel{display:flex;flex-direction:column;gap:14px}
+.panel-card{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.panel-head{padding:12px 16px;border-bottom:.5px solid var(--border);font-size:11px;font-weight:500;color:var(--navy);display:flex;align-items:center;justify-content:space-between}
+.panel-body{padding:12px 16px}
+
+/* Subject area breakdown */
+.domain-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.domain-row:last-child{margin-bottom:0}
+.domain-name{font-size:11px;color:var(--muted);width:110px;flex-shrink:0}
+.domain-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.domain-bar{height:100%;border-radius:3px;transition:width .5s ease}
+.domain-count{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace;width:20px;text-align:right;flex-shrink:0}
+.no-data{font-size:11px;color:var(--faint);font-style:italic;padding:8px 0}
+
+/* PhD breakdown */
+.phd-rows{}
+.phd-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:.5px solid var(--border)}
+.phd-row:last-child{border-bottom:none}
+.phd-type-label{font-size:11px;color:var(--muted)}
+.phd-type-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--navy);font-weight:400}
+.phd-type-sub{font-size:10px;color:var(--faint);margin-left:4px}
+
+/* Admin roles */
+.admin-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border)}
+.admin-row:last-child{border-bottom:none}
+.admin-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:4px}
+.admin-name{font-size:11px;font-weight:500;color:var(--navy)}
+.admin-role{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* Legend */
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 18px;background:var(--parchment);border-top:.5px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* No data state */
+.campus-view{display:none}
+.campus-view.active{display:block}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-left">
+    <div class="wm">X<em>I</em>ME</div>
+    <div class="tb-sep"></div>
+    <div class="tb-title">Magis Centre · Campus View</div>
+  </div>
+  <div class="tb-right">Director Access · AY 2025–26</div>
+</div>
+
+<div class="campus-bar">
+  <button class="campus-btn active" onclick="showCampus('blr',this)">
+    <div class="campus-dot dot-blr"></div>Bengaluru
+  </button>
+  <button class="campus-btn" onclick="showCampus('chn',this)">
+    <div class="campus-dot dot-chn"></div>Chennai
+  </button>
+  <button class="campus-btn" onclick="showCampus('koc',this)">
+    <div class="campus-dot dot-koc"></div>Kochi
+  </button>
+</div>
+
+<div class="main" id="main-content">
+  <div id="loading" style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading faculty data...</div>
+</div>
+
+<script>
+const SUPA_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+const campusInfo = {
+  blr: {name:'Bengaluru',label:'Karnataka · Electronic City',color:'#1D9E75'},
+  chn: {name:'Chennai',label:'Tamil Nadu',color:'#378ADD'},
+  koc: {name:'Kochi',label:'Kerala',color:'#7F77DD'}
+};
+
+const bandOrder = {professor:1, assoc:2, srasst:3, asst:4, jr:5, staff:6};
+const bandLabel = {professor:'Professors & Above', assoc:'Associate Professors', srasst:'Sr. Assistant Professors', asst:'Assistant Professors', jr:'Jr. Assistant Professors', staff:'Associates & Research'};
+const domainColors = {'Marketing':'#1D9E75','Finance':'#378ADD','Analytics & Technology':'#7F77DD','Human Resources':'#EF9F27','OB & Leadership':'#E24B4A','Strategy & Operations':'#c9a84c','General Management':'#888780'};
+
+let allData = [];
+let currentCampus = 'blr';
+
+function initials(name) {
+  return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+
+function phdPill(f) {
+  if (f.phd_type==='dba') return `<span class="pill pill-dba">DBA</span>`;
+  if (f.phd_type==='fpm') return `<span class="pill pill-fpm">FPM</span>`;
+  if (f.phd==='yes') return `<span class="pill pill-phd">PhD ${f.phd_year||''}</span>`;
+  if (f.phd==='pursuing') return `<span class="pill pill-pursuing">Pursuing</span>`;
+  return '';
+}
+
+function expBar(f) {
+  const total = (f.exp_industry||0)+(f.exp_academic||0);
+  if (!total) return `<span class="exp-val">—</span>`;
+  const indPct = Math.round((f.exp_industry/total)*100);
+  return `<div class="exp-bar">
+    <div class="exp-track"><div class="${indPct>50?'exp-fill-ind':'exp-fill-aca'}" style="width:${indPct>50?indPct:100-indPct}%"></div></div>
+    <span class="exp-val">${total}y</span>
+  </div>`;
+}
+
+function buildRoster(data) {
+  const bandMap = {};
+  data.forEach(f => {
+    const b = f.band||'staff';
+    if (!bandMap[b]) bandMap[b] = [];
+    bandMap[b].push(f);
+  });
+  const sortedBands = Object.keys(bandMap).sort((a,b)=>(bandOrder[a]||9)-(bandOrder[b]||9));
+  let html = '';
+  let rank = 1;
+  sortedBands.forEach(band => {
+    const members = bandMap[band].sort((a,b)=>a.name.localeCompare(b.name));
+    html += `<div class="band-group">
+      <div class="band-label">${bandLabel[band]||band} <span>${members.length}</span></div>`;
+    members.forEach(f => {
+      html += `<div class="roster-row">
+        <div class="r-rank">${rank++}</div>
+        <div>
+          <div class="r-name">${f.name}</div>
+          <div class="r-role">
+            <span>${f.designation}</span>
+            ${f.admin_role?`<span class="pill pill-admin">${f.admin_role}</span>`:''}
+          </div>
+        </div>
+        <div class="r-mid">
+          ${phdPill(f)}
+          ${f.subject_area?`<span class="pill pill-subject">${f.subject_area}</span>`:''}
+        </div>
+        <div class="r-right">
+          ${expBar(f)}
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+
+function buildDomainChart(data) {
+  const counts = {};
+  data.forEach(f=>{ if(f.subject_area) counts[f.subject_area]=(counts[f.subject_area]||0)+1; });
+  const total = Object.values(counts).reduce((s,v)=>s+v,0);
+  if (!total) return `<div class="no-data">Digii Campus data pending for this campus</div>`;
+  return Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([d,c])=>
+    `<div class="domain-row">
+      <div class="domain-name">${d}</div>
+      <div class="domain-bar-wrap"><div class="domain-bar" style="width:${Math.round((c/data.length)*100)}%;background:${domainColors[d]||'#888'}"></div></div>
+      <div class="domain-count">${c}</div>
+    </div>`
+  ).join('');
+}
+
+function buildPhdPanel(data) {
+  const res = data.filter(f=>f.phd==='yes'&&!['dba','fpm'].includes(f.phd_type)).length;
+  const dba = data.filter(f=>f.phd_type==='dba').length;
+  const fpm = data.filter(f=>f.phd_type==='fpm').length;
+  const pur = data.filter(f=>f.phd==='pursuing').length;
+  const none = data.filter(f=>f.phd==='no'||f.phd_type==='none').length;
+  return `
+    <div class="phd-row"><div class="phd-type-label">Research PhD</div><div><span class="phd-type-val">${res}</span><span class="phd-type-sub">confirmed</span></div></div>
+    <div class="phd-row"><div class="phd-type-label">DBA</div><div><span class="phd-type-val">${dba||'—'}</span><span class="phd-type-sub">doctor of business admin</span></div></div>
+    <div class="phd-row"><div class="phd-type-label">FPM</div><div><span class="phd-type-val">${fpm||'—'}</span><span class="phd-type-sub">fellow programme · IIM</span></div></div>
+    <div class="phd-row"><div class="phd-type-label">Pursuing</div><div><span class="phd-type-val">${pur}</span><span class="phd-type-sub">in progress</span></div></div>
+    <div class="phd-row"><div class="phd-type-label">No doctorate</div><div><span class="phd-type-val">${none}</span><span class="phd-type-sub"></span></div></div>`;
+}
+
+function buildAdminPanel(data) {
+  const admins = data.filter(f=>f.admin_role&&f.admin_role.trim()&&f.admin_role.trim()!=='—')
+    .sort((a,b)=>a.admin_role.localeCompare(b.admin_role));
+  if (!admins.length) return `<div class="no-data">No administrative roles recorded</div>`;
+  return admins.map(f=>`
+    <div class="admin-row">
+      <div class="admin-dot"></div>
+      <div><div class="admin-name">${f.name}</div><div class="admin-role">${f.admin_role}</div></div>
+    </div>`).join('');
+}
+
+function renderCampus(campusKey) {
+  const info = campusInfo[campusKey];
+  const data = allData.filter(f=>f.campus===info.name);
+  const total = data.length;
+  const profs = data.filter(f=>f.band==='professor').length;
+  const assoc = data.filter(f=>f.band==='assoc').length;
+  const phds = data.filter(f=>f.phd==='yes').length;
+  const pursuing = data.filter(f=>f.phd==='pursuing').length;
+  const senior = profs + assoc;
+
+  return `
+    <div class="campus-header">
+      <div class="ch-left">
+        <div class="ch-campus" style="color:${info.color}">${info.name}</div>
+        <div class="ch-sub">${info.label} · XIME Campus</div>
+      </div>
+      <div class="ch-right">
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--navy)">${total}</div>
+        <div>faculty members</div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">Total faculty</div>
+        <div class="metric-val">${total}</div>
+        <div class="metric-sub">all designations</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Senior faculty</div>
+        <div class="metric-val">${senior}</div>
+        <div class="metric-sub">${profs} prof · ${assoc} assoc</div>
+      </div>
+      <div class="metric gold-left">
+        <div class="metric-label">Research PhD</div>
+        <div class="metric-val">${phds}</div>
+        <div class="metric-sub">${pursuing > 0 ? '+ '+pursuing+' pursuing':''}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">With specialisation</div>
+        <div class="metric-val">${data.filter(f=>f.subject_area).length}</div>
+        <div class="metric-sub">Digii Campus mapped</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Admin roles</div>
+        <div class="metric-val">${data.filter(f=>f.admin_role&&f.admin_role.trim()).length}</div>
+        <div class="metric-sub">across all functions</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="roster-card">
+        <div class="roster-header">
+          <div class="roster-title">Faculty Roster · ${info.name}</div>
+          <div class="roster-sub">Ranked by seniority · ${total} members</div>
+        </div>
+        ${buildRoster(data)}
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Industry exp.</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Academic exp.</div>
+          <div class="legend-item" style="margin-left:auto;font-size:10px;color:var(--faint)">Bar shows dominant experience type · total in years</div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="panel-card">
+          <div class="panel-head">
+            <span>Doctoral qualifications</span>
+            <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d)">${phds+pursuing}</span>
+          </div>
+          <div class="panel-body">${buildPhdPanel(data)}</div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-head">
+            <span>Subject specialisation</span>
+            <span style="font-size:10px;color:var(--faint)">Digii Campus data</span>
+          </div>
+          <div class="panel-body">${buildDomainChart(data)}</div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-head">
+            <span>Administrative roles</span>
+            <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d)">${data.filter(f=>f.admin_role&&f.admin_role.trim()).length}</span>
+          </div>
+          <div class="panel-body">${buildAdminPanel(data)}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function showCampus(key, btn) {
+  currentCampus = key;
+  document.querySelectorAll('.campus-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if (allData.length) {
+    document.getElementById('main-content').innerHTML = renderCampus(key);
+  }
+}
+
+async function init() {
+  const {data, error} = await sb.from('faculty_master')
+    .select('*')
+    .order('campus')
+    .order('band');
+  if (error || !data?.length) {
+    document.getElementById('loading').textContent = 'Could not load faculty data.';
+    return;
+  }
+  allData = data;
+  document.getElementById('main-content').innerHTML = renderCampus('blr');
+}
+
+init();
+</script>
+</body>
+</html>
