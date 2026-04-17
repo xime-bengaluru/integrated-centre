@@ -104,9 +104,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .ir-value{font-size:12px;font-weight:500;color:var(--text);text-align:right;line-height:1.5}
 
 .field-block{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:12px 14px;margin-bottom:10px}
-.fb-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+.fb-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.fb-total{font-size:10px;font-weight:400;letter-spacing:.02em;text-transform:none;color:var(--faint);font-style:italic}
 .fb-value{font-size:13px;color:var(--text);line-height:1.65}
 .fb-empty{font-size:12px;color:var(--faint);font-style:italic}
+
+/* Research tier display in dean-review detail panel */
+.dr-tier-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.dr-tier-cell{background:var(--white);border:.5px solid var(--border-g);border-radius:var(--rs);padding:9px 6px;text-align:center}
+.dr-tier-cell.dr-tier-premier{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.07)}
+.dr-tier-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--blue-d);line-height:1.1}
+.dr-tier-cell.dr-tier-premier .dr-tier-val{color:var(--gold-d)}
+.dr-tier-cell.dr-tier-zero .dr-tier-val{color:var(--faint)}
+.dr-tier-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-top:3px;letter-spacing:.04em;font-weight:500}
+.dr-tier-cell.dr-tier-premier .dr-tier-label{color:var(--gold-d);font-weight:600}
+.dr-secondary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.dr-secondary-cell{background:var(--white);border:.5px solid var(--border-g);border-radius:var(--rs);padding:9px 8px;text-align:center}
+.dr-secondary-val{font-family:'DM Mono',monospace;font-size:16px;color:var(--blue-d)}
+.dr-secondary-label{font-size:9.5px;color:var(--faint);margin-top:3px;letter-spacing:.04em;text-transform:uppercase}
 
 /* Score pills */
 .score-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:.5px solid var(--border)}
@@ -523,8 +538,8 @@ function buildDomainContent(ev, gate){
   if(dean.role==='academics'){
     return`
       ${fieldBlock('Courses Taught', ev.snap_courses_taught ? ev.snap_courses_taught.split(' · ').join(', ') : null)}
+      ${fieldBlock('Terms Taught', ev.terms_taught)}
       ${fieldBlock('Teaching Notes', ev.teaching_notes)}
-      ${fieldBlock('Terms Taught', ev.teaching_notes)}
       <div class="field-block">
         <div class="fb-label">Teaching Effectiveness Score</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
@@ -537,19 +552,65 @@ function buildDomainContent(ev, gate){
   }
 
   if(dean.role==='research'){
+    // Tier totals for inline labels
+    const abdcTotal=(ev.abdc_a_star||0)+(ev.abdc_a||0)+(ev.abdc_b||0)+(ev.abdc_c||0);
+    const scopusTotal=(ev.scopus_q1||0)+(ev.scopus_q2||0)+(ev.scopus_q3||0)+(ev.scopus_q4||0);
+    const wosTotal=(ev.wos_q1||0)+(ev.wos_q2||0)+(ev.wos_q3||0)+(ev.wos_q4||0);
+
     return`
       ${fieldBlock('Publications Detail', ev.publications_details)}
       ${fieldBlock('Work in Progress', ev.wip_details)}
+
+      ${tierBlock(
+        'ABDC Ranked Publications',
+        abdcTotal,
+        [
+          {val:ev.abdc_a_star||0,label:'A*',premier:true},
+          {val:ev.abdc_a||0,label:'A'},
+          {val:ev.abdc_b||0,label:'B'},
+          {val:ev.abdc_c||0,label:'C'}
+        ]
+      )}
+
+      ${tierBlock(
+        'Scopus · by SJR Quartile',
+        scopusTotal,
+        [
+          {val:ev.scopus_q1||0,label:'Q1',premier:true},
+          {val:ev.scopus_q2||0,label:'Q2'},
+          {val:ev.scopus_q3||0,label:'Q3'},
+          {val:ev.scopus_q4||0,label:'Q4'}
+        ]
+      )}
+
+      ${tierBlock(
+        'Web of Science · by JIF Quartile',
+        wosTotal,
+        [
+          {val:ev.wos_q1||0,label:'Q1',premier:true},
+          {val:ev.wos_q2||0,label:'Q2'},
+          {val:ev.wos_q3||0,label:'Q3'},
+          {val:ev.wos_q4||0,label:'Q4'}
+        ]
+      )}
+
       <div class="field-block">
-        <div class="fb-label">Publication Counts (Self-Reported)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
-          ${[['Scopus',ev.publications_count],['ABDC',ev.abdc_count],['Web of Science',ev.wos_count]].map(([l,v])=>`
-          <div style="background:var(--white);border:.5px solid var(--border-g);border-radius:var(--rs);padding:8px;text-align:center">
-            <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--blue-d)">${v||'0'}</div>
-            <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
-          </div>`).join('')}
+        <div class="fb-label">Additional Research Metrics</div>
+        <div class="dr-secondary">
+          <div class="dr-secondary-cell">
+            <div class="dr-secondary-val">${ev.ugc_care_count||0}</div>
+            <div class="dr-secondary-label">UGC-CARE</div>
+          </div>
+          <div class="dr-secondary-cell">
+            <div class="dr-secondary-val">${ev.h_index||0}</div>
+            <div class="dr-secondary-label">h-Index</div>
+          </div>
+          <div class="dr-secondary-cell">
+            <div class="dr-secondary-val">${ev.conference_papers_count||0}</div>
+            <div class="dr-secondary-label">Conference</div>
+          </div>
         </div>
-        <div style="font-size:11px;color:var(--faint);margin-top:8px;font-style:italic">Verify these counts against XIME research records before validating.</div>
+        <div style="font-size:11px;color:var(--faint);margin-top:10px;font-style:italic">Verify each tier against the journal's current ABDC list, SJR quartile, and JIF quartile before validating. Higher tiers (A*, Q1) should be scrutinised more closely.</div>
       </div>`;
   }
 
@@ -578,8 +639,27 @@ function buildDomainContent(ev, gate){
 
 function fieldBlock(label, value){
   return`<div class="field-block">
-    <div class="fb-label">${label}</div>
+    <div class="fb-label"><span>${label}</span></div>
     ${value?`<div class="fb-value">${value}</div>`:`<div class="fb-empty">Not entered by faculty</div>`}
+  </div>`;
+}
+
+// Renders a research tier breakdown with total and 4 tier cells.
+// tiers = [{val, label, premier?}]
+function tierBlock(title, total, tiers){
+  return`<div class="field-block">
+    <div class="fb-label">
+      <span>${title}</span>
+      <span class="fb-total">Total ${total}</span>
+    </div>
+    <div class="dr-tier-row">
+      ${tiers.map(t=>`
+        <div class="dr-tier-cell ${t.premier?'dr-tier-premier':''} ${t.val===0?'dr-tier-zero':''}">
+          <div class="dr-tier-val">${t.val}</div>
+          <div class="dr-tier-label">${t.label}</div>
+        </div>
+      `).join('')}
+    </div>
   </div>`;
 }
 
