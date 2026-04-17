@@ -39,7 +39,7 @@
   html { scroll-behavior: smooth; }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
 
-  /* ── HEADER ── */
+  /* HEADER */
   .header { background: var(--navy); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(201,168,76,0.25); }
   .header-left { display: flex; align-items: center; gap: 16px; }
   .xime-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; line-height: 1; }
@@ -57,7 +57,7 @@
   .avatar-menu-item:hover { background: var(--cream); }
   .avatar-menu-item.signout { color: #C8102E; border-top: 1px solid var(--border); }
 
-  /* ── HERO ── */
+  /* HERO */
   .hero { background: var(--navy); padding: 48px 32px 56px; position: relative; overflow: hidden; }
   .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%); pointer-events: none; }
   .hero-greeting { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; opacity: 0; animation: fadeUp 0.5s ease forwards; }
@@ -70,7 +70,7 @@
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
   @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-  /* ── SCORECARD ── */
+  /* SCORECARD */
   .scorecard { background: white; border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .score-item { padding: 16px 24px; border-right: 1px solid var(--border); flex-shrink: 0; opacity: 0; animation: fadeUp 0.4s ease forwards; }
   .score-item:nth-child(1){animation-delay:0.25s} .score-item:nth-child(2){animation-delay:0.3s} .score-item:nth-child(3){animation-delay:0.35s} .score-item:nth-child(4){animation-delay:0.4s}
@@ -79,12 +79,12 @@
   .score-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
   .score-green { color: #1A7A4A; } .score-blue { color: #2A4FA8; } .score-amber { color: #B07A10; }
 
-  /* ── MODULES ── */
+  /* MODULES */
   .modules-section { padding: 40px 32px 60px; max-width: 1100px; margin: 0 auto; }
   .section-label { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
   .modules-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
 
-  /* ── MODULE CARD ── */
+  /* MODULE CARD */
   .module-card { border-radius: 16px; overflow: hidden; cursor: pointer; position: relative; opacity: 0; animation: fadeUp 0.5s ease forwards; transition: transform 0.2s ease, box-shadow 0.2s ease; }
   .module-card:nth-child(1){animation-delay:0.3s} .module-card:nth-child(2){animation-delay:0.4s} .module-card:nth-child(3){animation-delay:0.5s}
   .module-card.active:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.15); }
@@ -121,7 +121,7 @@
   .status-live { background: rgba(107,140,255,0.12); color: #6B8CFF; }
   .status-upcoming { background: rgba(160,145,138,0.12); color: #A0918A; }
 
-  /* ── FACULTY INTELLIGENCE TILE ── */
+  /* FACULTY INTELLIGENCE TILE */
   .intel-tile {
     grid-column: 1 / -1;
     display: none;
@@ -166,58 +166,27 @@
   .intel-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
   .intel-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 500; color: white; margin-bottom: 6px; }
   .intel-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; max-width: 520px; }
-  .intel-right {
-    display: flex;
-    gap: 24px;
-    flex-shrink: 0;
-    align-items: center;
-  }
+  .intel-right { display: flex; gap: 24px; flex-shrink: 0; align-items: center; }
   .intel-stat { text-align: center; }
   .intel-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 400; color: var(--gold-l); line-height: 1; }
   .intel-stat-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 3px; white-space: nowrap; }
   .intel-stat-divider { width: 1px; height: 40px; background: rgba(201,168,76,0.15); }
-  .intel-cta {
-    padding: 10px 22px;
-    background: rgba(201,168,76,0.12);
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 8px;
-    color: var(--gold-l);
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    white-space: nowrap;
-    transition: all 0.15s;
-  }
+  .intel-cta { padding: 10px 22px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); border-radius: 8px; color: var(--gold-l); font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; white-space: nowrap; transition: all 0.15s; }
   .intel-tile:hover .intel-cta { background: rgba(201,168,76,0.2); border-color: rgba(201,168,76,0.5); }
-  .intel-footer {
-    padding: 12px 32px;
-    background: rgba(201,168,76,0.04);
-    border-top: 1px solid rgba(201,168,76,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .intel-footer-left {
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.04em;
-  }
-  .intel-footer-right {
-    font-size: 10.5px;
-    padding: 3px 10px;
-    border-radius: 10px;
-    font-weight: 500;
-    background: rgba(201,168,76,0.1);
-    color: var(--gold);
-  }
+  .intel-footer { padding: 12px 32px; background: rgba(201,168,76,0.04); border-top: 1px solid rgba(201,168,76,0.1); display: flex; align-items: center; justify-content: space-between; }
+  .intel-footer-left { font-size: 11px; color: rgba(255,255,255,0.3); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+  .intel-footer-right { font-size: 10.5px; padding: 3px 10px; border-radius: 10px; font-weight: 500; background: rgba(201,168,76,0.1); color: var(--gold); }
 
-  /* ── LOCKED OVERLAY ── */
+  /* Review tiles (Director, Dean, President) hidden until role confirmed */
+  .review-tile { display: none; }
+  .review-tile.visible { display: block; }
+
+  /* LOCKED OVERLAY */
   .locked-overlay { position: absolute; inset: 0; background: rgba(13,15,20,0.55); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(2px); border-radius: 16px; }
   .lock-icon { font-size: 22px; opacity: 0.5; }
   .lock-text { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
 
-  /* ── PENDING ── */
+  /* PENDING */
   .pending-section { padding: 0 32px 40px; max-width: 1100px; margin: 0 auto; }
   .pending-card { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .pending-header { padding: 14px 20px; background: #FFFBF0; border-bottom: 1px solid #F5E8C0; display: flex; align-items: center; justify-content: space-between; }
@@ -234,7 +203,7 @@
   .approve-btn { padding: 6px 16px; background: var(--navy); color: white; border: none; border-radius: 7px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
   .approve-btn:hover { background: var(--navy-mid); }
 
-  /* ── PANELS ── */
+  /* PANELS */
   .panel { display: none; padding: 0 32px 60px; max-width: 1100px; margin: 0 auto; }
   .panel.open { display: block; }
   .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -263,14 +232,14 @@
   .stage-badge { font-size: 11px; padding: 3px 9px; border-radius: 10px; font-weight: 500; }
   .st-pending { background: #FFFBEB; color: #92400E; } .st-active { background: #EBF4FF; color: #1A3352; } .st-approval { background: #F5F3FF; color: #4C1D95; } .st-offer { background: #E8F8F0; color: #0D2B1F; }
 
-  /* ── FOOTER ── */
+  /* FOOTER */
   .footer { background: var(--navy); border-top: 1px solid rgba(201,168,76,0.15); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
   .footer-left { display: flex; align-items: center; gap: 12px; }
   .footer-xime { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 500; color: var(--gold); }
   .footer-text { font-size: 11px; color: rgba(255,255,255,0.3); }
   .footer-right { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.06em; }
 
-  /* ── MOBILE ── */
+  /* MOBILE */
   @media (max-width: 700px) {
     .header { padding: 0 16px; } .header-date { display: none; }
     .hero { padding: 32px 16px 40px; }
@@ -305,7 +274,7 @@
   <div class="header-right">
     <div class="header-date" id="live-date"></div>
     <div class="avatar" id="user-avatar" onclick="toggleMenu()">
-      <span id="avatar-initials">—</span>
+      <span id="avatar-initials"></span>
       <div class="avatar-menu" id="avatar-menu">
         <div class="avatar-menu-header">
           <div class="avatar-menu-name" id="menu-name">Loading...</div>
@@ -318,12 +287,12 @@
   </div>
 </div>
 
-<!-- HERO -->
+<!-- HERO (dynamic via initAuth) -->
 <div class="hero">
-  <div class="hero-greeting">Good morning, President</div>
-  <div class="hero-name">Welcome back,<br><em>Anil J. Philip</em></div>
-  <div class="hero-sub">Xavier Institute of Management & Entrepreneurship · Bengaluru</div>
-  <div class="pilot-badge"><div class="pilot-dot"></div>Pilot Phase — Active</div>
+  <div class="hero-greeting" id="hero-greeting">Loading...</div>
+  <div class="hero-name" id="hero-name">Welcome back</div>
+  <div class="hero-sub" id="hero-sub">Xavier Institute of Management &amp; Entrepreneurship</div>
+  <div class="pilot-badge"><div class="pilot-dot"></div>Pilot Phase · Active</div>
 </div>
 
 <!-- SCORECARD -->
@@ -346,8 +315,8 @@
   </div>
 </div>
 
-<!-- PENDING APPROVALS -->
-<div class="pending-section" style="padding-top:32px;">
+<!-- PENDING APPROVALS (super_admin only, hidden by default via JS) -->
+<div class="pending-section" id="pending-section" style="padding-top:32px;display:none;">
   <div class="pending-card">
     <div class="pending-header">
       <div class="pending-title"><div class="pending-dot"></div>Pending Your Approval</div>
@@ -357,7 +326,7 @@
       <div class="pending-row-left">
         <span class="pending-module-tag pt-hrms">HRMS</span>
         <div>
-          <div class="pending-desc">Manpower Requisition — Assistant Professor, Marketing</div>
+          <div class="pending-desc">Manpower Requisition · Assistant Professor, Marketing</div>
           <div class="pending-sub">Submitted by Dean Academics · 14 hours ago · SLA: 48 hrs</div>
         </div>
       </div>
@@ -367,7 +336,7 @@
       <div class="pending-row-left">
         <span class="pending-module-tag pt-fdp">FDP</span>
         <div>
-          <div class="pending-desc">FDP Pilot — 6 faculty profiles ready for review</div>
+          <div class="pending-desc">FDP Pilot · 6 faculty profiles ready for review</div>
           <div class="pending-sub">Bengaluru (3) · Kochi (3) · Profiles activated today</div>
         </div>
       </div>
@@ -400,9 +369,9 @@
     <!-- HRMS -->
     <div class="module-card hrms active" style="background:#1A1F35;border-radius:16px;cursor:pointer;" onclick="openPanel('hrms-panel')">
       <div class="card-body" style="background:#1A1F35;">
-        <div class="card-tag">HR & Recruitment</div>
+        <div class="card-tag">HR &amp; Recruitment</div>
         <div class="card-icon">◎</div>
-        <div class="card-title">HR & Recruitment Module</div>
+        <div class="card-title">HR &amp; Recruitment Module</div>
         <div class="card-desc">Manage recruitment pipeline, approve requisitions, track hiring progress from sanction to onboarding.</div>
         <div class="card-arrow">→</div>
       </div>
@@ -428,13 +397,13 @@
       <div class="locked-overlay"><div class="lock-icon">⊘</div><div class="lock-text">Coming in Phase 2</div></div>
     </div>
 
-    <!-- CAMPUS VIEW — Directors -->
+    <!-- CAMPUS VIEW - Directors / super_admin -->
     <div class="module-card active" style="background:#1A2535;border-radius:16px;cursor:pointer;" onclick="window.location.href='director-view.html'">
       <div class="card-body" style="background:#1A2535;">
         <div class="card-tag">Campus Intelligence</div>
         <div class="card-icon">◉</div>
         <div class="card-title">Campus View</div>
-        <div class="card-desc">Faculty roster, doctoral breakdown, subject specialisation, and administrative roles — scoped by campus for Directors.</div>
+        <div class="card-desc">Faculty roster, doctoral breakdown, subject specialisation, and administrative roles, scoped by campus for Directors.</div>
         <div class="card-arrow">→</div>
       </div>
       <div class="card-footer" style="background:rgba(55,138,221,0.08);border-top:1px solid rgba(55,138,221,0.15);">
@@ -460,7 +429,52 @@
       </div>
     </div>
 
-    <!-- FACULTY INTELLIGENCE — President only, hidden until role confirmed -->
+    <!-- DIRECTOR REVIEW - Directors + super_admin (hidden by default) -->
+    <div class="module-card active review-tile" id="tile-director-review" style="background:#1A2A3A;border-radius:16px;cursor:pointer;" onclick="window.location.href='director-review.html'">
+      <div class="card-body" style="background:#1A2A3A;">
+        <div class="card-tag" style="background:rgba(107,140,255,0.15);color:#6B8CFF;">Director Queue</div>
+        <div class="card-icon">◎</div>
+        <div class="card-title">Director Review</div>
+        <div class="card-desc">Review faculty evaluations forwarded by Deans. Add remarks, forward to President for endorsement.</div>
+        <div class="card-arrow">→</div>
+      </div>
+      <div class="card-footer" style="background:rgba(107,140,255,0.08);border-top:1px solid rgba(107,140,255,0.15);">
+        <div class="footer-stat"><div class="footer-num" style="color:#6B8CFF;">AY</div><div class="footer-label">2025–26</div></div>
+        <span class="footer-status status-live">Live</span>
+      </div>
+    </div>
+
+    <!-- DEAN REVIEW - Deans + super_admin (hidden by default) -->
+    <div class="module-card active review-tile" id="tile-dean-review" style="background:#0D2320;border-radius:16px;cursor:pointer;" onclick="window.location.href='dean-review.html'">
+      <div class="card-body" style="background:#0D2320;">
+        <div class="card-tag" style="background:rgba(61,191,138,0.15);color:#3DBF8A;">Dean Validation</div>
+        <div class="card-icon">◉</div>
+        <div class="card-title">Dean Review</div>
+        <div class="card-desc">Validate faculty evaluations in your domain and campus. Forward validated records to Director.</div>
+        <div class="card-arrow">→</div>
+      </div>
+      <div class="card-footer" style="background:rgba(61,191,138,0.08);border-top:1px solid rgba(61,191,138,0.15);">
+        <div class="footer-stat"><div class="footer-num" style="color:#3DBF8A;">AY</div><div class="footer-label">2025–26</div></div>
+        <span class="footer-status status-active">Live</span>
+      </div>
+    </div>
+
+    <!-- PRESIDENT REVIEW - super_admin only (hidden by default) -->
+    <div class="module-card active review-tile" id="tile-president-review" style="background:#2A1A35;border-radius:16px;cursor:pointer;" onclick="window.location.href='president-review.html'">
+      <div class="card-body" style="background:#2A1A35;">
+        <div class="card-tag" style="background:rgba(201,168,76,0.15);color:#c9a84c;">Final Endorsement</div>
+        <div class="card-icon">◈</div>
+        <div class="card-title">President Review</div>
+        <div class="card-desc">Final endorsement of faculty evaluations forwarded by Directors across all three campuses.</div>
+        <div class="card-arrow">→</div>
+      </div>
+      <div class="card-footer" style="background:rgba(201,168,76,0.08);border-top:1px solid rgba(201,168,76,0.2);">
+        <div class="footer-stat"><div class="footer-num" style="color:#c9a84c;">AY</div><div class="footer-label">2025–26</div></div>
+        <span class="footer-status" style="background:rgba(201,168,76,0.15);color:#c9a84c;border:1px solid rgba(201,168,76,0.3);">Live</span>
+      </div>
+    </div>
+
+    <!-- FACULTY INTELLIGENCE - President only, hidden until role confirmed -->
     <div class="intel-tile" id="intel-tile" onclick="window.location.href='faculty-intelligence.html'">
       <div class="intel-body">
         <div class="intel-left">
@@ -469,7 +483,7 @@
             President's Intelligence View
           </div>
           <div class="intel-title">Faculty Intelligence</div>
-          <div class="intel-desc">Complete faculty master record across all three campuses. Designation pyramid, experience profiles, PhD distribution, and the four-area performance view — currently in Rung 1 with Rung 2 data collection underway.</div>
+          <div class="intel-desc">Complete faculty master record across all three campuses. Designation pyramid, experience profiles, PhD distribution, and the four-area performance view, currently in Rung 1 with Rung 2 data collection underway.</div>
         </div>
         <div class="intel-right">
           <div class="intel-stat">
@@ -501,7 +515,7 @@
 <!-- FDP PANEL -->
 <div class="panel" id="fdp-panel">
   <div class="panel-header">
-    <div class="panel-title">Faculty Development Portal — Pilot Cohort</div>
+    <div class="panel-title">Faculty Development Portal · Pilot Cohort</div>
     <div class="panel-close" onclick="closePanel('fdp-panel')">← Back to overview</div>
   </div>
   <div class="faculty-grid">
@@ -517,7 +531,7 @@
 <!-- HRMS PANEL -->
 <div class="panel" id="hrms-panel">
   <div class="panel-header">
-    <div class="panel-title">HR & Recruitment Module</div>
+    <div class="panel-title">HR &amp; Recruitment Module</div>
     <div class="panel-close" onclick="closePanel('hrms-panel')">← Back to overview</div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
@@ -536,7 +550,7 @@
       <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#3DBF8A;margin-bottom:12px;background:rgba(61,191,138,0.12);padding:3px 9px;border-radius:8px;width:fit-content;">Onboarding</div>
       <div style="font-size:22px;margin-bottom:8px;">◈</div>
       <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:white;margin-bottom:6px;">Employee Onboarding</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:16px;">22-step joining checklist — from pre-joining prep through biometric, ID, and reporting manager handoff.</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:16px;">22-step joining checklist covering pre-joining prep through biometric, ID, and reporting manager handoff.</div>
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div><div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#3DBF8A;">22</div><div style="font-size:10px;color:rgba(255,255,255,0.35);">Checklist steps</div></div>
         <div><div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#3DBF8A;">6</div><div style="font-size:10px;color:rgba(255,255,255,0.35);">Stakeholders</div></div>
@@ -545,7 +559,7 @@
     </div>
   </div>
   <div style="padding:16px 18px;background:white;border:1px solid #E2DDD4;border-radius:10px;">
-    <div style="font-size:11px;font-family:'DM Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;color:#7A8FA6;margin-bottom:10px;">Active Recruitment — Process Status</div>
+    <div style="font-size:11px;font-family:'DM Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;color:#7A8FA6;margin-bottom:10px;">Active Recruitment · Process Status</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;">
       <span style="padding:4px 10px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;color:#14532D;">✓ MRF Submitted</span>
       <span style="color:#7A8FA6;">→</span>
@@ -573,7 +587,7 @@
     <div class="footer-xime">XIME</div>
     <div class="footer-text">Magis Centre · Pilot Phase · Bengaluru</div>
   </div>
-  <div class="footer-right">centre.forteen.in · AY 2025–26 · Build v2</div>
+  <div class="footer-right">centre.forteen.in · AY 2025–26 · Build v3</div>
 </div>
 
 <script>
@@ -582,29 +596,97 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
 
+// Role to display label for hero greeting
+const ROLE_LABEL = {
+  super_admin:  'Administrator',  // overridden below for president@xime.org
+  org_admin:    'Administrator',
+  director:     'Director',
+  dean:         'Dean',
+  hrms_user:    'HR & Recruitment',
+  fdp_user:     'Faculty'
+};
+
+function timeOfDayGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function makeInitials(fullName) {
+  // Strip common honorifics, then take first letter of first and last name.
+  const clean = (fullName || '').replace(/\b(Dr\.?|Prof\.?|Mr\.?|Mrs\.?|Ms\.?)\s+/gi, '').trim();
+  const parts = clean.split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '?';
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 async function initAuth() {
   const { data: { session } } = await db.auth.getSession();
   if (!session) { window.location.href = '/login.html'; return; }
 
   const { data: profile } = await db
     .from('user_profiles')
-    .select('full_name, email, role')
+    .select('full_name, email, role, campus')
     .eq('id', session.user.id)
     .single();
 
-  if (profile) {
-    const initials = (profile.full_name || '')
-      .split(' ').filter(w => w.match(/^[A-Z]/)).slice(0,2).map(w=>w[0]).join('') || '?';
-    document.getElementById('avatar-initials').textContent = initials;
-    document.getElementById('menu-name').textContent = profile.full_name || profile.email;
-    document.getElementById('menu-email').textContent = profile.email;
+  if (!profile) {
+    // No profile yet. Bounce to login so they can re-auth.
+    window.location.href = '/login.html';
+    return;
   }
 
-  // Show Faculty Intelligence tile only for super_admin
-  const role = session.user.user_metadata?.role || profile?.role;
-  if (role === 'super_admin') {
-    const tile = document.getElementById('intel-tile');
-    tile.classList.add('visible');
+  // Avatar and menu
+  document.getElementById('avatar-initials').textContent = makeInitials(profile.full_name);
+  document.getElementById('menu-name').textContent = profile.full_name || profile.email;
+  document.getElementById('menu-email').textContent = profile.email;
+
+  // Hero greeting
+  const role = profile.role;
+  let roleLabel = ROLE_LABEL[role] || '';
+  if (profile.email === 'president@xime.org') roleLabel = 'President';
+
+  const greeting = timeOfDayGreeting();
+  document.getElementById('hero-greeting').textContent =
+    roleLabel ? `${greeting}, ${roleLabel}` : greeting;
+
+  document.getElementById('hero-name').innerHTML =
+    `Welcome back,<br><em>${profile.full_name || profile.email}</em>`;
+
+  const campusLine = profile.campus ? ` · ${profile.campus}` : '';
+  document.getElementById('hero-sub').textContent =
+    `Xavier Institute of Management & Entrepreneurship${campusLine}`;
+
+  // Role-scoped visibility
+  const isSuperAdmin = role === 'super_admin';
+  const isDirector   = role === 'director';
+  const isDean       = role === 'dean';
+
+  // Faculty Intelligence tile: super_admin only
+  if (isSuperAdmin) {
+    document.getElementById('intel-tile').classList.add('visible');
+  }
+
+  // Pending Approvals section: super_admin only (it is the president's queue)
+  if (isSuperAdmin) {
+    document.getElementById('pending-section').style.display = '';
+  }
+
+  // Director Review tile: director + super_admin
+  if (isDirector || isSuperAdmin) {
+    document.getElementById('tile-director-review').classList.add('visible');
+  }
+
+  // Dean Review tile: dean + super_admin
+  if (isDean || isSuperAdmin) {
+    document.getElementById('tile-dean-review').classList.add('visible');
+  }
+
+  // President Review tile: super_admin only
+  if (isSuperAdmin) {
+    document.getElementById('tile-president-review').classList.add('visible');
   }
 }
 
