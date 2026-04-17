@@ -177,6 +177,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div style="display:flex;align-items:center;gap:10px">
     <div class="dbadge" id="dir-badge">Loading...</div>
     <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+    <button class="back-btn" onclick="signOut()">Sign out</button>
   </div>
 </div>
 
@@ -208,8 +209,10 @@ const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
 
-// Demo director — in production from session auth
-const DIRECTOR={email:'roshni@xime.org',name:'Dr. Roshni James',campus:'Bengaluru'};
+// Identity populated from session. See requireDirectorAccess().
+let DIRECTOR={email:'',name:'',campus:''};
+let USER_ROLE='';
+let CURRENT_USER=null;
 
 let allEvals=[], currentEval=null, currentDeanReviews=[], currentDirReview=null, currentTab='record';
 
@@ -220,12 +223,18 @@ function fblock(label,val){return`<div class="fblock"><div class="fbl">${label}<
 function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'—'}</span></div>`}
 
 async function loadQueue(){
-  // Load all evaluations for this campus that have been submitted past Gate 1
-  const{data:evals,error}=await sb.from('faculty_evaluations')
+  // Load all evaluations for this scope that have been submitted past Gate 1
+  let q=sb.from('faculty_evaluations')
     .select('*')
-    .eq('snap_campus',DIRECTOR.campus)
     .in('workflow_status',['mid_year_locked','mid_year_validated','annual_submitted','dean_validated','director_forwarded','president_review','endorsed','returned_to_director','faculty_input_requested'])
     .order('updated_at',{ascending:false});
+
+  if(USER_ROLE==='director'){
+    q=q.eq('snap_campus',DIRECTOR.campus);
+  }
+  // super_admin has no campus filter and sees all three campuses
+
+  const{data:evals,error}=await q;
 
   if(error||!evals){
     document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load evaluation queue.</div>';
@@ -251,19 +260,29 @@ function statusChip(s){
 }
 
 async function renderPage(){
-  document.getElementById('dir-badge').textContent=`${DIRECTOR.campus} · Director`;
+  const badge=document.getElementById('dir-badge');
+  if(USER_ROLE==='super_admin'){
+    badge.textContent='All Campuses · Super Admin';
+  }else{
+    badge.textContent=`${DIRECTOR.campus} · Director`;
+  }
 
   const actionNeeded=allEvals.filter(e=>['dean_validated','returned_to_director'].includes(e.workflow_status));
   const inProgress=allEvals.filter(e=>['mid_year_locked','mid_year_validated','annual_submitted'].includes(e.workflow_status));
   const forwarded=allEvals.filter(e=>['director_forwarded','president_review'].includes(e.workflow_status));
   const closed=allEvals.filter(e=>['endorsed','faculty_input_requested'].includes(e.workflow_status));
 
+  const bannerName=USER_ROLE==='super_admin'?DIRECTOR.name:DIRECTOR.name;
+  const bannerSub=USER_ROLE==='super_admin'
+    ?`Super Admin View · All Campuses · AY 2025–26`
+    :`Officiating Director · ${DIRECTOR.campus} · AY 2025–26`;
+
   document.getElementById('main-content').innerHTML=`
     <div class="dir-banner">
       <div>
         <div class="db-eyebrow">Magis Centre · Director Review Panel</div>
-        <div class="db-name">${DIRECTOR.name}</div>
-        <div class="db-sub">Officiating Director · ${DIRECTOR.campus} · AY 2025–26</div>
+        <div class="db-name">${bannerName}</div>
+        <div class="db-sub">${bannerSub}</div>
       </div>
       <div class="db-right">
         <div class="db-num">${actionNeeded.length}</div>
@@ -295,7 +314,7 @@ async function renderPage(){
     <div class="ql">Endorsed</div>
     <div class="queue">${closed.map(e=>qCard(e)).join('')}</div>`:''}
 
-    ${allEvals.length===0?`<div class="empty-q">No evaluations have been submitted yet for ${DIRECTOR.campus}.</div>`:''}
+    ${allEvals.length===0?`<div class="empty-q">No evaluations yet${USER_ROLE==='director'?` for ${DIRECTOR.campus}`:''}.</div>`:''}
   `;
 }
 
@@ -621,7 +640,6 @@ async function forwardToPresident(){
   const now=new Date().toISOString();
   const{error}=await sb.from('evaluation_director_reviews').update({status:'forwarded',forwarded_at:now,updated_at:now}).eq('evaluation_id',currentEval.id);
   if(error){toast('Could not forward',false);return;}
-  await sb.from('evaluation_evaluations'||'faculty_evaluations').update({workflow_status:'director_forwarded',updated_at:now}).eq('id',currentEval.id);
   await sb.from('faculty_evaluations').update({workflow_status:'director_forwarded',updated_at:now}).eq('id',currentEval.id);
   // Create president review row
   await sb.from('evaluation_president_reviews').upsert({evaluation_id:currentEval.id,endorsement_status:'pending',updated_at:now},{onConflict:'evaluation_id'});
@@ -650,11 +668,48 @@ function closePanel(){document.getElementById('panel-wrap').classList.remove('op
 function handleBackdrop(e){if(e.target===document.getElementById('panel-wrap'))closePanel();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
 
+async function requireDirectorAccess(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return false;}
+
+  const{data:profile,error}=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
+  if(error||!profile){
+    document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Profile not found. Contact admin.</div>';
+    return false;
+  }
+
+  CURRENT_USER=profile;
+  USER_ROLE=profile.role;
+
+  if(profile.role==='director'){
+    const{data:dirMap}=await sb.from('director_campus_map').select('*').eq('email',profile.email).maybeSingle();
+    if(!dirMap){
+      document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">No campus assignment found for this director.</div>';
+      return false;
+    }
+    DIRECTOR={email:dirMap.email,name:dirMap.name,campus:dirMap.campus};
+    return true;
+  }
+
+  if(profile.role==='super_admin'){
+    // Super admin sees all campuses. Banner reflects that.
+    DIRECTOR={email:profile.email,name:profile.full_name||'Super Admin',campus:'All Campuses'};
+    return true;
+  }
+
+  // Not authorised for this page. Back to hub.
+  window.location.href='index.html';
+  return false;
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+
 async function init(){
-  // In production: detect director from session
-  // const{data:s}=await sb.auth.getSession();
-  // const{data:d}=await sb.from('director_campus_map').select('*').eq('email',s?.session?.user?.email).single();
-  // if(d)Object.assign(DIRECTOR,d);
+  const ok=await requireDirectorAccess();
+  if(!ok)return;
   await loadQueue();
 }
 init();
