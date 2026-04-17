@@ -33,7 +33,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .main{padding:28px;max-width:1020px}
 
-/* Presidential banner */
 .pres-banner{background:linear-gradient(135deg,#0A1628 0%,#1a2535 100%);border-radius:var(--r);padding:20px 26px;margin-bottom:22px;border:.5px solid rgba(201,168,76,.2)}
 .pb-eyebrow{font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
 .pb-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#fff;line-height:1.2}
@@ -47,7 +46,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .sv{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--navy);line-height:1}
 .sl{font-size:10px;color:var(--faint);margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
 
-/* Campus filter tabs */
 .campus-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
 .ct{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 14px;border-radius:20px;border:.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);transition:all .12s}
 .ct.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:500}
@@ -76,7 +74,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .empty-q{background:var(--white);border:.5px dashed var(--border);border-radius:var(--r);padding:32px;text-align:center;color:var(--faint);font-size:13px}
 
-/* Full-page evaluation view */
 .eval-view{display:none;position:fixed;inset:0;background:var(--parchment);z-index:200;overflow-y:auto;animation:fIn .2s ease}
 .eval-view.open{display:block}
 @keyframes fIn{from{opacity:0}to{opacity:1}}
@@ -94,7 +91,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .ev-main{padding:28px 32px;overflow-y:auto}
 .ev-sidebar{border-left:.5px solid var(--border);background:var(--white);padding:22px;display:flex;flex-direction:column;gap:14px;position:sticky;top:120px;height:calc(100vh - 120px);overflow-y:auto}
 
-/* Sidebar action area */
 .action-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin-bottom:10px}
 .dir-channel{background:var(--blue-l);border:.5px solid rgba(55,138,221,.25);border-radius:var(--rs);padding:12px 14px;margin-bottom:12px}
 .dc-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-d);margin-bottom:6px}
@@ -115,7 +111,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .endorsed-state{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:12px 14px;font-size:12px;font-weight:500;color:var(--teal-d);display:flex;align-items:center;gap:8px}
 
-/* Evaluation content styles */
 .sec-head{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .sec-head::after{content:'';flex:1;height:.5px;background:var(--border)}
 .evf{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;margin-bottom:8px}
@@ -148,13 +143,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
     <div class="ttl">Magis Centre · Presidential Review</div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <div class="pres-badge">President · All Campuses</div>
+    <div class="pres-badge" id="pres-badge">Loading...</div>
     <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+    <button class="back-btn" onclick="signOut()">Sign out</button>
   </div>
 </div>
 
 <div class="main" id="main-content">
-  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading evaluations...</div>
+  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Verifying access...</div>
 </div>
 
 <!-- Full evaluation view -->
@@ -166,7 +162,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
       <div class="ev-sub" id="ev-sub"></div>
       <div class="ev-tabs">
         <button class="ev-tab on" onclick="switchEvTab('record',this)">Performance Record</button>
-        <button class="ev-tab" onclick="switchEvTab('ikigai',this)">IKIGAI & Goals</button>
+        <button class="ev-tab" onclick="switchEvTab('ikigai',this)">IKIGAI &amp; Goals</button>
       </div>
     </div>
   </div>
@@ -183,6 +179,7 @@ const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
 
+let CURRENT_USER=null;
 let allEvals=[], currentEval=null, currentDirReview=null, currentPresReview=null, activeCampus='all', activeEvTab='record';
 const campuses=['Bengaluru','Chennai','Kochi'];
 const avClass={Bengaluru:'av-blr',Chennai:'av-chn',Kochi:'av-koc'};
@@ -191,6 +188,47 @@ function toast(m,ok=true){const t=document.getElementById('toast');t.textContent
 function initials(n){return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
 function evf(label,val){return`<div class="evf"><div class="evfl">${label}</div>${val?`<div class="evfv">${val}</div>`:`<div class="evfe">Not entered</div>`}</div>`}
 function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'—'}</span></div>`}
+
+async function requirePresidentAccess(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return false;}
+
+  const {data:profile,error}=await sb.from('user_profiles')
+    .select('*').eq('id',session.user.id).maybeSingle();
+  if(error||!profile){
+    document.getElementById('main-content').innerHTML=
+      '<div style="padding:60px;text-align:center;color:var(--faint)">Profile not found. Contact admin.</div>';
+    return false;
+  }
+
+  // Presidential Review is super_admin only. No exceptions, no fallbacks.
+  if(profile.role!=='super_admin'){
+    window.location.href='index.html';
+    return false;
+  }
+
+  CURRENT_USER=profile;
+
+  // Update badge with who is signed in. If it is the actual President, label as President.
+  // If another super_admin (like Girish), label as Super Admin so there is no confusion
+  // about who is endorsing.
+  const badge=document.getElementById('pres-badge');
+  if(profile.email==='president@xime.org'){
+    badge.textContent='President · All Campuses';
+  }else{
+    badge.textContent=`Super Admin (${profile.full_name||profile.email}) · All Campuses`;
+    badge.style.background='rgba(232,36,28,.12)';
+    badge.style.color='var(--red)';
+    badge.style.borderColor='rgba(232,36,28,.3)';
+  }
+
+  return true;
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
 
 async function loadAll(){
   const{data,error}=await sb.from('faculty_evaluations')
@@ -207,12 +245,17 @@ function renderPage(){
   const pending=filtered.filter(e=>['director_forwarded','president_review'].includes(e.workflow_status));
   const done=filtered.filter(e=>['endorsed','returned_to_director'].includes(e.workflow_status));
 
+  const isActualPresident=CURRENT_USER?.email==='president@xime.org';
+  const bannerTitle=isActualPresident
+    ?'Faculty Evaluations<br>AY 2025–26'
+    :`Super Admin View<br><span style="font-size:14px;color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;font-style:italic">Reviewing evaluations as ${CURRENT_USER?.full_name||'admin'}</span>`;
+
   document.getElementById('main-content').innerHTML=`
     <div class="pres-banner" style="display:flex;align-items:center;justify-content:space-between">
       <div>
         <div class="pb-eyebrow">Magis Centre · Presidential Review</div>
-        <div class="pb-title">Faculty Evaluations<br>AY 2025–26</div>
-        <div class="pb-sub">Review, endorse, or return to Director. Your endorsement publishes the evaluation to the faculty member.</div>
+        <div class="pb-title">${bannerTitle}</div>
+        <div class="pb-sub">Review, endorse, or return to Director. Endorsement publishes the evaluation to the faculty member.</div>
       </div>
       <div class="pb-right">
         <div class="pb-num">${pending.length}</div>
@@ -328,7 +371,7 @@ function renderEvContent(){
     </div>`;
 
     html+=`<div class="ev-section">
-      <div class="sec-head" style="color:var(--amber-d)">Industry & MDP</div>
+      <div class="sec-head" style="color:var(--amber-d)">Industry &amp; MDP</div>
       ${evf('MDP Details',ev.mdp_details)}
       ${evf('Other Industry Engagements',ev.industry_summary)}
     </div>`;
@@ -339,7 +382,6 @@ function renderEvContent(){
     </div>`;
 
   } else {
-    // IKIGAI & Goals tab
     if(ev.ikigai_statement){
       html+=`<div class="ev-section">
         <div class="sec-head">Purpose Statement</div>
@@ -411,7 +453,6 @@ function renderSidebar(){
   const sidebar=document.getElementById('ev-sidebar');
   let html='';
 
-  // Director's message to President
   if(currentDirReview?.president_comments){
     html+=`<div>
       <div class="action-title">From the Director</div>
@@ -423,7 +464,6 @@ function renderSidebar(){
     </div>`;
   }
 
-  // Director's faculty remarks (read-only for President)
   if(currentDirReview?.faculty_remarks){
     html+=`<div>
       <div class="action-title">Director's Remarks to Faculty</div>
@@ -442,6 +482,13 @@ function renderSidebar(){
       html+=`<div style="background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;font-size:12px;color:var(--muted);font-style:italic">${currentPresReview.return_comments}</div>`;
     }
   } else {
+    // Show who is about to endorse. If not the actual President, show a warning.
+    const isActualPresident=CURRENT_USER?.email==='president@xime.org';
+    if(!isActualPresident){
+      html+=`<div style="background:#FFF8E1;border:.5px solid rgba(239,159,39,.4);border-radius:var(--rs);padding:10px 12px;font-size:11px;color:var(--amber-d);line-height:1.5">
+        <strong>Note:</strong> You are signed in as ${CURRENT_USER?.full_name||'super admin'}, not the President. Any endorsement will be recorded against your account.
+      </div>`;
+    }
     html+=`<div>
       <div class="action-title">Your Action</div>
       <button class="endorse-btn" onclick="endorseEval()">✓ &nbsp;Endorse Evaluation</button>
@@ -499,6 +546,8 @@ function closeEval(){
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('eval-view').classList.contains('open'))closeEval();});
 
 async function init(){
+  const ok=await requirePresidentAccess();
+  if(!ok)return;
   await loadAll();
 }
 init();
