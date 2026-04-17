@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magis Centre · Employee Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600&family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-soft: #3d3d5c; --cream: #faf8f3; --warm-white: #f5f0e8;
+    --gold: #c9974a; --gold-light: #e8c88a; --teal: #2a6b6e; --teal-light: #4a9a9d;
+    --rose: #8b3a52; --rose-light: #c5607a; --sage: #4a6741; --sage-light: #7aa870;
+    --blue: #2d5b8e; --blue-light: #5a85b8;
+    --navy: #0D1F35; --navy-gold: #C9A84C;
+    --border: rgba(26,26,46,0.1); --shadow: 0 2px 20px rgba(26,26,46,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  /* MAGIS CENTRE TOPBAR */
+  .magis-topbar { background: var(--navy); padding: 0 28px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; border-bottom: 1px solid rgba(201,168,76,.2); }
+  .mt-l { display: flex; align-items: center; gap: 14px; }
+  .mt-xime { font-family: 'Fraunces', serif; font-size: 18px; color: var(--navy-gold); letter-spacing: 0.08em; font-weight: 600; }
+  .mt-sep { width: 1px; height: 20px; background: rgba(255,255,255,.15); }
+  .mt-crumb { font-size: 12px; color: rgba(255,255,255,.6); cursor: pointer; transition: color .15s; }
+  .mt-crumb:hover { color: #fff; }
+  .mt-page { font-size: 12px; color: rgba(255,255,255,.55); }
+  .mt-r { display: flex; align-items: center; gap: 10px; }
+  .mt-role { font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 20px; background: rgba(201,168,76,.15); color: var(--navy-gold); border: 1px solid rgba(201,168,76,.3); letter-spacing: 0.04em; }
+  .mt-user { font-size: 12px; color: rgba(255,255,255,.7); font-family: 'DM Mono', monospace; }
+  .mt-signout { font-family: 'DM Sans', sans-serif; font-size: 11px; padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,.2); background: transparent; color: rgba(255,255,255,.6); cursor: pointer; transition: all .15s; }
+  .mt-signout:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+  /* AUTH STATES */
+  .auth-overlay { position: fixed; inset: 0; background: var(--cream); display: flex; align-items: center; justify-content: center; z-index: 500; flex-direction: column; gap: 14px; }
+  .auth-msg { font-family: 'Fraunces', serif; font-size: 18px; color: var(--ink-soft); }
+  .auth-sub { font-size: 12px; color: var(--gold); font-family: 'DM Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; }
+  .auth-denied { color: #991B1B; }
+  .auth-denied-sub { font-size: 12px; color: var(--ink-soft); margin-top: 6px; }
+  .auth-link { color: var(--gold); cursor: pointer; text-decoration: underline; }
+
+  /* DIRECTORY HEADER */
+  .header { background: var(--ink); padding: 1.5rem 2rem 1.25rem; position: sticky; top: 56px; z-index: 100; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; gap: 1rem; }
+  .header-title h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--gold-light); letter-spacing: 0.01em; line-height: 1.2; }
+  .header-title p { font-size: 0.72rem; color: rgba(255,255,255,0.45); font-weight: 300; margin-top: 0.25rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .stats { display: flex; gap: 1.2rem; align-items: center; }
+  .stat { text-align: right; }
+  .stat-num { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 0.63rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .search-wrap { position: relative; }
+  .search-wrap svg { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); opacity: 0.4; }
+  #searchInput { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 0.6rem 1rem 0.6rem 2.6rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: white; outline: none; transition: border-color 0.2s, background 0.2s; }
+  #searchInput::placeholder { color: rgba(255,255,255,0.3); }
+  #searchInput:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+  .group-emails { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08); padding: 0.7rem 2rem; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+  .group-email-item { display: flex; align-items: center; gap: 0.5rem; }
+  .group-email-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); font-weight: 600; }
+  .group-email-item a { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--gold-light); text-decoration: none; background: rgba(201,151,74,0.12); padding: 0.25rem 0.6rem; border-radius: 5px; border: 1px solid rgba(201,151,74,0.2); transition: background 0.15s; }
+  .group-email-item a:hover { background: rgba(201,151,74,0.22); }
+  .group-format { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: rgba(255,255,255,0.28); }
+
+  .campus-bar { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0.75rem 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .campus-bar-label { font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 600; margin-right: 0.5rem; }
+  .campus-btn { padding: 0.4rem 0.9rem; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.76rem; font-weight: 500; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .campus-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .campus-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .campus-btn .campus-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .campus-btn[data-campus="Bengaluru"] .campus-dot { background: var(--gold); }
+  .campus-btn[data-campus="Chennai"] .campus-dot  { background: var(--blue); }
+  .campus-btn[data-campus="Kochi"] .campus-dot    { background: var(--sage-light); }
+  .campus-count { font-family: 'DM Mono', monospace; font-size: 0.66rem; opacity: 0.7; margin-left: 0.2rem; }
+
+  .filters { padding: 1rem 2rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; background: var(--cream); border-bottom: 1px solid var(--border); }
+  .filter-btn { padding: 0.42rem 0.95rem; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.76rem; font-weight: 500; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; margin-bottom: 0.75rem; }
+  .filter-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .filter-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  .strategic-section { padding: 1.5rem 2rem 0; }
+  .section-label { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1rem; }
+
+  .card { background: white; border-radius: 12px; padding: 1.2rem; border: 1px solid var(--border); box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(26,26,46,0.12); }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+  .card.tier-strategic::before { background: var(--gold); }
+  .card.tier-leadership::before { background: var(--teal); }
+  .card.tier-faculty::before { background: var(--sage); }
+  .card.tier-junior::before { background: rgba(100,100,120,0.3); }
+  .card.tier-staff::before { background: var(--rose); }
+  .card.tier-incoming::before { background: var(--rose-light); }
+
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .card-avatar { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: white; flex-shrink: 0; }
+  .tier-strategic .card-avatar { background: var(--gold); }
+  .tier-leadership .card-avatar { background: var(--teal); }
+  .tier-faculty .card-avatar { background: var(--sage); }
+  .tier-junior .card-avatar { background: #8080a0; }
+  .tier-staff .card-avatar { background: var(--rose); }
+  .tier-incoming .card-avatar { background: var(--rose-light); }
+
+  .card-badge { font-size: 0.58rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; padding: 0.2rem 0.5rem; border-radius: 4px; flex-shrink: 0; }
+  .badge-strategic { background: #fff3e0; color: #c9974a; }
+  .badge-leadership { background: #e0f2f1; color: var(--teal); }
+  .badge-faculty { background: #e8f5e9; color: var(--sage); }
+  .badge-junior { background: #f3f4f6; color: #6b7280; }
+  .badge-staff { background: #fce4ec; color: var(--rose); }
+  .badge-incoming { background: #fce4ec; color: var(--rose-light); }
+
+  .campus-tag { font-size: 0.56rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.15rem 0.45rem; border-radius: 10px; display: inline-flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+  .campus-tag .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+  .campus-Bengaluru { background: #fdf4e3; color: #8a6518; border: 1px solid rgba(201,151,74,0.25); }
+  .campus-Bengaluru .dot { background: var(--gold); }
+  .campus-Chennai { background: #e8f0fa; color: #1e4a7a; border: 1px solid rgba(45,91,142,0.25); }
+  .campus-Chennai .dot { background: var(--blue); }
+  .campus-Kochi { background: #eaf4e8; color: #2e4d26; border: 1px solid rgba(122,168,112,0.3); }
+  .campus-Kochi .dot { background: var(--sage-light); }
+
+  .card-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink); line-height: 1.3; margin-bottom: 0.25rem; }
+  .card-role { font-size: 0.76rem; color: var(--ink-soft); font-weight: 400; line-height: 1.4; }
+  .card-note { font-size: 0.72rem; color: var(--gold); font-weight: 500; margin-top: 0.5rem; padding: 0.35rem 0.6rem; background: #fff8ed; border-radius: 5px; border-left: 2px solid var(--gold); }
+
+  .card-contacts { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.85rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
+  .contact-row { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+  .contact-icon { width: 26px; height: 26px; border-radius: 6px; background: var(--warm-white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .contact-row a { font-family: 'DM Mono', monospace; font-size: 0.76rem; color: var(--ink); text-decoration: none; font-weight: 500; letter-spacing: 0.01em; transition: color 0.15s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .contact-row a:hover { color: var(--teal); }
+  .email-verify { font-size: 0.6rem; color: #d97706; font-weight: 600; background: #fffbeb; border: 1px solid #fde68a; border-radius: 3px; padding: 0.1rem 0.3rem; flex-shrink: 0; }
+  .email-external { font-size: 0.56rem; color: #6d4c1e; font-weight: 600; background: #fff3e0; border: 1px solid rgba(201,151,74,0.3); border-radius: 3px; padding: 0.1rem 0.3rem; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.05em; }
+  .contact-missing { font-size: 0.7rem; color: var(--ink-soft); font-style: italic; opacity: 0.6; }
+
+  .card-incoming-note { font-size: 0.66rem; color: var(--rose); font-weight: 600; margin-top: 0.4rem; font-style: italic; }
+  .on-leave, .resigned { opacity: 0.55; }
+  .on-leave .card-name, .resigned .card-name { text-decoration: line-through; text-decoration-color: rgba(100,100,100,0.4); }
+  .leave-badge { font-size: 0.58rem; background: #f3f4f6; color: #9ca3af; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+  .resigned-badge { font-size: 0.58rem; background: #fee2e2; color: #991b1b; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+
+  .main { padding-bottom: 3rem; }
+  .no-results { text-align: center; padding: 4rem 2rem; color: var(--ink-soft); font-size: 0.9rem; display: none; }
+  .result-count { padding: 0.75rem 2rem; font-size: 0.72rem; color: var(--ink-soft); font-weight: 500; }
+
+  @media (max-width: 600px) {
+    .magis-topbar { padding: 0 14px; }
+    .mt-page, .mt-user { display: none; }
+    .header { padding: 1rem 1rem 0.9rem; }
+    .header-title h1 { font-size: 1.2rem; }
+    .group-emails, .campus-bar { padding: 0.6rem 1rem; gap: 0.5rem; }
+    .filters { padding: 0.75rem 1rem 0; }
+    .strategic-section { padding: 1.2rem 1rem 0; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .result-count { padding: 0.75rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-sub">Magis Centre</div>
+  <div class="auth-msg" id="auth-msg">Verifying access...</div>
+  <div class="auth-denied-sub" id="auth-denied-sub" style="display:none"></div>
+</div>
+
+<!-- MAGIS CENTRE TOPBAR -->
+<div class="magis-topbar" id="magis-topbar" style="display:none">
+  <div class="mt-l">
+    <span class="mt-xime">XIME</span>
+    <span class="mt-sep"></span>
+    <span class="mt-crumb" onclick="window.location.href='index.html'">← Magis Centre</span>
+    <span class="mt-sep"></span>
+    <span class="mt-page">Employee Directory</span>
+  </div>
+  <div class="mt-r">
+    <span class="mt-role" id="mt-role">Super Admin</span>
+    <span class="mt-user" id="mt-user"></span>
+    <button class="mt-signout" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- DIRECTORY BODY -->
+<div id="directory-body" style="display:none">
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-title">
+      <h1>XIME · Three-Campus Directory</h1>
+      <p>Bengaluru · Chennai · Kochi · April 2026 · Restricted Access</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="stat-faculty">84</div><div class="stat-label">Faculty</div></div>
+      <div class="stat"><div class="stat-num" id="stat-staff">57</div><div class="stat-label">Staff</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Campuses</div></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="Search name, role, email, campus..." oninput="filterCards()">
+  </div>
+</div>
+
+<div class="group-emails">
+  <div class="group-email-item"><span class="group-email-label">BLR Faculty</span><a href="mailto:blrfaculty@xime.org">blrfaculty@xime.org</a></div>
+  <div class="group-email-item"><span class="group-email-label">BLR Staff</span><a href="mailto:blrstaff@xime.org">blrstaff@xime.org</a></div>
+  <div class="group-email-item"><span class="group-email-label">Kochi Deans</span><a href="mailto:deansofficekochi@xime.org">deansofficekochi@xime.org</a></div>
+  <div class="group-email-item"><span class="group-email-label">Individual</span><span class="group-format">firstname@xime.org</span></div>
+</div>
+
+<div class="campus-bar">
+  <span class="campus-bar-label">Campus</span>
+  <button class="campus-btn active" data-campus="all" onclick="setCampus('all',this)">All <span class="campus-count" id="cc-all"></span></button>
+  <button class="campus-btn" data-campus="Bengaluru" onclick="setCampus('Bengaluru',this)"><span class="campus-dot"></span>Bengaluru <span class="campus-count" id="cc-Bengaluru"></span></button>
+  <button class="campus-btn" data-campus="Chennai" onclick="setCampus('Chennai',this)"><span class="campus-dot"></span>Chennai <span class="campus-count" id="cc-Chennai"></span></button>
+  <button class="campus-btn" data-campus="Kochi" onclick="setCampus('Kochi',this)"><span class="campus-dot"></span>Kochi <span class="campus-count" id="cc-Kochi"></span></button>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" onclick="setFilter('strategic',this)">⭐ Key Contacts</button>
+  <button class="filter-btn" onclick="setFilter('leadership',this)">Leadership</button>
+  <button class="filter-btn" onclick="setFilter('faculty',this)">Faculty</button>
+  <button class="filter-btn" onclick="setFilter('staff',this)">Staff</button>
+  <button class="filter-btn" onclick="setFilter('corporate',this)">Corporate Relations</button>
+  <button class="filter-btn" onclick="setFilter('incoming',this)">Incoming</button>
+  <button class="filter-btn" onclick="setFilter('verify',this)">⚠ Verify Email</button>
+</div>
+
+<div class="main">
+  <div class="result-count" id="resultCount"></div>
+  <div class="strategic-section"><div class="section-label">Key Strategic Contacts</div><div class="cards-grid" id="strategicGrid"></div></div>
+  <div class="strategic-section"><div class="section-label">Directors, Deans &amp; Academic Leadership</div><div class="cards-grid" id="leadershipGrid"></div></div>
+  <div class="strategic-section"><div class="section-label">Faculty</div><div class="cards-grid" id="facultyGrid"></div></div>
+  <div class="strategic-section"><div class="section-label">Staff &amp; Operations</div><div class="cards-grid" id="staffGrid"></div></div>
+  <div class="no-results" id="noResults">No contacts found.</div>
+</div>
+
+</div>
+
+<script>
+// SUPABASE + AUTH GATE
+const SU = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb = supabase.createClient(SU, SK);
+
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = 'login.html';
+}
+
+async function requireSuperAdmin() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return null;
+  }
+  const { data: profile } = await sb.from('user_profiles').select('*').eq('id', session.user.id).maybeSingle();
+  if (!profile) {
+    document.getElementById('auth-msg').textContent = 'Profile not found';
+    document.getElementById('auth-msg').classList.add('auth-denied');
+    document.getElementById('auth-denied-sub').innerHTML = 'Contact admin. <span class="auth-link" onclick="signOut()">Sign out</span>';
+    document.getElementById('auth-denied-sub').style.display = 'block';
+    return null;
+  }
+  if (profile.role !== 'super_admin') {
+    document.getElementById('auth-msg').textContent = 'Access restricted';
+    document.getElementById('auth-msg').classList.add('auth-denied');
+    document.getElementById('auth-denied-sub').innerHTML = 'Employee Directory is visible to super admins only. <span class="auth-link" onclick="window.location.href=\'index.html\'">Return to Magis Centre</span>';
+    document.getElementById('auth-denied-sub').style.display = 'block';
+    return null;
+  }
+  return profile;
+}
+
+// DIRECTORY DATA (140 contacts across 3 campuses)
+const contacts = {
+  strategic: [
+    { name:"Dr. Roshni James", role:"Officiating Director / Professor", campus:"Bengaluru", phone:"9740207081", email:"roshni", note:"Primary institutional authority. All formal approvals flow through her.", badge:"Director" },
+    { name:"Prof. Madhu Kumar PS", role:"Associate Professor / Dean (Quality Assurance)", campus:"Bengaluru", phone:"9845934029", email:"madhu", note:"Leads IQAC. Presented the Three Gaps analysis. Key for accreditation conversations.", badge:"Dean QA" },
+    { name:"Dr. Krishna Kumar Nallur", role:"Associate Professor / Dean (Executive Programs)", campus:"Bengaluru", phone:"9845688486", email:"krishnakumar", note:"KK. Strategy and Transformation. Executive Programs lead. Uses Claude extensively. Key ally.", badge:"Dean EP" },
+    { name:"Dr. A.R. Rajagopalan", role:"Professor / Dean (Academics)", campus:"Bengaluru", phone:"9384679200", email:"rajagopalan", note:"Academic Dean. Critical stakeholder for Managerial Effectiveness course redesign.", badge:"Dean Acad" },
+    { name:"Mr. T.R. Anand", role:"Associate Professor, Industry Connect", campus:"Bengaluru", phone:"9740455788", email:"anand", note:"Industry Connect lead. Recently hired from Welingkar's. Partner for exec ed and corporate outreach.", badge:"Industry" },
+    { name:"Dr. Ravi Veeraraghavan", role:"Professor / Officiating Director", campus:"Chennai", phone:"9841265042", email:"drravi_v", note:"Chennai campus head. Reviewed LearnQuest/IBM service agreement. Key cross-campus partner for EP build.", badge:"Director" },
+    { name:"Prof. Mathew Paul Vizhalil", role:"Associate Professor / Dean (Ext. Programs)", campus:"Chennai", phone:"9940662192", email:"mathew.vizhalil", note:"Chennai Dean EP. Direct counterpart for three-campus EP alignment.", badge:"Dean EP" },
+    { name:"Mr. V Suresh Kumar", role:"Associate Professor / Dean (Academics)", campus:"Chennai", phone:"9790412347", email:"sureshkumarv", note:"Chennai academic lead. Curriculum focal point.", badge:"Dean Acad" },
+    { name:"Prof. Alok K.", role:"Officiating Director / Associate Professor", campus:"Kochi", phone:"9645722495", email:"alok", note:"Kochi campus head. Third campus director in the Magis Centre auth system.", badge:"Director" },
+    { name:"Dr. Ranjana Mary Varghese", role:"Associate Professor / Dean (Ext. Programs)", campus:"Kochi", phone:"9847028797", email:"ranjana", note:"Kochi Dean EP. Direct counterpart for three-campus EP alignment.", badge:"Dean EP" },
+    { name:"Dr. Joshin John", role:"Associate Professor / Dean (Research)", campus:"Kochi", phone:"8138905562", email:"joshin", note:"Kochi Dean Research. Publications pipeline for Kochi faculty.", badge:"Dean Res" },
+  ],
+  leadership: [
+    { name:"Dr. NMK Bhatta", role:"Professor / Dean (PhD Program)", campus:"Bengaluru", phone:"7411017525", email:"nmk", verify:true },
+    { name:"Dr. S. Rajkumar", role:"Associate Professor / Dean (Research)", campus:"Bengaluru", phone:"9894672625", email:"rajkumar", verify:true },
+    { name:"Prof. Biswajit Mohanty", role:"Adjunct Professor", campus:"Bengaluru", phone:"9619024373", email:"biswajit" },
+    { name:"Dr. Joy Varghese", role:"Adjunct Professor", campus:"Bengaluru", phone:"7829006111", email:"joy" },
+    { name:"Dr. R Sundari", role:"Sr. Asst. Professor / Asst. Dean (Research)", campus:"Chennai", phone:"9443773687", email:"sundari", note:"Chennai Asst. Dean Research." },
+    { name:"Prof. Swaminathan N", role:"Associate Professor", campus:"Chennai", phone:"9840804540", email:"swaminathann" },
+    { name:"Dr. S. Ajit Ramesh", role:"Associate Professor", campus:"Chennai", phone:"9962388707", email:"ajit" },
+    { name:"Dr. Francy T.V.", role:"Adjunct Professor", campus:"Kochi", phone:"9447202931", email:"francytv" },
+    { name:"Prof. Girish A.S.", role:"Associate Professor of Practice", campus:"Kochi", phone:"9846151182", email:"asgirish", note:"Different person from Girish Vasudevan. Kochi campus PoP." },
+    { name:"Dr. Amitabh Satapathy", role:"Professor", campus:"Kochi", phone:"9961675871", email:"amitabh" },
+    { name:"Dr. Jose A V", role:"Professor", campus:"Kochi", phone:"9447575577", email:"jose" },
+  ],
+  faculty: [
+    { name:"Prof. Girish Vasudevan", role:"Professor of Practice", campus:"Bengaluru", phone:"9845048018", email:"girishv", self:true, note:"Your own listing." },
+    { name:"Dr. G. Raju", role:"Professor", campus:"Bengaluru", phone:"9539125991", email:"g", verify:true },
+    { name:"Dr. Christopher Rajkumar SC", role:"Associate Professor", campus:"Bengaluru", phone:"9884792272", email:"christopher" },
+    { name:"Dr. Meena Rani N", role:"Associate Professor", campus:"Bengaluru", phone:"9945228974", email:"meena" },
+    { name:"Dr. Hirak Dasgupta", role:"Associate Professor", campus:"Bengaluru", phone:"8605765105", email:"hirak", note:"President's Designate. Approval gates." },
+    { name:"Mr. Sanjeev Chinnamanthur", role:"Sr. Assistant Professor", campus:"Bengaluru", phone:"7019726721", email:"sanjeev" },
+    { name:"Dr. K. Subha", role:"Sr. Assistant Professor", campus:"Bengaluru", phone:"9626046502", email:"subha", verify:true },
+    { name:"Dr. P. Krishnapriya", role:"Sr. Assistant Professor", campus:"Bengaluru", phone:"9100527257", email:"krishnapriya", verify:true },
+    { name:"Dr. Cristina M Alexander", role:"Sr. Assistant Professor", campus:"Bengaluru", phone:"9866333209", email:"cristina" },
+    { name:"Ms. D. Soundravalli", role:"Sr. Assistant Professor", campus:"Bengaluru", phone:"9164457444", email:"soundravalli", verify:true },
+    { name:"Dr. M.V. Alagesan", role:"Assistant Professor", campus:"Bengaluru", phone:"9538677040", email:"alagesan", verify:true },
+    { name:"Dr. Emily Maria K. Jose", role:"Assistant Professor", campus:"Bengaluru", phone:"8113825027", email:"emily" },
+    { name:"Ms. Vinitha V", role:"Assistant Professor", campus:"Bengaluru", phone:"9886575802", email:"vinitha" },
+    { name:"Mr. T. Dakshinamurthy", role:"Assistant Professor", campus:"Bengaluru", phone:"7708594308", email:"dakshinamurthy", verify:true },
+    { name:"Dr. Shradha Kundra", role:"Assistant Professor", campus:"Bengaluru", phone:"9676521021", email:"shradha" },
+    { name:"Dr. Johnson Clement", role:"Assistant Professor", campus:"Bengaluru", phone:"9656718771", email:"johnson" },
+    { name:"Dr. Ganaraj Khandige", role:"Assistant Professor", campus:"Bengaluru", phone:"9986992101", email:"ganaraj" },
+    { name:"Ms. Shimona Shriya", role:"Assistant Professor", campus:"Bengaluru", phone:"7782923496", email:"shimona" },
+    { name:"Mr. Nikhil D Jonathan", role:"Assistant Professor", campus:"Bengaluru", phone:"9087615624", email:"nikhil" },
+    { name:"Dr. Tijo George", role:"Assistant Professor", campus:"Bengaluru", phone:"9497581929", email:"tijo" },
+    { name:"Dr. Mythiri B", role:"Assistant Professor", campus:"Bengaluru", phone:"9489907987", email:"mythiri" },
+    { name:"Prof. Bhadra K V", role:"Assistant Professor", campus:"Bengaluru", phone:"9745239358", email:"bhadra", note:"ACMA relationship. ESG and Social Entrepreneurship PhD." },
+    { name:"Prof. Manoj Kumar B.R.", role:"Assistant Professor", campus:"Bengaluru", phone:"9488350466", email:"manoj", note:"EP calendar. Delivery focused." },
+    { name:"Dr. Kunal Gaurav", role:"Assistant Professor", campus:"Bengaluru", phone:"9560195620", email:"kunal" },
+    { name:"Ms. Pooja V", role:"Junior Assistant Professor", campus:"Bengaluru", phone:"9035142743", email:"pooja" },
+    { name:"Ms. Aparna S", role:"Junior Assistant Professor", campus:"Bengaluru", phone:"7975741793", email:"aparna" },
+    { name:"Mr. Nandha Kumar S.", role:"Junior Assistant Professor", campus:"Bengaluru", phone:"9986531004", email:"nandha" },
+    { name:"Mr. Leo George", role:"Sr. Faculty Associate", campus:"Bengaluru", phone:"9946252884", email:"leo" },
+    { name:"Ms. Soumya Debora", role:"Faculty Associate", campus:"Bengaluru", phone:"9738427819", email:"soumya" },
+    { name:"Ms. Nelli Preethi Komal Reddy", role:"Faculty Research Associate", campus:"Bengaluru", phone:"7075895689", email:"nelli" },
+    { name:"Dr. G. Devakumar", role:"Professor", campus:"Bengaluru", phone:"9242949270", email:"devakumar", verify:true, onLeave:true },
+    { name:"Dr. Sebastian V.J.", role:"Associate Professor", campus:"Bengaluru", phone:"9810231329", email:"sebastian", incoming:true, doj:"1 June 2026" },
+    { name:"Dr. Varun Kesavan", role:"Assistant Professor", campus:"Bengaluru", phone:"9894236733", email:"varun", incoming:true, doj:"6 April 2026" },
+    { name:"Mr. Briti Deb", role:"Assistant Professor", campus:"Bengaluru", phone:"9902120028", email:"briti", incoming:true, doj:"15 June 2026" },
+    { name:"Dr. Praveen S.V.", role:"Assistant Professor", campus:"Bengaluru", phone:"", email:"praveen", verify:true, incoming:true, doj:"15 June 2026" },
+    { name:"Ms. Vinuta Vithal Savant", role:"Junior Assistant Professor", campus:"Bengaluru", phone:"9483439417", email:"vinuta", incoming:true, doj:"7 April 2026" },
+    { name:"Mr. Jojo Joy", role:"Sr. Asst. Professor", campus:"Chennai", phone:"8939526309", email:"jojojoy" },
+    { name:"Mr. A S Rajarajan", role:"Sr. Asst. Professor", campus:"Chennai", phone:"9171883129", email:"rajarajan" },
+    { name:"Mr. T Bothichandran", role:"Sr. Asst. Professor", campus:"Chennai", phone:"9891627680", email:"bothichandar" },
+    { name:"Dr. Pradyot Kumar Das", role:"Sr. Asst. Professor", campus:"Chennai", phone:"9382357373", email:"pradyot" },
+    { name:"Dr. Mathurasamy P", role:"Sr. Asst. Professor", campus:"Chennai", phone:"9884756230", email:"mathuraswamy.p" },
+    { name:"Mr. S Chandrasekar", role:"Sr. Asst. Professor", campus:"Chennai", phone:"9380362759", email:"chandrasekar" },
+    { name:"Mr. Surenthran David P", role:"Assistant Professor", campus:"Chennai", phone:"9842540556", email:"surenthran" },
+    { name:"Dr. Kasinghlung Panmei", role:"Junior Assistant Professor", campus:"Chennai", phone:"8118912288", email:"kasinglung" },
+    { name:"Ms. A Uma Maheswari", role:"Junior Assistant Professor", campus:"Chennai", phone:"9940144330", email:"uma" },
+    { name:"Ms. D Suba Durairaj", role:"Sr. Faculty Associate", campus:"Chennai", phone:"9566699046", email:"suba" },
+    { name:"Ms. Arul Thava Mary A", role:"Assistant Professor", campus:"Chennai", phone:"8056184320", email:"arulmary", note:"Promoted from Sr. Faculty Associate." },
+    { name:"Mr. Jomy Lawrence", role:"Associate Professor", campus:"Kochi", phone:"9895854777", email:"jomy" },
+    { name:"Mr. Sony Varghese", role:"Associate Professor", campus:"Kochi", phone:"9446373431", email:"sony" },
+    { name:"Dr. Elizabeth Devasia", role:"Associate Professor", campus:"Kochi", phone:"9847554905", email:"elizabeth.d", note:"Kochi focal point for Writing, Speaking and Influence elective." },
+    { name:"Dr. Gopikumar V", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9495055777", email:"gopikumarv" },
+    { name:"Mr. Madhavan Nampoothiri", role:"Sr. Asst. Professor", campus:"Kochi", phone:"6385561150", email:"madhavanvn" },
+    { name:"Dr. Bijith George", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9946121680", email:"bijith" },
+    { name:"Ms. Lavanya Nagarajan", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9544800484", email:"lavanyan", note:"HR/L&D. Magis Centre tech build partner. HRMS and FDP module owner." },
+    { name:"Dr. Dawn Jose", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9895942546", email:"dawnjose" },
+    { name:"Ms. Lincy P T", role:"Sr. Assistant Professor", campus:"Kochi", phone:"9946375878", email:"lincy" },
+    { name:"Dr. Anjali John", role:"Assistant Professor", campus:"Kochi", phone:"8086101155", email:"anjalijohn" },
+    { name:"Mr. Ranjit B Nair", role:"Assistant Professor", campus:"Kochi", phone:"9656134768", email:"ranjitbnair" },
+    { name:"Ms. Geethika Thomas", role:"Assistant Professor", campus:"Kochi", phone:"", email:"geethika", verify:true, note:"Phone not listed in contact sheet. Verify with HR." },
+    { name:"Ms. Harsha Ann George", role:"Faculty Associate", campus:"Kochi", phone:"7907817362", email:"harshaann" },
+    { name:"Mr. Abraham Varghese", role:"Research Associate", campus:"Kochi", phone:"9354493886", email:"abraham" },
+  ],
+  staff: [
+    { name:"Mr. A. Surendar", role:"Manager, Corporate Relations", campus:"Bengaluru", phone:"9940094206", email:"surendar", verify:true, corporate:true, note:"Corporate relations gateway. Coordinate exec ed outreach through him." },
+    { name:"Mr. M. Madhavarao", role:"Senior Manager, Corporate Relations", campus:"Bengaluru", phone:"9703003232", email:"madhavarao", verify:true, corporate:true, note:"Senior corporate relations. Key partner for industry partnerships and exec ed." },
+    { name:"Ms. Reetha Joseph", role:"Senior Secretary", campus:"Bengaluru", phone:"9845280734", email:"reetha", note:"Source of the faculty/staff list and email protocol. Good first contact for admin queries." },
+    { name:"Mr. Jacob T. George", role:"Manager, Accounts", campus:"Bengaluru", phone:"9448455056", email:"jacob" },
+    { name:"Dr. Bindhu A", role:"Library In-charge", campus:"Bengaluru", phone:"8220790140", email:"bindhu" },
+    { name:"Mr. Baskar Dhamodaran", role:"IT Infrastructure Manager", campus:"Bengaluru", phone:"9886657229", email:"baskar" },
+    { name:"Mr. Kevin J. Puthoor", role:"System Executive", campus:"Bengaluru", phone:"8714124022", email:"kevin" },
+    { name:"Mr. Venkatesh V.H.", role:"Assistant Librarian", campus:"Bengaluru", phone:"9741683737", email:"venkatesh" },
+    { name:"Mr. Lakshmanakumar H", role:"Sr. Officer, Tech Support", campus:"Bengaluru", phone:"9036213666", email:"lakshmanakumar" },
+    { name:"Mr. Dal Bahadur (Dilip)", role:"Sr. Officer, Accounts", campus:"Bengaluru", phone:"9538544237", email:"dilip", verify:true },
+    { name:"Mr. Robin Xavier", role:"Assistant Manager", campus:"Bengaluru", phone:"9986845112", email:"robin" },
+    { name:"Mr. Behanan T. Varghese", role:"Admin Officer", campus:"Bengaluru", phone:"7406252444", email:"behanan" },
+    { name:"Ms. Nirmala M.", role:"Sr. Associate, Library", campus:"Bengaluru", phone:"9036653522", email:"nirmala" },
+    { name:"Mr. Sebastian John", role:"Project Engineer", campus:"Bengaluru", phone:"8281821777", email:"sebastian", verify:true },
+    { name:"Mr. Manoj Kumar P", role:"Admin Officer / Hostel Warden", campus:"Bengaluru", phone:"9847283223", email:"manoj", verify:true },
+    { name:"Mr. Sudhanshu Kumar Pankaj", role:"Admin Officer / Hostel Warden", campus:"Bengaluru", phone:"9380690549", email:"sudhanshu" },
+    { name:"Ms. Diana D'Souza", role:"Secretary", campus:"Bengaluru", phone:"9902726269", email:"diana" },
+    { name:"Ms. Mary Paul", role:"Associate, Academic Support", campus:"Bengaluru", phone:"9916253316", email:"mary" },
+    { name:"Ms. Sarala V Nair", role:"Office Secretary", campus:"Bengaluru", phone:"8147788426", email:"sarala" },
+    { name:"Ms. Aishwarya V", role:"Academic Associate", campus:"Bengaluru", phone:"8792354288", email:"aishwarya" },
+    { name:"Ms. Sailaja V.S.", role:"Accountant / Ladies Hostel Warden", campus:"Bengaluru", phone:"8086517863", email:"sailaja" },
+    { name:"Ms. Aleyamma Sebastian", role:"Ladies Hostel Warden", campus:"Bengaluru", phone:"9447971495", email:"aleyamma" },
+    { name:"Ms. R. Priya", role:"Admin Associate", campus:"Bengaluru", phone:"9742013950", email:"priya", verify:true },
+    { name:"Ms. Maria Reyona Joseph", role:"Admin Associate", campus:"Bengaluru", phone:"6364055388", email:"maria" },
+    { name:"Mr. S. Khalandar Basha", role:"Driver-cum-Attendant", campus:"Bengaluru", phone:"9986172775", email:"khalandar", verify:true },
+    { name:"Mr. Robert Lakda", role:"Office Attendant", campus:"Bengaluru", phone:"9740977904", email:"robert" },
+    { name:"Mr. Prakash Kumar Das", role:"Office Attendant", campus:"Bengaluru", phone:"7411550429", email:"prakash" },
+    { name:"Mr. Babru Bahan Patra", role:"Maintenance Assistant", campus:"Bengaluru", phone:"7019662475", email:"babru" },
+    { name:"Mr. Digamber Das", role:"Maintenance Assistant", campus:"Bengaluru", phone:"9972834404", email:"digamber" },
+    { name:"Mr. Vijay Kumar B M", role:"Driver-cum-Attendant", campus:"Bengaluru", phone:"9742976952", email:"vijay" },
+    { name:"Mr. Savarimuthu Y", role:"Driver-cum-Attendant", campus:"Bengaluru", phone:"9972560722", email:"savarimuthu" },
+    { name:"Mr. Jerad Vincent", role:"Office Attendant", campus:"Bengaluru", phone:"9035467319", email:"jerad" },
+    { name:"Mr. Seshadri Venkataraman", role:"Manager, Corporate Relations", campus:"Chennai", phone:"9840773196", email:"Seshadri", corporate:true, note:"Chennai corporate relations anchor. Also listed with personal email Seshguru30@gmail.com." },
+    { name:"Mr. N Manickavel", role:"Asst. Manager, Campus Maintenance", campus:"Chennai", phone:"9790752357", email:"manickavel" },
+    { name:"Ms. Sneha Prabha", role:"Facility Manager / Warden", campus:"Chennai", phone:"8939942261", email:"snehaprabha" },
+    { name:"Mr. M S Rajesh", role:"Accounts & Admin Officer", campus:"Chennai", phone:"9962151079", email:"rajeshms" },
+    { name:"Mr. O Venkatesh", role:"Sr. Associate, Technology Support", campus:"Chennai", phone:"9940622536", email:"saivenkat" },
+    { name:"Dr. H Karthiban", role:"Library-in-Charge", campus:"Chennai", phone:"8428128007", email:"hkarthiban" },
+    { name:"Mr. Sathish C M", role:"Sr. Associate, Library", campus:"Chennai", phone:"9944694463", email:"sathishcm" },
+    { name:"Mr. J Loganathan", role:"Maintenance Assistant", campus:"Chennai", phone:"9791502528", email:"loganathan" },
+    { name:"Mr. Venkateswaran M", role:"Programmes Officer, Academics", campus:"Chennai", phone:"9677018736", email:"Wvenkat02@gmail.com", external:true, note:"Uses personal email. No xime.org address on file." },
+    { name:"Mr. M Selvam", role:"Driver Cum Attender", campus:"Chennai", phone:"8754663819", email:"selvamr" },
+    { name:"Ms. Dimmy Gonsalves", role:"Sr. Officer, Academics", campus:"Kochi", phone:"9633155380", email:"dimmy" },
+    { name:"Ms. Seema Satish", role:"Sr. Officer, Academics", campus:"Kochi", phone:"9388042204", email:"deansofficekochi", note:"Shared inbox for Kochi deans office." },
+    { name:"Ms. Anila", role:"Associate, Academic Support", campus:"Kochi", phone:"9447567625", email:"admissionskochi", note:"Uses shared admissions inbox." },
+    { name:"Ms. Anjaly Thomas", role:"HR, Recruitments", campus:"Kochi", phone:"9946159013", email:"anjalythomas", note:"HRMS pilot recruiter for MDP Associate hiring." },
+    { name:"Ms. Smitha G", role:"Sr. Library Associate", campus:"Kochi", phone:"9747954132", email:"smithag" },
+    { name:"Ms. Jeeja John", role:"Library In-Charge", campus:"Kochi", phone:"9447206965", email:"jeeja" },
+    { name:"Mr. Prasanth Sasidharan", role:"Asst. Manager, Ext. Pro", campus:"Kochi", phone:"8921382340", email:"prasanth" },
+    { name:"Mr. Anandhu KA", role:"Admin Office, Accountant", campus:"Kochi", phone:"7012871105", email:"anandhu" },
+    { name:"Sr. Mercykutty", role:"Girls Hostel Warden", campus:"Kochi", phone:"9048002438", email:"mercy" },
+    { name:"Mr. Vishal Paul", role:"Boys Hostel Warden", campus:"Kochi", phone:"7559874560", email:"vishal" },
+    { name:"Mr. Viju Davis", role:"Administrative Associate", campus:"Kochi", phone:"9061366778", email:"vijudavis", resigned:true, resignedDate:"10 March 2026" },
+    { name:"Mr. Maniraj", role:"Plumber", campus:"Kochi", phone:"", email:"", noContact:true },
+    { name:"Mr. Abdul Najeeb", role:"Plumber", campus:"Kochi", phone:"", email:"", noContact:true },
+    { name:"Mr. Vasanthakumar", role:"Electrician", campus:"Kochi", phone:"", email:"", noContact:true },
+    { name:"Ms. Adheena Inni", role:"Intern", campus:"Kochi", phone:"", email:"", noContact:true },
+  ]
+};
+
+let currentFilter = 'all';
+let currentCampus = 'all';
+
+function getInitials(name) {
+  const parts = name.replace(/^(Dr\.|Mr\.|Ms\.|Mrs\.|Sr\.|Prof\.)\s+/, '').split(' ').filter(Boolean);
+  if (parts.length === 0) return '?';
+  return (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase();
+}
+
+function getTierClass(section, c) {
+  if (c.incoming) return 'tier-incoming';
+  if (c.onLeave || c.resigned) return 'tier-junior';
+  if (c.self) return 'tier-strategic';
+  if (section === 'strategic') return 'tier-strategic';
+  if (section === 'leadership') return 'tier-leadership';
+  if (section === 'faculty') return (c.role.includes('Junior') || (c.role.includes('Associate') && !c.role.includes('Professor'))) ? 'tier-junior' : 'tier-faculty';
+  if (section === 'staff') return c.corporate ? 'tier-leadership' : 'tier-staff';
+  return 'tier-faculty';
+}
+
+function createCard(c, section) {
+  const tier = getTierClass(section, c);
+  const badgeClass = tier.replace('tier-', 'badge-');
+  const initials = getInitials(c.name);
+  const emailAddr = c.external ? c.email : (c.email ? c.email + '@xime.org' : '');
+  const hasEmail = !!c.email;
+  const badgeLabels = {
+    strategic: c.badge || 'Key',
+    leadership: 'Leadership',
+    faculty: c.incoming ? 'Incoming' : c.onLeave ? 'On Leave' : c.resigned ? 'Resigned' : c.self ? 'You' : c.role.includes('Research') ? 'Research' : c.role.includes('Junior') ? 'Jr. Faculty' : (c.role.includes('Sr. Faculty') || (!c.role.includes('Professor') && c.role.includes('Associate'))) ? 'Associate' : 'Faculty',
+    staff: c.corporate ? 'Corp. Rel.' : c.resigned ? 'Resigned' : 'Staff'
+  };
+  const label = badgeLabels[section];
+  const noteHtml = c.note && !c.incoming ? `<div class="card-note">${c.note}</div>` : '';
+  const incomingHtml = c.incoming ? `<div class="card-incoming-note">📅 Joining: ${c.doj}</div>` : '';
+  const leaveHtml = c.onLeave ? `<span class="leave-badge">On Long Leave</span>` : c.resigned ? `<span class="resigned-badge">Resigned ${c.resignedDate || ''}</span>` : '';
+  const campusTag = c.campus ? `<span class="campus-tag campus-${c.campus}"><span class="dot"></span>${c.campus}</span>` : '';
+  const phoneRow = c.phone ? `<div class="contact-row"><div class="contact-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.24 1.2a2 2 0 012-2.17h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 6.91a16 16 0 006.29 6.29l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div><a href="tel:+91${c.phone}">${c.phone}</a></div>` : '';
+  const verifySpan = c.verify ? `<span class="email-verify">verify</span>` : '';
+  const externalSpan = c.external ? `<span class="email-external">external</span>` : '';
+  const emailRow = hasEmail ? `<div class="contact-row"><div class="contact-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg></div><a href="mailto:${emailAddr}">${emailAddr}</a>${externalSpan}${verifySpan}</div>` : '';
+  const noContactHtml = c.noContact ? `<div class="contact-row"><span class="contact-missing">No contact on file.</span></div>` : '';
+  const contactBlock = (phoneRow || emailRow || noContactHtml) ? `<div class="card-contacts">${phoneRow}${emailRow}${noContactHtml}</div>` : '';
+  return `<div class="card ${tier} ${c.onLeave ? 'on-leave' : ''} ${c.resigned ? 'resigned' : ''}" data-name="${c.name.toLowerCase()}" data-role="${c.role.toLowerCase()}" data-note="${(c.note || '').toLowerCase()}" data-email="${emailAddr.toLowerCase()}" data-section="${section}" data-campus="${c.campus || ''}" data-corporate="${c.corporate || false}" data-incoming="${c.incoming || false}" data-verify="${c.verify || false}"><div class="card-header"><div style="display:flex;align-items:center;gap:0.7rem;flex:1;min-width:0;"><div class="card-avatar">${initials}</div><div style="min-width:0;"><div class="card-name">${c.name}</div><div class="card-role">${c.role}</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;"><span class="card-badge ${badgeClass}">${label}</span>${campusTag}${leaveHtml}</div></div>${noteHtml}${incomingHtml}${contactBlock}</div>`;
+}
+
+function render() {
+  ['strategic','leadership','faculty','staff'].forEach(s => {
+    document.getElementById(s+'Grid').innerHTML = contacts[s].map(c => createCard(c,s)).join('');
+  });
+  updateCampusCounts();
+  updateHeaderStats();
+}
+
+function updateCampusCounts() {
+  const all = [...contacts.strategic, ...contacts.leadership, ...contacts.faculty, ...contacts.staff];
+  document.getElementById('cc-all').textContent = all.length;
+  ['Bengaluru','Chennai','Kochi'].forEach(campus => {
+    const n = all.filter(c => c.campus === campus).length;
+    const el = document.getElementById('cc-'+campus);
+    if (el) el.textContent = n;
+  });
+}
+
+function updateHeaderStats() {
+  const facultyCount = contacts.strategic.length + contacts.leadership.length + contacts.faculty.length;
+  const staffCount = contacts.staff.length;
+  document.getElementById('stat-faculty').textContent = facultyCount;
+  document.getElementById('stat-staff').textContent = staffCount;
+}
+
+function setCampus(campus, btn) {
+  currentCampus = campus;
+  document.querySelectorAll('.campus-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.card').forEach(card => {
+    const matchSearch = !q || ['name','role','note','email','campus'].some(k => card.dataset[k]?.toLowerCase().includes(q));
+    const matchCampus = currentCampus === 'all' || card.dataset.campus === currentCampus;
+    let matchFilter = true;
+    if (currentFilter === 'strategic') matchFilter = card.dataset.section === 'strategic';
+    else if (currentFilter === 'leadership') matchFilter = ['strategic','leadership'].includes(card.dataset.section);
+    else if (currentFilter === 'faculty') matchFilter = card.dataset.section === 'faculty';
+    else if (currentFilter === 'staff') matchFilter = card.dataset.section === 'staff';
+    else if (currentFilter === 'corporate') matchFilter = card.dataset.corporate === 'true';
+    else if (currentFilter === 'incoming') matchFilter = card.dataset.incoming === 'true';
+    else if (currentFilter === 'verify') matchFilter = card.dataset.verify === 'true';
+    const show = matchSearch && matchCampus && matchFilter;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.querySelectorAll('.strategic-section').forEach(sec => {
+    const has = [...sec.querySelectorAll('.card')].some(c => c.style.display !== 'none');
+    sec.style.display = has ? '' : 'none';
+  });
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  const active = q || currentFilter !== 'all' || currentCampus !== 'all';
+  document.getElementById('resultCount').textContent = active ? `${visible} contact${visible !== 1 ? 's' : ''} shown` : '';
+}
+
+async function init() {
+  const profile = await requireSuperAdmin();
+  if (!profile) return;
+
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('magis-topbar').style.display = 'flex';
+  document.getElementById('directory-body').style.display = 'block';
+
+  const displayName = profile.full_name || profile.email.split('@')[0];
+  document.getElementById('mt-user').textContent = displayName;
+
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
