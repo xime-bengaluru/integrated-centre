@@ -42,12 +42,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .view{display:none}
 .view.active{display:block}
 
+/* Super admin campus switcher */
+.sa-switcher{background:var(--white);border:1px solid var(--border-g);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;display:none}
+.sa-switcher.visible{display:block}
+.sa-label{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.sa-label-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.sa-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sa-chip{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 11px;border-radius:20px;cursor:pointer;border:.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .12s}
+.sa-chip:hover{border-color:rgba(201,168,76,.5);color:var(--navy)}
+.sa-chip.current{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:500}
+
 /* Director banner */
 .dir-banner{background:var(--navy);border-radius:var(--r);padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
 .dir-info{}
 .dir-label{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px}
 .dir-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff}
 .dir-role{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.dir-viewing{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);margin-top:6px;display:inline-block;font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
 .dir-meta{text-align:right;font-size:11px;color:rgba(255,255,255,.35)}
 .dir-meta span{display:block;color:rgba(255,255,255,.55);font-family:'DM Mono',monospace;font-size:16px;font-weight:400;margin-bottom:2px}
 
@@ -183,16 +194,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div class="tb-right">
     <div class="tb-campus-badge" id="tb-badge" style="background:rgba(201,168,76,.15);color:var(--gold)">Loading...</div>
     <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+    <button class="back-btn" onclick="signOut()">Sign out</button>
   </div>
 </div>
 
 <div class="nav">
-  <button class="tab active" onclick="switchTab('overview')">Overview & Leaderboard</button>
+  <button class="tab active" onclick="switchTab('overview')">Overview &amp; Leaderboard</button>
   <button class="tab" onclick="switchTab('faculty')">Faculty Directory</button>
 </div>
 
 <div class="main" id="main-content">
-  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading campus data...</div>
+  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Verifying access...</div>
 </div>
 
 <div class="modal-wrap" id="faculty-modal" onclick="handleBackdropClick(event)">
@@ -204,19 +216,15 @@ const SB_URL='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
-// Director email→campus map (mirrors DB, used for demo without login)
-const DIRECTOR_MAP={
-  'roshni@xime.org':{campus:'Bengaluru',name:'Dr. Roshni James'},
-  'drravi_v@xime.org':{campus:'Chennai',name:'Dr. Ravi Veeraraghavan'},
-  'alok@xime.org':{campus:'Kochi',name:'Prof. Alok K.'}
-};
-
 const CAMPUS_COLORS={Bengaluru:'#1D9E75',Chennai:'#378ADD',Kochi:'#7F77DD'};
 const CAMPUS_RANKS={Bengaluru:'BLR',Chennai:'CHN',Kochi:'KOC'};
 const bandOrder={professor:1,assoc:2,srasst:3,asst:4,jr:5,staff:6};
 const bandLabel={professor:'Professors',assoc:'Assoc. Professors',srasst:'Sr. Asst. Professors',asst:'Asst. Professors',jr:'Jr. Asst. Professors',staff:'Associates'};
 
 let allData=[], myDirector=null, filteredData=[], activeTab='overview';
+// Identity state populated by resolveAccess()
+let CURRENT_USER=null;
+let USER_ROLE='';
 
 function initials(name){return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
 function avClass(i){return['av-a','av-b','av-c','av-d','av-e'][i%5]}
@@ -234,13 +242,91 @@ function campusPill(campus){
   return `<span class="pill ${cls[campus]||''}">${CAMPUS_RANKS[campus]||campus}</span>`;
 }
 
+// ---- AUTH ----
+async function resolveAccess(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return null;}
+
+  const{data:profile,error}=await sb.from('user_profiles')
+    .select('*').eq('id',session.user.id).maybeSingle();
+  if(error||!profile){
+    document.getElementById('main-content').innerHTML=
+      '<div style="padding:60px;text-align:center;color:var(--faint)">Profile not found. Contact admin.</div>';
+    return null;
+  }
+
+  if(profile.role!=='director'&&profile.role!=='super_admin'){
+    window.location.href='index.html';
+    return null;
+  }
+
+  CURRENT_USER=profile;
+  USER_ROLE=profile.role;
+
+  // Super admin may view any campus via ?campus=<Bengaluru|Chennai|Kochi>.
+  // Defaults to own campus if set, else Bengaluru.
+  const urlParams=new URLSearchParams(window.location.search);
+  const campusOverride=USER_ROLE==='super_admin'?urlParams.get('campus'):null;
+
+  let campus, name, isImpersonating=false;
+
+  if(USER_ROLE==='director'){
+    const{data:dirMap}=await sb.from('director_campus_map')
+      .select('*').eq('email',profile.email).maybeSingle();
+    if(!dirMap){
+      document.getElementById('main-content').innerHTML=
+        '<div style="padding:60px;text-align:center;color:var(--faint)">No campus assignment found for your account.</div>';
+      return null;
+    }
+    campus=dirMap.campus;
+    name=dirMap.name;
+  }else{
+    // super_admin path
+    if(campusOverride&&['Bengaluru','Chennai','Kochi'].includes(campusOverride)){
+      campus=campusOverride;
+      // Look up the director of that campus for display continuity
+      const{data:dirOfCampus}=await sb.from('director_campus_map')
+        .select('*').eq('campus',campus).maybeSingle();
+      name=dirOfCampus?.name||profile.full_name||'Super Admin';
+      isImpersonating=true;
+    }else{
+      // Check if this super admin is also a director (Girish is not, but future-proof)
+      const{data:ownDirMap}=await sb.from('director_campus_map')
+        .select('*').eq('email',profile.email).maybeSingle();
+      if(ownDirMap){
+        campus=ownDirMap.campus;
+        name=ownDirMap.name;
+      }else{
+        campus='Bengaluru';
+        name=profile.full_name||'Super Admin';
+      }
+    }
+  }
+
+  return{campus,name,sessionEmail:profile.email,isSuperAdmin:USER_ROLE==='super_admin',isImpersonating};
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+
+function switchToCampus(campus){
+  const url=new URL(window.location.href);
+  // If this campus matches the super admin's own director campus, clear the param
+  // so URL stays clean. Otherwise set it.
+  url.searchParams.set('campus',campus);
+  window.location.href=url.toString();
+}
+
 // ---- LEADERBOARD ----
 function buildLeaderboard(campuses){
   // Score each campus: PhD% (40) + Senior% (40) + PhDAbsolute (20)
   const scored=campuses.map(c=>{
     const phdPct=c.total?Math.round((c.phds/c.total)*100):0;
     const seniorPct=c.total?Math.round(((c.profs+c.assocs)/c.total)*100):0;
-    const score=Math.round(phdPct*0.4+seniorPct*0.4+(c.phds/Math.max(...campuses.map(x=>x.phds)))*20);
+    const maxPhds=Math.max(...campuses.map(x=>x.phds))||1;
+    const score=Math.round(phdPct*0.4+seniorPct*0.4+(c.phds/maxPhds)*20);
     return{...c,phdPct,seniorPct,score};
   }).sort((a,b)=>b.score-a.score);
 
@@ -249,9 +335,8 @@ function buildLeaderboard(campuses){
     <div class="lb-grid">
       ${scored.map((c,rank)=>{
         const isOwn=myDirector&&c.campus===myDirector.campus;
-        const maxTotal=Math.max(...campuses.map(x=>x.total));
-        const maxPhds=Math.max(...campuses.map(x=>x.phds));
-        const maxSenior=Math.max(...campuses.map(x=>x.profs+x.assocs));
+        const maxTotal=Math.max(...campuses.map(x=>x.total))||1;
+        const maxPursuing=Math.max(...campuses.map(x=>x.pursuing))||1;
         return`<div class="lb-card rank-${rank+1}${isOwn?' own':''}">
           <div class="lb-card-head">
             <div>
@@ -295,7 +380,7 @@ function buildLeaderboard(campuses){
             </div>
             <div class="lb-bar-row">
               <div class="lb-bar-label">Pursuing PhD</div>
-              <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${c.pursuing>0?Math.round((c.pursuing/Math.max(...campuses.map(x=>x.pursuing)))*100):0}%;background:var(--amber)"></div></div>
+              <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${c.pursuing>0?Math.round((c.pursuing/maxPursuing)*100):0}%;background:var(--amber)"></div></div>
               <div class="lb-bar-val">${c.pursuing}</div>
             </div>
           </div>
@@ -329,7 +414,6 @@ function buildMiniPyramid(campusData, campus, isOwn){
     svg+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="13" font-weight="bold" font-family="sans-serif" fill="${gold}">${s.count}</text>`;
     svg+=`<text x="${cx}" y="${cy+9}" text-anchor="middle" font-size="7" font-family="sans-serif" fill="${white}" letter-spacing="0.06em">${s.label}</text>`;
   });
-  // Support roles
   if(jr+staff>0){
     svg+=`<line x1="20" y1="218" x2="240" y2="218" stroke="${gold}" stroke-width="0.5" stroke-dasharray="4,3"/>`;
     svg+=`<polygon points="${cx-50},222 ${cx+50},222 ${cx+62},248 ${cx-62},248" fill="#2D3436"/>`;
@@ -380,7 +464,7 @@ function renderCards(data){
   }).join('')}</div>`;
 }
 
-// ---- CARD MODAL (no industry mix chart) ----
+// ---- CARD MODAL ----
 function openCard(id){
   const f=allData.find(x=>x.id===id);
   if(!f)return;
@@ -438,14 +522,14 @@ function openCard(id){
         <div class="mp-body">
           ${f.subject_area?`<div class="mp-row"><div><div class="mp-row-label">Subject area</div><div style="font-size:11px;font-weight:500;color:var(--blue-d);margin-top:2px">${f.subject_area}</div></div></div>`:''}
           ${f.courses_taught?`<div class="mp-row"><div><div class="mp-row-label">Courses taught</div><div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.5">${f.courses_taught.split(' · ').slice(0,3).join(' · ')}</div></div></div>`:''}
-          ${['Research · publications','MDPs & OBPs'].map(l=>`
+          ${['Research · publications','MDPs &amp; OBPs'].map(l=>`
           <div class="mp-row"><div><div class="mp-row-label">${l}</div><div class="mp-hatched" style="width:32px"></div><div class="mp-row-val">Awaiting forms</div></div></div>`).join('')}
         </div>
       </div>
       <div class="mp">
         <div class="mp-head mp-head-navy">
           <div class="mp-head-label">Evaluation</div>
-          <div class="mp-head-sub">Signals & flags</div>
+          <div class="mp-head-sub">Signals &amp; flags</div>
         </div>
         <div class="mp-body">
           ${['Promotion signal','Development flag','Early warning'].map(l=>`
@@ -455,7 +539,7 @@ function openCard(id){
     </div>
     <div class="unlock-box">
       <div class="unlock-label">How to unlock this view</div>
-      <div class="unlock-text">Completed appraisal forms are with the Director at each campus. Once retrieved and loaded, every panel above populates automatically — promotion flags, early warning signals, and running credit points.</div>
+      <div class="unlock-text">Completed appraisal forms are with the Director at each campus. Once retrieved and loaded, every panel above populates automatically. Promotion flags, early warning signals, and running credit points all populate from the same feed.</div>
     </div>`;
   document.getElementById('faculty-modal').classList.add('open');
 }
@@ -484,16 +568,35 @@ function campusStats(campus){
   };
 }
 
+// ---- SUPER ADMIN SWITCHER ----
+function renderSwitcher(){
+  if(!myDirector?.isSuperAdmin)return'';
+  const campuses=['Bengaluru','Chennai','Kochi'];
+  const chips=campuses.map(c=>{
+    const current=c===myDirector.campus;
+    return`<div class="sa-chip ${current?'current':''}" onclick="switchToCampus('${c}')">${c}</div>`;
+  }).join('');
+  return`<div class="sa-switcher visible">
+    <div class="sa-label"><span class="sa-label-dot"></span>Super Admin · Select Campus View</div>
+    <div class="sa-chips">${chips}</div>
+  </div>`;
+}
+
 // ---- RENDER OVERVIEW ----
 function renderOverview(){
   const campuses=['Bengaluru','Chennai','Kochi'].map(campusStats);
   const myCampus=myDirector?.campus||'Bengaluru';
+  const impersonationBadge=myDirector?.isImpersonating
+    ?`<div class="dir-viewing">Super Admin · Viewing ${myCampus}</div>`
+    :'';
   document.getElementById('main-content').innerHTML=`
+    ${renderSwitcher()}
     <div class="dir-banner">
       <div class="dir-info">
         <div class="dir-label">Magis Centre · Director Access</div>
         <div class="dir-name">${myDirector?.name||'Director'}</div>
         <div class="dir-role">${myCampus} Campus · AY 2025–26</div>
+        ${impersonationBadge}
       </div>
       <div class="dir-meta">
         <span>${allData.length}</span>faculty across 3 campuses
@@ -519,6 +622,7 @@ function renderFaculty(){
     return true;
   });
   document.getElementById('main-content').innerHTML=`
+    ${renderSwitcher()}
     <div class="filter-bar">
       <button class="filter-btn filter-own${activeCampusFilter==='own'?' on':''}" onclick="setCampusFilter('own',this)">My Campus (${myCampus})</button>
       <button class="filter-btn${activeCampusFilter==='all'?' on':''}" onclick="setCampusFilter('all',this)">All Campuses</button>
@@ -542,19 +646,15 @@ function setSearch(val){
 
 // ---- INIT ----
 async function init(){
-  // Detect director from session or default to demo
-  const{data:session}=await sb.auth.getSession();
-  const email=session?.session?.user?.email;
-  if(email&&DIRECTOR_MAP[email]){
-    myDirector=DIRECTOR_MAP[email];
-  } else {
-    // Demo mode — default to Bengaluru
-    myDirector={campus:'Bengaluru',name:'Dr. Roshni James'};
-  }
+  myDirector=await resolveAccess();
+  if(!myDirector)return;
 
   // Update topbar badge
   const badge=document.getElementById('tb-badge');
-  badge.textContent=`${myDirector.campus} · Director`;
+  const badgeText=myDirector.isImpersonating
+    ?`${myDirector.campus} · Super Admin View`
+    :`${myDirector.campus} · Director`;
+  badge.textContent=badgeText;
   badge.style.background=CAMPUS_COLORS[myDirector.campus]+'22';
   badge.style.color=CAMPUS_COLORS[myDirector.campus];
 
