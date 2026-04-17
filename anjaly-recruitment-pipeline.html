@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Magis Centre · Recruitment Pipeline</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --navy:      #0D1F35;
@@ -31,7 +32,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-/* HEADER */
 .header {
   background: var(--navy);
   padding: 0 28px;
@@ -52,8 +52,21 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   display: flex; align-items: center; justify-content: center;
   font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold);
 }
+.role-badge {
+  font-size: 10px; font-weight: 500; padding: 3px 9px;
+  border-radius: 20px; background: rgba(201,168,76,0.15);
+  color: var(--gold); border: 1px solid rgba(201,168,76,0.3);
+  letter-spacing: 0.04em;
+}
+.signout-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 11px;
+  padding: 5px 10px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent; color: rgba(255,255,255,0.6);
+  cursor: pointer; transition: all .15s;
+}
+.signout-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
 
-/* TOP BAR */
 .topbar {
   background: white; border-bottom: 1px solid var(--border);
   padding: 0 28px;
@@ -75,7 +88,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   font-family: 'DM Sans', sans-serif; font-size: 12.5px; cursor: pointer;
 }
 
-/* STATS STRIP */
 .stats {
   display: grid; grid-template-columns: repeat(5, 1fr);
   gap: 1px; background: var(--border);
@@ -102,10 +114,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .stat-num.blue  { color: #0D47A1; }
 .stat-num.amber { color: #E65100; }
 
-/* MAIN LAYOUT */
 .main { padding: 24px 28px; max-width: 1200px; margin: 0 auto; }
 
-/* KANBAN */
 .kanban {
   display: grid;
   grid-template-columns: repeat(7, minmax(160px, 1fr));
@@ -130,7 +140,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   padding: 1px 7px; border-radius: 10px; font-weight: 500;
 }
 
-/* STAGE COLOURS */
 .col-1 .col-title { color: var(--s1t); }
 .col-1 .col-count { background: var(--s1); color: var(--s1t); border: 1px solid var(--s1b); }
 .col-2 .col-title { color: var(--s2t); }
@@ -146,7 +155,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .col-7 .col-title { color: var(--s7t); }
 .col-7 .col-count { background: var(--s7); color: var(--s7t); border: 1px solid var(--s7b); }
 
-/* CANDIDATE CARD */
 .ccard {
   background: white; border: 1px solid var(--border);
   border-radius: 9px; padding: 13px 14px; margin-bottom: 8px;
@@ -179,7 +187,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .sla-warn { background: #FFFBEB; color: #D97706; }
 .sla-late { background: #FFF5F5; color: #DC2626; }
 
-/* APPROVAL GATE */
 .gate-card {
   background: #F5F3FF; border: 1.5px solid #A78BFA;
   border-radius: 9px; padding: 12px 14px; margin-bottom: 8px;
@@ -204,7 +211,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 }
 .gate-action:hover { background: #3C1D80; }
 
-/* DIRECTOR APPROVE BUTTON — prominent green */
 .btn-approve {
   margin-top: 8px; padding: 9px 12px;
   background: #166534; color: white;
@@ -216,6 +222,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 }
 .btn-approve:hover { background: #14532d; }
 .btn-approve-icon { font-size: 13px; }
+.btn-approve:disabled { opacity: 0.5; cursor: not-allowed; background: #6B7280; }
 
 .btn-reject {
   margin-top: 6px; padding: 7px 12px;
@@ -227,8 +234,21 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   transition: all 0.15s;
 }
 .btn-reject:hover { background: #FEF2F2; }
+.btn-reject:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* EMPTY COL */
+.view-only-note {
+  margin-top: 8px;
+  font-size: 10.5px;
+  color: #6B7280;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-style: italic;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .empty-col {
   background: var(--bg); border: 1.5px dashed var(--border);
   border-radius: 9px; padding: 16px 14px;
@@ -236,7 +256,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   min-height: 80px; display: flex; align-items: center; justify-content: center;
 }
 
-/* DETAIL PANEL */
 .detail-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(13,31,53,0.5); z-index: 200;
@@ -289,7 +308,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .sf-step.pending { background: var(--bg); color: var(--muted); }
 .sf-icon { font-size: 11px; width: 16px; text-align: center; }
 
-/* Director approval block inside panel */
 .approve-block {
   background: #F0FDF4; border: 1.5px solid #86EFAC;
   border-radius: 9px; padding: 14px 16px; margin-bottom: 16px;
@@ -310,6 +328,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .dp-btn-approve:hover { background: #14532D; }
+.dp-btn-approve:disabled { opacity: 0.5; cursor: not-allowed; background: #6B7280; }
 .dp-btn-reject {
   width: 100%; padding: 8px; background: white; color: #991B1B;
   border: 1.5px solid #FCA5A5; border-radius: 7px;
@@ -318,6 +337,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   transition: all 0.15s;
 }
 .dp-btn-reject:hover { background: #FEF2F2; }
+.dp-btn-reject:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .notes-area {
   width: 100%; border: 1px solid var(--border); border-radius: 7px;
@@ -339,7 +359,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   border: 1px solid var(--border); margin-top: 8px;
 }
 
-/* Approved state */
 .approved-badge {
   display: flex; align-items: center; gap: 8px;
   background: #F0FDF4; border: 1px solid #86EFAC;
@@ -349,14 +368,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 }
 .approved-badge-icon { font-size: 16px; }
 
-/* SECTION LABEL */
 .section-label {
   font-family: 'DM Mono', monospace; font-size: 9.5px;
   letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 14px; margin-top: 6px;
 }
 
-/* FOOTER */
 .footer {
   background: var(--navy); padding: 14px 28px;
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
@@ -374,7 +391,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-left">
     <div class="xime">XIME</div>
@@ -385,20 +401,20 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   </div>
   <div class="header-right">
     <div class="hdate" id="hdate"></div>
-    <div class="havatar">ANJ</div>
+    <div class="role-badge" id="role-badge">Loading...</div>
+    <div class="havatar" id="user-avatar"></div>
+    <button class="signout-btn" onclick="signOut()">Sign out</button>
   </div>
 </div>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="page-title">Active Pipeline</div>
   <div class="topbar-right">
-    <button class="btn-outline" onclick="alert('Export to CSV — Lavanya to wire up')">↓ Export</button>
-    <button class="btn-new" onclick="alert('New Requisition form — MRF Step 0')">+ New Requisition</button>
+    <button class="btn-outline" onclick="alert('Export to CSV. Lavanya to wire up.')">↓ Export</button>
+    <button class="btn-new" onclick="alert('New Requisition form. MRF Step 0.')">+ New Requisition</button>
   </div>
 </div>
 
-<!-- STATS -->
 <div class="stats">
   <div class="stat">
     <div class="stat-num">1</div>
@@ -422,13 +438,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-  <div class="section-label">Recruitment Kanban — 13-Step Process · 5 Approval Gates · Director Headcount Approval</div>
+  <div class="section-label" id="section-label">Verifying access...</div>
 
   <div class="kanban">
-
-    <!-- COL 1: REQUISITION -->
     <div class="col col-1">
       <div class="col-header">
         <div class="col-title">Requisition</div>
@@ -437,16 +450,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       <div id="col-body-1"></div>
     </div>
 
-    <!-- COL 2: JD & SOURCING -->
     <div class="col col-2">
       <div class="col-header">
-        <div class="col-title">JD & Sourcing</div>
+        <div class="col-title">JD &amp; Sourcing</div>
         <div class="col-count" id="col-count-2">0</div>
       </div>
       <div id="col-body-2"></div>
     </div>
 
-    <!-- COL 3: SCREENING -->
     <div class="col col-3">
       <div class="col-header">
         <div class="col-title">Screening</div>
@@ -455,7 +466,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       <div id="col-body-3"></div>
     </div>
 
-    <!-- COL 4: INTERVIEWS -->
     <div class="col col-4">
       <div class="col-header">
         <div class="col-title">Interviews</div>
@@ -464,7 +474,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       <div id="col-body-4"></div>
     </div>
 
-    <!-- COL 5: FINAL -->
     <div class="col col-5">
       <div class="col-header">
         <div class="col-title">Final Round</div>
@@ -473,7 +482,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       <div id="col-body-5"></div>
     </div>
 
-    <!-- COL 6: OFFER -->
     <div class="col col-6">
       <div class="col-header">
         <div class="col-title">Offer</div>
@@ -482,7 +490,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       <div id="col-body-6"></div>
     </div>
 
-    <!-- COL 7: PRE-JOINING -->
     <div class="col col-7">
       <div class="col-header">
         <div class="col-title">Pre-Joining</div>
@@ -490,16 +497,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       </div>
       <div id="col-body-7"></div>
     </div>
-
   </div>
 </div>
 
-<!-- DETAIL PANEL -->
 <div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
   <div class="detail-panel" id="detail-panel">
     <div class="dp-header">
       <div class="dp-close" onclick="closeDetailDirect()">← Close</div>
-      <div class="dp-name">Assistant Professor — Marketing</div>
+      <div class="dp-name">Assistant Professor · Marketing</div>
       <div class="dp-role">Faculty · Full Time · Bengaluru</div>
     </div>
     <div class="dp-body">
@@ -508,22 +513,21 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         <div class="dp-section-title">Requisition Details</div>
         <div class="dp-row"><span class="dp-row-label">Role type</span><span class="dp-row-value">New Position</span></div>
         <div class="dp-row"><span class="dp-row-label">Campus</span><span class="dp-row-value">Bengaluru</span></div>
-        <div class="dp-row"><span class="dp-row-label">Requested by</span><span class="dp-row-value">Dean — Academics</span></div>
+        <div class="dp-row"><span class="dp-row-label">Requested by</span><span class="dp-row-value">Dean · Academics</span></div>
         <div class="dp-row"><span class="dp-row-label">Submitted</span><span class="dp-row-value">30 Mar 2026 · 9:14 AM</span></div>
         <div class="dp-row"><span class="dp-row-label">SLA deadline</span><span class="dp-row-value" style="color:#D97706;">31 Mar 2026 · 9:14 AM</span></div>
-        <div class="dp-row"><span class="dp-row-label">Reporting to</span><span class="dp-row-value">Dean — Academics</span></div>
+        <div class="dp-row"><span class="dp-row-label">Reporting to</span><span class="dp-row-value">Dean · Academics</span></div>
         <div class="dp-row"><span class="dp-row-label">Proposed joining</span><span class="dp-row-value">1 June 2026</span></div>
       </div>
 
       <div class="dp-section">
         <div class="dp-section-title">Candidate Profile Required</div>
         <div class="dp-row"><span class="dp-row-label">Qualification</span><span class="dp-row-value">PhD / Post-Graduation</span></div>
-        <div class="dp-row"><span class="dp-row-label">Experience</span><span class="dp-row-value">5–8 years</span></div>
+        <div class="dp-row"><span class="dp-row-label">Experience</span><span class="dp-row-value">5 to 8 years</span></div>
         <div class="dp-row"><span class="dp-row-label">Specialisation</span><span class="dp-row-value">Marketing / Consumer Behaviour</span></div>
         <div class="dp-row"><span class="dp-row-label">Salary band</span><span class="dp-row-value">Ref: XIME Faculty Band 2</span></div>
       </div>
 
-      <!-- DIRECTOR APPROVAL BLOCK -->
       <div class="approve-block" id="approval-block">
         <div class="approve-block-head">
           <div class="approve-block-dot"></div>
@@ -531,29 +535,26 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         </div>
         <div class="approve-block-title">Headcount Approval Required</div>
         <div class="approve-block-sub">This requisition requires Director approval before the JD can be prepared and the role posted. The Director holds headcount sanction authority for their campus.</div>
-        <button class="dp-btn-approve" onclick="approveRequisition('ap-marketing');closeDetailDirect()">
-          ✓ &nbsp;Approve Requisition · Director, Bengaluru
-        </button>
-        <button class="dp-btn-reject" onclick="rejectRequisition('ap-marketing');closeDetailDirect()">Return for revision</button>
+        <div id="approval-action-area"></div>
       </div>
 
       <div class="dp-section">
         <div class="dp-section-title">Process Stage</div>
         <div class="stage-flow">
-          <div class="sf-step current"><span class="sf-icon">⏳</span>AG1 — Director Headcount Approval · Bengaluru · Pending</div>
-          <div class="sf-step pending"><span class="sf-icon">○</span>JD Preparation & AG2 Sign-off</div>
-          <div class="sf-step pending"><span class="sf-icon">○</span>Job Posting & Sourcing</div>
-          <div class="sf-step pending"><span class="sf-icon">○</span>Screening & Shortlisting</div>
-          <div class="sf-step pending"><span class="sf-icon">○</span>Interviews & AG3 Selection</div>
-          <div class="sf-step pending"><span class="sf-icon">○</span>Salary Fitment & AG4 Offer</div>
-          <div class="sf-step pending"><span class="sf-icon">○</span>Pre-Joining & AG5 Clearance</div>
-          <div class="sf-step pending"><span class="sf-icon">○</span>Onboarding Handoff → Reetha</div>
+          <div class="sf-step current"><span class="sf-icon">⏳</span>AG1 · Director Headcount Approval · Bengaluru · Pending</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>JD Preparation &amp; AG2 Sign-off</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Job Posting &amp; Sourcing</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Screening &amp; Shortlisting</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Interviews &amp; AG3 Selection</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Salary Fitment &amp; AG4 Offer</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Pre-Joining &amp; AG5 Clearance</div>
+          <div class="sf-step pending"><span class="sf-icon">○</span>Onboarding Handoff to Reetha</div>
         </div>
       </div>
 
       <div class="dp-section">
         <div class="dp-section-title">Recruiter Notes</div>
-        <textarea class="notes-area" placeholder="Add notes about this role or candidate…"></textarea>
+        <textarea class="notes-area" placeholder="Add notes about this role or candidate..."></textarea>
       </div>
 
       <button class="dp-btn secondary" onclick="closeDetailDirect()">Close</button>
@@ -561,49 +562,115 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   </div>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
   <span>XIME · Magis Centre · HRMS · Recruitment Module</span>
-  <span>Recruiter: Anjaly · Director Headcount Approval · 5 Gates · 48hr SLA</span>
+  <span id="footer-identity">Recruiter: Anjaly · Director Headcount Approval · 5 Gates · 48hr SLA</span>
   <span>centre.forteen.in</span>
 </div>
 
 <script>
+const SB_URL='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+// Who can see this page at all, and who can hit the approve button specifically.
+const ALLOWED_ROLES=['hrms_user','director','super_admin','org_admin'];
+const APPROVER_ROLES=['director','super_admin','org_admin'];
+
+let CURRENT_USER=null;
+let USER_ROLE='';
+let canApprove=false;
+
 document.getElementById('hdate').textContent =
   new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
 
-// Step definitions — what each step means for kanban position
-const STEPS = {
-  requisition_pending: { col: 1, label: 'Requisition', status: 'Awaiting Director Approval' },
-  jd_sourcing:        { col: 2, label: 'JD & Sourcing', status: 'JD in preparation' },
-  screening:          { col: 3, label: 'Screening', status: 'Screening candidates' },
-  interviews:         { col: 4, label: 'Interviews', status: 'Interviews underway' },
-  final_round:        { col: 5, label: 'Final Round', status: 'Final assessment' },
-  offer:              { col: 6, label: 'Offer', status: 'Offer extended' },
-  pre_joining:        { col: 7, label: 'Pre-Joining', status: 'Pre-joining clearance' },
+function makeInitials(fullName){
+  const clean=(fullName||'').replace(/\b(Dr\.?|Prof\.?|Mr\.?|Mrs\.?|Ms\.?)\s+/gi,'').trim();
+  const parts=clean.split(/\s+/).filter(Boolean);
+  if(parts.length===0)return'?';
+  if(parts.length===1)return parts[0][0].toUpperCase();
+  return(parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+}
+
+function roleLabel(role){
+  return{
+    hrms_user:'Recruiter',
+    director:'Director',
+    super_admin:'Super Admin',
+    org_admin:'Admin'
+  }[role]||role;
+}
+
+async function requireAccess(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return false;}
+
+  const{data:profile,error}=await sb.from('user_profiles')
+    .select('*').eq('id',session.user.id).maybeSingle();
+  if(error||!profile){
+    document.getElementById('section-label').textContent='Profile not found. Contact admin.';
+    return false;
+  }
+
+  if(!ALLOWED_ROLES.includes(profile.role)){
+    window.location.href='index.html';
+    return false;
+  }
+
+  CURRENT_USER=profile;
+  USER_ROLE=profile.role;
+  canApprove=APPROVER_ROLES.includes(profile.role);
+
+  // Update topbar with who is signed in
+  document.getElementById('user-avatar').textContent=makeInitials(profile.full_name);
+  document.getElementById('role-badge').textContent=roleLabel(profile.role);
+  document.getElementById('section-label').textContent=
+    'Recruitment Kanban · 13-Step Process · 5 Approval Gates · Director Headcount Approval';
+  document.getElementById('footer-identity').textContent=
+    `Signed in: ${profile.full_name||profile.email} · ${roleLabel(profile.role)}`;
+
+  return true;
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+
+const STEPS={
+  requisition_pending:{col:1,label:'Requisition',status:'Awaiting Director Approval'},
+  jd_sourcing:{col:2,label:'JD & Sourcing',status:'JD in preparation'},
+  screening:{col:3,label:'Screening',status:'Screening candidates'},
+  interviews:{col:4,label:'Interviews',status:'Interviews underway'},
+  final_round:{col:5,label:'Final Round',status:'Final assessment'},
+  offer:{col:6,label:'Offer',status:'Offer extended'},
+  pre_joining:{col:7,label:'Pre-Joining',status:'Pre-joining clearance'},
 };
 
-const RUN_ID = 'mdp-associate-pilot-001';
-let currentStep = 'requisition_pending';
-let approvalState = {};
+const RUN_ID='mdp-associate-pilot-001';
+let currentStep='requisition_pending';
+let approvalState={};
 
-// Card HTML for each stage
-function gateCardHtml(step) {
-  if (step === 'requisition_pending') {
-    return `<div class="gate-card" id="gate-ap-marketing">
+function gateCardHtml(step){
+  if(step==='requisition_pending'){
+    const approveButton=canApprove
+      ?`<button class="btn-approve" onclick="approveRequisition()" id="btn-approve-main">
+          <span class="btn-approve-icon">✓</span> Approve · ${roleLabel(USER_ROLE)}, Bengaluru
+        </button>
+        <button class="btn-reject" onclick="rejectRequisition()" id="btn-reject-main">Return for revision</button>`
+      :`<div class="view-only-note">View only. Director approval required to move this forward.</div>`;
+
+    return`<div class="gate-card" id="gate-ap-marketing">
       <div class="gate-label"><div class="gate-dot"></div>AG 1 · Director Approval</div>
-      <div class="gate-title">Asst. Professor — Marketing</div>
+      <div class="gate-title">Asst. Professor · Marketing</div>
       <div class="gate-sub">MRF submitted · Bengaluru · 14 hrs · SLA: 48 hrs</div>
-      <button class="btn-approve" onclick="approveRequisition()" id="btn-approve-main">
-        <span class="btn-approve-icon">✓</span> Approve · Director, Bengaluru
-      </button>
-      <button class="btn-reject" onclick="rejectRequisition()" id="btn-reject-main">Return for revision</button>
+      ${approveButton}
       <button class="gate-action" style="margin-top:6px;background:transparent;color:#6D28D9;border:1px solid #DDD6FE;" onclick="openDetail('ap-marketing')">Review full requisition →</button>
     </div>`;
   }
-  if (step === 'jd_sourcing') {
-    return `<div class="ccard" style="animation-delay:0.1s;border-left:3px solid #0D47A1">
-      <div class="ccard-name">Asst. Professor — Marketing</div>
+  if(step==='jd_sourcing'){
+    return`<div class="ccard" style="animation-delay:0.1s;border-left:3px solid #0D47A1">
+      <div class="ccard-name">Asst. Professor · Marketing</div>
       <div class="ccard-role">Faculty · Full Time · Bengaluru</div>
       <div class="ccard-meta">
         <div class="cmeta-row"><span class="cmeta-icon">✓</span>Approved by Director, Bengaluru</div>
@@ -618,135 +685,166 @@ function gateCardHtml(step) {
   return '';
 }
 
-function emptyColHtml(label) {
+function emptyColHtml(label){
   return `<div class="empty-col">No ${label.toLowerCase()}</div>`;
 }
 
-async function approveRequisition() {
-  currentStep = 'jd_sourcing';
-  approvalState['ap-marketing'] = 'approved';
+async function approveRequisition(){
+  if(!canApprove){
+    showToast('Only directors can approve requisitions.',false);
+    return;
+  }
+  currentStep='jd_sourcing';
+  approvalState['ap-marketing']='approved';
 
-  // Save to Supabase
+  const approverLabel=`${roleLabel(USER_ROLE)}, Bengaluru (${CURRENT_USER?.full_name||CURRENT_USER?.email})`;
+
   await sb.from('workflow_state').update({
-    current_step: 'jd_sourcing',
-    step_index: 2,
-    updated_by: 'Director · Bengaluru',
-    updated_at: new Date().toISOString(),
-    data: { campus:'Bengaluru', role_title:'Assistant Professor — Marketing', role:'faculty', status:'jd_sourcing', approved_by:'Director, Bengaluru', approved_at: new Date().toISOString() }
-  }).eq('run_id', RUN_ID);
+    current_step:'jd_sourcing',
+    step_index:2,
+    updated_by:approverLabel,
+    updated_at:new Date().toISOString(),
+    data:{
+      campus:'Bengaluru',
+      role_title:'Assistant Professor · Marketing',
+      role:'faculty',
+      status:'jd_sourcing',
+      approved_by:approverLabel,
+      approved_at:new Date().toISOString()
+    }
+  }).eq('run_id',RUN_ID);
 
   renderKanban();
   updateStats();
 
-  // Update detail panel if open
-  const block = document.getElementById('approval-block');
-  if (block) {
-    block.innerHTML = `<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by Director, Bengaluru · ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>`;
+  const block=document.getElementById('approval-block');
+  if(block){
+    block.innerHTML=`<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by ${approverLabel} · ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>`;
   }
-  // Update stage flow in panel
-  const sf = document.querySelector('.stage-flow');
-  if (sf) {
-    sf.children[0].className = 'sf-step done';
-    sf.children[0].innerHTML = '<span class="sf-icon">✓</span>AG1 — Director Headcount Approval · Approved';
-    sf.children[1].className = 'sf-step current';
+  const sf=document.querySelector('.stage-flow');
+  if(sf){
+    sf.children[0].className='sf-step done';
+    sf.children[0].innerHTML='<span class="sf-icon">✓</span>AG1 · Director Headcount Approval · Approved';
+    sf.children[1].className='sf-step current';
   }
 
   showToast('Approved. Moved to JD & Sourcing.');
 }
 
-function rejectRequisition() {
-  approvalState['ap-marketing'] = 'returned';
-  const gate = document.getElementById('gate-ap-marketing');
-  if (gate) {
-    gate.style.background = '#FEF2F2';
-    gate.style.borderColor = '#FCA5A5';
-    gate.querySelector('.gate-label').innerHTML = '<span style="color:#991B1B;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Returned for revision</span>';
-    gate.querySelector('.gate-sub').textContent = 'Returned by Director, Bengaluru · Requester to revise and resubmit';
-    const ab = document.getElementById('btn-approve-main');
-    if (ab) ab.remove();
-    const rb = document.getElementById('btn-reject-main');
-    if (rb) { rb.textContent = 'Returned — awaiting revision'; rb.disabled = true; }
+function rejectRequisition(){
+  if(!canApprove){
+    showToast('Only directors can reject requisitions.',false);
+    return;
+  }
+  approvalState['ap-marketing']='returned';
+  const gate=document.getElementById('gate-ap-marketing');
+  if(gate){
+    gate.style.background='#FEF2F2';
+    gate.style.borderColor='#FCA5A5';
+    gate.querySelector('.gate-label').innerHTML='<span style="color:#991B1B;font-family:DM Mono,monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AG 1 · Returned for revision</span>';
+    gate.querySelector('.gate-sub').textContent='Returned by Director, Bengaluru. Requester to revise and resubmit.';
+    const ab=document.getElementById('btn-approve-main');
+    if(ab)ab.remove();
+    const rb=document.getElementById('btn-reject-main');
+    if(rb){rb.textContent='Returned. Awaiting revision.';rb.disabled=true;}
   }
   showToast('Requisition returned. Dean notified to revise.');
 }
 
-function renderKanban() {
-  const colDefs = [
-    { id:'col1', step:'requisition_pending', label:'Requisition' },
-    { id:'col2', step:'jd_sourcing',         label:'JD & Sourcing' },
-    { id:'col3', step:'screening',           label:'Screening' },
-    { id:'col4', step:'interviews',          label:'Interviews' },
-    { id:'col5', step:'final_round',         label:'Final Round' },
-    { id:'col6', step:'offer',               label:'Offer' },
-    { id:'col7', step:'pre_joining',         label:'Pre-Joining' },
+function renderKanban(){
+  const colDefs=[
+    {id:'col1',step:'requisition_pending',label:'Requisition'},
+    {id:'col2',step:'jd_sourcing',label:'JD & Sourcing'},
+    {id:'col3',step:'screening',label:'Screening'},
+    {id:'col4',step:'interviews',label:'Interviews'},
+    {id:'col5',step:'final_round',label:'Final Round'},
+    {id:'col6',step:'offer',label:'Offer'},
+    {id:'col7',step:'pre_joining',label:'Pre-Joining'},
   ];
 
-  colDefs.forEach((def, i) => {
-    const body = document.getElementById('col-body-'+(i+1));
-    const count = document.getElementById('col-count-'+(i+1));
-    if (!body) return;
-    const isActive = def.step === currentStep;
-    const cardHtml = gateCardHtml(def.step);
-    if (isActive && cardHtml) {
-      body.innerHTML = cardHtml;
-      if (count) count.textContent = '1';
-    } else {
-      body.innerHTML = emptyColHtml(def.label);
-      if (count) count.textContent = '0';
+  colDefs.forEach((def,i)=>{
+    const body=document.getElementById('col-body-'+(i+1));
+    const count=document.getElementById('col-count-'+(i+1));
+    if(!body)return;
+    const isActive=def.step===currentStep;
+    const cardHtml=gateCardHtml(def.step);
+    if(isActive&&cardHtml){
+      body.innerHTML=cardHtml;
+      if(count)count.textContent='1';
+    }else{
+      body.innerHTML=emptyColHtml(def.label);
+      if(count)count.textContent='0';
     }
   });
 }
 
-function updateStats() {
-  const pendingEl = document.getElementById('stat-pending');
-  const pendingLabelEl = document.getElementById('stat-pending-label');
-  if (currentStep === 'requisition_pending') {
-    if (pendingEl) pendingEl.textContent = '1';
-    if (pendingLabelEl) pendingLabelEl.textContent = 'Awaiting Director approval';
-  } else {
-    if (pendingEl) pendingEl.textContent = '0';
-    if (pendingLabelEl) pendingLabelEl.textContent = 'Awaiting Director approval';
+function updateStats(){
+  const pendingEl=document.getElementById('stat-pending');
+  if(currentStep==='requisition_pending'){
+    if(pendingEl)pendingEl.textContent='1';
+  }else{
+    if(pendingEl)pendingEl.textContent='0';
   }
 }
 
-async function loadState() {
-  const { data } = await sb.from('workflow_state')
+async function loadState(){
+  const{data}=await sb.from('workflow_state')
     .select('current_step, step_index, data')
-    .eq('run_id', RUN_ID)
-    .single();
-  if (data) currentStep = data.current_step || 'requisition_pending';
+    .eq('run_id',RUN_ID)
+    .maybeSingle();
+  if(data)currentStep=data.current_step||'requisition_pending';
   renderKanban();
   updateStats();
 }
 
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  Object.assign(t.style, {
-    position:'fixed', bottom:'24px', right:'24px',
-    background:'#0D1F35', color:'white', fontSize:'12px',
-    padding:'10px 16px', borderRadius:'8px',
-    borderLeft:'3px solid #C9A84C', zIndex:'999',
-    fontFamily:'DM Sans,sans-serif', boxShadow:'0 4px 16px rgba(0,0,0,0.2)',
+function showToast(msg,ok=true){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  Object.assign(t.style,{
+    position:'fixed',bottom:'24px',right:'24px',
+    background:'#0D1F35',color:'white',fontSize:'12px',
+    padding:'10px 16px',borderRadius:'8px',
+    borderLeft:`3px solid ${ok?'#C9A84C':'#DC2626'}`,zIndex:'999',
+    fontFamily:'DM Sans,sans-serif',boxShadow:'0 4px 16px rgba(0,0,0,0.2)',
     animation:'fadeUp .3s ease'
   });
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(), 3000);
+  setTimeout(()=>t.remove(),3000);
 }
 
-function openDetail(id) {
+function openDetail(id){
   document.getElementById('detail-overlay').classList.add('open');
-  if (approvalState[id] === 'approved') {
-    const block = document.getElementById('approval-block');
-    if (block) block.innerHTML = '<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by Director, Bengaluru</div>';
+
+  const actionArea=document.getElementById('approval-action-area');
+  if(approvalState[id]==='approved'){
+    const block=document.getElementById('approval-block');
+    if(block)block.innerHTML='<div class="approved-badge"><span class="approved-badge-icon">✓</span>Approved by Director, Bengaluru</div>';
+  }else if(actionArea){
+    if(canApprove){
+      actionArea.innerHTML=`
+        <button class="dp-btn-approve" onclick="approveRequisition();closeDetailDirect()">
+          ✓ &nbsp;Approve Requisition · ${roleLabel(USER_ROLE)}, Bengaluru
+        </button>
+        <button class="dp-btn-reject" onclick="rejectRequisition();closeDetailDirect()">Return for revision</button>`;
+    }else{
+      actionArea.innerHTML=`<div class="view-only-note" style="margin-top:0">View only. This requisition is awaiting Director approval. You are signed in as ${roleLabel(USER_ROLE)}.</div>`;
+    }
   }
 }
-function closeDetail(e) {
-  if (e.target === document.getElementById('detail-overlay')) closeDetailDirect();
+function closeDetail(e){
+  if(e.target===document.getElementById('detail-overlay'))closeDetailDirect();
 }
-function closeDetailDirect() {
+function closeDetailDirect(){
   document.getElementById('detail-overlay').classList.remove('open');
 }
+
+async function init(){
+  const ok=await requireAccess();
+  if(!ok)return;
+  await loadState();
+}
+
+init();
 </script>
 </body>
 </html>
