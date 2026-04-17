@@ -29,6 +29,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .dean-badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px}
 .back-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer}
 .back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.eval-btn{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+.eval-btn:hover{background:var(--gold-l);color:var(--navy)}
 
 .main{padding:28px;max-width:960px}
 
@@ -168,6 +170,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <div class="dean-badge" id="dean-badge" style="background:rgba(201,168,76,.15);color:var(--gold)">Loading...</div>
+    <button class="back-btn eval-btn" onclick="window.location.href='evaluation.html'">My Evaluation</button>
     <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
     <button class="back-btn" onclick="signOut()">Sign out</button>
   </div>
