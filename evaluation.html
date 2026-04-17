@@ -168,6 +168,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .toast.show{transform:translateY(0);opacity:1}
 .fdiv{height:.5px;background:var(--border);margin:16px 0}
 .blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
+.dual-role-note{background:rgba(201,168,76,.08);border:.5px solid rgba(201,168,76,.3);border-radius:var(--rs);padding:11px 14px;margin-bottom:18px;font-size:12px;color:var(--gold-d)}
+.dual-role-note strong{color:var(--navy);font-weight:500}
 @media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:20px 18px 60px}.ag{grid-template-columns:1fr 1fr}.tier-row{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -233,6 +235,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </aside>
 
 <main class="main">
+
+<div id="dual-role-note" style="display:none"></div>
 
 <div class="gb gb1">
   <div><div class="gbl">Gate 1 · Mid-Year Performance Record</div>
@@ -518,7 +522,6 @@ let fac=null,eid=null,erec=null;
 const R={t:0,r:0,i:0,s:0};
 const dims=[{k:'t',l:'Teaching Effectiveness'},{k:'r',l:'Research Capability'},{k:'i',l:'Industry Engagement'},{k:'s',l:'Institution Building'}];
 
-// All tier inputs introduced in the Research section redesign
 const RESEARCH_TIER_IDS=[
   'f-abdc-a-star','f-abdc-a','f-abdc-b','f-abdc-c',
   'f-scopus-q1','f-scopus-q2','f-scopus-q3','f-scopus-q4',
@@ -539,6 +542,10 @@ function exitPreview(){
   window.location.href='index.html';
 }
 
+// Who can access this page and whose row loads:
+// - fdp_user: own row only
+// - dean, director: own row only (they're faculty too)
+// - super_admin: own row if they have one, otherwise impersonate via ?as=<email>
 async function resolveAccess(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='login.html';return null;}
@@ -554,7 +561,8 @@ async function resolveAccess(){
   const asEmail=USER_ROLE==='super_admin'?urlParams.get('as'):null;
   const targetEmail=asEmail||profile.email;
 
-  if(USER_ROLE==='fdp_user'){
+  // Faculty + Deans + Directors all load their own row
+  if(USER_ROLE==='fdp_user'||USER_ROLE==='dean'||USER_ROLE==='director'){
     const{data:ownRow}=await sb.from('faculty_master')
       .select('*').eq('email',profile.email).maybeSingle();
     if(!ownRow){
@@ -603,6 +611,17 @@ function enterPreviewMode(faculty){
   document.querySelectorAll('.sb').forEach(b=>b.disabled=true);
   document.getElementById('g1box').style.display='none';
   document.getElementById('g2box').style.display='none';
+}
+
+// When a dean or director is filling in their own evaluation, they should see
+// a small note acknowledging the dual role.
+function showDualRoleNote(faculty){
+  if(USER_ROLE!=='dean'&&USER_ROLE!=='director')return;
+  const note=document.getElementById('dual-role-note');
+  const roleLabel=USER_ROLE==='director'?'Director':'Dean';
+  note.className='dual-role-note';
+  note.style.display='block';
+  note.innerHTML=`<strong>Note:</strong> You are completing this evaluation as faculty. In your role as ${roleLabel} you will receive and validate evaluations from other faculty in the usual way; you will not be asked to validate your own submission.`;
 }
 
 function buildStars(){
@@ -774,12 +793,14 @@ async function saveDraft(){
 async function submitGate1(){
   if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
-  if(DEANS.length===0){toast('No deans configured for your campus. Contact admin.',false);return;}
+  // When a dean submits their own evaluation, exclude themselves from the validator list.
+  const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
+  if(reviewingDeans.length===0){toast('No other deans configured for your campus. Contact admin.',false);return;}
   if(!confirm('Lock and submit Gate 1? Sections 1 to 5 cannot be edited after this.'))return;
   try{
     await upsert({...g1Data(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
     erec={...erec,gate1_locked:true,workflow_status:'mid_year_locked'};
-    for(const d of DEANS){
+    for(const d of reviewingDeans){
       await sb.from('evaluation_dean_reviews').upsert({
         evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
         campus:fac.campus,gate:'mid_year',validated:false
@@ -798,22 +819,26 @@ async function submitGate2(){
   if(!g1Locked()){toast('Please submit Gate 1 first.',false);return;}
   if(!val('f-iki')){toast('Please complete your Purpose Statement first.',false);return;}
   if(!DIRECTOR){toast('No director configured for your campus. Contact admin.',false);return;}
+  // Exclude self from validator list (same as Gate 1)
+  const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
   if(!confirm('Submit your complete annual evaluation? This cannot be undone.'))return;
   try{
     await upsert({...g2Data(),gate2_locked:true,gate2_submitted_at:new Date().toISOString(),workflow_status:'annual_submitted',status:'submitted'});
     erec={...erec,gate2_locked:true,workflow_status:'annual_submitted'};
-    for(const d of DEANS){
+    for(const d of reviewingDeans){
       await sb.from('evaluation_dean_reviews').upsert({
         evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
         campus:fac.campus,gate:'annual',validated:false
       },{onConflict:'evaluation_id,dean_email,gate'});
     }
+    // If the faculty IS the director, skip director review routing. Go straight to president.
+    const skipDirector=DIRECTOR.email===fac.email;
     await sb.from('evaluation_director_reviews').upsert({
       evaluation_id:eid,
       director_email:DIRECTOR.email,
       director_name:DIRECTOR.name,
       campus:fac.campus,
-      status:'pending'
+      status:skipDirector?'forwarded_to_president':'pending'
     },{onConflict:'evaluation_id'});
     applyLocks();toast('Annual evaluation submitted. Your Deans have been notified.');
   }catch(e){
@@ -887,6 +912,8 @@ async function init(){
     ['Subject',fac.subject_area||'Not recorded']
   ];
   document.getElementById('prof-rows').innerHTML=rows.map(([k,v])=>`<div class="ar"><span class="ark">${k}</span><span class="arv">${v}</span></div>`).join('');
+
+  showDualRoleNote(fac);
 
   const{data:ev}=await sb.from('faculty_evaluations')
     .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26').maybeSingle();
