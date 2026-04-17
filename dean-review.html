@@ -32,11 +32,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .main{padding:28px;max-width:960px}
 
+/* Super admin dean switcher */
+.sa-switcher{background:var(--white);border:1px solid var(--border-g);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;display:none}
+.sa-switcher.visible{display:block}
+.sa-label{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.sa-label-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.sa-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sa-chip{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 11px;border-radius:20px;cursor:pointer;border:.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .12s}
+.sa-chip:hover{border-color:rgba(201,168,76,.5);color:var(--navy)}
+.sa-chip.current{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:500}
+.sa-campus-divider{align-self:center;font-size:10px;color:var(--faint);padding:0 4px;font-family:'DM Mono',monospace}
+
 /* Dean context banner */
 .dean-banner{border-radius:var(--r);padding:16px 22px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between}
 .db-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#fff}
 .db-role{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
 .db-scope{font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid;margin-top:6px;display:inline-block}
+.db-viewing{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);margin-top:6px;margin-left:6px;display:inline-block;font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
 .db-right{text-align:right}
 .db-stat-val{font-family:'DM Mono',monospace;font-size:22px;color:#fff}
 .db-stat-label{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
@@ -142,10 +154,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div style="display:flex;align-items:center;gap:10px">
     <div class="dean-badge" id="dean-badge" style="background:rgba(201,168,76,.15);color:var(--gold)">Loading...</div>
     <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+    <button class="back-btn" onclick="signOut()">Sign out</button>
   </div>
 </div>
 
-<div class="main" id="main-content">
+<!-- Super admin dean switcher, hidden for regular deans -->
+<div class="main" style="padding-bottom:0">
+  <div class="sa-switcher" id="sa-switcher">
+    <div class="sa-label"><span class="sa-label-dot"></span>Super Admin · Select Dean View</div>
+    <div class="sa-chips" id="sa-chips"></div>
+  </div>
+</div>
+
+<div class="main" id="main-content" style="padding-top:0">
   <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading your validation queue...</div>
 </div>
 
@@ -171,15 +192,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
-
-// Demo: inject dean identity here. In production this comes from session auth.
-// Switch this to test different dean views.
-const DEMO_DEAN = {
-  email: 'rajagopalan@xime.org',
-  name: 'Dr. A.R. Rajagopalan',
-  role: 'academics',
-  campus: 'Bengaluru'
-};
 
 const ROLE_CONFIG = {
   academics: {
@@ -208,7 +220,8 @@ const ROLE_CONFIG = {
   }
 };
 
-let dean = DEMO_DEAN;
+// Populated by resolveDeanIdentity() on init.
+let dean = null;
 let allReviews = [];
 let currentEval = null;
 let currentGate = 'mid_year';
@@ -225,8 +238,100 @@ function toast(m, ok=true){
 function initials(name){return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
 function cfg(){return ROLE_CONFIG[dean.role]||ROLE_CONFIG.academics}
 
+async function resolveDeanIdentity(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return null;}
+
+  const {data:profile}=await sb.from('user_profiles')
+    .select('role, email, full_name').eq('id',session.user.id).maybeSingle();
+  if(!profile){window.location.href='login.html';return null;}
+
+  const role=profile.role;
+  if(role!=='dean'&&role!=='super_admin'){
+    window.location.href='index.html';
+    return null;
+  }
+
+  // Super admin may impersonate any dean via ?as=<email>. Deans cannot.
+  const urlParams=new URLSearchParams(window.location.search);
+  const impersonateEmail=role==='super_admin'?urlParams.get('as'):null;
+  const lookupEmail=impersonateEmail||profile.email;
+
+  let {data:deanEntry}=await sb.from('dean_registry')
+    .select('*').eq('email',lookupEmail).maybeSingle();
+
+  // Super admin without a dean_registry entry and no impersonation target:
+  // default to the first dean in the registry so the page has something to show.
+  if(!deanEntry&&role==='super_admin'){
+    const {data:firstDean}=await sb.from('dean_registry')
+      .select('*').order('campus').order('role').limit(1).maybeSingle();
+    deanEntry=firstDean;
+  }
+
+  if(!deanEntry){
+    document.getElementById('main-content').innerHTML=
+      '<div style="padding:60px;text-align:center;color:var(--faint)">No dean assignment found for your account. Contact admin to configure dean registry.</div>';
+    return null;
+  }
+
+  return{
+    ...deanEntry,
+    sessionEmail:profile.email,
+    isSuperAdmin:role==='super_admin',
+    isImpersonating:role==='super_admin'&&deanEntry.email!==profile.email
+  };
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+
+async function loadSuperAdminSwitcher(){
+  if(!dean.isSuperAdmin)return;
+
+  const {data:allDeans}=await sb.from('dean_registry')
+    .select('*').order('campus').order('role');
+  if(!allDeans)return;
+
+  const switcher=document.getElementById('sa-switcher');
+  const chipsEl=document.getElementById('sa-chips');
+  switcher.classList.add('visible');
+
+  // Group by campus for readability
+  const byCampus={};
+  allDeans.forEach(d=>{
+    if(!byCampus[d.campus])byCampus[d.campus]=[];
+    byCampus[d.campus].push(d);
+  });
+
+  const roleShort={academics:'Academics',research:'Research',ep:'EP'};
+  let html='';
+  Object.keys(byCampus).forEach((campus,idx)=>{
+    if(idx>0)html+=`<div class="sa-campus-divider">·</div>`;
+    html+=`<div class="sa-campus-divider" style="color:var(--navy);font-weight:500">${campus}</div>`;
+    byCampus[campus].forEach(d=>{
+      const isCurrent=d.email===dean.email;
+      html+=`<div class="sa-chip ${isCurrent?'current':''}" onclick="switchToDean('${d.email}')" title="${d.name}">${roleShort[d.role]||d.role}</div>`;
+    });
+  });
+  chipsEl.innerHTML=html;
+}
+
+function switchToDean(email){
+  if(email===dean.email)return;
+  // Rewrite URL with ?as= and reload so identity + queue refresh cleanly.
+  const url=new URL(window.location.href);
+  // Only set ?as= if this is not the super_admin's own email. Own email uses clean URL.
+  if(email===dean.sessionEmail){
+    url.searchParams.delete('as');
+  }else{
+    url.searchParams.set('as',email);
+  }
+  window.location.href=url.toString();
+}
+
 async function loadQueue(){
-  // Fetch dean review rows for this dean
   const{data:reviews, error}=await sb
     .from('evaluation_dean_reviews')
     .select('*, faculty_evaluations(*)')
@@ -250,6 +355,10 @@ function renderPage(){
   document.getElementById('dean-badge').style.background=c.bg;
   document.getElementById('dean-badge').style.color=c.color;
 
+  const impersonationBadge=dean.isImpersonating
+    ?`<span class="db-viewing">Super Admin · Viewing as ${dean.name}</span>`
+    :'';
+
   const mainEl=document.getElementById('main-content');
   mainEl.innerHTML=`
     <div class="dean-banner" style="background:${dean.role==='academics'?'#0D2B1F':dean.role==='research'?'#0D1F35':'#2B200D'}">
@@ -258,6 +367,7 @@ function renderPage(){
         <div class="db-name">${dean.name}</div>
         <div class="db-role">${c.label} · ${dean.campus} · AY 2025–26</div>
         <div class="db-scope" style="color:${c.color};border-color:${c.color}40;background:${c.bg}">${c.scopeLabel}</div>
+        ${impersonationBadge}
       </div>
       <div class="db-right">
         <div class="db-stat-val">${pending.length}</div>
@@ -332,7 +442,6 @@ async function openPanel(reviewId){
   document.getElementById('dp-name').textContent=currentEval?.snap_name||'—';
   document.getElementById('dp-sub').textContent=`${currentEval?.snap_designation||'—'} · ${currentEval?.snap_campus||dean.campus}`;
 
-  // Gate tabs — show which gate this review belongs to
   document.getElementById('btn-mid').classList.toggle('on', currentGate==='mid_year');
   document.getElementById('btn-annual').classList.toggle('on', currentGate==='annual');
 
@@ -354,7 +463,6 @@ async function renderDomainView(review, gateOverride){
   const c=cfg();
   let html='';
 
-  // Profile snapshot (always visible)
   html+=`<div class="dp-section">
     <div class="dp-section-title">Faculty Profile</div>
     ${infoRows([
@@ -366,28 +474,24 @@ async function renderDomainView(review, gateOverride){
     ])}
   </div>`;
 
-  // Domain-specific section
   html+=`<div class="dp-section">
     <div class="dp-section-title">Your Domain · ${c.scopeLabel}</div>
     <div class="dp-domain-title" style="background:${c.domainColor};color:${c.domainText}">${c.label} Review</div>
     ${buildDomainContent(ev, gate)}
   </div>`;
 
-  // Restricted sections notice
   html+=`<div class="domain-restricted">
     <div class="dr-icon">🔒</div>
     Other sections of this evaluation are not visible to Deans.<br>
     IKIGAI reflection, development goals, and XIME objectives are<br>visible only to the Director and President.
   </div>`;
 
-  // Dean notes
   html+=`<div class="notes-wrap">
-    <div class="notes-label">Your Notes <span style="font-weight:400;color:var(--faint);text-transform:none;letter-spacing:0;font-size:10px">— internal, visible only to Director and above</span></div>
+    <div class="notes-label">Your Notes <span style="font-weight:400;color:var(--faint);text-transform:none;letter-spacing:0;font-size:10px">· internal, visible only to Director and above</span></div>
     <textarea class="notes-ta" id="dean-notes" rows="4" placeholder="Add your observations on this faculty member's ${c.scopeLabel.split(':')[1]?.trim().toLowerCase()||'domain'} performance. These notes are internal and not shared with the faculty member.">${review.notes||''}</textarea>
     <div class="notes-hint">These notes travel with the evaluation to the Director. The faculty member never sees them.</div>
   </div>`;
 
-  // Validation action
   if(review.validated){
     html+=`<div class="validated-state">
       <span class="vs-icon">✓</span>
@@ -488,7 +592,6 @@ function infoRows(rows){
 async function validateDomain(reviewId){
   const notes=document.getElementById('dean-notes')?.value||'';
 
-  // Save teaching effectiveness if Dean Academics
   if(dean.role==='academics'){
     const score=document.getElementById('te-score')?.value;
     if(score&&currentEval?.id){
@@ -505,15 +608,11 @@ async function validateDomain(reviewId){
 
   if(error){toast('Could not save validation',false);return;}
 
-  // Update local state
   const r=allReviews.find(x=>x.id===reviewId);
   if(r){r.validated=true;r.validated_at=new Date().toISOString();r.notes=notes;}
 
-  // Check if all 3 deans for this evaluation have validated — if so update eval status
   if(currentEval?.id){
     const gate=allReviews.find(r=>r.id===reviewId)?.gate;
-    const evalReviews=allReviews.filter(r=>r.faculty_evaluations?.id===currentEval.id&&r.gate===gate);
-    // Reload from DB to get latest
     const{data:dbReviews}=await sb.from('evaluation_dean_reviews').select('validated').eq('evaluation_id',currentEval.id).eq('gate',gate);
     const allDone=dbReviews&&dbReviews.every(r=>r.validated);
     if(allDone){
@@ -543,10 +642,9 @@ function handleBackdrop(e){if(e.target===document.getElementById('detail-wrap'))
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
 
 async function init(){
-  // In production: detect dean from session email
-  // const{data:session}=await sb.auth.getSession();
-  // const email=session?.session?.user?.email;
-  // if(email){const{data:d}=await sb.from('dean_registry').select('*').eq('email',email).single();if(d)dean=d;}
+  dean=await resolveDeanIdentity();
+  if(!dean)return;
+  await loadSuperAdminSwitcher();
   await loadQueue();
 }
 
