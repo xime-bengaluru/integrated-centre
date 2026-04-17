@@ -27,6 +27,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .bsave:hover{background:rgba(255,255,255,.1);color:#fff}
 .bsub{border:none;background:var(--gold);color:var(--navy)}
 .bsub:hover{background:var(--gold-l)}
+.bsub:disabled{opacity:.4;cursor:not-allowed}
+.preview-banner{background:rgba(239,159,39,.15);border-bottom:1px solid rgba(239,159,39,.4);padding:10px 28px;display:none;align-items:center;justify-content:space-between;gap:16px;font-size:12px;color:var(--amber-d);position:sticky;top:56px;z-index:150}
+.preview-banner.visible{display:flex}
+.preview-banner strong{font-weight:600}
+.preview-banner a{color:var(--amber-d);text-decoration:underline;cursor:pointer;font-weight:500}
 .layout{display:grid;grid-template-columns:210px 1fr;min-height:calc(100vh - 56px)}
 .sidebar{background:var(--cream);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
 .sbh{padding:0 18px 14px;border-bottom:1px solid var(--border-g);margin-bottom:10px}
@@ -73,7 +78,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .si-s{font-size:11px;color:var(--faint);margin-top:1px}
 .srl{height:.5px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);margin-top:8px}
 .ls{position:relative}
-.ls.locked::after{content:'Locked — Gate 1 submitted';position:absolute;inset:0;background:rgba(250,248,243,.88);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--amber-d);font-weight:500;letter-spacing:.04em;border:.5px solid rgba(239,159,39,.3);pointer-events:none;z-index:2}
+.ls.locked::after{content:'Locked. Gate 1 submitted.';position:absolute;inset:0;background:rgba(250,248,243,.88);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--amber-d);font-weight:500;letter-spacing:.04em;border:.5px solid rgba(239,159,39,.3);pointer-events:none;z-index:2}
 .f{margin-bottom:16px}
 .fl{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;display:flex;align-items:center;gap:6px}
 .ab{font-size:9px;font-weight:400;color:var(--gold-d);background:rgba(201,168,76,.1);border:1px solid var(--border-g);padding:1px 5px;border-radius:10px;text-transform:none;letter-spacing:.02em}
@@ -98,6 +103,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .sbtns{display:flex;gap:3px}
 .sb{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:9px;font-family:'DM Mono',monospace;color:var(--faint);transition:all .12s;display:flex;align-items:center;justify-content:center}
 .sb.on{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.sb:disabled{cursor:not-allowed;opacity:.6}
 .ib{background:var(--navy);border-radius:var(--r);padding:20px 24px;margin-top:6px;position:relative;overflow:hidden}
 .ib::before{content:'';position:absolute;top:-16px;right:-16px;width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,.06)}
 .ibp{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.4);margin-bottom:8px;line-height:1.6}
@@ -148,6 +154,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:9px 14px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .fdiv{height:.5px;background:var(--border);margin:16px 0}
+.blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
 @media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:20px 18px 60px}.ag{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -158,14 +165,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
     <div class="ttl">Magis Centre · Annual Evaluation</div>
   </div>
   <div class="tb-r">
-    <div class="spill sp-draft" id="spill">Draft</div>
-    <button class="tbtn bsave" onclick="saveDraft()">Save draft</button>
+    <div class="spill sp-draft" id="spill">Loading</div>
+    <button class="tbtn bsave" onclick="saveDraft()" id="savebtn">Save draft</button>
     <button class="tbtn bsub" id="subbtn" onclick="handleSubmit()">Submit Gate 1</button>
     <button class="tbtn bsave" onclick="window.location.href='index.html'" style="opacity:.6">← Home</button>
+    <button class="tbtn bsave" onclick="signOut()" style="opacity:.6">Sign out</button>
   </div>
 </div>
 
-<div class="layout">
+<div class="preview-banner" id="preview-banner">
+  <div><strong id="preview-who">Super Admin Preview</strong> · You are viewing this faculty's evaluation in read-only mode. Changes are not saved and submit is disabled.</div>
+  <a onclick="exitPreview()">Exit preview →</a>
+</div>
+
+<div id="blocker" class="blocking" style="display:none">Verifying access...</div>
+
+<div class="layout" id="layout" style="display:none">
 <aside class="sidebar">
   <div class="sbh">
     <div class="sbn" id="sb-name">Loading...</div>
@@ -191,7 +206,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div class="ni active" onclick="goTo('s1')" id="n-s1"><div class="ndot"></div><div class="nt">Profile</div></div>
   <div class="ni" onclick="goTo('s2')" id="n-s2"><div class="ndot"></div><div class="nt">Teaching</div></div>
   <div class="ni" onclick="goTo('s3')" id="n-s3"><div class="ndot"></div><div class="nt">Research</div></div>
-  <div class="ni" onclick="goTo('s4')" id="n-s4"><div class="ndot"></div><div class="nt">Industry & MDP</div></div>
+  <div class="ni" onclick="goTo('s4')" id="n-s4"><div class="ndot"></div><div class="nt">Industry &amp; MDP</div></div>
   <div class="ni" onclick="goTo('s5')" id="n-s5"><div class="ndot"></div><div class="nt">Institution Building</div></div>
   <div class="ngl">IKIGAI · Purpose</div>
   <div class="ni" onclick="goTo('s6')" id="n-s6"><div class="ndot"></div><div class="nt">What You Love</div></div>
@@ -239,7 +254,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec ls" id="s3">
-  <div class="sh"><div class="sn">03</div><div><div class="si-t">Research & Publications</div><div class="si-s">Validated by Dean Research</div></div></div>
+  <div class="sh"><div class="sn">03</div><div><div class="si-t">Research &amp; Publications</div><div class="si-s">Validated by Dean Research</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="thc">
@@ -257,12 +272,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec ls" id="s4">
-  <div class="sh"><div class="sn">04</div><div><div class="si-t">Industry & External Programs</div><div class="si-s">Validated by Dean EP</div></div></div>
+  <div class="sh"><div class="sn">04</div><div><div class="si-t">Industry &amp; External Programs</div><div class="si-s">Validated by Dean EP</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="tc">
       <div class="f"><div class="fl">MDPs / OBPs Delivered</div><input class="fi" id="f-mdpc" type="number" min="0" placeholder="0"></div>
-      <div class="f"><div class="fl">MDP Revenue <span class="ab">EP Records</span></div><input class="fi lk" id="f-mdpr" readonly placeholder="₹ —"></div>
+      <div class="f"><div class="fl">MDP Revenue <span class="ab">EP Records</span></div><input class="fi lk" id="f-mdpr" readonly placeholder="Awaiting EP records"></div>
     </div>
     <div class="f"><div class="fl">MDP Details</div><textarea class="fi" id="f-mdpd" rows="3" placeholder="Program · Client · Role · Dates"></textarea></div>
     <div class="fdiv"></div>
@@ -280,9 +295,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <div class="subbox" id="g1box">
-  <div><div class="sbt">Submit Gate 1 — Mid-Year Record</div>
-  <div class="sbn2">Sections 01–05 will lock permanently. Gate 2 remains open until 15 June 2026.</div></div>
-  <button class="subbtn" onclick="submitGate1()" id="g1btn">Lock & Submit Gate 1 →</button>
+  <div><div class="sbt">Submit Gate 1 · Mid-Year Record</div>
+  <div class="sbn2">Sections 01 to 05 will lock permanently. Gate 2 remains open until 15 June 2026.</div></div>
+  <button class="subbtn" onclick="submitGate1()" id="g1btn">Lock &amp; Submit Gate 1 →</button>
 </div>
 
 <div class="gb gb2" style="margin-top:44px" id="gb2">
@@ -304,12 +319,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec" id="s7">
-  <div class="sh"><div class="sn">07</div><div><div class="si-t">Your Strengths</div><div class="si-s">IKIGAI 2.2 · 1 still building → 5 exceptional</div></div></div>
+  <div class="sh"><div class="sn">07</div><div><div class="si-t">Your Strengths</div><div class="si-s">IKIGAI 2.2 · 1 still building to 5 exceptional</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="sr" id="star-grid"></div>
     <div class="f"><div class="fl">What you are genuinely known for</div><textarea class="fi" id="f-str" rows="3" placeholder="Up to five capabilities others would point to as distinctively yours..."></textarea></div>
-    <div class="f"><div class="fl">Areas of intended growth</div><textarea class="fi" id="f-gr" rows="3" placeholder="At least three capabilities you want to develop over the next 1–2 years..."></textarea></div>
+    <div class="f"><div class="fl">Areas of intended growth</div><textarea class="fi" id="f-gr" rows="3" placeholder="At least three capabilities you want to develop over the next 1 to 2 years..."></textarea></div>
   </div>
 </section>
 
@@ -317,7 +332,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div class="sh"><div class="sn">08</div><div><div class="si-t">What You Contribute</div><div class="si-s">IKIGAI 2.3 · Visible, valued output</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
-    <div class="f"><div class="fl">Industry interaction — now and aspired</div><textarea class="fi" id="f-ci" rows="3" placeholder="What are you currently doing? What do you aspire to build?"></textarea></div>
+    <div class="f"><div class="fl">Industry interaction · now and aspired</div><textarea class="fi" id="f-ci" rows="3" placeholder="What are you currently doing? What do you aspire to build?"></textarea></div>
     <div class="f"><div class="fl">Research pathway</div><textarea class="fi" id="f-cr" rows="3" placeholder="Target journals, conferences, collaborators. Or explain why research is not a current focus."></textarea></div>
     <div class="f"><div class="fl">Institution building contributions</div><textarea class="fi" id="f-cs" rows="2" placeholder="What roles are you playing? What would you like to take on?"></textarea></div>
   </div>
@@ -353,7 +368,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div class="sh"><div class="sn">11</div><div><div class="si-t">Goals for XIME</div><div class="si-s">What you want to contribute and improve</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
-    <div class="f"><div class="fl">How you want to contribute to XIME's growth</div><textarea class="fi" id="f-xc" rows="3" placeholder="Not what XIME should do — what you specifically want to build or change here..."></textarea></div>
+    <div class="f"><div class="fl">How you want to contribute to XIME's growth</div><textarea class="fi" id="f-xc" rows="3" placeholder="Not what XIME should do. What you specifically want to build or change here..."></textarea></div>
     <div class="f"><div class="fl">Primary objectives this academic year</div><textarea class="fi" id="f-op" rows="3" placeholder="Two or three specific commitments. Concrete enough to verify at year-end."></textarea></div>
     <div class="f"><div class="fl">Objectives for next academic year</div><textarea class="fi" id="f-on" rows="3" placeholder="What do you want to be working on that you are not working on today?"></textarea></div>
   </div>
@@ -394,7 +409,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
-let DEANS=[]; // loaded from dean_registry by campus on init
+
+// Runtime identity. Populated by resolveAccess().
+let CURRENT_USER=null;
+let USER_ROLE='';
+let IS_PREVIEW=false;  // super_admin viewing someone else
+let DEANS=[];
+let DIRECTOR=null;
+
 let fac=null,eid=null,erec=null;
 const R={t:0,r:0,i:0,s:0};
 const dims=[{k:'t',l:'Teaching Effectiveness'},{k:'r',l:'Research Capability'},{k:'i',l:'Industry Engagement'},{k:'s',l:'Institution Building'}];
@@ -402,13 +424,102 @@ const dims=[{k:'t',l:'Teaching Effectiveness'},{k:'r',l:'Research Capability'},{
 function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('n-'+id)?.classList.add('active');}
 
+async function signOut(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+
+function exitPreview(){
+  const url=new URL(window.location.href);
+  url.searchParams.delete('as');
+  window.location.href='index.html';
+}
+
+// Resolve who is looking at this page and which faculty_master row applies.
+// Returns { faculty, isPreview } or null to indicate redirect has happened.
+async function resolveAccess(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return null;}
+
+  const{data:profile}=await sb.from('user_profiles')
+    .select('*').eq('id',session.user.id).maybeSingle();
+  if(!profile){window.location.href='login.html';return null;}
+
+  CURRENT_USER=profile;
+  USER_ROLE=profile.role;
+
+  // Super admin can view any faculty via ?as=<email>.
+  // Faculty (fdp_user) can only view their own row.
+  const urlParams=new URLSearchParams(window.location.search);
+  const asEmail=USER_ROLE==='super_admin'?urlParams.get('as'):null;
+  const targetEmail=asEmail||profile.email;
+
+  // Faculty (fdp_user): load own row only
+  if(USER_ROLE==='fdp_user'){
+    const{data:ownRow}=await sb.from('faculty_master')
+      .select('*').eq('email',profile.email).maybeSingle();
+    if(!ownRow){
+      document.getElementById('blocker').textContent=
+        'Your faculty profile is not linked to the evaluation system yet. Please contact your Director.';
+      document.getElementById('blocker').style.display='block';
+      return null;
+    }
+    return{faculty:ownRow,isPreview:false};
+  }
+
+  // Super admin: either own row if they have one, or impersonate
+  if(USER_ROLE==='super_admin'){
+    const{data:row}=await sb.from('faculty_master')
+      .select('*').eq('email',targetEmail).maybeSingle();
+    if(!row){
+      // No match. Fall back to first pilot faculty so the page is not a dead end.
+      const{data:firstPilot}=await sb.from('faculty_master')
+        .select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
+      if(!firstPilot){
+        document.getElementById('blocker').textContent=
+          'No faculty have been linked to the evaluation system yet.';
+        document.getElementById('blocker').style.display='block';
+        return null;
+      }
+      return{faculty:firstPilot,isPreview:true};
+    }
+    return{faculty:row,isPreview:targetEmail!==profile.email};
+  }
+
+  // Everyone else goes to their proper home.
+  window.location.href='index.html';
+  return null;
+}
+
+function enterPreviewMode(faculty){
+  IS_PREVIEW=true;
+  const banner=document.getElementById('preview-banner');
+  banner.classList.add('visible');
+  document.getElementById('preview-who').textContent=
+    `Super Admin Preview: ${faculty.name}`;
+
+  // Disable all inputs and the submit button. Save-draft stays visible but no-ops.
+  document.getElementById('subbtn').disabled=true;
+  document.querySelectorAll('.fi,.ai,.ata,.ibi').forEach(el=>{
+    el.setAttribute('readonly','true');
+    el.classList.add('lk');
+  });
+  document.querySelectorAll('.sb').forEach(b=>b.disabled=true);
+  document.getElementById('g1box').style.display='none';
+  document.getElementById('g2box').style.display='none';
+}
+
 function buildStars(){
   const g=document.getElementById('star-grid');
   dims.forEach(d=>{
     const row=document.createElement('div');row.className='srow';
     row.innerHTML=`<div class="slbl">${d.l}</div><div class="sbtns" data-k="${d.k}"></div>`;
     const btns=row.querySelector('.sbtns');
-    for(let i=1;i<=5;i++){const b=document.createElement('button');b.className='sb';b.textContent=i;b.onclick=()=>{R[d.k]=i;rStars(d.k);upProg();};btns.appendChild(b);}
+    for(let i=1;i<=5;i++){
+      const b=document.createElement('button');b.className='sb';b.textContent=i;
+      b.onclick=()=>{if(IS_PREVIEW)return;R[d.k]=i;rStars(d.k);upProg();};
+      btns.appendChild(b);
+    }
     g.appendChild(row);
   });
 }
@@ -458,50 +569,165 @@ function applyLocks(){
 }
 
 async function loadRemarks(){
-  const{data}=await sb.from('evaluation_director_reviews').select('faculty_remarks').eq('evaluation_id',eid).single();
+  if(!eid)return;
+  const{data}=await sb.from('evaluation_director_reviews').select('faculty_remarks').eq('evaluation_id',eid).maybeSingle();
   if(data?.faculty_remarks){document.getElementById('rmbox').style.display='block';document.getElementById('rmtxt').textContent=data.faculty_remarks;}
 }
 
-function g1Data(){return{snap_name:fac?.name,snap_designation:fac?.designation,snap_campus:fac?.campus,snap_subject_area:fac?.subject_area,snap_courses_taught:fac?.courses_taught,snap_admin_role:fac?.admin_role,publications_count:parseInt(document.getElementById('f-scopus').value)||null,publications_details:document.getElementById('f-pub').value||null,mdp_details:document.getElementById('f-mdpd').value||null,industry_summary:document.getElementById('f-ind').value||null,institution_contributions:document.getElementById('f-inst').value||null,teaching_notes:document.getElementById('f-tnotes').value||null,updated_at:new Date().toISOString()};}
-function g2Data(){return{ikigai_passion:[document.getElementById('f-pt').value,document.getElementById('f-pr').value,document.getElementById('f-pi').value,document.getElementById('f-ps').value].filter(Boolean).join('\n\n')||null,ikigai_strength_teaching:R.t||null,ikigai_strength_research:R.r||null,ikigai_strength_industry:R.i||null,ikigai_strength_institution:R.s||null,ikigai_strengths_text:document.getElementById('f-str').value||null,ikigai_growth_areas:document.getElementById('f-gr').value||null,ikigai_contribution:document.getElementById('f-ci').value||null,ikigai_statement:document.getElementById('f-iki').value||null,alloc_teaching:parseInt(document.getElementById('al-t').value)||null,alloc_research:parseInt(document.getElementById('al-r').value)||null,alloc_industry:parseInt(document.getElementById('al-i').value)||null,alloc_institution:parseInt(document.getElementById('al-s').value)||null,xime_contribution:document.getElementById('f-xc').value||null,primary_objectives:document.getElementById('f-op').value||null,next_year_objectives:document.getElementById('f-on').value||null,action_start:document.getElementById('f-sta').value||null,action_stop:document.getElementById('f-stp').value||null,action_continue:document.getElementById('f-cnt').value||null,action_key_goal:document.getElementById('f-kg').value||null,action_support:document.getElementById('f-sup').value||null,updated_at:new Date().toISOString()};}
+function val(id){const el=document.getElementById(id);return el&&el.value&&el.value.trim()?el.value.trim():null;}
+function numVal(id){const v=val(id);return v!==null?parseInt(v):null;}
 
-async function upsert(data){
-  if(eid){const{error}=await sb.from('faculty_evaluations').update(data).eq('id',eid);if(error)throw error;}
-  else{const{data:d,error}=await sb.from('faculty_evaluations').insert({...data,faculty_master_id:fac.id,academic_year:'2025-26',cycle:'annual'}).select().single();if(error)throw error;eid=d.id;erec=d;}
+function g1Data(){
+  return{
+    snap_name:fac?.name,
+    snap_designation:fac?.designation,
+    snap_campus:fac?.campus,
+    snap_subject_area:fac?.subject_area,
+    snap_courses_taught:fac?.courses_taught,
+    snap_admin_role:fac?.admin_role,
+    scholar_url:val('f-scholar'),
+    orcid_id:val('f-orcid'),
+    terms_taught:val('f-terms'),
+    teaching_notes:val('f-tnotes'),
+    publications_count:numVal('f-scopus'),
+    abdc_count:numVal('f-abdc'),
+    wos_count:numVal('f-wos'),
+    h_index:numVal('f-hi'),
+    conference_papers_count:numVal('f-conf'),
+    publications_details:val('f-pub'),
+    wip_details:val('f-wip'),
+    mdp_count:numVal('f-mdpc'),
+    mdp_details:val('f-mdpd'),
+    industry_summary:val('f-ind'),
+    institution_contributions:val('f-inst'),
+    updated_at:new Date().toISOString()
+  };
 }
 
-async function saveDraft(){if(!fac){toast('No faculty loaded',false);return;}try{await upsert({...g1Data(),...g2Data(),status:'draft',workflow_status:'draft'});toast('Draft saved');upProg();}catch(e){toast('Save failed',false);}}
+function g2Data(){
+  return{
+    ikigai_passion:[val('f-pt'),val('f-pr'),val('f-pi'),val('f-ps')].filter(Boolean).join('\n\n')||null,
+    ikigai_strength_teaching:R.t||null,
+    ikigai_strength_research:R.r||null,
+    ikigai_strength_industry:R.i||null,
+    ikigai_strength_institution:R.s||null,
+    ikigai_strengths_text:val('f-str'),
+    ikigai_growth_areas:val('f-gr'),
+    ikigai_contribution:val('f-ci'),
+    ikigai_statement:val('f-iki'),
+    alloc_teaching:numVal('al-t'),
+    alloc_research:numVal('al-r'),
+    alloc_industry:numVal('al-i'),
+    alloc_institution:numVal('al-s'),
+    xime_contribution:val('f-xc'),
+    primary_objectives:val('f-op'),
+    next_year_objectives:val('f-on'),
+    action_start:val('f-sta'),
+    action_stop:val('f-stp'),
+    action_continue:val('f-cnt'),
+    action_key_goal:val('f-kg'),
+    action_support:val('f-sup'),
+    updated_at:new Date().toISOString()
+  };
+}
+
+async function upsert(data){
+  if(eid){
+    const{error}=await sb.from('faculty_evaluations').update(data).eq('id',eid);
+    if(error)throw error;
+  }else{
+    const{data:d,error}=await sb.from('faculty_evaluations')
+      .insert({...data,faculty_master_id:fac.id,academic_year:'2025-26',cycle:'annual'})
+      .select().single();
+    if(error)throw error;
+    eid=d.id;erec=d;
+  }
+}
+
+async function saveDraft(){
+  if(IS_PREVIEW){toast('Preview mode. Changes are not saved.',false);return;}
+  if(!fac){toast('No faculty loaded',false);return;}
+  try{
+    await upsert({...g1Data(),...g2Data(),status:'draft',workflow_status:'draft'});
+    toast('Draft saved');upProg();
+  }catch(e){
+    console.error(e);
+    toast('Save failed',false);
+  }
+}
 
 async function submitGate1(){
+  if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
-  if(!confirm('Lock and submit Gate 1? Sections 1–5 cannot be edited after this.'))return;
+  if(DEANS.length===0){toast('No deans configured for your campus. Contact admin.',false);return;}
+  if(!confirm('Lock and submit Gate 1? Sections 1 to 5 cannot be edited after this.'))return;
   try{
     await upsert({...g1Data(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
     erec={...erec,gate1_locked:true,workflow_status:'mid_year_locked'};
-    for(const d of DEANS){await sb.from('evaluation_dean_reviews').upsert({evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,campus:fac.campus,gate:'mid_year',validated:false},{onConflict:'evaluation_id,dean_email,gate'});}
+    for(const d of DEANS){
+      await sb.from('evaluation_dean_reviews').upsert({
+        evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
+        campus:fac.campus,gate:'mid_year',validated:false
+      },{onConflict:'evaluation_id,dean_email,gate'});
+    }
     applyLocks();toast('Gate 1 submitted and locked. Deans notified.');
-  }catch(e){toast('Submission failed',false);}
+  }catch(e){
+    console.error(e);
+    toast('Submission failed',false);
+  }
 }
 
 async function submitGate2(){
+  if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
   if(!g1Locked()){toast('Please submit Gate 1 first.',false);return;}
-  if(!document.getElementById('f-iki').value.trim()){toast('Please complete your Purpose Statement first.',false);return;}
+  if(!val('f-iki')){toast('Please complete your Purpose Statement first.',false);return;}
+  if(!DIRECTOR){toast('No director configured for your campus. Contact admin.',false);return;}
   if(!confirm('Submit your complete annual evaluation? This cannot be undone.'))return;
   try{
     await upsert({...g2Data(),gate2_locked:true,gate2_submitted_at:new Date().toISOString(),workflow_status:'annual_submitted',status:'submitted'});
     erec={...erec,gate2_locked:true,workflow_status:'annual_submitted'};
-    for(const d of DEANS){await sb.from('evaluation_dean_reviews').upsert({evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,campus:fac.campus,gate:'annual',validated:false},{onConflict:'evaluation_id,dean_email,gate'});}
-    await sb.from('evaluation_director_reviews').upsert({evaluation_id:eid,director_email:'roshni@xime.org',director_name:'Dr. Roshni James',campus:fac.campus,status:'pending'},{onConflict:'evaluation_id'});
+    for(const d of DEANS){
+      await sb.from('evaluation_dean_reviews').upsert({
+        evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
+        campus:fac.campus,gate:'annual',validated:false
+      },{onConflict:'evaluation_id,dean_email,gate'});
+    }
+    await sb.from('evaluation_director_reviews').upsert({
+      evaluation_id:eid,
+      director_email:DIRECTOR.email,
+      director_name:DIRECTOR.name,
+      campus:fac.campus,
+      status:'pending'
+    },{onConflict:'evaluation_id'});
     applyLocks();toast('Annual evaluation submitted. Your Deans have been notified.');
-  }catch(e){toast('Submission failed',false);}
+  }catch(e){
+    console.error(e);
+    toast('Submission failed',false);
+  }
 }
 
 function handleSubmit(){if(!g1Locked())submitGate1();else submitGate2();}
 
 function restore(d){
-  const m={'f-pub':d.publications_details,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,'f-inst':d.institution_contributions,'f-tnotes':d.teaching_notes,'f-scopus':d.publications_count,'f-pt':d.ikigai_passion,'f-str':d.ikigai_strengths_text,'f-gr':d.ikigai_growth_areas,'f-ci':d.ikigai_contribution,'f-iki':d.ikigai_statement,'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-i':d.alloc_industry,'al-s':d.alloc_institution,'f-xc':d.xime_contribution,'f-op':d.primary_objectives,'f-on':d.next_year_objectives,'f-sta':d.action_start,'f-stp':d.action_stop,'f-cnt':d.action_continue,'f-kg':d.action_key_goal,'f-sup':d.action_support};
+  const m={
+    'f-scholar':d.scholar_url,'f-orcid':d.orcid_id,'f-terms':d.terms_taught,'f-tnotes':d.teaching_notes,
+    'f-scopus':d.publications_count,'f-abdc':d.abdc_count,'f-wos':d.wos_count,'f-hi':d.h_index,'f-conf':d.conference_papers_count,
+    'f-pub':d.publications_details,'f-wip':d.wip_details,
+    'f-mdpc':d.mdp_count,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,'f-inst':d.institution_contributions,
+    'f-pt':d.ikigai_passion?.split('\n\n')[0],
+    'f-pr':d.ikigai_passion?.split('\n\n')[1],
+    'f-pi':d.ikigai_passion?.split('\n\n')[2],
+    'f-ps':d.ikigai_passion?.split('\n\n')[3],
+    'f-str':d.ikigai_strengths_text,'f-gr':d.ikigai_growth_areas,'f-ci':d.ikigai_contribution,'f-iki':d.ikigai_statement,
+    'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-i':d.alloc_industry,'al-s':d.alloc_institution,
+    'f-xc':d.xime_contribution,'f-op':d.primary_objectives,'f-on':d.next_year_objectives,
+    'f-sta':d.action_start,'f-stp':d.action_stop,'f-cnt':d.action_continue,'f-kg':d.action_key_goal,'f-sup':d.action_support
+  };
   Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;});
+  // Teaching effectiveness comes from Dean Academics, display only
+  if(d.teaching_effectiveness){document.getElementById('f-te').value=d.teaching_effectiveness+' / 5.0';}
+  if(d.mdp_revenue){document.getElementById('f-mdpr').value='₹'+Number(d.mdp_revenue).toLocaleString('en-IN');}
   if(d.ikigai_strength_teaching){R.t=d.ikigai_strength_teaching;rStars('t');}
   if(d.ikigai_strength_research){R.r=d.ikigai_strength_research;rStars('r');}
   if(d.ikigai_strength_industry){R.i=d.ikigai_strength_industry;rStars('i');}
@@ -510,24 +736,57 @@ function restore(d){
 }
 
 async function init(){
+  document.getElementById('blocker').style.display='block';
+
+  const access=await resolveAccess();
+  if(!access)return;  // redirect already fired or blocker shown
+
+  fac=access.faculty;
+
+  // Show the page, hide blocker
+  document.getElementById('blocker').style.display='none';
+  document.getElementById('layout').style.display='grid';
+
   buildStars();
   document.querySelectorAll('.fi,.ai,.ata,.ibi').forEach(el=>el.addEventListener('input',upProg));
-  const{data:f}=await sb.from('faculty_master').select('*').eq('campus','Bengaluru').order('name').limit(1).single();
-  if(!f)return;
-  fac=f;
-  // Load deans for this campus from registry
-  const{data:deans}=await sb.from('dean_registry').select('*').eq('campus',f.campus);
-  if(deans) DEANS=deans.map(d=>({email:d.email,name:d.name,role:d.role}));
-  document.getElementById('sb-name').textContent=f.name;
-  document.getElementById('sb-role').textContent=`${f.designation} · ${f.campus}`;
-  document.getElementById('f-admin').value=f.admin_role||'—';
-  document.getElementById('cpills').innerHTML=f.courses_taught?f.courses_taught.split(' · ').map(c=>`<div class="cpill">${c}</div>`).join(''):'<span style="font-size:12px;color:var(--faint);font-style:italic">No Digii data yet</span>';
-  const rows=[['Name',f.name],['Designation',f.designation],['Campus',f.campus],['Joined',f.joined||'—'],['PhD',f.phd==='yes'?`PhD ${f.phd_year||''}`:f.phd==='pursuing'?'Pursuing':'—'],['Subject',f.subject_area||'—']];
+
+  // Load deans for this campus
+  const{data:deans}=await sb.from('dean_registry').select('*').eq('campus',fac.campus);
+  if(deans)DEANS=deans.map(d=>({email:d.email,name:d.name,role:d.role}));
+
+  // Load director for this campus
+  const{data:dirRow}=await sb.from('director_campus_map').select('*').eq('campus',fac.campus).maybeSingle();
+  if(dirRow)DIRECTOR={email:dirRow.email,name:dirRow.name};
+
+  // Populate profile
+  document.getElementById('sb-name').textContent=fac.name;
+  document.getElementById('sb-role').textContent=`${fac.designation} · ${fac.campus}`;
+  document.getElementById('f-admin').value=fac.admin_role||'None recorded';
+  document.getElementById('cpills').innerHTML=fac.courses_taught
+    ?fac.courses_taught.split(' · ').map(c=>`<div class="cpill">${c}</div>`).join('')
+    :'<span style="font-size:12px;color:var(--faint);font-style:italic">No Digii data yet</span>';
+  const rows=[
+    ['Name',fac.name],
+    ['Designation',fac.designation],
+    ['Campus',fac.campus],
+    ['Joined',fac.joined||'Not recorded'],
+    ['PhD',fac.phd==='yes'?`PhD ${fac.phd_year||''}`:fac.phd==='pursuing'?'Pursuing':'Not recorded'],
+    ['Subject',fac.subject_area||'Not recorded']
+  ];
   document.getElementById('prof-rows').innerHTML=rows.map(([k,v])=>`<div class="ar"><span class="ark">${k}</span><span class="arv">${v}</span></div>`).join('');
-  const{data:ev}=await sb.from('faculty_evaluations').select('*').eq('faculty_master_id',f.id).eq('academic_year','2025-26').maybeSingle();
-  if(ev){eid=ev.id;erec=ev;restore(ev);}else erec={gate1_locked:false,gate2_locked:false,workflow_status:'draft'};
+
+  // Load existing evaluation record if any
+  const{data:ev}=await sb.from('faculty_evaluations')
+    .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26').maybeSingle();
+  if(ev){eid=ev.id;erec=ev;restore(ev);}
+  else erec={gate1_locked:false,gate2_locked:false,workflow_status:'draft'};
+
   applyLocks();
+
+  // Apply preview mode after everything else so it overlays properly
+  if(access.isPreview){enterPreviewMode(fac);}
 }
+
 init();
 </script>
 </body>
