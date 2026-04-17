@@ -42,7 +42,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .view{display:none}
 .view.active{display:block}
 
-/* Super admin campus switcher */
 .sa-switcher{background:var(--white);border:1px solid var(--border-g);border-radius:var(--r);padding:12px 16px;margin-bottom:20px;display:none}
 .sa-switcher.visible{display:block}
 .sa-label{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:9px;display:flex;align-items:center;gap:8px}
@@ -52,7 +51,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .sa-chip:hover{border-color:rgba(201,168,76,.5);color:var(--navy)}
 .sa-chip.current{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:500}
 
-/* Director banner */
 .dir-banner{background:var(--navy);border-radius:var(--r);padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
 .dir-info{}
 .dir-label{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px}
@@ -62,7 +60,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .dir-meta{text-align:right;font-size:11px;color:rgba(255,255,255,.35)}
 .dir-meta span{display:block;color:rgba(255,255,255,.55);font-family:'DM Mono',monospace;font-size:16px;font-weight:400;margin-bottom:2px}
 
-/* Leaderboard */
 .lb-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .lb-title::after{content:'';flex:1;height:.5px;background:var(--border-g)}
 .lb-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:28px}
@@ -95,7 +92,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .lb-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
 .lb-bar-val{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace;width:28px;text-align:right;flex-shrink:0}
 
-/* Mini pyramids row */
+/* Research Quality strip — campus-level research aggregate */
+.rq-strip{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:24px}
+.rq-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.rq-strip-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--navy)}
+.rq-strip-sub{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.rq-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rq-col{background:var(--parchment);border-radius:var(--rs);padding:10px 12px}
+.rq-col-name{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;margin-bottom:8px;letter-spacing:.04em}
+.rq-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:.5px solid var(--border)}
+.rq-row:last-child{border-bottom:none}
+.rq-row-label{font-size:10px;color:var(--muted)}
+.rq-row-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--navy)}
+.rq-row-val.premier{color:var(--gold-d)}
+.rq-row-val.zero{color:var(--faint);font-weight:400}
+.rq-empty{text-align:center;color:var(--faint);font-size:11px;font-style:italic;padding:12px 0}
+
 .pyramids-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:28px}
 .pyramid-card{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
 .pyramid-card.own{border:1.5px solid var(--gold)}
@@ -104,7 +116,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .pyramid-total{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint)}
 .pyramid-svg{width:100%;padding:8px 0 4px}
 
-/* Faculty directory */
 .filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .filter-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 14px;border-radius:20px;border:.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);transition:all .12s}
 .filter-btn:hover{border-color:var(--gold);color:var(--navy)}
@@ -118,6 +129,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .fcard{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:border-color .12s,box-shadow .12s}
 .fcard:hover{border-color:rgba(201,168,76,.4);box-shadow:0 2px 12px rgba(0,0,0,.06)}
 .fcard.own-campus{border-left:2px solid var(--gold)}
+.fcard.has-eval{border-left:2px solid var(--teal)}
+.fcard.own-campus.has-eval{border-left:3px solid var(--gold);box-shadow:inset 2px 0 0 var(--teal)}
 .fc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .fc-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
 .fc-name{font-size:12px;font-weight:500;color:var(--navy);line-height:1.3}
@@ -131,6 +144,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .pill-blr{background:#E1F5EE;color:#085041}
 .pill-chn{background:#E6F1FB;color:#0C447C}
 .pill-koc{background:#EEEDFE;color:#3C3489}
+.pill-eval{background:rgba(29,158,117,.15);color:var(--teal-d);border:.5px solid rgba(29,158,117,.3)}
 .fc-exp{display:flex;align-items:center;gap:6px;margin-top:4px}
 .fc-exp-bar{flex:1;height:4px;background:var(--parchment);border-radius:2px;overflow:hidden;display:flex}
 .fc-exp-ind{height:100%;background:var(--teal)}
@@ -140,7 +154,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 /* Modal */
 .modal-wrap{display:none;position:fixed;inset:0;background:rgba(17,24,39,.5);z-index:200;align-items:center;justify-content:center}
 .modal-wrap.open{display:flex}
-.modal-panel{background:var(--white);border-radius:var(--r);padding:24px;width:100%;max-width:580px;max-height:88vh;overflow-y:auto;animation:mIn .2s ease;position:relative}
+.modal-panel{background:var(--white);border-radius:var(--r);padding:24px;width:100%;max-width:620px;max-height:88vh;overflow-y:auto;animation:mIn .2s ease;position:relative}
 @keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .dd-close{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--faint);background:none;border:none;cursor:pointer;margin-bottom:14px;padding:0;display:block}
 .dd-close:hover{color:var(--navy)}
@@ -153,26 +167,55 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .dd-stat-label{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
 .dd-stat-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--navy)}
 
-/* Three panel cards in modal */
-.modal-panels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
-.mp{border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden}
-.mp-head{padding:8px 10px}
-.mp-head-navy{background:#0A3D62}
-.mp-head-charcoal{background:#2D3436}
-.mp-head-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px}
-.mp-head-sub{font-size:10px;color:rgba(255,255,255,.45)}
-.mp-body{padding:10px;background:var(--parchment)}
-.mp-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:6px;padding-bottom:6px;border-bottom:.5px solid var(--border)}
-.mp-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.mp-dot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;margin-top:4px}
-.mp-row-label{font-size:10px;font-weight:500;color:var(--muted)}
-.mp-row-val{font-size:10px;color:var(--faint);font-style:italic;margin-top:1px}
-.mp-hatched{height:5px;background:repeating-linear-gradient(90deg,var(--border) 0,var(--border) 3px,transparent 3px,transparent 6px);border-radius:2px;margin-top:3px}
+/* Research tier block inside modal */
+.m-research{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.m-research-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.m-research-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)}
+.m-research-sub{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace}
+.m-tier-row{display:grid;grid-template-columns:85px 1fr;align-items:center;gap:10px;padding:6px 0;border-bottom:.5px solid var(--border)}
+.m-tier-row:last-child{border-bottom:none}
+.m-tier-name{font-size:11px;color:var(--muted);font-weight:500}
+.m-tier-name-total{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-left:6px;font-weight:400}
+.m-tier-cells{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.m-tier-cell{background:var(--parchment);border:.5px solid var(--border);border-radius:4px;padding:4px 6px;text-align:center}
+.m-tier-cell.premier{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.35)}
+.m-tier-cell.zero{opacity:.5}
+.m-tier-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--navy);line-height:1}
+.m-tier-cell.premier .m-tier-val{color:var(--gold-d)}
+.m-tier-cell.zero .m-tier-val{color:var(--faint);font-weight:400}
+.m-tier-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);margin-top:2px;letter-spacing:.03em}
+.m-tier-cell.premier .m-tier-label{color:var(--gold-d);font-weight:600}
+.m-other-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;padding-top:10px;border-top:.5px solid var(--border)}
+.m-metric{background:var(--parchment);border-radius:4px;padding:7px;text-align:center}
+.m-metric-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--navy)}
+.m-metric-label{font-size:9px;color:var(--faint);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+
+/* Performance & Evaluation panels */
+.m-panels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.m-panel{border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden}
+.m-panel-head{padding:8px 10px;background:#0A3D62}
+.m-panel-head.charcoal{background:#2D3436}
+.m-panel-head-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px}
+.m-panel-head-sub{font-size:10px;color:rgba(255,255,255,.45)}
+.m-panel-body{padding:10px;background:var(--parchment)}
+.m-panel-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:7px;padding-bottom:7px;border-bottom:.5px solid var(--border)}
+.m-panel-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.m-panel-row-label{font-size:10px;font-weight:500;color:var(--muted);flex:1}
+.m-panel-row-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--navy);white-space:nowrap}
+.m-panel-row-val.na{color:var(--faint);font-style:italic;font-weight:400;font-family:'DM Sans',sans-serif}
+.m-panel-status{font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;display:inline-block;margin-top:2px}
+.m-panel-status.draft{background:var(--cream);color:var(--muted)}
+.m-panel-status.submitted{background:var(--blue-l);color:var(--blue-d)}
+.m-panel-status.locked{background:var(--amber-l);color:var(--amber-d)}
+.m-panel-status.done{background:var(--teal-l);color:var(--teal-d)}
+
+.m-hatched{height:5px;background:repeating-linear-gradient(90deg,var(--border) 0,var(--border) 3px,transparent 3px,transparent 6px);border-radius:2px;margin-top:3px}
+.m-awaiting{font-size:10px;color:var(--faint);font-style:italic;margin-top:2px}
+
 .unlock-box{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:10px 12px}
 .unlock-label{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-d);margin-bottom:3px}
 .unlock-text{font-size:11px;color:var(--muted);line-height:1.6}
 
-/* av colors */
 .av-a{background:#E1F5EE;color:#085041}
 .av-b{background:#E6F1FB;color:#0C447C}
 .av-c{background:#FAEEDA;color:#633806}
@@ -221,8 +264,21 @@ const CAMPUS_RANKS={Bengaluru:'BLR',Chennai:'CHN',Kochi:'KOC'};
 const bandOrder={professor:1,assoc:2,srasst:3,asst:4,jr:5,staff:6};
 const bandLabel={professor:'Professors',assoc:'Assoc. Professors',srasst:'Sr. Asst. Professors',asst:'Asst. Professors',jr:'Jr. Asst. Professors',staff:'Associates'};
 
+const WORKFLOW_LABELS={
+  draft:{label:'Draft',cls:'draft'},
+  mid_year_locked:{label:'Gate 1 Locked',cls:'locked'},
+  mid_year_validated:{label:'Mid-Year Validated',cls:'done'},
+  annual_submitted:{label:'Submitted',cls:'submitted'},
+  dean_validated:{label:'Dean Validated',cls:'done'},
+  director_forwarded:{label:'With President',cls:'submitted'},
+  president_review:{label:'With President',cls:'submitted'},
+  endorsed:{label:'Endorsed',cls:'done'},
+  returned_to_director:{label:'Returned',cls:'locked'},
+  faculty_input_requested:{label:'Input Requested',cls:'locked'}
+};
+
 let allData=[], myDirector=null, filteredData=[], activeTab='overview';
-// Identity state populated by resolveAccess()
+let evaluationsById={};  // faculty_master.id -> faculty_evaluations row (latest cycle)
 let CURRENT_USER=null;
 let USER_ROLE='';
 
@@ -241,6 +297,9 @@ function campusPill(campus){
   const cls={Bengaluru:'pill-blr',Chennai:'pill-chn',Kochi:'pill-koc'};
   return `<span class="pill ${cls[campus]||''}">${CAMPUS_RANKS[campus]||campus}</span>`;
 }
+
+// Does this faculty have an evaluation on file?
+function hasEval(facultyId){return !!evaluationsById[facultyId]}
 
 // ---- AUTH ----
 async function resolveAccess(){
@@ -263,8 +322,6 @@ async function resolveAccess(){
   CURRENT_USER=profile;
   USER_ROLE=profile.role;
 
-  // Super admin may view any campus via ?campus=<Bengaluru|Chennai|Kochi>.
-  // Defaults to own campus if set, else Bengaluru.
   const urlParams=new URLSearchParams(window.location.search);
   const campusOverride=USER_ROLE==='super_admin'?urlParams.get('campus'):null;
 
@@ -281,16 +338,13 @@ async function resolveAccess(){
     campus=dirMap.campus;
     name=dirMap.name;
   }else{
-    // super_admin path
     if(campusOverride&&['Bengaluru','Chennai','Kochi'].includes(campusOverride)){
       campus=campusOverride;
-      // Look up the director of that campus for display continuity
       const{data:dirOfCampus}=await sb.from('director_campus_map')
         .select('*').eq('campus',campus).maybeSingle();
       name=dirOfCampus?.name||profile.full_name||'Super Admin';
       isImpersonating=true;
     }else{
-      // Check if this super admin is also a director (Girish is not, but future-proof)
       const{data:ownDirMap}=await sb.from('director_campus_map')
         .select('*').eq('email',profile.email).maybeSingle();
       if(ownDirMap){
@@ -313,15 +367,12 @@ async function signOut(){
 
 function switchToCampus(campus){
   const url=new URL(window.location.href);
-  // If this campus matches the super admin's own director campus, clear the param
-  // so URL stays clean. Otherwise set it.
   url.searchParams.set('campus',campus);
   window.location.href=url.toString();
 }
 
 // ---- LEADERBOARD ----
 function buildLeaderboard(campuses){
-  // Score each campus: PhD% (40) + Senior% (40) + PhDAbsolute (20)
   const scored=campuses.map(c=>{
     const phdPct=c.total?Math.round((c.phds/c.total)*100):0;
     const seniorPct=c.total?Math.round(((c.profs+c.assocs)/c.total)*100):0;
@@ -389,6 +440,70 @@ function buildLeaderboard(campuses){
     </div>`;
 }
 
+// Campus-level research quality aggregate — only shown if at least one faculty has submitted
+function buildResearchQualityStrip(campuses){
+  // Sum up tier totals across faculty in each campus
+  const campusAggregates=campuses.map(c=>{
+    const evalsForCampus=c.data
+      .map(f=>evaluationsById[f.id])
+      .filter(Boolean);
+    if(evalsForCampus.length===0){
+      return{campus:c.campus,hasData:false,facultyReporting:0};
+    }
+    const sum=(field)=>evalsForCampus.reduce((s,e)=>s+(e[field]||0),0);
+    return{
+      campus:c.campus,
+      hasData:true,
+      facultyReporting:evalsForCampus.length,
+      totalFaculty:c.total,
+      abdc_a_star:sum('abdc_a_star'),abdc_a:sum('abdc_a'),abdc_b:sum('abdc_b'),abdc_c:sum('abdc_c'),
+      scopus_q1:sum('scopus_q1'),scopus_q2:sum('scopus_q2'),scopus_q3:sum('scopus_q3'),scopus_q4:sum('scopus_q4'),
+      wos_q1:sum('wos_q1'),wos_q2:sum('wos_q2'),wos_q3:sum('wos_q3'),wos_q4:sum('wos_q4'),
+      ugc_care:sum('ugc_care_count')
+    };
+  });
+
+  const anyData=campusAggregates.some(a=>a.hasData);
+  if(!anyData){
+    return`<div class="rq-strip">
+      <div class="rq-strip-head">
+        <div class="rq-strip-title">Research Quality</div>
+        <div class="rq-strip-sub">AY 2025–26</div>
+      </div>
+      <div class="rq-empty">No faculty have submitted Gate 1 research data yet. This strip will populate as faculty complete their performance records.</div>
+    </div>`;
+  }
+
+  return`<div class="rq-strip">
+    <div class="rq-strip-head">
+      <div class="rq-strip-title">Research Quality &nbsp;·&nbsp; By Campus</div>
+      <div class="rq-strip-sub">AY 2025–26 · Self-reported</div>
+    </div>
+    <div class="rq-grid">
+      ${campusAggregates.map(a=>{
+        if(!a.hasData){
+          return`<div class="rq-col">
+            <div class="rq-col-name" style="color:${CAMPUS_COLORS[a.campus]}">${a.campus}</div>
+            <div style="font-size:10px;color:var(--faint);font-style:italic;padding:8px 0">No submissions yet</div>
+          </div>`;
+        }
+        const abdcTot=a.abdc_a_star+a.abdc_a+a.abdc_b+a.abdc_c;
+        const scopusTot=a.scopus_q1+a.scopus_q2+a.scopus_q3+a.scopus_q4;
+        const wosTot=a.wos_q1+a.wos_q2+a.wos_q3+a.wos_q4;
+        return`<div class="rq-col">
+          <div class="rq-col-name" style="color:${CAMPUS_COLORS[a.campus]}">${a.campus} <span style="color:var(--faint);font-weight:400">· ${a.facultyReporting}/${a.totalFaculty} reporting</span></div>
+          <div class="rq-row"><div class="rq-row-label">ABDC A* premier</div><div class="rq-row-val ${a.abdc_a_star>0?'premier':'zero'}">${a.abdc_a_star}</div></div>
+          <div class="rq-row"><div class="rq-row-label">ABDC total</div><div class="rq-row-val ${abdcTot===0?'zero':''}">${abdcTot}</div></div>
+          <div class="rq-row"><div class="rq-row-label">Scopus Q1</div><div class="rq-row-val ${a.scopus_q1>0?'premier':'zero'}">${a.scopus_q1}</div></div>
+          <div class="rq-row"><div class="rq-row-label">Scopus total</div><div class="rq-row-val ${scopusTot===0?'zero':''}">${scopusTot}</div></div>
+          <div class="rq-row"><div class="rq-row-label">WoS Q1</div><div class="rq-row-val ${a.wos_q1>0?'premier':'zero'}">${a.wos_q1}</div></div>
+          <div class="rq-row"><div class="rq-row-label">UGC-CARE</div><div class="rq-row-val ${a.ugc_care===0?'zero':''}">${a.ugc_care}</div></div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
 // ---- MINI PYRAMID ----
 function buildMiniPyramid(campusData, campus, isOwn){
   const cx=130, gold='#D4AF37', white='rgba(255,255,255,0.75)';
@@ -441,8 +556,9 @@ function renderCards(data){
     const total=(f.exp_industry||0)+(f.exp_academic||0);
     const indPct=total>0?Math.round((f.exp_industry/total)*100):0;
     const isOwn=myDirector&&f.campus===myDirector.campus;
+    const evalSubmitted=hasEval(f.id);
     const ph=phdLabel(f);
-    return`<div class="fcard${isOwn?' own-campus':''}" onclick="openCard(${f.id})">
+    return`<div class="fcard${isOwn?' own-campus':''}${evalSubmitted?' has-eval':''}" onclick="openCard(${f.id})">
       <div class="fc-top">
         <div class="fc-av ${avClass(i)}">${initials(f.name)}</div>
         <div>
@@ -455,6 +571,7 @@ function renderCards(data){
         ${ph?`<span class="pill ${f.phd==='pursuing'?'pill-pursuing':'pill-phd'}">${ph}</span>`:''}
         ${f.subject_area?`<span class="pill pill-subject">${f.subject_area}</span>`:''}
         ${f.admin_role?`<span class="pill pill-admin">${f.admin_role}</span>`:''}
+        ${evalSubmitted?`<span class="pill pill-eval">Eval on file</span>`:''}
       </div>
       ${total>0?`<div class="fc-exp">
         <div class="fc-exp-bar"><div class="fc-exp-ind" style="width:${indPct}%"></div><div class="fc-exp-aca" style="width:${100-indPct}%"></div></div>
@@ -468,10 +585,12 @@ function renderCards(data){
 function openCard(id){
   const f=allData.find(x=>x.id===id);
   if(!f)return;
+  const ev=evaluationsById[id]||null;
   const total=(f.exp_industry||0)+(f.exp_academic||0);
   const indPct=total>0?Math.round((f.exp_industry/total)*100):0;
   const ph=phdLabel(f);
   const isOwn=myDirector&&f.campus===myDirector.campus;
+
   document.getElementById('modal-panel').innerHTML=`
     <button class="dd-close" onclick="closeModal()">← Close</button>
     <div class="dd-header">
@@ -499,50 +618,147 @@ function openCard(id){
       </div>
     </div>`:''}
     <div style="height:.5px;background:var(--border);margin:4px 0 14px"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Evaluation · Capabilities</div>
-      <div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);border:.5px solid rgba(239,159,39,.3)">Awaiting evaluation data</div>
-    </div>
-    <div class="modal-panels">
-      <div class="mp">
-        <div class="mp-head mp-head-navy">
-          <div class="mp-head-label">Performance</div>
-          <div class="mp-head-sub">AY 2024–25</div>
-        </div>
-        <div class="mp-body">
-          ${['Credit points','Teaching effectiveness','MDP revenue'].map(l=>`
-          <div class="mp-row"><div><div class="mp-row-label">${l}</div><div class="mp-hatched" style="width:${40+Math.random()*20|0}px"></div><div class="mp-row-val">Awaiting appraisal</div></div></div>`).join('')}
-        </div>
-      </div>
-      <div class="mp">
-        <div class="mp-head mp-head-charcoal">
-          <div class="mp-head-label">Achievements</div>
-          <div class="mp-head-sub">Logged activities</div>
-        </div>
-        <div class="mp-body">
-          ${f.subject_area?`<div class="mp-row"><div><div class="mp-row-label">Subject area</div><div style="font-size:11px;font-weight:500;color:var(--blue-d);margin-top:2px">${f.subject_area}</div></div></div>`:''}
-          ${f.courses_taught?`<div class="mp-row"><div><div class="mp-row-label">Courses taught</div><div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.5">${f.courses_taught.split(' · ').slice(0,3).join(' · ')}</div></div></div>`:''}
-          ${['Research · publications','MDPs &amp; OBPs'].map(l=>`
-          <div class="mp-row"><div><div class="mp-row-label">${l}</div><div class="mp-hatched" style="width:32px"></div><div class="mp-row-val">Awaiting forms</div></div></div>`).join('')}
-        </div>
-      </div>
-      <div class="mp">
-        <div class="mp-head mp-head-navy">
-          <div class="mp-head-label">Evaluation</div>
-          <div class="mp-head-sub">Signals &amp; flags</div>
-        </div>
-        <div class="mp-body">
-          ${['Promotion signal','Development flag','Early warning'].map(l=>`
-          <div class="mp-row"><div><div class="mp-row-label">${l}</div><div style="border:.5px dashed var(--border);border-radius:4px;padding:4px 6px;margin-top:3px;font-size:10px;color:var(--faint);text-align:center">Pending evaluation data</div></div></div>`).join('')}
-        </div>
-      </div>
-    </div>
-    <div class="unlock-box">
-      <div class="unlock-label">How to unlock this view</div>
-      <div class="unlock-text">Completed appraisal forms are with the Director at each campus. Once retrieved and loaded, every panel above populates automatically. Promotion flags, early warning signals, and running credit points all populate from the same feed.</div>
-    </div>`;
+
+    ${buildModalPerformanceContent(ev)}
+
+    ${buildModalResearchContent(ev)}
+
+    ${buildModalFooterContent(ev)}
+  `;
   document.getElementById('faculty-modal').classList.add('open');
 }
+
+// Top two panels: Performance and Evaluation workflow
+function buildModalPerformanceContent(ev){
+  const hasData=!!ev;
+  const statusInfo=hasData?(WORKFLOW_LABELS[ev.workflow_status]||{label:'Draft',cls:'draft'}):null;
+
+  return`
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Evaluation · Capabilities</div>
+    ${hasData
+      ?`<div class="m-panel-status ${statusInfo.cls}">${statusInfo.label}</div>`
+      :`<div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);border:.5px solid rgba(239,159,39,.3)">No evaluation on file</div>`}
+  </div>
+  <div class="m-panels">
+    <div class="m-panel">
+      <div class="m-panel-head"><div class="m-panel-head-label">Performance</div><div class="m-panel-head-sub">AY 2025–26</div></div>
+      <div class="m-panel-body">
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">Teaching effectiveness</div>
+          <div class="m-panel-row-val ${ev?.teaching_effectiveness?'':'na'}">${ev?.teaching_effectiveness?ev.teaching_effectiveness+' / 5':'Awaiting'}</div>
+        </div>
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">MDPs delivered</div>
+          <div class="m-panel-row-val ${ev?.mdp_count!=null?'':'na'}">${ev?.mdp_count!=null?ev.mdp_count:'Awaiting'}</div>
+        </div>
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">MDP revenue</div>
+          <div class="m-panel-row-val ${ev?.mdp_revenue?'':'na'}">${ev?.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'Awaiting EP records'}</div>
+        </div>
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">Terms taught</div>
+          <div class="m-panel-row-val ${ev?.terms_taught?'':'na'}">${ev?.terms_taught||'Awaiting'}</div>
+        </div>
+      </div>
+    </div>
+    <div class="m-panel">
+      <div class="m-panel-head charcoal"><div class="m-panel-head-label">Evaluation Workflow</div><div class="m-panel-head-sub">Current status</div></div>
+      <div class="m-panel-body">
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">Gate 1 · Mid-Year</div>
+          <div class="m-panel-row-val ${ev?.gate1_locked?'':'na'}">${ev?.gate1_locked?'Submitted':'Pending'}</div>
+        </div>
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">Gate 2 · Annual</div>
+          <div class="m-panel-row-val ${ev?.gate2_locked?'':'na'}">${ev?.gate2_locked?'Submitted':'Pending'}</div>
+        </div>
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">Overall status</div>
+          <div class="m-panel-row-val">${hasData?statusInfo.label:'Not started'}</div>
+        </div>
+        <div class="m-panel-row">
+          <div class="m-panel-row-label">Last updated</div>
+          <div class="m-panel-row-val ${ev?.updated_at?'':'na'}">${ev?.updated_at?new Date(ev.updated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// Research tier breakdown
+function buildModalResearchContent(ev){
+  if(!ev){
+    return`<div class="m-research">
+      <div class="m-research-head">
+        <div class="m-research-title">Research &amp; Publications</div>
+        <div class="m-research-sub">Awaiting submission</div>
+      </div>
+      <div style="font-size:11px;color:var(--faint);font-style:italic;padding:8px 0;text-align:center">Publications data populates once Gate 1 is submitted.</div>
+    </div>`;
+  }
+
+  const abdcTotal=(ev.abdc_a_star||0)+(ev.abdc_a||0)+(ev.abdc_b||0)+(ev.abdc_c||0);
+  const scopusTotal=(ev.scopus_q1||0)+(ev.scopus_q2||0)+(ev.scopus_q3||0)+(ev.scopus_q4||0);
+  const wosTotal=(ev.wos_q1||0)+(ev.wos_q2||0)+(ev.wos_q3||0)+(ev.wos_q4||0);
+
+  const tierRow=(name,total,tiers)=>`
+    <div class="m-tier-row">
+      <div class="m-tier-name">${name}<span class="m-tier-name-total">· ${total}</span></div>
+      <div class="m-tier-cells">
+        ${tiers.map(t=>`
+          <div class="m-tier-cell ${t.premier?'premier':''} ${t.val===0?'zero':''}">
+            <div class="m-tier-val">${t.val}</div>
+            <div class="m-tier-label">${t.label}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+
+  return`<div class="m-research">
+    <div class="m-research-head">
+      <div class="m-research-title">Research &amp; Publications</div>
+      <div class="m-research-sub">Self-reported · Dean Research validates</div>
+    </div>
+    ${tierRow('ABDC',abdcTotal,[
+      {val:ev.abdc_a_star||0,label:'A*',premier:true},
+      {val:ev.abdc_a||0,label:'A'},
+      {val:ev.abdc_b||0,label:'B'},
+      {val:ev.abdc_c||0,label:'C'}
+    ])}
+    ${tierRow('Scopus',scopusTotal,[
+      {val:ev.scopus_q1||0,label:'Q1',premier:true},
+      {val:ev.scopus_q2||0,label:'Q2'},
+      {val:ev.scopus_q3||0,label:'Q3'},
+      {val:ev.scopus_q4||0,label:'Q4'}
+    ])}
+    ${tierRow('Web of Science',wosTotal,[
+      {val:ev.wos_q1||0,label:'Q1',premier:true},
+      {val:ev.wos_q2||0,label:'Q2'},
+      {val:ev.wos_q3||0,label:'Q3'},
+      {val:ev.wos_q4||0,label:'Q4'}
+    ])}
+    <div class="m-other-metrics">
+      <div class="m-metric"><div class="m-metric-val">${ev.ugc_care_count||0}</div><div class="m-metric-label">UGC-CARE</div></div>
+      <div class="m-metric"><div class="m-metric-val">${ev.h_index||0}</div><div class="m-metric-label">h-Index</div></div>
+      <div class="m-metric"><div class="m-metric-val">${ev.conference_papers_count||0}</div><div class="m-metric-label">Conference</div></div>
+    </div>
+  </div>`;
+}
+
+function buildModalFooterContent(ev){
+  if(ev){
+    return`<div class="unlock-box">
+      <div class="unlock-label">Next Steps</div>
+      <div class="unlock-text">Faculty purpose statement, IKIGAI reflection, and development goals are visible in the Director Review page once Gate 2 is submitted. Click through from the hub to approve or return.</div>
+    </div>`;
+  }
+  return`<div class="unlock-box">
+    <div class="unlock-label">How to unlock this view</div>
+    <div class="unlock-text">This faculty has not yet started their performance evaluation for AY 2025–26. Once they submit Gate 1, the performance and publications data populates automatically. Promotion flags, early warning signals, and tier breakdowns all come from the same feed.</div>
+  </div>`;
+}
+
 function closeModal(){document.getElementById('faculty-modal').classList.remove('open')}
 function handleBackdropClick(e){if(e.target===document.getElementById('faculty-modal'))closeModal()}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
@@ -568,7 +784,6 @@ function campusStats(campus){
   };
 }
 
-// ---- SUPER ADMIN SWITCHER ----
 function renderSwitcher(){
   if(!myDirector?.isSuperAdmin)return'';
   const campuses=['Bengaluru','Chennai','Kochi'];
@@ -582,7 +797,6 @@ function renderSwitcher(){
   </div>`;
 }
 
-// ---- RENDER OVERVIEW ----
 function renderOverview(){
   const campuses=['Bengaluru','Chennai','Kochi'].map(campusStats);
   const myCampus=myDirector?.campus||'Bengaluru';
@@ -603,13 +817,13 @@ function renderOverview(){
       </div>
     </div>
     ${buildLeaderboard(campuses)}
+    ${buildResearchQualityStrip(campuses)}
     <div class="section-title">Designation Pyramid · By Campus</div>
     <div class="pyramids-row">
       ${campuses.map(c=>buildMiniPyramid(c.data,c.campus,c.campus===myCampus)).join('')}
     </div>`;
 }
 
-// ---- RENDER FACULTY ----
 let activeCampusFilter='own', searchVal='';
 function renderFaculty(){
   const myCampus=myDirector?.campus||'Bengaluru';
@@ -649,7 +863,6 @@ async function init(){
   myDirector=await resolveAccess();
   if(!myDirector)return;
 
-  // Update topbar badge
   const badge=document.getElementById('tb-badge');
   const badgeText=myDirector.isImpersonating
     ?`${myDirector.campus} · Super Admin View`
@@ -658,13 +871,32 @@ async function init(){
   badge.style.background=CAMPUS_COLORS[myDirector.campus]+'22';
   badge.style.color=CAMPUS_COLORS[myDirector.campus];
 
-  // Load all faculty
-  const{data,error}=await sb.from('faculty_master').select('*').order('campus').order('band');
-  if(error||!data?.length){
+  // Load faculty and evaluations in parallel
+  const[facRes,evalRes]=await Promise.all([
+    sb.from('faculty_master').select('*').order('campus').order('band'),
+    sb.from('faculty_evaluations').select('*').eq('academic_year','2025-26')
+  ]);
+
+  if(facRes.error||!facRes.data?.length){
     document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load faculty data.</div>';
     return;
   }
-  allData=data;
+  allData=facRes.data;
+
+  // Build the id -> evaluation lookup map
+  evaluationsById={};
+  if(evalRes.data){
+    evalRes.data.forEach(ev=>{
+      if(ev.faculty_master_id){
+        const existing=evaluationsById[ev.faculty_master_id];
+        // Keep the most recent update if there are multiple rows
+        if(!existing||new Date(ev.updated_at)>new Date(existing.updated_at)){
+          evaluationsById[ev.faculty_master_id]=ev;
+        }
+      }
+    });
+  }
+
   renderOverview();
 }
 
