@@ -88,6 +88,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .fh{font-size:11px;color:var(--faint);margin-top:3px;font-style:italic}
 .tc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .thc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.tier-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.tier-cell{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:10px 8px;text-align:center;transition:border-color .15s;position:relative}
+.tier-cell:focus-within{border-color:rgba(201,168,76,.5)}
+.tier-cell.tier-premier{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.04)}
+.tier-cell.tier-premier .tier-label{color:var(--gold-d);font-weight:600}
+.tier-cell.lk{background:var(--parchment);border-color:var(--border-g);pointer-events:none}
+.tier-cell.lk .tier-input{color:var(--muted)}
+.tier-input{width:100%;border:none;padding:4px 0;text-align:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--navy);background:transparent;outline:none}
+.tier-input:focus{outline:none}
+.tier-label{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--gold-d);letter-spacing:.05em;margin-top:2px}
+.tier-hint{font-size:9.5px;color:var(--faint);margin-top:1px;line-height:1.2}
+.fl-with-hint{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.fl-hint{font-size:10px;color:var(--faint);font-style:italic;text-transform:none;letter-spacing:0;font-weight:400}
 .ablock{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;margin-bottom:12px}
 .abl{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);margin-bottom:7px}
 .ar{display:flex;justify-content:space-between;padding:3px 0;border-bottom:.5px solid rgba(0,0,0,.05);font-size:12px}
@@ -155,7 +168,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .toast.show{transform:translateY(0);opacity:1}
 .fdiv{height:.5px;background:var(--border);margin:16px 0}
 .blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
-@media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:20px 18px 60px}.ag{grid-template-columns:1fr 1fr}}
+@media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:20px 18px 60px}.ag{grid-template-columns:1fr 1fr}.tier-row{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -254,19 +267,104 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec ls" id="s3">
-  <div class="sh"><div class="sn">03</div><div><div class="si-t">Research &amp; Publications</div><div class="si-s">Validated by Dean Research</div></div></div>
+  <div class="sh"><div class="sn">03</div><div><div class="si-t">Research &amp; Publications</div><div class="si-s">Validated by Dean Research · Quality-tiered by global B-school standards</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
-    <div class="thc">
-      <div class="f"><div class="fl">Scopus</div><input class="fi" id="f-scopus" type="number" min="0" placeholder="0"></div>
-      <div class="f"><div class="fl">ABDC Ranked</div><input class="fi" id="f-abdc" type="number" min="0" placeholder="0"></div>
-      <div class="f"><div class="fl">Web of Science</div><input class="fi" id="f-wos" type="number" min="0" placeholder="0"></div>
+
+    <div class="f">
+      <div class="fl fl-with-hint">
+        <span>ABDC Ranked Publications <span class="ab">Business standard</span></span>
+        <span class="fl-hint">Australian Business Deans Council list</span>
+      </div>
+      <div class="tier-row">
+        <div class="tier-cell tier-premier">
+          <input class="tier-input" id="f-abdc-a-star" type="number" min="0" placeholder="0">
+          <div class="tier-label">A*</div>
+          <div class="tier-hint">Premier outlets</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-abdc-a" type="number" min="0" placeholder="0">
+          <div class="tier-label">A</div>
+          <div class="tier-hint">Excellent</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-abdc-b" type="number" min="0" placeholder="0">
+          <div class="tier-label">B</div>
+          <div class="tier-hint">Well-regarded</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-abdc-c" type="number" min="0" placeholder="0">
+          <div class="tier-label">C</div>
+          <div class="tier-hint">Recognised</div>
+        </div>
+      </div>
     </div>
-    <div class="tc">
+
+    <div class="f">
+      <div class="fl fl-with-hint">
+        <span>Scopus <span class="ab">by SJR Quartile</span></span>
+        <span class="fl-hint">Scimago Journal Rank in subject category</span>
+      </div>
+      <div class="tier-row">
+        <div class="tier-cell tier-premier">
+          <input class="tier-input" id="f-scopus-q1" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q1</div>
+          <div class="tier-hint">Top 25%</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-scopus-q2" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q2</div>
+          <div class="tier-hint">25 to 50%</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-scopus-q3" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q3</div>
+          <div class="tier-hint">50 to 75%</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-scopus-q4" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q4</div>
+          <div class="tier-hint">Bottom 25%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="f">
+      <div class="fl fl-with-hint">
+        <span>Web of Science <span class="ab">by JIF Quartile</span></span>
+        <span class="fl-hint">SSCI · SCIE · by Journal Impact Factor</span>
+      </div>
+      <div class="tier-row">
+        <div class="tier-cell tier-premier">
+          <input class="tier-input" id="f-wos-q1" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q1</div>
+          <div class="tier-hint">Top 25%</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-wos-q2" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q2</div>
+          <div class="tier-hint">25 to 50%</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-wos-q3" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q3</div>
+          <div class="tier-hint">50 to 75%</div>
+        </div>
+        <div class="tier-cell">
+          <input class="tier-input" id="f-wos-q4" type="number" min="0" placeholder="0">
+          <div class="tier-label">Q4</div>
+          <div class="tier-hint">Bottom 25%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="thc">
+      <div class="f"><div class="fl">UGC-CARE Listed <span class="ab">India</span></div><input class="fi" id="f-ugc-care" type="number" min="0" placeholder="0"></div>
       <div class="f"><div class="fl">h-Index</div><input class="fi" id="f-hi" type="number" min="0" placeholder="0"></div>
       <div class="f"><div class="fl">Conference Papers</div><input class="fi" id="f-conf" type="number" min="0" placeholder="0"></div>
     </div>
-    <div class="f"><div class="fl">Publications Detail</div><textarea class="fi" id="f-pub" rows="4" placeholder="Title · Journal · Indexing · Year. Most recent first."></textarea></div>
+
+    <div class="f"><div class="fl">Publications Detail</div><textarea class="fi" id="f-pub" rows="4" placeholder="Title · Journal · Indexing (ABDC tier or Quartile) · Year. Most recent first."></textarea></div>
     <div class="f"><div class="fl">Work in Progress</div><textarea class="fi" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects..."></textarea></div>
   </div>
 </section>
@@ -410,16 +508,22 @@ const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
 
-// Runtime identity. Populated by resolveAccess().
 let CURRENT_USER=null;
 let USER_ROLE='';
-let IS_PREVIEW=false;  // super_admin viewing someone else
+let IS_PREVIEW=false;
 let DEANS=[];
 let DIRECTOR=null;
 
 let fac=null,eid=null,erec=null;
 const R={t:0,r:0,i:0,s:0};
 const dims=[{k:'t',l:'Teaching Effectiveness'},{k:'r',l:'Research Capability'},{k:'i',l:'Industry Engagement'},{k:'s',l:'Institution Building'}];
+
+// All tier inputs introduced in the Research section redesign
+const RESEARCH_TIER_IDS=[
+  'f-abdc-a-star','f-abdc-a','f-abdc-b','f-abdc-c',
+  'f-scopus-q1','f-scopus-q2','f-scopus-q3','f-scopus-q4',
+  'f-wos-q1','f-wos-q2','f-wos-q3','f-wos-q4'
+];
 
 function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('n-'+id)?.classList.add('active');}
@@ -435,8 +539,6 @@ function exitPreview(){
   window.location.href='index.html';
 }
 
-// Resolve who is looking at this page and which faculty_master row applies.
-// Returns { faculty, isPreview } or null to indicate redirect has happened.
 async function resolveAccess(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='login.html';return null;}
@@ -448,13 +550,10 @@ async function resolveAccess(){
   CURRENT_USER=profile;
   USER_ROLE=profile.role;
 
-  // Super admin can view any faculty via ?as=<email>.
-  // Faculty (fdp_user) can only view their own row.
   const urlParams=new URLSearchParams(window.location.search);
   const asEmail=USER_ROLE==='super_admin'?urlParams.get('as'):null;
   const targetEmail=asEmail||profile.email;
 
-  // Faculty (fdp_user): load own row only
   if(USER_ROLE==='fdp_user'){
     const{data:ownRow}=await sb.from('faculty_master')
       .select('*').eq('email',profile.email).maybeSingle();
@@ -467,12 +566,10 @@ async function resolveAccess(){
     return{faculty:ownRow,isPreview:false};
   }
 
-  // Super admin: either own row if they have one, or impersonate
   if(USER_ROLE==='super_admin'){
     const{data:row}=await sb.from('faculty_master')
       .select('*').eq('email',targetEmail).maybeSingle();
     if(!row){
-      // No match. Fall back to first pilot faculty so the page is not a dead end.
       const{data:firstPilot}=await sb.from('faculty_master')
         .select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
       if(!firstPilot){
@@ -486,7 +583,6 @@ async function resolveAccess(){
     return{faculty:row,isPreview:targetEmail!==profile.email};
   }
 
-  // Everyone else goes to their proper home.
   window.location.href='index.html';
   return null;
 }
@@ -498,12 +594,12 @@ function enterPreviewMode(faculty){
   document.getElementById('preview-who').textContent=
     `Super Admin Preview: ${faculty.name}`;
 
-  // Disable all inputs and the submit button. Save-draft stays visible but no-ops.
   document.getElementById('subbtn').disabled=true;
-  document.querySelectorAll('.fi,.ai,.ata,.ibi').forEach(el=>{
+  document.querySelectorAll('.fi,.ai,.ata,.ibi,.tier-input').forEach(el=>{
     el.setAttribute('readonly','true');
     el.classList.add('lk');
   });
+  document.querySelectorAll('.tier-cell').forEach(el=>el.classList.add('lk'));
   document.querySelectorAll('.sb').forEach(b=>b.disabled=true);
   document.getElementById('g1box').style.display='none';
   document.getElementById('g2box').style.display='none';
@@ -527,7 +623,12 @@ function rStars(k){document.querySelectorAll(`.sbtns[data-k="${k}"] .sb`).forEac
 function chkAlloc(){const t=['al-t','al-r','al-i','al-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);const el=document.getElementById('at');el.textContent=`Total: ${t}%`;el.className='at '+(t===100?'ok':'bad');upProg();}
 
 function upProg(){
-  const fids=['f-tnotes','f-terms','f-scopus','f-abdc','f-wos','f-hi','f-conf','f-pub','f-mdpc','f-mdpd','f-ind','f-inst','f-pt','f-pr','f-pi','f-ps','f-str','f-gr','f-ci','f-cr','f-cs','f-iki','al-t','al-r','al-i','al-s','f-xc','f-op','f-on','f-sta','f-stp','f-cnt','f-kg','f-sup'];
+  const fids=['f-tnotes','f-terms',
+    ...RESEARCH_TIER_IDS,
+    'f-ugc-care','f-hi','f-conf','f-pub','f-mdpc','f-mdpd','f-ind','f-inst',
+    'f-pt','f-pr','f-pi','f-ps','f-str','f-gr','f-ci','f-cr','f-cs','f-iki',
+    'al-t','al-r','al-i','al-s',
+    'f-xc','f-op','f-on','f-sta','f-stp','f-cnt','f-kg','f-sup'];
   let filled=0;
   fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&el.value.trim()&&el.value!=='0')filled++;});
   Object.values(R).forEach(v=>{if(v>0)filled++;});
@@ -543,7 +644,11 @@ function applyLocks(){
   const s=erec?.workflow_status||'draft';
   if(g1Locked()){
     document.querySelectorAll('.ls').forEach(el=>el.classList.add('locked'));
-    ['f-scholar','f-orcid','f-terms','f-tnotes','f-scopus','f-abdc','f-wos','f-hi','f-conf','f-pub','f-wip','f-mdpc','f-mdpd','f-ind','f-inst'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
+    ['f-scholar','f-orcid','f-terms','f-tnotes',
+     ...RESEARCH_TIER_IDS,
+     'f-ugc-care','f-hi','f-conf','f-pub','f-wip','f-mdpc','f-mdpd','f-ind','f-inst'
+    ].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
+    document.querySelectorAll('#s3 .tier-cell').forEach(el=>el.classList.add('lk'));
     document.getElementById('g1box').style.display='none';
     document.getElementById('g1s').textContent='Locked';
     document.getElementById('g1bs').textContent='Locked';
@@ -589,9 +694,19 @@ function g1Data(){
     orcid_id:val('f-orcid'),
     terms_taught:val('f-terms'),
     teaching_notes:val('f-tnotes'),
-    publications_count:numVal('f-scopus'),
-    abdc_count:numVal('f-abdc'),
-    wos_count:numVal('f-wos'),
+    abdc_a_star:numVal('f-abdc-a-star'),
+    abdc_a:numVal('f-abdc-a'),
+    abdc_b:numVal('f-abdc-b'),
+    abdc_c:numVal('f-abdc-c'),
+    scopus_q1:numVal('f-scopus-q1'),
+    scopus_q2:numVal('f-scopus-q2'),
+    scopus_q3:numVal('f-scopus-q3'),
+    scopus_q4:numVal('f-scopus-q4'),
+    wos_q1:numVal('f-wos-q1'),
+    wos_q2:numVal('f-wos-q2'),
+    wos_q3:numVal('f-wos-q3'),
+    wos_q4:numVal('f-wos-q4'),
+    ugc_care_count:numVal('f-ugc-care'),
     h_index:numVal('f-hi'),
     conference_papers_count:numVal('f-conf'),
     publications_details:val('f-pub'),
@@ -712,7 +827,10 @@ function handleSubmit(){if(!g1Locked())submitGate1();else submitGate2();}
 function restore(d){
   const m={
     'f-scholar':d.scholar_url,'f-orcid':d.orcid_id,'f-terms':d.terms_taught,'f-tnotes':d.teaching_notes,
-    'f-scopus':d.publications_count,'f-abdc':d.abdc_count,'f-wos':d.wos_count,'f-hi':d.h_index,'f-conf':d.conference_papers_count,
+    'f-abdc-a-star':d.abdc_a_star,'f-abdc-a':d.abdc_a,'f-abdc-b':d.abdc_b,'f-abdc-c':d.abdc_c,
+    'f-scopus-q1':d.scopus_q1,'f-scopus-q2':d.scopus_q2,'f-scopus-q3':d.scopus_q3,'f-scopus-q4':d.scopus_q4,
+    'f-wos-q1':d.wos_q1,'f-wos-q2':d.wos_q2,'f-wos-q3':d.wos_q3,'f-wos-q4':d.wos_q4,
+    'f-ugc-care':d.ugc_care_count,'f-hi':d.h_index,'f-conf':d.conference_papers_count,
     'f-pub':d.publications_details,'f-wip':d.wip_details,
     'f-mdpc':d.mdp_count,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,'f-inst':d.institution_contributions,
     'f-pt':d.ikigai_passion?.split('\n\n')[0],
@@ -725,7 +843,6 @@ function restore(d){
     'f-sta':d.action_start,'f-stp':d.action_stop,'f-cnt':d.action_continue,'f-kg':d.action_key_goal,'f-sup':d.action_support
   };
   Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;});
-  // Teaching effectiveness comes from Dean Academics, display only
   if(d.teaching_effectiveness){document.getElementById('f-te').value=d.teaching_effectiveness+' / 5.0';}
   if(d.mdp_revenue){document.getElementById('f-mdpr').value='₹'+Number(d.mdp_revenue).toLocaleString('en-IN');}
   if(d.ikigai_strength_teaching){R.t=d.ikigai_strength_teaching;rStars('t');}
@@ -739,26 +856,22 @@ async function init(){
   document.getElementById('blocker').style.display='block';
 
   const access=await resolveAccess();
-  if(!access)return;  // redirect already fired or blocker shown
+  if(!access)return;
 
   fac=access.faculty;
 
-  // Show the page, hide blocker
   document.getElementById('blocker').style.display='none';
   document.getElementById('layout').style.display='grid';
 
   buildStars();
-  document.querySelectorAll('.fi,.ai,.ata,.ibi').forEach(el=>el.addEventListener('input',upProg));
+  document.querySelectorAll('.fi,.ai,.ata,.ibi,.tier-input').forEach(el=>el.addEventListener('input',upProg));
 
-  // Load deans for this campus
   const{data:deans}=await sb.from('dean_registry').select('*').eq('campus',fac.campus);
   if(deans)DEANS=deans.map(d=>({email:d.email,name:d.name,role:d.role}));
 
-  // Load director for this campus
   const{data:dirRow}=await sb.from('director_campus_map').select('*').eq('campus',fac.campus).maybeSingle();
   if(dirRow)DIRECTOR={email:dirRow.email,name:dirRow.name};
 
-  // Populate profile
   document.getElementById('sb-name').textContent=fac.name;
   document.getElementById('sb-role').textContent=`${fac.designation} · ${fac.campus}`;
   document.getElementById('f-admin').value=fac.admin_role||'None recorded';
@@ -775,7 +888,6 @@ async function init(){
   ];
   document.getElementById('prof-rows').innerHTML=rows.map(([k,v])=>`<div class="ar"><span class="ark">${k}</span><span class="arv">${v}</span></div>`).join('');
 
-  // Load existing evaluation record if any
   const{data:ev}=await sb.from('faculty_evaluations')
     .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26').maybeSingle();
   if(ev){eid=ev.id;erec=ev;restore(ev);}
@@ -783,7 +895,6 @@ async function init(){
 
   applyLocks();
 
-  // Apply preview mode after everything else so it overlays properly
   if(access.isPreview){enterPreviewMode(fac);}
 }
 
