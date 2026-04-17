@@ -509,6 +509,41 @@
       </div>
     </div>
 
+    <!-- EMPLOYEE DIRECTORY - super_admin + president only, hidden until role confirmed -->
+    <div class="intel-tile" id="directory-tile" onclick="window.location.href='employee-directory.html'">
+      <div class="intel-body">
+        <div class="intel-left">
+          <div class="intel-tag">
+            <div class="intel-tag-dot"></div>
+            Three-Campus Directory · Restricted
+          </div>
+          <div class="intel-title">Employee Directory</div>
+          <div class="intel-desc">Complete contact roster across Bengaluru, Chennai and Kochi. Strategic tier first, filterable by campus, tier, and email status. Private view for you and the President only.</div>
+        </div>
+        <div class="intel-right">
+          <div class="intel-stat">
+            <div class="intel-stat-num">140</div>
+            <div class="intel-stat-label">Contacts</div>
+          </div>
+          <div class="intel-stat-divider"></div>
+          <div class="intel-stat">
+            <div class="intel-stat-num">84</div>
+            <div class="intel-stat-label">Faculty</div>
+          </div>
+          <div class="intel-stat-divider"></div>
+          <div class="intel-stat">
+            <div class="intel-stat-num">57</div>
+            <div class="intel-stat-label">Staff</div>
+          </div>
+          <div class="intel-cta">Open Directory →</div>
+        </div>
+      </div>
+      <div class="intel-footer">
+        <div class="intel-footer-left">Sources: Reetha Joseph (BLR) · XIME Chennai Feb 2026 · XIME Kochi April 2026</div>
+        <div class="intel-footer-right">Live · Searchable</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -667,6 +702,11 @@ async function initAuth() {
   // Faculty Intelligence tile: super_admin only
   if (isSuperAdmin) {
     document.getElementById('intel-tile').classList.add('visible');
+  }
+
+  // Employee Directory tile: super_admin only (you and the President)
+  if (isSuperAdmin) {
+    document.getElementById('directory-tile').classList.add('visible');
   }
 
   // Pending Approvals section: super_admin only (it is the president's queue)
