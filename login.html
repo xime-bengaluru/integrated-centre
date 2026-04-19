@@ -397,7 +397,7 @@ body::after {
 
   <div class="card-footer">
     <div class="footer-secure">🔒 Secured by Supabase Auth</div>
-    <div class="footer-version">v2.1 · 2026</div>
+    <div class="footer-version">v2.2 · 2026</div>
   </div>
 
 </div>
@@ -422,7 +422,9 @@ const ROLE_LANDING = {
 async function checkSession() {
   const { data: { session } } = await db.auth.getSession();
   if (session) {
-    if (session.user.user_metadata?.force_password_change) {
+    // Check must_change_password flag in user_profiles (source of truth)
+    const mustChange = await getMustChangePassword(session.user.id);
+    if (mustChange) {
       showChangePw();
       return;
     }
@@ -433,6 +435,15 @@ async function checkSession() {
   if (hash.includes('type=recovery')) {
     showChangePw();
   }
+}
+
+async function getMustChangePassword(userId) {
+  const { data } = await db.from('user_profiles')
+    .select('must_change_password')
+    .eq('id', userId)
+    .single();
+  // Default to true if the column is somehow missing or null, to fail safe
+  return data?.must_change_password !== false;
 }
 
 async function redirectByRole(userId) {
@@ -483,7 +494,9 @@ async function doLogin() {
     return;
   }
 
-  if (data.user.user_metadata?.force_password_change) {
+  // Check must_change_password flag in user_profiles (source of truth)
+  const mustChange = await getMustChangePassword(data.user.id);
+  if (mustChange) {
     showChangePw();
     return;
   }
@@ -522,19 +535,33 @@ async function doChangePassword() {
   if (pw1.length < 8) { showMsg(errEl, 'Password must be at least 8 characters.'); return; }
   if (pw1 !== pw2) { showMsg(errEl, 'Passwords do not match.'); return; }
 
+  // Block setting it to the default temp password again
+  if (pw1 === 'Xime@2026') {
+    showMsg(errEl, 'Please choose a password different from the temporary one.');
+    return;
+  }
+
   btn.textContent = 'Saving…';
   btn.disabled = true;
 
-  const { data, error } = await db.auth.updateUser({
-    password: pw1,
-    data: { force_password_change: false }
-  });
+  // Update the auth password
+  const { data, error } = await db.auth.updateUser({ password: pw1 });
 
   if (error) {
     btn.textContent = 'Set Password & Continue →';
     btn.disabled = false;
     showMsg(errEl, error.message);
     return;
+  }
+
+  // Flip the flag in user_profiles so we don't force-change again
+  const { error: flagError } = await db.from('user_profiles')
+    .update({ must_change_password: false })
+    .eq('id', data.user.id);
+
+  if (flagError) {
+    // Password changed, but flag didn't flip. Warn but continue so user isn't trapped.
+    console.warn('Password updated but must_change_password flag not cleared:', flagError);
   }
 
   await redirectByRole(data.user.id);
