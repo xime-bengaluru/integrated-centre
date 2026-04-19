@@ -209,7 +209,7 @@ tr:hover td{background:var(--cream)}
 <div id="access-denied">
   <div class="denied-box">
     <div class="denied-title">Access restricted</div>
-    <div class="denied-sub">This section is available to the President only. If you believe this is an error, please contact the system administrator.</div>
+    <div class="denied-sub">Faculty Intelligence requires super admin access, or org admin with the faculty module enabled. If you believe this is an error, please contact the system administrator.</div>
     <button class="denied-btn" onclick="window.location.href='/'">Return to dashboard</button>
   </div>
 </div>
@@ -223,7 +223,7 @@ tr:hover td{background:var(--cream)}
       <div class="wm-title">Magis Centre · Faculty Intelligence</div>
     </div>
     <div class="topbar-r">
-      <div class="badge-president">President's View</div>
+      <div class="badge-president" id="role-badge">Admin View</div>
       <button class="back-btn" onclick="window.location.href='/'">Back to centre</button>
     </div>
   </div>
@@ -502,12 +502,32 @@ async function init() {
     window.location.href = '/login.html';
     return;
   }
-  const role = session.user.user_metadata?.role;
-  if (role !== 'super_admin') {
+
+  // Fetch full profile for role + module_access
+  const { data: profile } = await sb.from('user_profiles').select('*').eq('id', session.user.id).maybeSingle();
+  if (!profile) {
+    document.getElementById('gate').innerHTML = '<div class="gate-text">Profile not found. Contact admin.</div>';
+    return;
+  }
+
+  const isSuperAdmin = profile.role === 'super_admin';
+  const isOrgAdminWithAccess = profile.role === 'org_admin'
+    && Array.isArray(profile.module_access)
+    && profile.module_access.includes('faculty');
+
+  if (!isSuperAdmin && !isOrgAdminWithAccess) {
     document.getElementById('gate').style.display = 'none';
     document.getElementById('access-denied').style.display = 'flex';
     return;
   }
+
+  // Set role badge based on who's viewing
+  const roleLabels = {
+    super_admin: "President's View",
+    org_admin: 'Org Admin View'
+  };
+  document.getElementById('role-badge').textContent = roleLabels[profile.role] || 'Admin View';
+
   const { data, error } = await sb
     .from('faculty_master')
     .select('*')
