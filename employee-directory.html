@@ -175,7 +175,7 @@
     <span class="mt-page">Employee Directory</span>
   </div>
   <div class="mt-r">
-    <span class="mt-role" id="mt-role">Super Admin</span>
+    <span class="mt-role" id="mt-role">Admin</span>
     <span class="mt-user" id="mt-user"></span>
     <button class="mt-signout" onclick="signOut()">Sign out</button>
   </div>
@@ -252,7 +252,7 @@ async function signOut() {
   window.location.href = 'login.html';
 }
 
-async function requireSuperAdmin() {
+async function requireAdmin() {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
     window.location.href = 'login.html';
@@ -266,10 +266,14 @@ async function requireSuperAdmin() {
     document.getElementById('auth-denied-sub').style.display = 'block';
     return null;
   }
-  if (profile.role !== 'super_admin') {
+  const isSuperAdmin = profile.role === 'super_admin';
+  const isOrgAdminWithAccess = profile.role === 'org_admin'
+    && Array.isArray(profile.module_access)
+    && profile.module_access.includes('directory');
+  if (!isSuperAdmin && !isOrgAdminWithAccess) {
     document.getElementById('auth-msg').textContent = 'Access restricted';
     document.getElementById('auth-msg').classList.add('auth-denied');
-    document.getElementById('auth-denied-sub').innerHTML = 'Employee Directory is visible to super admins only. <span class="auth-link" onclick="window.location.href=\'index.html\'">Return to Magis Centre</span>';
+    document.getElementById('auth-denied-sub').innerHTML = 'Employee Directory requires super admin or org admin access. <span class="auth-link" onclick="window.location.href=\'index.html\'">Return to Magis Centre</span>';
     document.getElementById('auth-denied-sub').style.display = 'block';
     return null;
   }
@@ -541,7 +545,7 @@ function filterCards() {
 }
 
 async function init() {
-  const profile = await requireSuperAdmin();
+  const profile = await requireAdmin();
   if (!profile) return;
 
   document.getElementById('auth-overlay').style.display = 'none';
@@ -550,6 +554,9 @@ async function init() {
 
   const displayName = profile.full_name || profile.email.split('@')[0];
   document.getElementById('mt-user').textContent = displayName;
+
+  const roleLabels = { super_admin: 'Super Admin', org_admin: 'Org Admin' };
+  document.getElementById('mt-role').textContent = roleLabels[profile.role] || profile.role;
 
   render();
 }
