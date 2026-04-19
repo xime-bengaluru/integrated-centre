@@ -474,7 +474,7 @@
       </div>
     </div>
 
-    <!-- FACULTY INTELLIGENCE - President only, hidden until role confirmed -->
+    <!-- FACULTY INTELLIGENCE - super_admin or org_admin with faculty module -->
     <div class="intel-tile" id="intel-tile" onclick="window.location.href='faculty-intelligence.html'">
       <div class="intel-body">
         <div class="intel-left">
@@ -509,7 +509,7 @@
       </div>
     </div>
 
-    <!-- EMPLOYEE DIRECTORY - super_admin + president only, hidden until role confirmed -->
+    <!-- EMPLOYEE DIRECTORY - super_admin or org_admin with directory module -->
     <div class="intel-tile" id="directory-tile" onclick="window.location.href='employee-directory.html'">
       <div class="intel-body">
         <div class="intel-left">
@@ -518,7 +518,7 @@
             Three-Campus Directory · Restricted
           </div>
           <div class="intel-title">Employee Directory</div>
-          <div class="intel-desc">Complete contact roster across Bengaluru, Chennai and Kochi. Strategic tier first, filterable by campus, tier, and email status. Private view for you and the President only.</div>
+          <div class="intel-desc">Complete contact roster across Bengaluru, Chennai and Kochi. Strategic tier first, filterable by campus, tier, and email status. Restricted to authorised administrators.</div>
         </div>
         <div class="intel-right">
           <div class="intel-stat">
@@ -663,7 +663,7 @@ async function initAuth() {
 
   const { data: profile } = await db
     .from('user_profiles')
-    .select('full_name, email, role, campus')
+    .select('full_name, email, role, campus, module_access')
     .eq('id', session.user.id)
     .single();
 
@@ -696,20 +696,26 @@ async function initAuth() {
 
   // Role-scoped visibility
   const isSuperAdmin = role === 'super_admin';
+  const isOrgAdmin   = role === 'org_admin';
   const isDirector   = role === 'director';
   const isDean       = role === 'dean';
 
-  // Faculty Intelligence tile: super_admin only
-  if (isSuperAdmin) {
+  // Module access array (for org_admin granular permissions)
+  const modules = Array.isArray(profile.module_access) ? profile.module_access : [];
+  const hasFaculty   = isOrgAdmin && modules.includes('faculty');
+  const hasDirectory = isOrgAdmin && modules.includes('directory');
+
+  // Faculty Intelligence tile: super_admin OR org_admin with faculty module
+  if (isSuperAdmin || hasFaculty) {
     document.getElementById('intel-tile').classList.add('visible');
   }
 
-  // Employee Directory tile: super_admin only (you and the President)
-  if (isSuperAdmin) {
+  // Employee Directory tile: super_admin OR org_admin with directory module
+  if (isSuperAdmin || hasDirectory) {
     document.getElementById('directory-tile').classList.add('visible');
   }
 
-  // Pending Approvals section: super_admin only (it is the president's queue)
+  // Pending Approvals section: super_admin only (President-level approval queue)
   if (isSuperAdmin) {
     document.getElementById('pending-section').style.display = '';
   }
