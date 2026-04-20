@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magis Centre · Annual Evaluation</title>
+<title>Magis Centre · Annual Development Review</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -62,6 +62,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .nt{font-size:11px;color:var(--muted)}
 .ni.active .nt{color:var(--navy);font-weight:500}
 .main{padding:36px 44px 80px;max-width:740px}
+
+/* Points ledger strip */
+.ledger{background:var(--white);border:1px solid var(--border-g);border-radius:var(--r);padding:12px 18px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.ledger-l{display:flex;align-items:center;gap:10px}
+.ledger-label{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d)}
+.ledger-items{display:flex;align-items:center;gap:18px}
+.ledger-item{display:flex;flex-direction:column;gap:1px}
+.ledger-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--navy)}
+.ledger-sub{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.ledger-total{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-d)}
+
 .gb{border-radius:var(--r);padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
 .gb1{background:var(--navy)}
 .gb2{background:#1a2535}
@@ -77,8 +88,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .si-t{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--navy)}
 .si-s{font-size:11px;color:var(--faint);margin-top:1px}
 .srl{height:.5px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);margin-top:8px}
+
+/* Gate 1 locked sections: soft overlay instead of hard block */
 .ls{position:relative}
-.ls.locked::after{content:'Locked. Gate 1 submitted.';position:absolute;inset:0;background:rgba(250,248,243,.88);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--amber-d);font-weight:500;letter-spacing:.04em;border:.5px solid rgba(239,159,39,.3);pointer-events:none;z-index:2}
+.ls.locked .locked-badge{display:inline-block}
+.locked-badge{display:none;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--amber-d);background:rgba(239,159,39,.1);padding:3px 9px;border-radius:10px;border:.5px solid rgba(239,159,39,.3);margin-left:8px;vertical-align:middle}
+
 .f{margin-bottom:16px}
 .fl{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;display:flex;align-items:center;gap:6px}
 .ab{font-size:9px;font-weight:400;color:var(--gold-d);background:rgba(201,168,76,.1);border:1px solid var(--border-g);padding:1px 5px;border-radius:10px;text-transform:none;letter-spacing:.02em}
@@ -117,22 +132,68 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .sb{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:9px;font-family:'DM Mono',monospace;color:var(--faint);transition:all .12s;display:flex;align-items:center;justify-content:center}
 .sb.on{background:var(--gold);border-color:var(--gold);color:var(--navy)}
 .sb:disabled{cursor:not-allowed;opacity:.6}
+
+/* Institution Building categorised entries */
+.inst-entry-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.inst-entry{background:var(--white);border:.5px solid var(--border);border-radius:var(--rs);padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+.inst-entry-body{}
+.inst-entry-cat{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:3px}
+.inst-entry-desc{font-size:13px;color:var(--text);line-height:1.5}
+.inst-entry-date{font-size:11px;color:var(--faint);margin-top:3px;font-family:'DM Mono',monospace}
+.inst-entry-remove{background:transparent;border:none;color:var(--faint);cursor:pointer;font-size:14px;padding:4px 8px;border-radius:4px}
+.inst-entry-remove:hover{background:rgba(226,75,74,.1);color:#A32D2D}
+.inst-form{background:var(--parchment);border:1px dashed var(--border-g);border-radius:var(--rs);padding:12px;margin-bottom:12px}
+.inst-form-row{display:grid;grid-template-columns:1fr 140px;gap:10px;margin-bottom:8px}
+.inst-form-btn{background:var(--navy);color:#fff;border:none;padding:7px 16px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer}
+.inst-form-btn:hover{background:#1a2535}
+.inst-add-btn{background:transparent;border:1px dashed var(--border-g);color:var(--navy);padding:8px 14px;font-size:12px;border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%}
+.inst-add-btn:hover{border-color:var(--gold);color:var(--gold-d)}
+.inst-empty{font-size:12px;color:var(--faint);font-style:italic;padding:8px 0}
+
+/* Course selector */
+.course-selector{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-bottom:10px}
+.course-chips{display:flex;flex-wrap:wrap;gap:5px;min-height:32px;padding-bottom:10px;border-bottom:.5px solid var(--border);margin-bottom:10px}
+.course-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;background:var(--cream);color:var(--navy);border:.5px solid var(--border-g);border-radius:14px;font-size:11px;font-weight:500}
+.course-chip button{background:transparent;border:none;color:var(--navy);cursor:pointer;font-size:13px;padding:0 2px;line-height:1}
+.course-chip button:hover{color:#A32D2D}
+.course-empty{color:var(--faint);font-size:11px;font-style:italic;padding:4px 0}
+.course-search{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;margin-bottom:8px;font-family:'DM Sans',sans-serif}
+.course-filter-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.course-pill{padding:3px 9px;font-size:10px;border:.5px solid var(--border);border-radius:14px;background:var(--white);color:var(--muted);cursor:pointer}
+.course-pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.course-list{max-height:180px;overflow-y:auto;border:.5px solid var(--border);border-radius:var(--rs);padding:3px}
+.course-option{padding:5px 9px;font-size:12px;color:var(--text);cursor:pointer;border-radius:3px;display:flex;justify-content:space-between;align-items:center}
+.course-option:hover{background:var(--cream)}
+.course-option.selected{background:var(--cream);color:var(--gold-d);font-weight:500}
+.course-option .cat-tag{font-size:9px;color:var(--faint);letter-spacing:.05em;text-transform:uppercase}
+
 .ib{background:var(--navy);border-radius:var(--r);padding:20px 24px;margin-top:6px;position:relative;overflow:hidden}
 .ib::before{content:'';position:absolute;top:-16px;right:-16px;width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,.06)}
 .ibp{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.4);margin-bottom:8px;line-height:1.6}
 .ibi{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,.3);padding:7px 0;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:#fff;font-weight:300;line-height:1.6;resize:none;min-height:80px}
 .ibi:focus{outline:none;border-bottom-color:var(--gold)}
 .ibi::placeholder{color:rgba(255,255,255,.16)}
-.ag{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+
+/* Time allocation — now 3 columns */
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .ac{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:10px;text-align:center}
-.ac.hl{border-color:rgba(239,159,39,.35);background:#FAEEDA}
 .acl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.acl sup{color:var(--gold-d);font-weight:700;margin-left:2px}
 .ai{width:100%;border:none;background:transparent;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--navy);text-align:center;padding:0}
 .ai:focus{outline:none}
 .acp{font-size:10px;color:var(--faint);margin-top:1px}
 .at{text-align:right;font-size:12px;color:var(--faint);margin-top:5px}
 .at.ok{color:var(--teal)}
 .at.bad{color:var(--red)}
+.alloc-footnote{font-size:11px;color:var(--muted);font-style:italic;margin-top:10px;padding:8px 12px;background:var(--parchment);border-left:2px solid var(--gold);border-radius:var(--rs)}
+
+/* 10c significant change reveal */
+.change-reveal{margin-top:18px;padding:16px 18px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.3);border-radius:var(--r);display:none}
+.change-reveal.active{display:block}
+.change-reveal-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.change-badge{background:var(--gold);color:var(--navy);padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.change-title{font-size:13px;font-weight:500;color:var(--navy)}
+
 .acg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
 .acard{border-radius:var(--rs);padding:13px;border:.5px solid}
 .ast{background:#E1F5EE;border-color:rgba(29,158,117,.25)}
@@ -144,23 +205,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .asp .ach{color:#501313}
 .acn .ach{color:var(--muted)}
 .agl .ach{color:var(--gold)}
-.acp{font-size:11px;font-style:italic;margin-bottom:6px;line-height:1.5}
-.ast .acp{color:var(--teal)}
-.asp .acp{color:#A32D2D}
-.acn .acp{color:var(--muted)}
-.agl .acp{color:rgba(255,255,255,.4)}
+.acp-item{font-size:11px;font-style:italic;margin-bottom:6px;line-height:1.5}
+.ast .acp-item{color:var(--teal)}
+.asp .acp-item{color:#A32D2D}
+.acn .acp-item{color:var(--muted)}
+.agl .acp-item{color:rgba(255,255,255,.4)}
 .ata{width:100%;border:none;border-bottom:.5px solid;background:transparent;padding:3px 0;font-family:'DM Sans',sans-serif;font-size:12px;resize:none;line-height:1.6;min-height:48px}
 .ata:focus{outline:none}
 .ast .ata{color:var(--teal-d);border-bottom-color:rgba(29,158,117,.3)}
 .asp .ata{color:#501313;border-bottom-color:rgba(226,75,74,.3)}
 .acn .ata{color:var(--text);border-bottom-color:var(--border)}
 .agl .ata{color:#fff;border-bottom-color:rgba(201,168,76,.3);font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic}
+
 .subbox{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;margin-top:28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .sbt{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--navy);margin-bottom:3px}
 .sbn2{font-size:12px;color:var(--muted);line-height:1.6;max-width:360px}
 .subbtn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:10px 22px;border-radius:var(--rs);border:none;background:var(--navy);color:#fff;cursor:pointer;transition:all .15s;white-space:nowrap}
 .subbtn:hover{background:var(--gold);color:var(--navy)}
 .subbtn:disabled{opacity:.4;cursor:not-allowed;background:var(--navy)}
+
+/* Gate 1 Director comments (released to faculty) */
+.g1rmbox{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--r);padding:16px 20px;margin-top:20px;margin-bottom:20px}
+.g1rml{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.g1rml-dot{width:5px;height:5px;border-radius:50%;background:var(--teal)}
+.g1rmt{font-size:14px;color:var(--teal-d);line-height:1.7}
+.g1rmmeta{font-size:11px;color:var(--teal-d);opacity:.7;margin-top:8px;font-family:'DM Mono',monospace}
+
 .rmbox{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--r);padding:14px 18px;margin-top:20px}
 .rml{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);margin-bottom:5px}
 .rmt{font-size:13px;color:var(--teal-d);line-height:1.7;font-style:italic}
@@ -170,14 +240,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
 .dual-role-note{background:rgba(201,168,76,.08);border:.5px solid rgba(201,168,76,.3);border-radius:var(--rs);padding:11px 14px;margin-bottom:18px;font-size:12px;color:var(--gold-d)}
 .dual-role-note strong{color:var(--navy);font-weight:500}
-@media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:20px 18px 60px}.ag{grid-template-columns:1fr 1fr}.tier-row{grid-template-columns:1fr 1fr}}
+@media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:20px 18px 60px}.ag{grid-template-columns:1fr}.tier-row{grid-template-columns:1fr 1fr}.inst-form-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="tb-l">
     <div class="wm">X<em>I</em>ME</div><div class="sep"></div>
-    <div class="ttl">Magis Centre · Annual Evaluation</div>
+    <div class="ttl">Magis Centre · Annual Development Review</div>
   </div>
   <div class="tb-r">
     <div class="spill sp-draft" id="spill">Loading</div>
@@ -189,7 +259,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </div>
 
 <div class="preview-banner" id="preview-banner">
-  <div><strong id="preview-who">Super Admin Preview</strong> · You are viewing this faculty's evaluation in read-only mode. Changes are not saved and submit is disabled.</div>
+  <div><strong id="preview-who">Super Admin Preview</strong> · You are viewing this faculty's review in read-only mode. Changes are not saved and submit is disabled.</div>
   <a onclick="exitPreview()">Exit preview →</a>
 </div>
 
@@ -225,28 +295,58 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div class="ni" onclick="goTo('s5')" id="n-s5"><div class="ndot"></div><div class="nt">Institution Building</div></div>
   <div class="ngl">IKIGAI · Purpose</div>
   <div class="ni" onclick="goTo('s6')" id="n-s6"><div class="ndot"></div><div class="nt">What You Love</div></div>
-  <div class="ni" onclick="goTo('s7')" id="n-s7"><div class="ndot"></div><div class="nt">Strengths</div></div>
-  <div class="ni" onclick="goTo('s8')" id="n-s8"><div class="ndot"></div><div class="nt">Contribution</div></div>
-  <div class="ni" onclick="goTo('s9')" id="n-s9"><div class="ndot"></div><div class="nt">Purpose Statement</div></div>
+  <div class="ni" onclick="goTo('s7')" id="n-s7"><div class="ndot"></div><div class="nt">Strengths &amp; Develop</div></div>
+  <div class="ni" onclick="goTo('s8')" id="n-s8"><div class="ndot"></div><div class="nt">Impact Focus</div></div>
+  <div class="ni" onclick="goTo('s9')" id="n-s9"><div class="ndot"></div><div class="nt">Contribution</div></div>
+  <div class="ni" onclick="goTo('s10')" id="n-s10"><div class="ndot"></div><div class="nt">Purpose Statement</div></div>
   <div class="ngl">Development</div>
-  <div class="ni" onclick="goTo('s10')" id="n-s10"><div class="ndot"></div><div class="nt">Time Allocation</div></div>
-  <div class="ni" onclick="goTo('s11')" id="n-s11"><div class="ndot"></div><div class="nt">Goals for XIME</div></div>
-  <div class="ni" onclick="goTo('s12')" id="n-s12"><div class="ndot"></div><div class="nt">Action Plan</div></div>
+  <div class="ni" onclick="goTo('s11')" id="n-s11"><div class="ndot"></div><div class="nt">Time Allocation</div></div>
+  <div class="ni" onclick="goTo('s12')" id="n-s12"><div class="ndot"></div><div class="nt">Goals for XIME</div></div>
+  <div class="ni" onclick="goTo('s13')" id="n-s13"><div class="ndot"></div><div class="nt">Action Plan</div></div>
 </aside>
 
 <main class="main">
 
 <div id="dual-role-note" style="display:none"></div>
 
+<!-- 300-point ledger -->
+<div class="ledger" id="points-ledger">
+  <div class="ledger-l">
+    <div class="ledger-label">Points Ledger · AY 2025–26</div>
+  </div>
+  <div class="ledger-items">
+    <div class="ledger-item">
+      <div class="ledger-val" id="ledger-g1">165</div>
+      <div class="ledger-sub">Gate 1 achievable</div>
+    </div>
+    <div class="ledger-item">
+      <div class="ledger-val" id="ledger-g2">135</div>
+      <div class="ledger-sub">Gate 2 adds</div>
+    </div>
+    <div class="ledger-item">
+      <div class="ledger-total" id="ledger-total">300</div>
+    </div>
+  </div>
+</div>
+
+<!-- Gate 1 Director comments (shown post-release only) -->
+<div id="g1-remarks-box" style="display:none">
+  <div class="g1rmbox">
+    <div class="g1rml"><span class="g1rml-dot"></span>Director's Gate 1 Feedback</div>
+    <div class="g1rmt" id="g1-remarks-text"></div>
+    <div class="g1rmmeta" id="g1-remarks-meta"></div>
+  </div>
+</div>
+
 <div class="gb gb1">
   <div><div class="gbl">Gate 1 · Mid-Year Performance Record</div>
   <div class="gbt">What you did · June to December</div>
-  <div class="gbs">Locks permanently on submission</div></div>
+  <div class="gbs">Locks on submission. Late additions allowed in amber.</div></div>
   <div class="gbst gst-open" id="g1bs">Open</div>
 </div>
 
 <section class="sec ls" id="s1">
-  <div class="sh"><div class="sn">01</div><div><div class="si-t">Your Profile</div><div class="si-s">Auto-populated from XIME records</div></div></div>
+  <div class="sh"><div class="sn">01</div><div><div class="si-t">Your Profile <span class="locked-badge">Locked</span></div><div class="si-s">Auto-populated from XIME records</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="ablock"><div class="abl">From Faculty Master</div><div id="prof-rows"></div></div>
@@ -258,7 +358,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec ls" id="s2">
-  <div class="sh"><div class="sn">02</div><div><div class="si-t">Teaching</div><div class="si-s">Validated by Dean Academics</div></div></div>
+  <div class="sh"><div class="sn">02</div><div><div class="si-t">Teaching <span class="locked-badge">Locked</span></div><div class="si-s">Validated by Dean Academics</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="f"><div class="fl">Courses Taught <span class="ab">Digii Campus</span></div><div class="cpills" id="cpills"><span style="font-size:12px;color:var(--faint);font-style:italic">Loading...</span></div></div>
@@ -271,7 +371,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec ls" id="s3">
-  <div class="sh"><div class="sn">03</div><div><div class="si-t">Research &amp; Publications</div><div class="si-s">Validated by Dean Research · Quality-tiered by global B-school standards</div></div></div>
+  <div class="sh"><div class="sn">03</div><div><div class="si-t">Research &amp; Publications <span class="locked-badge">Locked</span></div><div class="si-s">Validated by Dean Research · Quality-tiered by global B-school standards</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
 
@@ -374,7 +474,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec ls" id="s4">
-  <div class="sh"><div class="sn">04</div><div><div class="si-t">Industry &amp; External Programs</div><div class="si-s">Validated by Dean EP</div></div></div>
+  <div class="sh"><div class="sn">04</div><div><div class="si-t">Industry &amp; External Programs <span class="locked-badge">Locked</span></div><div class="si-s">Validated by Dean EP</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="tc">
@@ -388,86 +488,210 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </section>
 
 <section class="sec ls" id="s5">
-  <div class="sh"><div class="sn">05</div><div><div class="si-t">Institution Building</div><div class="si-s">Admin roles, committees, accreditation</div></div></div>
+  <div class="sh"><div class="sn">05</div><div><div class="si-t">Institution Building <span class="locked-badge">Locked</span></div><div class="si-s">Categorised contributions with individual entries</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="f"><div class="fl">Administrative Role <span class="ab">HR Records</span></div><input class="fi lk" id="f-admin" readonly></div>
-    <div class="f"><div class="fl">Institution Contributions This Year</div><textarea class="fi" id="f-inst" rows="4" placeholder="Committees · Accreditation · Mentoring · Placement · Events..."></textarea></div>
+
+    <div class="f">
+      <div class="fl">Your Institution Building Contributions</div>
+      <div class="fh" style="margin-bottom:10px">Add individual entries across categories. Each entry is dated and can be edited before Gate 1 submission.</div>
+
+      <div class="inst-entry-list" id="inst-entries">
+        <div class="inst-empty">No entries yet. Add your first contribution below.</div>
+      </div>
+
+      <div class="inst-form" id="inst-form">
+        <div class="inst-form-row">
+          <div>
+            <div class="fl" style="margin-bottom:4px">Category</div>
+            <select class="fi" id="inst-cat" style="font-family:'DM Sans',sans-serif">
+              <option value="">Select category...</option>
+              <option>Committee Memberships</option>
+              <option>Event Leadership (organised or anchored)</option>
+              <option>Student Mentoring (beyond formal teaching)</option>
+              <option>Admissions and Outreach Support</option>
+              <option>Placement and Industry Linkages</option>
+              <option>Alumni Engagement</option>
+              <option>Cross-campus or Cross-department Contribution</option>
+              <option>Accreditation Work</option>
+              <option>IQAC / Quality Systems Contribution</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl" style="margin-bottom:4px">Date</div>
+            <input type="date" class="fi" id="inst-date">
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div class="fl" style="margin-bottom:4px">Description</div>
+          <textarea class="fi" id="inst-desc" rows="2" placeholder="What did you contribute? Be specific."></textarea>
+        </div>
+        <button class="inst-form-btn" onclick="addInstitutionEntry()">+ Add Entry</button>
+      </div>
+    </div>
   </div>
 </section>
 
 <div class="subbox" id="g1box">
   <div><div class="sbt">Submit Gate 1 · Mid-Year Record</div>
-  <div class="sbn2">Sections 01 to 05 will lock permanently. Gate 2 remains open until 15 June 2026.</div></div>
+  <div class="sbn2">Sections 01 to 05 will freeze. Late H1 additions remain possible in amber. Gate 2 sections unlock until 15 June 2026.</div></div>
   <button class="subbtn" onclick="submitGate1()" id="g1btn">Lock &amp; Submit Gate 1 →</button>
 </div>
 
 <div class="gb gb2" style="margin-top:44px" id="gb2">
-  <div><div class="gbl">Gate 2 · Annual Evaluation</div>
+  <div><div class="gbl">Gate 2 · Annual Development Review</div>
   <div class="gbt">Purpose, direction, year ahead</div>
   <div class="gbs">IKIGAI · development goals · action plan · due 15 June 2026</div></div>
   <div class="gbst gst-open" id="g2bs">Open</div>
 </div>
 
+<!-- SECTION 6: What You Love (5 prompts) -->
 <section class="sec" id="s6">
-  <div class="sh"><div class="sn">06</div><div><div class="si-t">What You Love</div><div class="si-s">IKIGAI 2.1 · Activities where time disappears</div></div></div>
+  <div class="sh"><div class="sn">06</div><div><div class="si-t">What You Love</div><div class="si-s">IKIGAI 2.1 · Passion across the full faculty role</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
-    <div class="f"><div class="fl">Teaching that energises you</div><textarea class="fi" id="f-pt" rows="3" placeholder="What kind of teaching makes you come alive?"></textarea></div>
-    <div class="f"><div class="fl">Research questions that pull you back</div><textarea class="fi" id="f-pr" rows="3" placeholder="The questions you keep returning to..."></textarea></div>
-    <div class="f"><div class="fl">Industry engagement that feels alive</div><textarea class="fi" id="f-pi" rows="2" placeholder="What kind of industry interaction energises you?"></textarea></div>
-    <div class="f"><div class="fl">Institutional work that gives you purpose</div><textarea class="fi" id="f-ps" rows="2" placeholder="Where in XIME do you feel most purposeful?"></textarea></div>
+    <div class="f"><div class="fl">Teaching activities that energise you</div><div class="fh" style="margin-bottom:6px">e.g. classroom delivery, case discussions, mentoring</div><textarea class="fi" id="f-pt" rows="3" placeholder="What kind of teaching makes you come alive?"></textarea></div>
+    <div class="f"><div class="fl">Research areas you are deeply curious about</div><textarea class="fi" id="f-pr" rows="3" placeholder="The questions you keep returning to..."></textarea></div>
+    <div class="f"><div class="fl">Industry or consulting engagements you find genuinely fulfilling</div><textarea class="fi" id="f-pi" rows="2" placeholder="The kind of practitioner interaction that energises you..."></textarea></div>
+    <div class="f"><div class="fl">Institutional roles that excite you</div><div class="fh" style="margin-bottom:6px">e.g. programme building, student development, leadership</div><textarea class="fi" id="f-ps" rows="2" placeholder="The institutional work you say yes to without hesitation..."></textarea></div>
+    <div class="f"><div class="fl">The kind of impact that matters most to you</div><div class="fh" style="margin-bottom:6px">On students, industry, or society</div><textarea class="fi" id="f-pimp" rows="3" placeholder="What you hope your work contributes to beyond yourself..."></textarea></div>
   </div>
 </section>
 
+<!-- SECTION 7: Strengths + Develop Areas (2.2 + 2.2b) -->
 <section class="sec" id="s7">
   <div class="sh"><div class="sn">07</div><div><div class="si-t">Your Strengths</div><div class="si-s">IKIGAI 2.2 · 1 still building to 5 exceptional</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="sr" id="star-grid"></div>
     <div class="f"><div class="fl">What you are genuinely known for</div><textarea class="fi" id="f-str" rows="3" placeholder="Up to five capabilities others would point to as distinctively yours..."></textarea></div>
-    <div class="f"><div class="fl">Areas of intended growth</div><textarea class="fi" id="f-gr" rows="3" placeholder="At least three capabilities you want to develop over the next 1 to 2 years..."></textarea></div>
+
+    <div style="height:20px"></div>
+    <div style="background:linear-gradient(135deg,var(--cream) 0%,#fff 100%);border:1px solid var(--border-g);border-left:3px solid var(--navy);padding:18px;border-radius:var(--r)">
+      <div class="fl" style="margin-bottom:4px">Areas You Want to Develop <span style="font-size:9px;font-weight:400;color:var(--gold-d);background:rgba(201,168,76,.1);padding:1px 5px;border-radius:10px;text-transform:none;letter-spacing:.02em;margin-left:4px">Minimum 3</span></div>
+      <div class="fh" style="margin-bottom:10px">Specify at least three areas where you want to grow in the coming year. These flow into your Development Plan and the conversation with your Director.</div>
+      <textarea class="fi" id="f-gr" rows="4" placeholder="One area per line. e.g.&#10;Case writing and teaching methodology for executive audiences&#10;Quantitative research methods&#10;Building an industry consulting practice"></textarea>
+      <div class="fh" id="develop-count" style="margin-top:6px">Enter at least three lines.</div>
+    </div>
   </div>
 </section>
 
+<!-- SECTION 8: Impact Focus (2.3) -->
 <section class="sec" id="s8">
-  <div class="sh"><div class="sn">08</div><div><div class="si-t">What You Contribute</div><div class="si-s">IKIGAI 2.3 · Visible, valued output</div></div></div>
+  <div class="sh"><div class="sn">08</div><div><div class="si-t">Impact Focus</div><div class="si-s">IKIGAI 2.3 · A single focused commitment</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
-    <div class="f"><div class="fl">Industry interaction · now and aspired</div><textarea class="fi" id="f-ci" rows="3" placeholder="What are you currently doing? What do you aspire to build?"></textarea></div>
-    <div class="f"><div class="fl">Research pathway</div><textarea class="fi" id="f-cr" rows="3" placeholder="Target journals, conferences, collaborators. Or explain why research is not a current focus."></textarea></div>
-    <div class="f"><div class="fl">Institution building contributions</div><textarea class="fi" id="f-cs" rows="2" placeholder="What roles are you playing? What would you like to take on?"></textarea></div>
+    <div style="font-size:16px;color:var(--navy);font-weight:500;margin-bottom:14px;line-height:1.5;font-family:'Cormorant Garamond',serif;font-style:italic">
+      What is the specific gap in XIME's management education you most want to help close, and why?
+    </div>
+    <textarea class="fi" id="f-impact" rows="5" placeholder="Name the gap. Explain why it matters. Be concrete about what closing it would look like..."></textarea>
   </div>
 </section>
 
+<!-- SECTION 9: Contribution (2.4 rebuilt) -->
 <section class="sec" id="s9">
-  <div class="sh"><div class="sn">09</div><div><div class="si-t">Your Purpose Statement</div><div class="si-s">Private · visible only to Director and President</div></div></div>
+  <div class="sh"><div class="sn">09</div><div><div class="si-t">What You Can Contribute</div><div class="si-s">IKIGAI 2.4 · Courses, capabilities, research pathway</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:16px">
+
+    <div class="f">
+      <div class="fl">Courses you are currently delivering</div>
+      <div class="fh" style="margin-bottom:8px">Select from the XIME course catalog.</div>
+      <div class="course-selector">
+        <div class="course-chips" id="chips-current"><div class="course-empty">No courses selected yet</div></div>
+        <input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'current')">
+        <div class="course-filter-row" id="filters-current"></div>
+        <div class="course-list" id="list-current"></div>
+      </div>
+    </div>
+
+    <div class="f">
+      <div class="fl">Other XIME courses you would like to deliver</div>
+      <div class="course-selector">
+        <div class="course-chips" id="chips-aspire"><div class="course-empty">No courses selected yet</div></div>
+        <input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'aspire')">
+        <div class="course-filter-row" id="filters-aspire"></div>
+        <div class="course-list" id="list-aspire"></div>
+      </div>
+    </div>
+
+    <div class="f"><div class="fl">Gaps in the XIME course offering in your domain</div><textarea class="fi" id="f-gaps" rows="3" placeholder="Where the current offering falls short relative to industry or academic benchmarks..."></textarea></div>
+
+    <div class="f"><div class="fl">New courses you would like to design and deliver</div><textarea class="fi" id="f-newcourses" rows="3" placeholder="Course titles, brief description, target audience..."></textarea></div>
+
+    <div class="f"><div class="fl">Courses you would like to stop delivering, and why</div><textarea class="fi" id="f-stopcourses" rows="2" placeholder="Course name and honest reason..."></textarea></div>
+
+    <div class="fdiv"></div>
+
+    <div class="f"><div class="fl">Consulting, training, or executive education capabilities you can offer</div><textarea class="fi" id="f-caps" rows="3" placeholder="Domains where you can deliver MDPs, consulting, or executive programmes..."></textarea></div>
+
+    <div class="f"><div class="fl">Consulting / Training / Executive Education you have delivered</div><textarea class="fi" id="f-delivered" rows="2" placeholder="Programmes, clients, dates. NA is acceptable."></textarea></div>
+
+    <div class="f"><div class="fl">New programmes you would like to design and deliver</div><textarea class="fi" id="f-newprogs" rows="2" placeholder="MDP or executive programme concepts you believe XIME should offer..."></textarea></div>
+
+    <div class="fdiv"></div>
+
+    <div class="f"><div class="fl">Research areas with strong publication or external funding potential</div><textarea class="fi" id="f-respotential" rows="3" placeholder="Your most promising research bets for the next two to three years..."></textarea></div>
+  </div>
+</section>
+
+<!-- SECTION 10: Purpose Statement -->
+<section class="sec" id="s10">
+  <div class="sh"><div class="sn">10</div><div><div class="si-t">Your Purpose Statement</div><div class="si-s">Private · visible only to Director and President</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="ib">
-      <div class="ibp">My purpose as an XIME faculty member is to...</div>
+      <div class="ibp">Why do you do what you do, not for your CV, but for yourself?</div>
       <textarea class="ibi" id="f-iki" rows="4" placeholder="Write in your own voice. Push past the general to what is genuinely yours."></textarea>
     </div>
     <div class="fh" style="margin-top:6px">Not visible to Deans. Visible only to your Director and the President after submission.</div>
   </div>
 </section>
 
-<section class="sec" id="s10">
-  <div class="sh"><div class="sn">10</div><div><div class="si-t">Time Allocation</div><div class="si-s">Must total 100% · Industry minimum 10%</div></div></div>
+<!-- SECTION 11: Time Allocation (3 columns + 4c reveal) -->
+<section class="sec" id="s11">
+  <div class="sh"><div class="sn">11</div><div><div class="si-t">Time Allocation</div><div class="si-s">Must total 100% · Current vs Ideal</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
+
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:500">Current Allocation</div>
     <div class="ag">
       <div class="ac"><div class="acl">Teaching</div><input class="ai" id="al-t" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
       <div class="ac"><div class="acl">Research</div><input class="ai" id="al-r" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
-      <div class="ac hl"><div class="acl" style="color:var(--amber-d)">Industry</div><input class="ai" id="al-i" type="number" min="10" max="100" placeholder="—" oninput="chkAlloc()" style="color:var(--amber-d)"><div class="acp" style="color:var(--amber)">% min 10</div></div>
-      <div class="ac"><div class="acl">Institution</div><input class="ai" id="al-s" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
+      <div class="ac"><div class="acl">Institution<sup>*</sup></div><input class="ai" id="al-s" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
     </div>
     <div class="at" id="at">Total: 0%</div>
+
+    <div style="height:16px"></div>
+
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:500">Ideal Allocation</div>
+    <div class="ag">
+      <div class="ac"><div class="acl">Teaching</div><input class="ai" id="ali-t" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
+      <div class="ac"><div class="acl">Research</div><input class="ai" id="ali-r" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
+      <div class="ac"><div class="acl">Institution<sup>*</sup></div><input class="ai" id="ali-s" type="number" min="0" max="100" placeholder="—" oninput="chkAlloc()"><div class="acp">%</div></div>
+    </div>
+    <div class="at" id="ati">Total: 0%</div>
+
+    <div class="alloc-footnote">
+      <sup>*</sup> Includes the administrative workload associated with the role (committees, accreditation work, coordinator responsibilities, and similar).
+    </div>
+
+    <div class="change-reveal" id="change-reveal">
+      <div class="change-reveal-head">
+        <span class="change-badge">Significant Change</span>
+        <span class="change-title">You have indicated a meaningful shift between current and ideal.</span>
+      </div>
+      <div class="f"><div class="fl">Why is this shift important to you?</div><textarea class="fi" id="f-changewhy" rows="2" placeholder="What is driving the change you want to see..."></textarea></div>
+      <div class="f"><div class="fl">What will you do to drive this change?</div><textarea class="fi" id="f-changeact" rows="2" placeholder="Concrete actions you will take, not aspirations..."></textarea></div>
+      <div class="f" style="margin-bottom:0"><div class="fl">What can XIME help you with?</div><textarea class="fi" id="f-changesupp" rows="2" placeholder="Support, resources, time, mentorship that would make this possible..."></textarea></div>
+    </div>
   </div>
 </section>
 
-<section class="sec" id="s11">
-  <div class="sh"><div class="sn">11</div><div><div class="si-t">Goals for XIME</div><div class="si-s">What you want to contribute and improve</div></div></div>
+<!-- SECTION 12: Goals for XIME -->
+<section class="sec" id="s12">
+  <div class="sh"><div class="sn">12</div><div><div class="si-t">Goals for XIME</div><div class="si-s">What you want to contribute and improve</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="f"><div class="fl">How you want to contribute to XIME's growth</div><textarea class="fi" id="f-xc" rows="3" placeholder="Not what XIME should do. What you specifically want to build or change here..."></textarea></div>
@@ -476,15 +700,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   </div>
 </section>
 
-<section class="sec" id="s12">
-  <div class="sh"><div class="sn">12</div><div><div class="si-t">The Year Ahead</div><div class="si-s">Where reflection becomes commitment</div></div></div>
+<!-- SECTION 13: Action Plan -->
+<section class="sec" id="s13">
+  <div class="sh"><div class="sn">13</div><div><div class="si-t">The Year Ahead</div><div class="si-s">Where reflection becomes commitment</div></div></div>
   <div class="srl"></div>
   <div style="margin-top:16px">
     <div class="acg">
-      <div class="acard ast"><div class="ach">Start</div><div class="acp" style="color:var(--teal)">New commitment this year?</div><textarea class="ata ast" id="f-sta" rows="3" placeholder="A course redesign, research partnership..."></textarea></div>
-      <div class="acard asp"><div class="ach">Stop</div><div class="acp" style="color:#A32D2D">What no longer serves growth?</div><textarea class="ata asp" id="f-stp" rows="3" placeholder="This takes honesty..."></textarea></div>
-      <div class="acard acn"><div class="ach">Continue</div><div class="acp" style="color:var(--muted)">What is working to sustain?</div><textarea class="ata acn" id="f-cnt" rows="2" placeholder="Protect what works..."></textarea></div>
-      <div class="acard agl"><div class="ach">Key Goal</div><div class="acp" style="color:rgba(255,255,255,.4)">Single most important outcome. One goal only.</div><textarea class="ata agl" id="f-kg" rows="2" placeholder="State it clearly."></textarea></div>
+      <div class="acard ast"><div class="ach">Start</div><div class="acp-item" style="color:var(--teal)">New commitment this year?</div><textarea class="ata ast" id="f-sta" rows="3" placeholder="A course redesign, research partnership..."></textarea></div>
+      <div class="acard asp"><div class="ach">Stop</div><div class="acp-item" style="color:#A32D2D">What no longer serves growth?</div><textarea class="ata asp" id="f-stp" rows="3" placeholder="This takes honesty..."></textarea></div>
+      <div class="acard acn"><div class="ach">Continue</div><div class="acp-item" style="color:var(--muted)">What is working to sustain?</div><textarea class="ata acn" id="f-cnt" rows="2" placeholder="Protect what works..."></textarea></div>
+      <div class="acard agl"><div class="ach">Key Goal</div><div class="acp-item" style="color:rgba(255,255,255,.4)">Single most important outcome. One goal only.</div><textarea class="ata agl" id="f-kg" rows="2" placeholder="State it clearly."></textarea></div>
     </div>
     <div style="background:var(--cream);border:.5px solid var(--border-g);border-radius:var(--rs);padding:13px 15px">
       <div class="fl" style="margin-bottom:5px">What XIME needs to do differently for you</div>
@@ -498,9 +723,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </div>
 
 <div class="subbox" id="g2box" style="margin-top:28px">
-  <div><div class="sbt">Submit Annual Evaluation</div>
+  <div><div class="sbt">Submit Annual Development Review</div>
   <div class="sbn2">Sent to your Deans for validation, then Director, then President for endorsement. Cannot edit after submission.</div></div>
-  <button class="subbtn" onclick="submitGate2()" id="g2btn">Submit Annual Evaluation →</button>
+  <button class="subbtn" onclick="submitGate2()" id="g2btn">Submit Annual Development Review →</button>
 </div>
 
 </main>
@@ -528,6 +753,16 @@ const RESEARCH_TIER_IDS=[
   'f-wos-q1','f-wos-q2','f-wos-q3','f-wos-q4'
 ];
 
+// Course catalog, loaded from Supabase at init
+let COURSE_CATALOG=[];
+const courseState={
+  current:{selected:new Set(),filter:'all',search:''},
+  aspire:{selected:new Set(),filter:'all',search:''}
+};
+
+// Institution building entries
+let INST_ENTRIES=[];
+
 function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('n-'+id)?.classList.add('active');}
 
@@ -542,10 +777,6 @@ function exitPreview(){
   window.location.href='index.html';
 }
 
-// Who can access this page and whose row loads:
-// - fdp_user: own row only
-// - dean, director: own row only (they're faculty too)
-// - super_admin: own row if they have one, otherwise impersonate via ?as=<email>
 async function resolveAccess(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='login.html';return null;}
@@ -561,13 +792,12 @@ async function resolveAccess(){
   const asEmail=USER_ROLE==='super_admin'?urlParams.get('as'):null;
   const targetEmail=asEmail||profile.email;
 
-  // Faculty + Deans + Directors all load their own row
   if(USER_ROLE==='fdp_user'||USER_ROLE==='dean'||USER_ROLE==='director'){
     const{data:ownRow}=await sb.from('faculty_master')
       .select('*').eq('email',profile.email).maybeSingle();
     if(!ownRow){
       document.getElementById('blocker').textContent=
-        'Your faculty profile is not linked to the evaluation system yet. Please contact your Director.';
+        'Your faculty profile is not linked to the review system yet. Please contact your Director.';
       document.getElementById('blocker').style.display='block';
       return null;
     }
@@ -582,7 +812,7 @@ async function resolveAccess(){
         .select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
       if(!firstPilot){
         document.getElementById('blocker').textContent=
-          'No faculty have been linked to the evaluation system yet.';
+          'No faculty have been linked to the review system yet.';
         document.getElementById('blocker').style.display='block';
         return null;
       }
@@ -613,15 +843,13 @@ function enterPreviewMode(faculty){
   document.getElementById('g2box').style.display='none';
 }
 
-// When a dean or director is filling in their own evaluation, they should see
-// a small note acknowledging the dual role.
 function showDualRoleNote(faculty){
   if(USER_ROLE!=='dean'&&USER_ROLE!=='director')return;
   const note=document.getElementById('dual-role-note');
   const roleLabel=USER_ROLE==='director'?'Director':'Dean';
   note.className='dual-role-note';
   note.style.display='block';
-  note.innerHTML=`<strong>Note:</strong> You are completing this evaluation as faculty. In your role as ${roleLabel} you will receive and validate evaluations from other faculty in the usual way; you will not be asked to validate your own submission.`;
+  note.innerHTML=`<strong>Note:</strong> You are completing this review as faculty. In your role as ${roleLabel} you will receive and validate reviews from other faculty in the usual way; you will not be asked to validate your own submission.`;
 }
 
 function buildStars(){
@@ -639,21 +867,48 @@ function buildStars(){
   });
 }
 function rStars(k){document.querySelectorAll(`.sbtns[data-k="${k}"] .sb`).forEach((b,i)=>b.classList.toggle('on',i<R[k]));}
-function chkAlloc(){const t=['al-t','al-r','al-i','al-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);const el=document.getElementById('at');el.textContent=`Total: ${t}%`;el.className='at '+(t===100?'ok':'bad');upProg();}
+
+function chkAlloc(){
+  const cur=['al-t','al-r','al-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);
+  const ide=['ali-t','ali-r','ali-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);
+  const el=document.getElementById('at');el.textContent=`Total: ${cur}%`;el.className='at '+(cur===100?'ok':'bad');
+  const eli=document.getElementById('ati');eli.textContent=`Total: ${ide}%`;eli.className='at '+(ide===100?'ok':'bad');
+
+  // Check for significant change — delta > 15 in any category
+  let maxDelta=0;
+  ['t','r','s'].forEach(k=>{
+    const c=parseInt(document.getElementById('al-'+k).value)||0;
+    const i=parseInt(document.getElementById('ali-'+k).value)||0;
+    maxDelta=Math.max(maxDelta,Math.abs(c-i));
+  });
+  document.getElementById('change-reveal').classList.toggle('active',maxDelta>15);
+
+  upProg();
+}
 
 function upProg(){
   const fids=['f-tnotes','f-terms',
     ...RESEARCH_TIER_IDS,
-    'f-ugc-care','f-hi','f-conf','f-pub','f-mdpc','f-mdpd','f-ind','f-inst',
-    'f-pt','f-pr','f-pi','f-ps','f-str','f-gr','f-ci','f-cr','f-cs','f-iki',
-    'al-t','al-r','al-i','al-s',
+    'f-ugc-care','f-hi','f-conf','f-pub','f-mdpc','f-mdpd','f-ind',
+    'f-pt','f-pr','f-pi','f-ps','f-pimp','f-str','f-gr','f-impact','f-iki',
+    'al-t','al-r','al-s','ali-t','ali-r','ali-s',
+    'f-gaps','f-newcourses','f-stopcourses','f-caps','f-delivered','f-newprogs','f-respotential',
     'f-xc','f-op','f-on','f-sta','f-stp','f-cnt','f-kg','f-sup'];
   let filled=0;
   fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&el.value.trim()&&el.value!=='0')filled++;});
   Object.values(R).forEach(v=>{if(v>0)filled++;});
-  const pct=Math.round((filled/(fids.length+4))*100);
+  if(INST_ENTRIES.length>0)filled++;
+  if(courseState.current.selected.size>0)filled++;
+  const totalFields=fids.length+4+2;
+  const pct=Math.round((filled/totalFields)*100);
   document.getElementById('pf').style.width=pct+'%';
   document.getElementById('pp').textContent=pct+'%';
+
+  // Develop areas live count
+  const dev=document.getElementById('f-gr').value.split('\n').filter(l=>l.trim()).length;
+  const dc=document.getElementById('develop-count');
+  if(dev<3){dc.textContent=`${dev} of 3 minimum entered.`;dc.style.color='var(--amber-d)';}
+  else{dc.textContent=`${dev} areas entered. Good.`;dc.style.color='var(--teal-d)';}
 }
 
 function g1Locked(){return erec?.gate1_locked===true;}
@@ -665,9 +920,12 @@ function applyLocks(){
     document.querySelectorAll('.ls').forEach(el=>el.classList.add('locked'));
     ['f-scholar','f-orcid','f-terms','f-tnotes',
      ...RESEARCH_TIER_IDS,
-     'f-ugc-care','f-hi','f-conf','f-pub','f-wip','f-mdpc','f-mdpd','f-ind','f-inst'
+     'f-ugc-care','f-hi','f-conf','f-pub','f-wip','f-mdpc','f-mdpd','f-ind'
     ].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
     document.querySelectorAll('#s3 .tier-cell').forEach(el=>el.classList.add('lk'));
+    // Also lock institution form after Gate 1
+    const instForm=document.getElementById('inst-form');
+    if(instForm)instForm.style.display='none';
     document.getElementById('g1box').style.display='none';
     document.getElementById('g1s').textContent='Locked';
     document.getElementById('g1bs').textContent='Locked';
@@ -676,7 +934,12 @@ function applyLocks(){
     document.getElementById('subbtn').textContent='Submit Gate 2';
   }
   if(g2Locked()){
-    ['f-pt','f-pr','f-pi','f-ps','f-str','f-gr','f-ci','f-cr','f-cs','f-iki','al-t','al-r','al-i','al-s','f-xc','f-op','f-on','f-sta','f-stp','f-cnt','f-kg','f-sup'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
+    ['f-pt','f-pr','f-pi','f-ps','f-pimp','f-str','f-gr','f-impact','f-iki',
+     'al-t','al-r','al-s','ali-t','ali-r','ali-s',
+     'f-gaps','f-newcourses','f-stopcourses','f-caps','f-delivered','f-newprogs','f-respotential',
+     'f-changewhy','f-changeact','f-changesupp',
+     'f-xc','f-op','f-on','f-sta','f-stp','f-cnt','f-kg','f-sup'
+    ].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
     document.getElementById('g2box').style.display='none';
     document.getElementById('g2s').textContent='Submitted';
     document.getElementById('g2bs').textContent='Submitted';
@@ -690,12 +953,26 @@ function applyLocks(){
   pill.className='spill '+(pm[s]||'sp-draft');
   pill.textContent=pl[s]||s;
   if(s==='endorsed')loadRemarks();
+  loadGate1Remarks();
 }
 
 async function loadRemarks(){
   if(!eid)return;
   const{data}=await sb.from('evaluation_director_reviews').select('faculty_remarks').eq('evaluation_id',eid).maybeSingle();
   if(data?.faculty_remarks){document.getElementById('rmbox').style.display='block';document.getElementById('rmtxt').textContent=data.faculty_remarks;}
+}
+
+async function loadGate1Remarks(){
+  if(!eid)return;
+  const{data}=await sb.from('evaluation_director_reviews')
+    .select('gate1_faculty_remarks,gate1_released_to_faculty,gate1_released_at,director_name')
+    .eq('evaluation_id',eid).maybeSingle();
+  if(data?.gate1_released_to_faculty&&data?.gate1_faculty_remarks){
+    document.getElementById('g1-remarks-box').style.display='block';
+    document.getElementById('g1-remarks-text').textContent=data.gate1_faculty_remarks;
+    const when=data.gate1_released_at?new Date(data.gate1_released_at).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):'';
+    document.getElementById('g1-remarks-meta').textContent=`${data.director_name||'Director'} · Released ${when}`;
+  }
 }
 
 function val(id){const el=document.getElementById(id);return el&&el.value&&el.value.trim()?el.value.trim():null;}
@@ -733,26 +1010,40 @@ function g1Data(){
     mdp_count:numVal('f-mdpc'),
     mdp_details:val('f-mdpd'),
     industry_summary:val('f-ind'),
-    institution_contributions:val('f-inst'),
+    institution_entries:INST_ENTRIES,
     updated_at:new Date().toISOString()
   };
 }
 
 function g2Data(){
   return{
-    ikigai_passion:[val('f-pt'),val('f-pr'),val('f-pi'),val('f-ps')].filter(Boolean).join('\n\n')||null,
+    ikigai_passion:[val('f-pt'),val('f-pr'),val('f-pi'),val('f-ps'),val('f-pimp')].filter(Boolean).join('\n\n')||null,
     ikigai_strength_teaching:R.t||null,
     ikigai_strength_research:R.r||null,
     ikigai_strength_industry:R.i||null,
     ikigai_strength_institution:R.s||null,
     ikigai_strengths_text:val('f-str'),
-    ikigai_growth_areas:val('f-gr'),
-    ikigai_contribution:val('f-ci'),
+    ikigai_develop_areas:val('f-gr'),
+    ikigai_growth_areas:val('f-gr'), // keep for backward compat
+    ikigai_impact_focus:val('f-impact'),
+    ikigai_contribution:val('f-gaps'), // primary contribution narrative for legacy
     ikigai_statement:val('f-iki'),
+    courses_current:Array.from(courseState.current.selected),
+    courses_aspire:Array.from(courseState.aspire.selected),
+    domain_course_gaps:val('f-gaps'),
+    new_courses_to_design:val('f-newcourses'),
+    courses_to_stop:val('f-stopcourses'),
+    consulting_capabilities:val('f-caps'),
+    consulting_delivered:val('f-delivered'),
+    new_programmes_to_design:val('f-newprogs'),
+    research_publication_potential:val('f-respotential'),
     alloc_teaching:numVal('al-t'),
     alloc_research:numVal('al-r'),
-    alloc_industry:numVal('al-i'),
     alloc_institution:numVal('al-s'),
+    alloc_industry:null, // removed per Apr 2026 decision
+    alloc_change_reason:val('f-changewhy'),
+    alloc_change_actions:val('f-changeact'),
+    alloc_change_support:val('f-changesupp'),
     xime_contribution:val('f-xc'),
     primary_objectives:val('f-op'),
     next_year_objectives:val('f-on'),
@@ -793,10 +1084,9 @@ async function saveDraft(){
 async function submitGate1(){
   if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
-  // When a dean submits their own evaluation, exclude themselves from the validator list.
   const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
   if(reviewingDeans.length===0){toast('No other deans configured for your campus. Contact admin.',false);return;}
-  if(!confirm('Lock and submit Gate 1? Sections 1 to 5 cannot be edited after this.'))return;
+  if(!confirm('Lock and submit Gate 1? Sections 1 to 5 will freeze. Late H1 additions remain possible.'))return;
   try{
     await upsert({...g1Data(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
     erec={...erec,gate1_locked:true,workflow_status:'mid_year_locked'};
@@ -818,10 +1108,11 @@ async function submitGate2(){
   if(!fac){toast('No faculty loaded',false);return;}
   if(!g1Locked()){toast('Please submit Gate 1 first.',false);return;}
   if(!val('f-iki')){toast('Please complete your Purpose Statement first.',false);return;}
+  const devLines=(val('f-gr')||'').split('\n').filter(l=>l.trim()).length;
+  if(devLines<3){toast('Please enter at least 3 Areas to Develop in Section 07.',false);return;}
   if(!DIRECTOR){toast('No director configured for your campus. Contact admin.',false);return;}
-  // Exclude self from validator list (same as Gate 1)
   const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
-  if(!confirm('Submit your complete annual evaluation? This cannot be undone.'))return;
+  if(!confirm('Submit your complete Annual Development Review? This cannot be undone.'))return;
   try{
     await upsert({...g2Data(),gate2_locked:true,gate2_submitted_at:new Date().toISOString(),workflow_status:'annual_submitted',status:'submitted'});
     erec={...erec,gate2_locked:true,workflow_status:'annual_submitted'};
@@ -831,7 +1122,6 @@ async function submitGate2(){
         campus:fac.campus,gate:'annual',validated:false
       },{onConflict:'evaluation_id,dean_email,gate'});
     }
-    // If the faculty IS the director, skip director review routing. Go straight to president.
     const skipDirector=DIRECTOR.email===fac.email;
     await sb.from('evaluation_director_reviews').upsert({
       evaluation_id:eid,
@@ -840,7 +1130,7 @@ async function submitGate2(){
       campus:fac.campus,
       status:skipDirector?'forwarded_to_president':'pending'
     },{onConflict:'evaluation_id'});
-    applyLocks();toast('Annual evaluation submitted. Your Deans have been notified.');
+    applyLocks();toast('Annual Development Review submitted. Your Deans have been notified.');
   }catch(e){
     console.error(e);
     toast('Submission failed',false);
@@ -849,6 +1139,145 @@ async function submitGate2(){
 
 function handleSubmit(){if(!g1Locked())submitGate1();else submitGate2();}
 
+/* ---------- Institution Building entries ---------- */
+function renderInstEntries(){
+  const el=document.getElementById('inst-entries');
+  if(INST_ENTRIES.length===0){
+    el.innerHTML='<div class="inst-empty">No entries yet. Add your first contribution below.</div>';
+    return;
+  }
+  el.innerHTML=INST_ENTRIES.map(e=>`
+    <div class="inst-entry">
+      <div class="inst-entry-body">
+        <div class="inst-entry-cat">${e.category}</div>
+        <div class="inst-entry-desc">${e.description}</div>
+        <div class="inst-entry-date">${e.date||'No date'}</div>
+      </div>
+      ${g1Locked()?'':`<button class="inst-entry-remove" onclick="removeInstitutionEntry('${e.id}')">×</button>`}
+    </div>`).join('');
+}
+
+function addInstitutionEntry(){
+  if(g1Locked()){toast('Gate 1 locked. Cannot add entries.',false);return;}
+  const cat=document.getElementById('inst-cat').value;
+  const desc=document.getElementById('inst-desc').value.trim();
+  const date=document.getElementById('inst-date').value;
+  if(!cat){toast('Please select a category',false);return;}
+  if(!desc){toast('Please enter a description',false);return;}
+  INST_ENTRIES.push({
+    id:'e'+Date.now(),
+    category:cat,
+    description:desc,
+    date:date||null
+  });
+  document.getElementById('inst-cat').value='';
+  document.getElementById('inst-desc').value='';
+  document.getElementById('inst-date').value='';
+  renderInstEntries();
+  upProg();
+  toast('Entry added');
+}
+
+function removeInstitutionEntry(id){
+  INST_ENTRIES=INST_ENTRIES.filter(e=>e.id!==id);
+  renderInstEntries();
+  upProg();
+}
+
+/* ---------- Course catalog selectors ---------- */
+async function loadCourseCatalog(){
+  const{data,error}=await sb.from('course_catalog').select('*').eq('active',true).order('domain').order('name');
+  if(error||!data){console.error('Course catalog load failed',error);COURSE_CATALOG=[];return;}
+  COURSE_CATALOG=data;
+}
+
+function buildCourseFilters(which){
+  const el=document.getElementById('filters-'+which);
+  const domains=[...new Set(COURSE_CATALOG.filter(c=>c.domain).map(c=>c.domain))].sort();
+  const types=['pgdm_core','pgdm_ba_core','elective'];
+  el.innerHTML=`
+    <div class="course-pill active" onclick="setCourseFilter('${which}','all',this)">All</div>
+    <div class="course-pill" onclick="setCourseFilter('${which}','pgdm_core',this)">PGDM Core</div>
+    <div class="course-pill" onclick="setCourseFilter('${which}','pgdm_ba_core',this)">PGDM-BA Core</div>
+    ${domains.map(d=>`<div class="course-pill" onclick="setCourseFilter('${which}','${d}',this)">${d}</div>`).join('')}
+  `;
+}
+
+function renderCourseList(which){
+  const state=courseState[which];
+  const container=document.getElementById('list-'+which);
+  const filtered=COURSE_CATALOG.filter(c=>{
+    if(state.filter!=='all'){
+      if(['pgdm_core','pgdm_ba_core','elective','non_credit'].includes(state.filter)){
+        if(c.course_type!==state.filter)return false;
+      }else{
+        if(c.domain!==state.filter)return false;
+      }
+    }
+    if(state.search&&!c.name.toLowerCase().includes(state.search.toLowerCase()))return false;
+    return true;
+  });
+  if(filtered.length===0){
+    container.innerHTML='<div style="padding:12px;color:var(--faint);font-size:12px;text-align:center;font-style:italic">No courses match</div>';
+    return;
+  }
+  container.innerHTML=filtered.map(c=>{
+    const tag=c.course_type==='elective'?(c.domain||'Elective'):(c.course_type==='pgdm_core'?'PGDM':c.course_type==='pgdm_ba_core'?'PGDM-BA':'Non-credit');
+    return`<div class="course-option ${state.selected.has(c.name)?'selected':''}" onclick="toggleCourse('${which}','${c.name.replace(/'/g,"\\'")}')">
+      <span>${c.name}</span>
+      <span class="cat-tag">${tag}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderCourseChips(which){
+  const state=courseState[which];
+  const container=document.getElementById('chips-'+which);
+  if(state.selected.size===0){
+    container.innerHTML='<div class="course-empty">No courses selected yet</div>';
+    return;
+  }
+  container.innerHTML=Array.from(state.selected).map(name=>`
+    <div class="course-chip">
+      <span>${name}</span>
+      <button onclick="toggleCourse('${which}','${name.replace(/'/g,"\\'")}')">×</button>
+    </div>`).join('');
+}
+
+function toggleCourse(which,name){
+  if(IS_PREVIEW||g2Locked())return;
+  const state=courseState[which];
+  if(state.selected.has(name))state.selected.delete(name);
+  else state.selected.add(name);
+  renderCourseChips(which);
+  renderCourseList(which);
+  upProg();
+}
+
+function setCourseFilter(which,filter,pill){
+  courseState[which].filter=filter;
+  document.querySelectorAll(`#filters-${which} .course-pill`).forEach(p=>p.classList.remove('active'));
+  pill.classList.add('active');
+  renderCourseList(which);
+}
+
+function filterCourseList(input,which){
+  courseState[which].search=input.value;
+  renderCourseList(which);
+}
+
+/* ---------- Points ledger ---------- */
+async function loadPointsLedger(){
+  const{data,error}=await sb.from('evaluation_gate_config').select('*').eq('academic_year','2025-26');
+  if(error||!data||data.length===0)return;
+  const g1=data.filter(r=>r.gate==='mid_year').reduce((s,r)=>s+(r.achievable_points||0),0);
+  const g2=data.filter(r=>r.gate==='annual').reduce((s,r)=>s+(r.achievable_points||0),0);
+  document.getElementById('ledger-g1').textContent=g1;
+  document.getElementById('ledger-g2').textContent=g2;
+  document.getElementById('ledger-total').textContent=g1+g2;
+}
+
+/* ---------- Restore ---------- */
 function restore(d){
   const m={
     'f-scholar':d.scholar_url,'f-orcid':d.orcid_id,'f-terms':d.terms_taught,'f-tnotes':d.teaching_notes,
@@ -857,13 +1286,26 @@ function restore(d){
     'f-wos-q1':d.wos_q1,'f-wos-q2':d.wos_q2,'f-wos-q3':d.wos_q3,'f-wos-q4':d.wos_q4,
     'f-ugc-care':d.ugc_care_count,'f-hi':d.h_index,'f-conf':d.conference_papers_count,
     'f-pub':d.publications_details,'f-wip':d.wip_details,
-    'f-mdpc':d.mdp_count,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,'f-inst':d.institution_contributions,
+    'f-mdpc':d.mdp_count,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,
     'f-pt':d.ikigai_passion?.split('\n\n')[0],
     'f-pr':d.ikigai_passion?.split('\n\n')[1],
     'f-pi':d.ikigai_passion?.split('\n\n')[2],
     'f-ps':d.ikigai_passion?.split('\n\n')[3],
-    'f-str':d.ikigai_strengths_text,'f-gr':d.ikigai_growth_areas,'f-ci':d.ikigai_contribution,'f-iki':d.ikigai_statement,
-    'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-i':d.alloc_industry,'al-s':d.alloc_institution,
+    'f-pimp':d.ikigai_passion?.split('\n\n')[4],
+    'f-str':d.ikigai_strengths_text,
+    'f-gr':d.ikigai_develop_areas||d.ikigai_growth_areas,
+    'f-impact':d.ikigai_impact_focus,
+    'f-iki':d.ikigai_statement,
+    'f-gaps':d.domain_course_gaps||d.ikigai_contribution,
+    'f-newcourses':d.new_courses_to_design,
+    'f-stopcourses':d.courses_to_stop,
+    'f-caps':d.consulting_capabilities,
+    'f-delivered':d.consulting_delivered,
+    'f-newprogs':d.new_programmes_to_design,
+    'f-respotential':d.research_publication_potential,
+    'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-s':d.alloc_institution,
+    'ali-t':d.alloc_teaching_ideal,'ali-r':d.alloc_research_ideal,'ali-s':d.alloc_institution_ideal,
+    'f-changewhy':d.alloc_change_reason,'f-changeact':d.alloc_change_actions,'f-changesupp':d.alloc_change_support,
     'f-xc':d.xime_contribution,'f-op':d.primary_objectives,'f-on':d.next_year_objectives,
     'f-sta':d.action_start,'f-stp':d.action_stop,'f-cnt':d.action_continue,'f-kg':d.action_key_goal,'f-sup':d.action_support
   };
@@ -874,6 +1316,12 @@ function restore(d){
   if(d.ikigai_strength_research){R.r=d.ikigai_strength_research;rStars('r');}
   if(d.ikigai_strength_industry){R.i=d.ikigai_strength_industry;rStars('i');}
   if(d.ikigai_strength_institution){R.s=d.ikigai_strength_institution;rStars('s');}
+  if(Array.isArray(d.courses_current)){d.courses_current.forEach(n=>courseState.current.selected.add(n));}
+  if(Array.isArray(d.courses_aspire)){d.courses_aspire.forEach(n=>courseState.aspire.selected.add(n));}
+  if(Array.isArray(d.institution_entries)){INST_ENTRIES=d.institution_entries;}
+  renderInstEntries();
+  renderCourseChips('current');renderCourseChips('aspire');
+  renderCourseList('current');renderCourseList('aspire');
   chkAlloc();upProg();
 }
 
@@ -915,11 +1363,19 @@ async function init(){
 
   showDualRoleNote(fac);
 
+  await loadCourseCatalog();
+  buildCourseFilters('current');buildCourseFilters('aspire');
+  renderCourseList('current');renderCourseList('aspire');
+  renderCourseChips('current');renderCourseChips('aspire');
+
+  await loadPointsLedger();
+
   const{data:ev}=await sb.from('faculty_evaluations')
     .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26').maybeSingle();
   if(ev){eid=ev.id;erec=ev;restore(ev);}
   else erec={gate1_locked:false,gate2_locked:false,workflow_status:'draft'};
 
+  renderInstEntries();
   applyLocks();
 
   if(access.isPreview){enterPreviewMode(fac);}
