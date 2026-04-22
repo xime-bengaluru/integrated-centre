@@ -104,48 +104,38 @@ body::after {
 .logo-wrap {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 22px;
   position: relative;
   z-index: 1;
 }
 
 .logo-img {
-  width: 56px;
-  height: 56px;
+  width: 140px;
+  height: 52px;
   border-radius: 10px;
   background: white;
-  padding: 6px;
-  object-fit: contain;
+  padding: 8px 12px;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: #E8241C;
 }
-.logo-img .i-dot { color: #0D1F35; }
-
-.logo-text { display: flex; flex-direction: column; }
-
-.logo-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 26px;
-  font-weight: 600;
-  color: white;
-  letter-spacing: 0.06em;
-  line-height: 1;
+.logo-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .logo-tagline {
-  font-size: 10px;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  margin-top: 3px;
+  line-height: 1.4;
+  font-weight: 500;
 }
 
 .card-title { position: relative; z-index: 1; }
@@ -307,6 +297,7 @@ body::after {
   .card-top { padding: 24px 24px 22px; }
   .card-body { padding: 24px 24px 28px; }
   .card-footer { padding: 12px 24px; }
+  .logo-img { width: 120px; height: 46px; }
 }
 </style>
 </head>
@@ -316,11 +307,10 @@ body::after {
 
   <div class="card-top">
     <div class="logo-wrap">
-      <div class="logo-img">X<span class="i-dot">I</span>ME</div>
-      <div class="logo-text">
-        <div class="logo-name">XIME</div>
-        <div class="logo-tagline">Shaping Future Leaders</div>
+      <div class="logo-img">
+        <img src="assets/logo/XIME_LOGO.svg" alt="XIME">
       </div>
+      <div class="logo-tagline">Shaping Future Leaders</div>
     </div>
     <div class="card-title">
       <h1>Magis Centre</h1>
@@ -479,7 +469,7 @@ async function doLogin() {
     return;
   }
 
-  btn.textContent = 'Signing in…';
+  btn.textContent = 'Signing in...';
   btn.disabled = true;
   errEl.style.display = 'none';
 
@@ -512,7 +502,7 @@ async function doReset() {
 
   if (!email) { showMsg(errEl, 'Please enter your email address.'); return; }
 
-  btn.textContent = 'Sending…';
+  btn.textContent = 'Sending...';
   btn.disabled = true;
 
   const { error } = await db.auth.resetPasswordForEmail(email, {
@@ -541,7 +531,7 @@ async function doChangePassword() {
     return;
   }
 
-  btn.textContent = 'Saving…';
+  btn.textContent = 'Saving...';
   btn.disabled = true;
 
   // Update the auth password
