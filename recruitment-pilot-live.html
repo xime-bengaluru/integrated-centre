@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XIME Recruitment Pilot — MDP Associate</title>
+<title>Magis Centre · Recruitment Pilot · MDP Associate</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -20,7 +20,7 @@
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
 .header{background:var(--navy);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.2);position:sticky;top:0;z-index:200;}
-.xime{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--gold);letter-spacing:0.06em;cursor:pointer;}
+.xime-logo{height:26px;width:auto;display:block;cursor:pointer;}
 .hdiv{width:1px;height:22px;background:rgba(255,255,255,0.12);margin:0 12px;}
 .htitle{font-size:12px;color:rgba(255,255,255,0.5);}
 .hstatus{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;}
@@ -123,6 +123,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   .form-grid{grid-template-columns:1fr;}
   .span2{grid-column:span 1;}
   .role-pill{font-size:11px;padding:5px 10px;}
+  .xime-logo{height:22px;}
 }
 </style>
 </head>
@@ -130,13 +131,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <div class="header">
   <div style="display:flex;align-items:center;">
-    <div class="xime" id="xime-logo">XIME</div>
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="xime-logo" id="xime-logo">
     <div class="hdiv"></div>
     <div class="htitle">Recruitment Pilot · MDP Associate</div>
   </div>
   <div class="hstatus">
     <div class="hstatus-dot" id="status-dot"></div>
-    <span id="status-text">Connecting…</span>
+    <span id="status-text">Connecting...</span>
   </div>
 </div>
 
@@ -160,26 +161,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div class="main" id="main-content">
   <div class="loading-screen">
     <div class="loading-spinner"></div>
-    <div style="font-size:13px;color:var(--muted);">Connecting to live workflow…</div>
+    <div style="font-size:13px;color:var(--muted);">Connecting to live workflow...</div>
   </div>
 </div>
 
 <div class="footer">
-  <span>XIME Bengaluru · Recruitment Pilot · MDP Associate · Live</span>
+  <span>Magis Centre · Recruitment Pilot · MDP Associate · Live</span>
   <span>Supabase Real-time · Role-based workflow</span>
-  <span>github.com/xime-bengaluru/integrated-centre</span>
+  <span>centre.forteen.in</span>
 </div>
 <div id="toast"></div>
 
 <script>
-// ── SUPABASE CONFIG ──
+// SUPABASE CONFIG
 const SUPA_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const RUN_ID = 'mdp-associate-pilot-001';
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
 
-// ── STATE ──
+// STATE
 let currentRole = null;
 let currentColor = '#C9A84C';
 let wfState = { current_step: '0', step_index: 0, data: {} };
@@ -193,7 +194,7 @@ const STEP_LABELS = {
 };
 const GATE_STEPS = ['ag1','ag2','ag3','ag4','ag5'];
 
-// ── SUPABASE HELPERS ──
+// SUPABASE HELPERS
 async function loadState() {
   const { data, error } = await db.from('workflow_state').select('*').eq('run_id', RUN_ID).single();
   if (error) { console.error('Load state error:', error); return; }
@@ -205,7 +206,7 @@ async function saveState(step, stepIndex, extraData = {}) {
   const { error } = await db.from('workflow_state')
     .update({ current_step: step, step_index: stepIndex, data: newData, updated_by: currentRole, updated_at: new Date().toISOString() })
     .eq('run_id', RUN_ID);
-  if (error) { console.error('Save state error:', error); showToast('Error saving — check connection'); return false; }
+  if (error) { console.error('Save state error:', error); showToast('Error saving · check connection'); return false; }
   wfState.current_step = step;
   wfState.step_index = stepIndex;
   wfState.data = newData;
@@ -221,7 +222,7 @@ async function loadNotifs() {
   notifications = data || [];
 }
 
-// ── REAL-TIME SUBSCRIPTION ──
+// REAL-TIME SUBSCRIPTION
 function subscribeRealtime() {
   db.channel('workflow-updates')
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'workflow_state', filter: `run_id=eq.${RUN_ID}` },
@@ -230,7 +231,7 @@ function subscribeRealtime() {
         await loadNotifs();
         renderPipeline();
         if (currentRole) renderMain();
-        showToast('Pipeline updated — ' + payload.new.updated_by + ' completed a step');
+        showToast('Pipeline updated · ' + payload.new.updated_by + ' completed a step');
       })
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `run_id=eq.${RUN_ID}` },
       async (payload) => {
@@ -247,14 +248,14 @@ function subscribeRealtime() {
       if (status === 'SUBSCRIBED') {
         dot.classList.add('live'); txt.textContent = 'Live';
       } else if (status === 'TIMED_OUT' || status === 'CLOSED') {
-        dot.classList.remove('live'); txt.textContent = 'Reconnecting…';
+        dot.classList.remove('live'); txt.textContent = 'Reconnecting...';
         setTimeout(subscribeRealtime, 2000);
       } else {
         dot.classList.remove('live'); txt.textContent = status;
       }
     });
 
-  // Heartbeat — poll every 25 seconds to keep free tier alive
+  // Heartbeat: poll every 25 seconds to keep free tier alive
   setInterval(async () => {
     await loadState();
     await loadNotifs();
@@ -263,7 +264,7 @@ function subscribeRealtime() {
   }, 25000);
 }
 
-// ── PIPELINE RENDER ──
+// PIPELINE RENDER
 function renderPipeline() {
   const curIdx = wfState.step_index;
   let html = '';
@@ -278,7 +279,7 @@ function renderPipeline() {
   document.getElementById('pipeline-steps').innerHTML = html;
 }
 
-// ── ROLE SWITCH ──
+// ROLE SWITCH
 function switchRole(role, name, roleTitle, color) {
   currentRole = role;
   currentColor = color;
@@ -287,25 +288,25 @@ function switchRole(role, name, roleTitle, color) {
   renderMain();
 }
 
-// ── NOTIF FEED ──
+// NOTIF FEED
 function renderNotifItems() {
   if (!notifications.length) return '<div style="font-size:12px;color:var(--muted);font-style:italic;">No activity yet</div>';
   return notifications.map(n => {
     const time = new Date(n.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    return `<div class="notif-item"><div class="notif-dot nd-${n.type||'blue'}"></div><span>${time} — ${n.message}</span></div>`;
+    return `<div class="notif-item"><div class="notif-dot nd-${n.type||'blue'}"></div><span>${time} · ${n.message}</span></div>`;
   }).join('');
 }
 
 function notifHTML() {
-  return `<div class="notif-feed"><div class="notif-title">Activity Feed — Live</div><div id="notif-feed-inner">${renderNotifItems()}</div></div>`;
+  return `<div class="notif-feed"><div class="notif-title">Activity Feed · Live</div><div id="notif-feed-inner">${renderNotifItems()}</div></div>`;
 }
 
-// ── HELPERS ──
+// HELPERS
 function taskDone(title) {
   return `<div class="task-card complete"><div class="tc-header"><div><div class="tc-title">${title}</div></div><span class="status-badge sb-done">✓ Complete</span></div></div>`;
 }
 function taskWaiting(title, who) {
-  return `<div class="task-card waiting"><div class="tc-header"><div><div class="tc-title">${title}</div></div><span class="status-badge sb-waiting">Waiting — ${who}</span></div></div>`;
+  return `<div class="task-card waiting"><div class="tc-header"><div><div class="tc-title">${title}</div></div><span class="status-badge sb-waiting">Waiting · ${who}</span></div></div>`;
 }
 function roleHeader(name, role) {
   return `<div class="role-header" style="background:${currentColor}11;border-color:${currentColor}44;">
@@ -315,7 +316,7 @@ function roleHeader(name, role) {
 }
 function infoBox(html) { return `<div class="info-box">${html}</div>`; }
 
-// ── MAIN RENDER ──
+// MAIN RENDER
 function renderMain() {
   const el = document.getElementById('main-content');
   const step = wfState.current_step;
@@ -326,12 +327,12 @@ function renderMain() {
   if (views[currentRole]) el.innerHTML = views[currentRole](step, idx, d);
 }
 
-// ── GIRISH ──
+// GIRISH
 function girish(step, idx, d) {
   let h = roleHeader('Prof. Girish Vasudevan', 'Hiring Manager');
   h += notifHTML();
 
-  // Step 0 — MRF
+  // Step 0 · MRF
   if (step === '0') {
     h += `<div class="task-card pending-action">
       <div class="tc-header"><div><div class="tc-step">Step 0 · Your Action</div><div class="tc-title">Submit Manpower Requisition Form</div></div><span class="status-badge sb-pending">Action Required</span></div>
@@ -342,15 +343,15 @@ function girish(step, idx, d) {
           <div class="field"><label>Role Type</label><select id="mrf-type"><option>New Position</option><option>Backfill</option></select></div>
           <div class="field"><label>Reporting To</label><input id="mrf-reporting" value="Prof. Girish Vasudevan · Dean External Programs"></div>
           <div class="field"><label>Proposed Joining Date</label><input type="date" id="mrf-date"></div>
-          <div class="field span2"><label>Business Justification</label><textarea id="mrf-justify">The External Programs division requires a dedicated MDP Associate to support program coordination, corporate outreach, and MDP delivery. Current workload has exceeded capacity and this role is critical for the April–June MDP calendar.</textarea></div>
+          <div class="field span2"><label>Business Justification</label><textarea id="mrf-justify">The External Programs division requires a dedicated MDP Associate to support program coordination, corporate outreach, and MDP delivery. Current workload has exceeded capacity and this role is critical for the April to June MDP calendar.</textarea></div>
         </div>
         <div class="btn-row"><button class="btn-primary" id="btn-mrf" onclick="doSubmitMRF()">Submit Requisition →</button></div>
       </div></div>`;
   } else {
-    h += taskDone('Manpower Requisition Form — Submitted');
+    h += taskDone('Manpower Requisition Form · Submitted');
   }
 
-  // Step 1 — Job Analysis
+  // Step 1 · Job Analysis
   if (step === '1') {
     h += `<div class="task-card pending-action">
       <div class="tc-header"><div><div class="tc-step">Step 1 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Submit Job Analysis</div></div><span class="status-badge sb-pending">Action Required</span></div>
@@ -358,24 +359,24 @@ function girish(step, idx, d) {
         <div class="tc-desc">MRF sanctioned by Dr. Hirak. You must now submit the Job Analysis so Anjaly can draft the JD. <strong>SLA: 48 hours.</strong> Delays here stall the entire pipeline.</div>
         <div class="form-grid">
           <div class="field"><label>Minimum Qualification</label><input id="ja-qual" placeholder="e.g. MBA from recognised institution"></div>
-          <div class="field"><label>Experience Required</label><input id="ja-exp" placeholder="e.g. 2–4 years in MDP coordination"></div>
-          <div class="field span2"><label>Key Skills</label><textarea id="ja-skills" placeholder="Program coordination, client communication, MDP delivery support…"></textarea></div>
+          <div class="field"><label>Experience Required</label><input id="ja-exp" placeholder="e.g. 2 to 4 years in MDP coordination"></div>
+          <div class="field span2"><label>Key Skills</label><textarea id="ja-skills" placeholder="Program coordination, client communication, MDP delivery support..."></textarea></div>
           <div class="field"><label>Industry Preference</label><input id="ja-industry" placeholder="e.g. Training, Ed-Tech, Consulting"></div>
           <div class="field"><label>Other Requirements</label><input id="ja-other" placeholder="e.g. Bengaluru-based, Kannada preferred"></div>
         </div>
         <div class="btn-row"><button class="btn-primary" onclick="doSubmitJA()">Submit Job Analysis →</button></div>
       </div></div>`;
   } else if (idx > STEP_ORDER.indexOf('1') && idx > STEP_ORDER.indexOf('ag1')) {
-    h += taskDone('Job Analysis — Submitted to Anjaly');
+    h += taskDone('Job Analysis · Submitted to Anjaly');
   } else if (idx <= STEP_ORDER.indexOf('ag1') && step !== '0') {
     h += taskWaiting('Job Analysis', 'AG1 Sanction from Dr. Hirak');
   }
 
-  // Step 5 — Interview
+  // Step 5 · Interview
   if (step === '5') {
     const profiles = d.shortlisted_profiles || [];
     h += `<div class="task-card pending-action">
-      <div class="tc-header"><div><div class="tc-step">Step 5 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Conduct Interviews & Submit Feedback</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">Step 5 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Conduct Interviews and Submit Feedback</div></div><span class="status-badge sb-pending">Action Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Anjaly has shared 3 shortlisted profiles. Interview candidates, submit structured feedback, and select your preferred candidate.</div>
         ${profiles.map((p,i) => `
@@ -388,15 +389,15 @@ function girish(step, idx, d) {
             <span style="font-size:10.5px;padding:2px 8px;border-radius:8px;background:#EBF4FF;color:var(--navy);">${p.qual}</span>
             <span style="font-size:10.5px;padding:2px 8px;border-radius:8px;background:#EBF4FF;color:var(--navy);">Exp: ${p.salary}</span>
           </div>
-          <div class="field"><label>Interview Notes — ${p.name}</label><textarea id="fb-${i}" placeholder="Communication, domain knowledge, cultural fit…"></textarea></div>
+          <div class="field"><label>Interview Notes · ${p.name}</label><textarea id="fb-${i}" placeholder="Communication, domain knowledge, cultural fit..."></textarea></div>
         </div>`).join('')}
         ${profiles.length ? `
-        <div class="field"><label>Select Preferred Candidate</label><select id="sel-cand"><option value="">— Select —</option>${profiles.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')}</select></div>
+        <div class="field"><label>Select Preferred Candidate</label><select id="sel-cand"><option value="">Select...</option>${profiles.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')}</select></div>
         <div class="field"><label>Overall Recommendation</label><textarea id="overall-rec" placeholder="Why this candidate? Any concerns?"></textarea></div>
-        <div class="btn-row"><button class="btn-primary" onclick="doSubmitInterview()">Submit & Pass to Dr. Hirak (AG3) →</button></div>` : '<div style="color:var(--muted);font-size:13px;">Waiting for Anjaly to share profiles…</div>'}
+        <div class="btn-row"><button class="btn-primary" onclick="doSubmitInterview()">Submit and Pass to Dr. Hirak (AG3) →</button></div>` : '<div style="color:var(--muted);font-size:13px;">Waiting for Anjaly to share profiles...</div>'}
       </div></div>`;
   } else if (idx > STEP_ORDER.indexOf('5')) {
-    h += taskDone('Interviews Conducted — Candidate Selected');
+    h += taskDone('Interviews Conducted · Candidate Selected');
   } else if (idx > STEP_ORDER.indexOf('ag2') && idx < STEP_ORDER.indexOf('5')) {
     h += taskWaiting('Interviews', 'Anjaly completing shortlisting');
   }
@@ -404,7 +405,7 @@ function girish(step, idx, d) {
   return h;
 }
 
-// ── ANJALY ──
+// ANJALY
 function anjaly(step, idx, d) {
   let h = roleHeader('Anjaly', 'Recruitment Professional');
   h += notifHTML();
@@ -412,8 +413,8 @@ function anjaly(step, idx, d) {
   const ag2Idx = STEP_ORDER.indexOf('ag2');
 
   if (idx < STEP_ORDER.indexOf('ag1')) return h + taskWaiting('All Steps', 'MRF from Girish');
-  if (idx === STEP_ORDER.indexOf('ag1')) return h + taskWaiting('JD Drafting', 'AG1 Sanction — Dr. Hirak');
-  if (step === '1') return h + taskWaiting('JD Drafting', 'Job Analysis from Girish — 48hr SLA in progress');
+  if (idx === STEP_ORDER.indexOf('ag1')) return h + taskWaiting('JD Drafting', 'AG1 Sanction · Dr. Hirak');
+  if (step === '1') return h + taskWaiting('JD Drafting', 'Job Analysis from Girish · 48hr SLA in progress');
 
   if (step === '2') {
     const ja = d.job_analysis || {};
@@ -421,9 +422,9 @@ function anjaly(step, idx, d) {
       <div class="tc-header"><div><div class="tc-step">Step 2 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Draft Job Description</div></div><span class="status-badge sb-pending">Action Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Girish has submitted the Job Analysis. Draft the JD and send to Lavanya for approval.</div>
-        ${ja.qual ? infoBox(`<strong>From Girish:</strong> Qual: ${ja.qual} · Exp: ${ja.exp}<br>Skills: ${ja.skills||'—'}`) : ''}
+        ${ja.qual ? infoBox(`<strong>From Girish:</strong> Qual: ${ja.qual} · Exp: ${ja.exp}<br>Skills: ${ja.skills||'-'}`) : ''}
         <div class="field"><label>Job Description</label><textarea id="jd-text" style="min-height:140px;">Role: MDP Associate
-Reporting to: Dean, External Programs — XIME Bengaluru
+Reporting to: Dean, External Programs · XIME Bengaluru
 
 The MDP Associate will support the design, coordination, and delivery of Management Development Programmes at XIME Bengaluru.
 
@@ -434,54 +435,54 @@ Key Responsibilities:
 • Maintain participant records and feedback
 
 Qualifications: ${ja.qual||'MBA from recognised institution'}
-Experience: ${ja.exp||'2–4 years'}
+Experience: ${ja.exp||'2 to 4 years'}
 Skills: ${ja.skills||'Program coordination, corporate communication'}</textarea></div>
         <div class="btn-row"><button class="btn-primary" onclick="doSubmitJD()">Send to Lavanya for Approval →</button></div>
       </div></div>`;
   } else if (idx > ag2Idx) {
-    h += taskDone('Job Description — Approved by Lavanya');
+    h += taskDone('Job Description · Approved by Lavanya');
   } else if (idx > jaIdx) {
-    h += taskDone('Job Description — Sent to Lavanya · Awaiting AG2');
+    h += taskDone('Job Description · Sent to Lavanya · Awaiting AG2');
   }
 
   if (step === '3') {
     h += `<div class="task-card pending-action">
-      <div class="tc-header"><div><div class="tc-step">Step 3 · Your Action</div><div class="tc-title">Post Role & Begin Sourcing</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">Step 3 · Your Action</div><div class="tc-title">Post Role and Begin Sourcing</div></div><span class="status-badge sb-pending">Action Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">JD approved. Post the role and begin sourcing candidates.</div>
         <div class="form-grid">
           <div class="field"><label>Platforms</label><input value="LinkedIn, Naukri, Internal Board"></div>
-          <div class="field"><label>Target Profiles</label><input placeholder="MBA, 2–4 years, Training/Ed-Tech background"></div>
+          <div class="field"><label>Target Profiles</label><input placeholder="MBA, 2 to 4 years, Training/Ed-Tech background"></div>
         </div>
         <div class="btn-row"><button class="btn-primary" onclick="doPostRole()">Confirm Posting →</button></div>
       </div></div>`;
-  } else if (idx > STEP_ORDER.indexOf('3')) h += taskDone('Role Posted — LinkedIn, Naukri');
+  } else if (idx > STEP_ORDER.indexOf('3')) h += taskDone('Role Posted · LinkedIn, Naukri');
 
   if (step === '4') {
     h += `<div class="task-card pending-action">
-      <div class="tc-header"><div><div class="tc-step">Step 4 · Your Action</div><div class="tc-title">Shortlist & Share Profiles with Girish</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">Step 4 · Your Action</div><div class="tc-title">Shortlist and Share Profiles with Girish</div></div><span class="status-badge sb-pending">Action Required</span></div>
       <div class="tc-body">
-        <div class="tc-desc">Review applications and shortlist 3 candidates. Share profiles with Girish — he has a 48hr SLA to review and respond.</div>
+        <div class="tc-desc">Review applications and shortlist 3 candidates. Share profiles with Girish · he has a 48hr SLA to review and respond.</div>
         <div class="btn-row"><button class="btn-primary" onclick="doShortlist()">Share 3 Shortlisted Profiles with Girish →</button></div>
       </div></div>`;
-  } else if (idx > STEP_ORDER.indexOf('4')) h += taskDone('3 Profiles Shortlisted & Shared with Girish');
+  } else if (idx > STEP_ORDER.indexOf('4')) h += taskDone('3 Profiles Shortlisted and Shared with Girish');
 
   if (step === '7') {
     const cand = d.selected_candidate || {};
     h += `<div class="task-card pending-action">
-      <div class="tc-header"><div><div class="tc-step">Step 7 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Salary Fitment & Offer Letter</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">Step 7 · Your Action · ⏱ 48hr SLA</div><div class="tc-title">Salary Fitment and Offer Letter</div></div><span class="status-badge sb-pending">Action Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Dr. Hirak confirmed the selection. Complete salary fitment and prepare the offer letter for Designate sign-off.</div>
         ${cand.name ? infoBox(`<strong>Selected:</strong> ${cand.name} · Salary expectation: ${cand.salary}`) : ''}
         <div class="form-grid">
           <div class="field"><label>Offered CTC (₹ p.a.)</label><input id="offer-ctc" placeholder="e.g. 5,50,000"></div>
-          <div class="field"><label>Band Check</label><select id="offer-band"><option>Within Band B ✓</option><option>Exception — needs approval</option></select></div>
+          <div class="field"><label>Band Check</label><select id="offer-band"><option>Within Band B ✓</option><option>Exception, needs approval</option></select></div>
           <div class="field"><label>Proposed Joining Date</label><input type="date" id="offer-date"></div>
           <div class="field"><label>Offer Valid For</label><select><option>5 working days</option><option>7 working days</option></select></div>
         </div>
         <div class="btn-row"><button class="btn-primary" onclick="doPrepareOffer()">Send to Dr. Hirak for Sign-off (AG4) →</button></div>
       </div></div>`;
-  } else if (idx > STEP_ORDER.indexOf('ag4')) h += taskDone('Offer Letter Prepared & Sent');
+  } else if (idx > STEP_ORDER.indexOf('ag4')) h += taskDone('Offer Letter Prepared and Sent');
 
   if (step === '9') {
     h += `<div class="task-card pending-action">
@@ -505,14 +506,14 @@ Skills: ${ja.skills||'Program coordination, corporate communication'}</textarea>
           ${['Educational Certificates','PAN Card','Aadhaar Card','Previous Employment Certificate','Relieving Letter','Bank Account Details','Passport Photos (2)']
             .map(d=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="checkbox" style="accent-color:var(--navy);"> ${d}</label>`).join('')}
         </div>
-        <div class="btn-row"><button class="btn-primary" onclick="doClearDocs()">Confirm Document Clearance → Trigger Onboarding</button></div>
+        <div class="btn-row"><button class="btn-primary" onclick="doClearDocs()">Confirm Document Clearance · Trigger Onboarding</button></div>
       </div></div>`;
   }
 
   return h;
 }
 
-// ── LAVANYA ──
+// LAVANYA
 function lavanya(step, idx, d) {
   let h = roleHeader('Lavanya', 'HR Supervisor');
   h += notifHTML();
@@ -521,18 +522,18 @@ function lavanya(step, idx, d) {
 
   if (step === 'ag2') {
     h += `<div class="task-card approval-gate">
-      <div class="tc-header"><div><div class="tc-step">AG 2 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Job Description — Sign-off Required</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">AG 2 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Job Description · Sign-off Required</div></div><span class="status-badge sb-approval">Approval Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Anjaly has submitted the JD for your review. Approve to release for posting, or return with comments.</div>
         <div style="padding:12px 14px;background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:12px;font-size:13px;line-height:1.6;white-space:pre-line;max-height:220px;overflow-y:auto;">${d.jd_text||'JD not yet submitted'}</div>
-        <div class="field"><label>Comments</label><textarea id="lav-comments" placeholder="Any changes needed…"></textarea></div>
+        <div class="field"><label>Comments</label><textarea id="lav-comments" placeholder="Any changes needed..."></textarea></div>
         <div class="btn-row">
-          <button class="btn-approve" onclick="doLavanyaApprove()">Approve JD — Release for Posting →</button>
+          <button class="btn-approve" onclick="doLavanyaApprove()">Approve JD · Release for Posting →</button>
           <button class="btn-reject" onclick="doLavanyaReject()">Return to Anjaly</button>
         </div>
       </div></div>`;
   } else if (idx > STEP_ORDER.indexOf('ag2')) {
-    h += taskDone('JD Approved — Role Released for Posting');
+    h += taskDone('JD Approved · Role Released for Posting');
   }
 
   h += `<div style="margin-top:12px;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--sub);">
@@ -541,7 +542,7 @@ function lavanya(step, idx, d) {
   return h;
 }
 
-// ── HIRAK ──
+// HIRAK
 function hirak(step, idx, d) {
   let h = roleHeader('Dr. Hirak', "President's Designate");
   h += notifHTML();
@@ -550,18 +551,18 @@ function hirak(step, idx, d) {
   if (step === 'ag1') {
     const mrf = d.mrf || {};
     h += `<div class="task-card approval-gate">
-      <div class="tc-header"><div><div class="tc-step">AG 1 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Manpower Requisition — Sanction Decision</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">AG 1 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Manpower Requisition · Sanction Decision</div></div><span class="status-badge sb-approval">Approval Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Girish has raised an MRF. Review and sanction before recruitment begins.</div>
-        ${infoBox(`<strong>Role:</strong> ${mrf.role||'MDP Associate'} · <strong>Type:</strong> ${mrf.type||'New Position'}<br><strong>Reporting to:</strong> ${mrf.reporting||'Dean External Programs'}<br><strong>Justification:</strong> ${mrf.justify||'—'}`)}
-        <div class="field"><label>Remarks</label><textarea id="ag1-remarks" placeholder="Conditions or notes on this approval…"></textarea></div>
+        ${infoBox(`<strong>Role:</strong> ${mrf.role||'MDP Associate'} · <strong>Type:</strong> ${mrf.type||'New Position'}<br><strong>Reporting to:</strong> ${mrf.reporting||'Dean External Programs'}<br><strong>Justification:</strong> ${mrf.justify||'-'}`)}
+        <div class="field"><label>Remarks</label><textarea id="ag1-remarks" placeholder="Conditions or notes on this approval..."></textarea></div>
         <div class="btn-row">
-          <button class="btn-approve" onclick="doHirakAG1()">Sanction — Proceed with Recruitment →</button>
+          <button class="btn-approve" onclick="doHirakAG1()">Sanction · Proceed with Recruitment →</button>
           <button class="btn-reject" onclick="showToast('Returned to Girish')">Return to Initiator</button>
         </div>
       </div></div>`;
   } else if (idx > STEP_ORDER.indexOf('ag1')) {
-    h += taskDone('AG1 — MRF Sanctioned');
+    h += taskDone('AG1 · MRF Sanctioned');
   } else {
     h += taskWaiting('AG1 Sanction', 'MRF from Girish');
   }
@@ -571,17 +572,17 @@ function hirak(step, idx, d) {
     const cand = d.selected_candidate || {};
     const fb = d.interview_feedback || {};
     h += `<div class="task-card approval-gate">
-      <div class="tc-header"><div><div class="tc-step">AG 3 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Selection Decision — Confirm Candidate</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">AG 3 · Your Approval · ⏱ 48hr SLA</div><div class="tc-title">Selection Decision · Confirm Candidate</div></div><span class="status-badge sb-approval">Approval Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Girish has completed interviews and submitted his recommendation. Confirm to proceed to offer.</div>
-        ${infoBox(`<strong>Recommended:</strong> ${cand.name||'—'}<br><strong>Salary expectation:</strong> ${cand.salary||'—'}<br><strong>Girish's recommendation:</strong> <em>${fb.recommendation||'—'}</em>`)}
+        ${infoBox(`<strong>Recommended:</strong> ${cand.name||'-'}<br><strong>Salary expectation:</strong> ${cand.salary||'-'}<br><strong>Girish's recommendation:</strong> <em>${fb.recommendation||'-'}</em>`)}
         <div class="btn-row">
-          <button class="btn-approve" onclick="doHirakAG3()">Confirm Selection — Proceed to Offer →</button>
+          <button class="btn-approve" onclick="doHirakAG3()">Confirm Selection · Proceed to Offer →</button>
           <button class="btn-reject" onclick="showToast('Re-interview requested')">Request Re-interview</button>
         </div>
       </div></div>`;
   } else if (idx > STEP_ORDER.indexOf('ag3')) {
-    h += taskDone('AG3 — Selection Confirmed');
+    h += taskDone('AG3 · Selection Confirmed');
   } else if (idx > STEP_ORDER.indexOf('ag1')) {
     h += taskWaiting('AG3 Selection', 'Interviews by Girish');
   }
@@ -591,45 +592,45 @@ function hirak(step, idx, d) {
     const offer = d.offer_details || {};
     const cand = d.selected_candidate || {};
     h += `<div class="task-card approval-gate">
-      <div class="tc-header"><div><div class="tc-step">AG 4 · Your Approval · ⏱ 24hr SLA</div><div class="tc-title">Offer Letter — Sign-off</div></div><span class="status-badge sb-approval">Approval Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">AG 4 · Your Approval · ⏱ 24hr SLA</div><div class="tc-title">Offer Letter · Sign-off</div></div><span class="status-badge sb-approval">Approval Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Anjaly has prepared the offer. Review and sign off before it is sent to the candidate.</div>
-        ${infoBox(`<strong>Candidate:</strong> ${cand.name||'—'}<br><strong>Offered CTC:</strong> ${offer.ctc||'—'}<br><strong>Band status:</strong> <span style="color:#16A34A;">${offer.band||'—'}</span><br><strong>Joining Date:</strong> ${offer.joining_date||'—'}`)}
+        ${infoBox(`<strong>Candidate:</strong> ${cand.name||'-'}<br><strong>Offered CTC:</strong> ${offer.ctc||'-'}<br><strong>Band status:</strong> <span style="color:#16A34A;">${offer.band||'-'}</span><br><strong>Joining Date:</strong> ${offer.joining_date||'-'}`)}
         <div class="btn-row">
           <button class="btn-approve" onclick="doHirakAG4()">Sign Off Offer Letter →</button>
           <button class="btn-reject" onclick="showToast('Returned to Anjaly')">Return for Revision</button>
         </div>
       </div></div>`;
   } else if (idx > STEP_ORDER.indexOf('ag4')) {
-    h += taskDone('AG4 — Offer Letter Signed Off');
+    h += taskDone('AG4 · Offer Letter Signed Off');
   }
 
   return h;
 }
 
-// ── ANIL ──
+// ANIL
 function anil(step, idx, d) {
   let h = roleHeader('Anil J. Philip', 'President · XIME Bengaluru');
   const allSteps = [
     {s:'0',label:'Manpower Requisition',owner:'Girish'},
-    {s:'ag1',label:'AG1 — Sanction',owner:'Dr. Hirak (Designate)'},
+    {s:'ag1',label:'AG1 · Sanction',owner:'Dr. Hirak (Designate)'},
     {s:'1',label:'Job Analysis',owner:'Girish · 48hr SLA'},
     {s:'2',label:'JD Drafting',owner:'Anjaly'},
-    {s:'ag2',label:'AG2 — JD Approval',owner:'Lavanya'},
+    {s:'ag2',label:'AG2 · JD Approval',owner:'Lavanya'},
     {s:'3',label:'Job Posting',owner:'Anjaly'},
-    {s:'4',label:'Shortlisting & Profiles',owner:'Anjaly'},
-    {s:'5',label:'Interviews & Selection',owner:'Girish · 48hr SLA'},
-    {s:'ag3',label:'AG3 — Selection Confirmation',owner:'Dr. Hirak (Designate)'},
-    {s:'7',label:'Salary Fitment & Offer',owner:'Anjaly · 48hr SLA'},
-    {s:'ag4',label:'AG4 — Offer Sign-off',owner:'Dr. Hirak (Designate) · 24hr SLA'},
+    {s:'4',label:'Shortlisting and Profiles',owner:'Anjaly'},
+    {s:'5',label:'Interviews and Selection',owner:'Girish · 48hr SLA'},
+    {s:'ag3',label:'AG3 · Selection Confirmation',owner:'Dr. Hirak (Designate)'},
+    {s:'7',label:'Salary Fitment and Offer',owner:'Anjaly · 48hr SLA'},
+    {s:'ag4',label:'AG4 · Offer Sign-off',owner:'Dr. Hirak (Designate) · 24hr SLA'},
     {s:'9',label:'Candidate Response',owner:'Anjaly'},
     {s:'10',label:'Pre-Joining Documents',owner:'Anjaly'},
-    {s:'ag5',label:'AG5 — Document Clearance',owner:'Anjaly'},
+    {s:'ag5',label:'AG5 · Document Clearance',owner:'Anjaly'},
     {s:'11',label:'Joining Confirmed',owner:'Anjaly → Reetha'},
     {s:'onboard',label:'Onboarding Triggered',owner:'Reetha'},
   ];
 
-  h += `<div class="pipeline-overview"><div class="po-header">Recruitment Pipeline — MDP Associate · Live View</div>`;
+  h += `<div class="pipeline-overview"><div class="po-header">Recruitment Pipeline · MDP Associate · Live View</div>`;
   allSteps.forEach(({s,label,owner}) => {
     const sIdx = STEP_ORDER.indexOf(s);
     const isDone = sIdx < idx;
@@ -651,7 +652,7 @@ function anil(step, idx, d) {
   return h;
 }
 
-// ── ROSHNI ──
+// ROSHNI
 function roshni(step, idx, d) {
   let h = roleHeader('Dr. Roshni James', 'Director · XIME Bengaluru');
   h += `<div style="padding:16px;background:white;border:1px solid var(--border);border-radius:12px;margin-bottom:16px;font-size:13px;color:var(--sub);">
@@ -661,16 +662,16 @@ function roshni(step, idx, d) {
   return h;
 }
 
-// ── REETHA ──
+// REETHA
 function reetha(step, idx, d) {
   let h = roleHeader('Reetha Joseph', "Secretary · President's Office · Onboarding");
   if (step === 'onboard' || idx >= STEP_ORDER.indexOf('onboard')) {
     const cand = d.selected_candidate || {};
     h += `<div class="task-card pending-action">
-      <div class="tc-header"><div><div class="tc-step">Onboarding Triggered — Your Action</div><div class="tc-title">New Joiner: ${cand.name||'MDP Associate'}</div></div><span class="status-badge sb-pending">Action Required</span></div>
+      <div class="tc-header"><div><div class="tc-step">Onboarding Triggered · Your Action</div><div class="tc-title">New Joiner: ${cand.name||'MDP Associate'}</div></div><span class="status-badge sb-pending">Action Required</span></div>
       <div class="tc-body">
         <div class="tc-desc">Recruitment complete. Candidate has accepted the offer and all pre-joining documents are cleared. Begin the onboarding process.</div>
-        ${infoBox(`<strong>Name:</strong> ${cand.name||'—'}<br><strong>Role:</strong> MDP Associate<br><strong>Salary expectation:</strong> ${cand.salary||'—'}<br><strong>Documents:</strong> <span style="color:#16A34A;">All cleared ✓</span>`)}
+        ${infoBox(`<strong>Name:</strong> ${cand.name||'-'}<br><strong>Role:</strong> MDP Associate<br><strong>Salary expectation:</strong> ${cand.salary||'-'}<br><strong>Documents:</strong> <span style="color:#16A34A;">All cleared ✓</span>`)}
         <div class="btn-row"><button class="btn-primary" onclick="window.location.href='onboarding-module.html'">Open Onboarding Checklist →</button></div>
       </div></div>`;
   } else {
@@ -684,10 +685,10 @@ function reetha(step, idx, d) {
   return h;
 }
 
-// ── ACTION HANDLERS ──
+// ACTION HANDLERS
 async function doSubmitMRF() {
   const btn = document.getElementById('btn-mrf');
-  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
   const data = {
     mrf: {
       role: document.getElementById('mrf-role')?.value,
@@ -698,7 +699,7 @@ async function doSubmitMRF() {
   };
   const ok = await saveState('ag1', STEP_ORDER.indexOf('ag1'), data);
   if (ok) {
-    await addNotif('Girish submitted MRF — Awaiting AG1 sanction from Dr. Hirak (48hr SLA)', 'amber');
+    await addNotif('Girish submitted MRF · Awaiting AG1 sanction from Dr. Hirak (48hr SLA)', 'amber');
     renderMain(); renderPipeline(); showToast('MRF submitted → Dr. Hirak to sanction');
   }
 }
@@ -706,7 +707,7 @@ async function doSubmitMRF() {
 async function doHirakAG1() {
   const ok = await saveState('1', STEP_ORDER.indexOf('1'), { ag1_remarks: document.getElementById('ag1-remarks')?.value });
   if (ok) {
-    await addNotif('Dr. Hirak sanctioned MRF — Girish to submit Job Analysis (48hr SLA)', 'green');
+    await addNotif('Dr. Hirak sanctioned MRF · Girish to submit Job Analysis (48hr SLA)', 'green');
     await addNotif('Dr. Roshni notified: Recruitment opened for MDP Associate', 'blue');
     renderMain(); renderPipeline(); showToast('AG1 Approved → Girish notified');
   }
@@ -716,7 +717,7 @@ async function doSubmitJA() {
   const data = { job_analysis: { qual: document.getElementById('ja-qual')?.value, exp: document.getElementById('ja-exp')?.value, skills: document.getElementById('ja-skills')?.value, industry: document.getElementById('ja-industry')?.value } };
   const ok = await saveState('2', STEP_ORDER.indexOf('2'), data);
   if (ok) {
-    await addNotif('Girish submitted Job Analysis — Anjaly to draft JD (48hr SLA)', 'blue');
+    await addNotif('Girish submitted Job Analysis · Anjaly to draft JD (48hr SLA)', 'blue');
     renderMain(); renderPipeline(); showToast('Job Analysis submitted → Anjaly notified');
   }
 }
@@ -725,7 +726,7 @@ async function doSubmitJD() {
   const data = { jd_text: document.getElementById('jd-text')?.value };
   const ok = await saveState('ag2', STEP_ORDER.indexOf('ag2'), data);
   if (ok) {
-    await addNotif('Anjaly submitted JD — Lavanya to approve (48hr SLA)', 'amber');
+    await addNotif('Anjaly submitted JD · Lavanya to approve (48hr SLA)', 'amber');
     renderMain(); renderPipeline(); showToast('JD sent to Lavanya');
   }
 }
@@ -733,7 +734,7 @@ async function doSubmitJD() {
 async function doLavanyaApprove() {
   const ok = await saveState('3', STEP_ORDER.indexOf('3'));
   if (ok) {
-    await addNotif('Lavanya approved JD — Anjaly to post role', 'green');
+    await addNotif('Lavanya approved JD · Anjaly to post role', 'green');
     renderMain(); renderPipeline(); showToast('JD Approved → Anjaly to post role');
   }
 }
@@ -744,18 +745,18 @@ async function doLavanyaReject() {
 
 async function doPostRole() {
   const ok = await saveState('4', STEP_ORDER.indexOf('4'));
-  if (ok) { await addNotif('Role posted on LinkedIn and Naukri — Sourcing begins', 'blue'); renderMain(); renderPipeline(); showToast('Role posted'); }
+  if (ok) { await addNotif('Role posted on LinkedIn and Naukri · Sourcing begins', 'blue'); renderMain(); renderPipeline(); showToast('Role posted'); }
 }
 
 async function doShortlist() {
   const profiles = [
-    {name:'Priya Sharma', exp:'3 years', current:'Training Coordinator · InfoSys BPO', qual:'MBA HR — Symbiosis', salary:'₹5.5L'},
-    {name:'Rahul Menon', exp:'4 years', current:'Program Associate · ISB Hyderabad', qual:'MBA — XIMB', salary:'₹6.2L'},
-    {name:'Kavitha Nair', exp:'2 years', current:'L&D Executive · Deloitte', qual:'MBA — TAPMI', salary:'₹5L'}
+    {name:'Priya Sharma', exp:'3 years', current:'Training Coordinator · InfoSys BPO', qual:'MBA HR · Symbiosis', salary:'₹5.5L'},
+    {name:'Rahul Menon', exp:'4 years', current:'Program Associate · ISB Hyderabad', qual:'MBA · XIMB', salary:'₹6.2L'},
+    {name:'Kavitha Nair', exp:'2 years', current:'L&D Executive · Deloitte', qual:'MBA · TAPMI', salary:'₹5L'}
   ];
   const ok = await saveState('5', STEP_ORDER.indexOf('5'), { shortlisted_profiles: profiles });
   if (ok) {
-    await addNotif('Anjaly shortlisted 3 profiles — Girish to review and interview (48hr SLA)', 'amber');
+    await addNotif('Anjaly shortlisted 3 profiles · Girish to review and interview (48hr SLA)', 'amber');
     renderMain(); renderPipeline(); showToast('3 profiles shared with Girish');
   }
 }
@@ -770,7 +771,7 @@ async function doSubmitInterview() {
   };
   const ok = await saveState('ag3', STEP_ORDER.indexOf('ag3'), data);
   if (ok) {
-    await addNotif(`Girish selected ${profiles[selIdx].name} — Dr. Hirak to confirm (AG3, 48hr SLA)`, 'amber');
+    await addNotif(`Girish selected ${profiles[selIdx].name} · Dr. Hirak to confirm (AG3, 48hr SLA)`, 'amber');
     renderMain(); renderPipeline(); showToast('Interview submitted → Dr. Hirak to confirm');
   }
 }
@@ -778,7 +779,7 @@ async function doSubmitInterview() {
 async function doHirakAG3() {
   const ok = await saveState('7', STEP_ORDER.indexOf('7'));
   if (ok) {
-    await addNotif('Dr. Hirak confirmed selection — Anjaly to prepare offer', 'green');
+    await addNotif('Dr. Hirak confirmed selection · Anjaly to prepare offer', 'green');
     renderMain(); renderPipeline(); showToast('AG3 Approved → Anjaly preparing offer');
   }
 }
@@ -787,7 +788,7 @@ async function doPrepareOffer() {
   const data = { offer_details: { ctc: document.getElementById('offer-ctc')?.value, band: document.getElementById('offer-band')?.value, joining_date: document.getElementById('offer-date')?.value } };
   const ok = await saveState('ag4', STEP_ORDER.indexOf('ag4'), data);
   if (ok) {
-    await addNotif('Offer letter prepared — Dr. Hirak to sign off (AG4, 24hr SLA)', 'amber');
+    await addNotif('Offer letter prepared · Dr. Hirak to sign off (AG4, 24hr SLA)', 'amber');
     renderMain(); renderPipeline(); showToast('Offer sent to Dr. Hirak');
   }
 }
@@ -795,7 +796,7 @@ async function doPrepareOffer() {
 async function doHirakAG4() {
   const ok = await saveState('9', STEP_ORDER.indexOf('9'));
   if (ok) {
-    await addNotif('Dr. Hirak signed offer letter — Anjaly to send to candidate', 'green');
+    await addNotif('Dr. Hirak signed offer letter · Anjaly to send to candidate', 'green');
     await addNotif('Anil notified: Offer extended to candidate', 'purple');
     renderMain(); renderPipeline(); showToast('Offer signed → Anjaly to send to candidate');
   }
@@ -804,7 +805,7 @@ async function doHirakAG4() {
 async function doCandidateAccepts() {
   const ok = await saveState('10', STEP_ORDER.indexOf('10'));
   if (ok) {
-    await addNotif('Candidate accepted offer — Pre-joining documents collection begins', 'green');
+    await addNotif('Candidate accepted offer · Pre-joining documents collection begins', 'green');
     renderMain(); renderPipeline(); showToast('Accepted → collecting documents');
   }
 }
@@ -812,21 +813,21 @@ async function doCandidateAccepts() {
 async function doClearDocs() {
   const ok = await saveState('onboard', STEP_ORDER.indexOf('onboard'));
   if (ok) {
-    await addNotif('Documents cleared — Joining confirmed → Reetha to begin onboarding', 'green');
+    await addNotif('Documents cleared · Joining confirmed → Reetha to begin onboarding', 'green');
     await addNotif('Anil notified: MDP Associate joining XIME', 'purple');
     await addNotif('Dr. Roshni notified: New team member joining', 'blue');
     renderMain(); renderPipeline(); showToast('Onboarding triggered → Reetha notified');
   }
 }
 
-// ── TOAST ──
+// TOAST
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.opacity = '1';
   setTimeout(() => { t.style.opacity = '0'; }, 2800);
 }
 
-// ── RESET ──
+// RESET (3-click logo trigger)
 let clicks = 0;
 document.getElementById('xime-logo').addEventListener('click', async () => {
   clicks++;
@@ -839,7 +840,7 @@ document.getElementById('xime-logo').addEventListener('click', async () => {
   setTimeout(() => clicks = 0, 1000);
 });
 
-// ── INIT ──
+// INIT
 async function init() {
   await loadState();
   await loadNotifs();
@@ -848,7 +849,7 @@ async function init() {
   document.getElementById('main-content').innerHTML = `
     <div style="text-align:center;padding:60px 20px;color:var(--muted);">
       <div style="font-size:32px;margin-bottom:12px;">◎</div>
-      <div style="font-size:15px;font-weight:500;color:var(--sub);margin-bottom:6px;">Connected — Select your role above</div>
+      <div style="font-size:15px;font-weight:500;color:var(--sub);margin-bottom:6px;">Connected · Select your role above</div>
       <div style="font-size:13px;">Each person sees only their pending tasks. Actions update in real time for all users.</div>
     </div>`;
 }
