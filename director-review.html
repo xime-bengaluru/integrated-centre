@@ -23,8 +23,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.2)}
 .tb-l{display:flex;align-items:center;gap:12px}
-.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
-.wm em{color:var(--red);font-style:normal}
+.tb-logo{height:26px;width:auto;display:block}
 .sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
 .ttl{font-size:11px;color:rgba(255,255,255,.55)}
 .dbadge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;background:rgba(201,168,76,.15);color:var(--gold)}
@@ -138,9 +137,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .rs-ta:focus{outline:none;border-color:rgba(201,168,76,.5)}
 .rs-ta.private-field{border-color:rgba(55,138,221,.25);background:#F8FBFF}
 .rs-ta.private-field:focus{border-color:rgba(55,138,221,.5)}
+.rs-ta.gate1-field{border-color:rgba(29,158,117,.25);background:#F8FCFA}
+.rs-ta.gate1-field:focus{border-color:rgba(29,158,117,.5)}
+.rs-ta:disabled{background:var(--cream);color:var(--muted);cursor:not-allowed}
 .rs-hint{font-size:11px;color:var(--faint);margin-top:4px;font-style:italic}
 .save-remarks{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:5px 14px;border-radius:var(--rs);border:.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);transition:all .12s;margin-top:6px}
 .save-remarks:hover{background:var(--parchment);border-color:var(--gold);color:var(--gold-d)}
+
+/* Gate 1 release controls */
+.g1-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.g1-status-pill{font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;letter-spacing:.04em}
+.g1-status-draft{background:var(--cream);color:var(--muted);border:.5px solid var(--border)}
+.g1-status-released{background:var(--teal-l);color:var(--teal-d);border:.5px solid rgba(29,158,117,.3)}
+.g1-released-meta{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:9px 12px;margin-top:8px;font-size:11px;color:var(--teal-d);font-family:'DM Mono',monospace}
+.g1-released-meta strong{font-family:'DM Sans',sans-serif;font-weight:600}
+.btn-release{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 14px;border-radius:var(--rs);border:none;background:var(--teal);color:#fff;cursor:pointer;transition:all .15s;margin-top:6px;margin-left:6px;letter-spacing:.03em}
+.btn-release:hover{background:var(--teal-d)}
+.btn-release:disabled{opacity:.4;cursor:not-allowed}
+.btn-release.unrelease{background:var(--white);color:var(--amber-d);border:1px solid rgba(239,159,39,.4)}
+.btn-release.unrelease:hover{background:var(--amber-l)}
 
 /* History */
 .history-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px;margin-top:10px}
@@ -171,8 +186,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 <div class="topbar">
   <div class="tb-l">
-    <div class="wm">X<em>I</em>ME</div><div class="sep"></div>
-    <div class="ttl">Magis Centre · Director Review</div>
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="sep"></div>
+    <div class="ttl">Magis Centre · Director Review · Annual Development Review</div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <div class="dbadge" id="dir-badge">Loading...</div>
@@ -182,7 +198,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 </div>
 
 <div class="main" id="main-content">
-  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading evaluation queue...</div>
+  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading review queue...</div>
 </div>
 
 <div class="panel-wrap" id="panel-wrap" onclick="handleBackdrop(event)">
@@ -193,7 +209,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
       <div class="p-sub" id="p-sub"></div>
       <div class="p-tabs">
         <button class="p-tab on" onclick="switchTab('record',this)">Performance Record</button>
-        <button class="p-tab" onclick="switchTab('ikigai',this)">IKIGAI & Goals</button>
+        <button class="p-tab" onclick="switchTab('ikigai',this)">Growth &amp; Purpose</button>
         <button class="p-tab" onclick="switchTab('remarks',this)">Remarks</button>
       </div>
     </div>
@@ -220,10 +236,10 @@ function toast(m,ok=true){const t=document.getElementById('toast');t.textContent
 function initials(n){return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
 function fmt(v){return v?`<div class="fbv">${v}</div>`:`<div class="fbe">Not entered</div>`}
 function fblock(label,val){return`<div class="fblock"><div class="fbl">${label}</div>${fmt(val)}</div>`}
-function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'—'}</span></div>`}
+function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'-'}</span></div>`}
 
 async function loadQueue(){
-  // Load all evaluations for this scope that have been submitted past Gate 1
+  // Load all reviews for this scope that have been submitted past Gate 1
   let q=sb.from('faculty_evaluations')
     .select('*')
     .in('workflow_status',['mid_year_locked','mid_year_validated','annual_submitted','dean_validated','director_forwarded','president_review','endorsed','returned_to_director','faculty_input_requested'])
@@ -237,7 +253,7 @@ async function loadQueue(){
   const{data:evals,error}=await q;
 
   if(error||!evals){
-    document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load evaluation queue.</div>';
+    document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load review queue.</div>';
     return;
   }
   allEvals=evals;
@@ -314,7 +330,7 @@ async function renderPage(){
     <div class="ql">Endorsed</div>
     <div class="queue">${closed.map(e=>qCard(e)).join('')}</div>`:''}
 
-    ${allEvals.length===0?`<div class="empty-q">No evaluations yet${USER_ROLE==='director'?` for ${DIRECTOR.campus}`:''}.</div>`:''}
+    ${allEvals.length===0?`<div class="empty-q">No reviews yet${USER_ROLE==='director'?` for ${DIRECTOR.campus}`:''}.</div>`:''}
   `;
 }
 
@@ -331,7 +347,7 @@ function qCard(e){
     <div class="qav">${initials(e.snap_name||'?')}</div>
     <div style="flex:1">
       <div class="qname">${e.snap_name||'Unknown'}</div>
-      <div class="qmeta">${e.snap_designation||'—'} · ${e.snap_campus||DIRECTOR.campus}</div>
+      <div class="qmeta">${e.snap_designation||'-'} · ${e.snap_campus||DIRECTOR.campus}</div>
     </div>
     <div class="qright">
       <div class="chip ${sc.cls}">${sc.label}</div>
@@ -358,7 +374,10 @@ async function openPanel(evalId){
   const{data:presRev}=await sb.from('evaluation_president_reviews').select('*').eq('evaluation_id',evalId).maybeSingle();
 
   document.getElementById('p-name').textContent=ev.snap_name||'Faculty';
-  document.getElementById('p-sub').textContent=`${ev.snap_designation||'—'} · ${ev.snap_campus||DIRECTOR.campus} · ${statusChip(ev.workflow_status).label}`;
+  document.getElementById('p-sub').textContent=`${ev.snap_designation||'-'} · ${ev.snap_campus||DIRECTOR.campus} · ${statusChip(ev.workflow_status).label}`;
+
+  // Reset tab to first
+  document.querySelectorAll('.p-tab').forEach((b,i)=>b.classList.toggle('on',i===0));
 
   // Show president return banner if applicable
   let presReturnBanner='';
@@ -447,7 +466,7 @@ function renderTab(bannerHtml=''){
           <div style="font-size:10px;color:var(--faint);margin-top:2px">MDPs Delivered</div>
         </div>
         <div class="fblock" style="text-align:center">
-          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--amber-d)">${ev.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'—'}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--amber-d)">${ev.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'-'}</div>
           <div style="font-size:10px;color:var(--faint);margin-top:2px">Revenue</div>
         </div>
       </div>
@@ -460,12 +479,14 @@ function renderTab(bannerHtml=''){
     </div>`;
 
   } else if(currentTab==='ikigai'){
-    // IKIGAI — full view, Director sees everything
+    // Growth & Purpose tab. Full view, Director sees everything
     html+=`<div class="p-section">
       <div class="p-shead">What the Faculty Loves</div>
       ${fblock('Teaching Energy',ev.ikigai_passion?.split('\n\n')[0])}
       ${fblock('Research Pull',ev.ikigai_passion?.split('\n\n')[1])}
       ${fblock('Industry Engagement',ev.ikigai_passion?.split('\n\n')[2])}
+      ${fblock('Institutional Roles',ev.ikigai_passion?.split('\n\n')[3])}
+      ${fblock('Impact That Matters',ev.ikigai_passion?.split('\n\n')[4])}
     </div>`;
 
     html+=`<div class="p-section">
@@ -478,46 +499,62 @@ function renderTab(bannerHtml=''){
         </div>`).join('')}
       </div>
       ${fblock('Known For',ev.ikigai_strengths_text)}
-      ${fblock('Growth Areas',ev.ikigai_growth_areas)}
+      ${fblock('Areas to Develop',ev.ikigai_develop_areas||ev.ikigai_growth_areas)}
     </div>`;
 
     html+=`<div class="p-section">
-      <div class="p-shead">Contribution & Convergence</div>
-      ${fblock('Industry Contribution',ev.ikigai_contribution)}
-      ${fblock('Research Pathway',ev.ikigai_convergence)}
+      <div class="p-shead">Impact Focus</div>
+      ${fblock('The Gap You Want to Close',ev.ikigai_impact_focus)}
     </div>`;
 
-    // Purpose Statement — private
     html+=`<div class="p-section">
-      <div class="p-shead">Purpose Statement · Private</div>
+      <div class="p-shead">Contribution</div>
+      ${ev.courses_current&&ev.courses_current.length?fblock('Currently Delivering',ev.courses_current.join(', ')):''}
+      ${ev.courses_aspire&&ev.courses_aspire.length?fblock('Aspires to Deliver',ev.courses_aspire.join(', ')):''}
+      ${fblock('Domain Course Gaps',ev.domain_course_gaps||ev.ikigai_contribution)}
+      ${fblock('New Courses to Design',ev.new_courses_to_design)}
+      ${fblock('Courses to Stop',ev.courses_to_stop)}
+      ${fblock('Consulting / Training Capabilities',ev.consulting_capabilities)}
+      ${fblock('Consulting / Training Delivered',ev.consulting_delivered)}
+      ${fblock('New Programmes to Design',ev.new_programmes_to_design)}
+      ${fblock('Research Publication Potential',ev.research_publication_potential)}
+    </div>`;
+
+    // Purpose Statement (private)
+    html+=`<div class="p-section">
+      <div class="p-shead">IKIGAI Statement · Private</div>
       ${ev.ikigai_statement?
         `<div class="ikigai-display">
           <div class="iki-label">IKIGAI Statement</div>
           <div class="iki-text">${ev.ikigai_statement}</div>
           <div class="iki-private">Not visible to Deans · Visible to Director and President only</div>
         </div>`:
-        `<div class="fbe" style="padding:12px 0">Faculty has not yet submitted their Purpose Statement.</div>`}
-    </div>`;
-
-    html+=`<div class="p-section">
-      <div class="p-shead">Development Goals</div>
-      ${fblock('Goals for XIME',ev.xime_contribution)}
-      ${fblock('Primary Objectives This Year',ev.primary_objectives)}
-      ${fblock('Objectives for Next Year',ev.next_year_objectives)}
+        `<div class="fbe" style="padding:12px 0">Faculty has not yet submitted their IKIGAI Statement.</div>`}
     </div>`;
 
     // Time allocation
-    if(ev.alloc_teaching||ev.alloc_research||ev.alloc_industry||ev.alloc_institution){
+    if(ev.alloc_teaching!=null||ev.alloc_research!=null||ev.alloc_institution!=null){
       html+=`<div class="p-section">
-        <div class="p-shead">Time Allocation</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px">
-          ${[['Teaching',ev.alloc_teaching],['Research',ev.alloc_research],['Industry',ev.alloc_industry],['Institution',ev.alloc_institution]].map(([l,v])=>`
+        <div class="p-shead">Time Allocation · Current</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px">
+          ${[['Teaching',ev.alloc_teaching],['Research',ev.alloc_research],['Institution',ev.alloc_institution]].map(([l,v])=>`
           <div class="fblock" style="text-align:center;padding:8px">
             <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--navy)">${v||'0'}%</div>
             <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
           </div>`).join('')}
         </div>
-        ${ev.alloc_industry&&ev.alloc_industry<10?`<div style="background:var(--amber-l);border:.5px solid rgba(239,159,39,.3);border-radius:var(--rs);padding:8px 12px;font-size:11px;color:var(--amber-d)">Industry allocation is below the 10% minimum floor.</div>`:''}
+        ${(ev.alloc_teaching_ideal!=null||ev.alloc_research_ideal!=null||ev.alloc_institution_ideal!=null)?`
+        <div class="p-shead" style="margin-top:12px">Time Allocation · Ideal</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px">
+          ${[['Teaching',ev.alloc_teaching_ideal],['Research',ev.alloc_research_ideal],['Institution',ev.alloc_institution_ideal]].map(([l,v])=>`
+          <div class="fblock" style="text-align:center;padding:8px">
+            <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--gold-d)">${v||'0'}%</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
+          </div>`).join('')}
+        </div>`:''}
+        ${ev.alloc_change_reason?fblock('Why this shift matters',ev.alloc_change_reason):''}
+        ${ev.alloc_change_actions?fblock('What faculty will do',ev.alloc_change_actions):''}
+        ${ev.alloc_change_support?fblock('Support faculty needs from XIME',ev.alloc_change_support):''}
       </div>`;
     }
 
@@ -531,13 +568,36 @@ function renderTab(bannerHtml=''){
     </div>`;
 
   } else if(currentTab==='remarks'){
-    // Faculty Remarks — published after endorsement
+    // GATE 1 FEEDBACK. Releasable independently
+    const g1Released=currentDirReview?.gate1_released_to_faculty||false;
+    const g1ReleasedAt=currentDirReview?.gate1_released_at;
+    const g1Text=currentDirReview?.gate1_faculty_remarks||'';
     html+=`<div class="p-section">
-      <div class="p-shead">Faculty Remarks <span style="font-size:10px;font-weight:400;color:var(--teal-d);text-transform:none;letter-spacing:0">— published to faculty after President endorses</span></div>
+      <div class="g1-panel-head">
+        <div class="p-shead" style="margin-bottom:0">Gate 1 Mid-Year Feedback <span style="font-size:10px;font-weight:400;color:var(--teal-d);text-transform:none;letter-spacing:0">. Releasable directly to faculty</span></div>
+        <span class="g1-status-pill ${g1Released?'g1-status-released':'g1-status-draft'}">${g1Released?'✓ Released':'Draft'}</span>
+      </div>
       <div class="remarks-section">
-        <div class="rs-label">Your remarks to this faculty member</div>
-        <textarea class="rs-ta" id="faculty-remarks" rows="5" placeholder="These remarks will be shown to the faculty member once the President endorses the evaluation. Write what you want them to read — recognition, guidance, or direction for the year ahead.">${currentDirReview?.faculty_remarks||''}</textarea>
-        <div class="rs-hint">The faculty member sees this after endorsement. They do not see your comments to the President.</div>
+        <div class="rs-label">Your mid-year feedback to this faculty member</div>
+        <textarea class="rs-ta gate1-field" id="gate1-remarks" rows="5" placeholder="What you want the faculty to read at mid-year. Recognition of what is going well, course corrections, anything they should attend to before Gate 2. This releases independently of the Gate 2 endorsement flow.">${g1Text}</textarea>
+        <div class="rs-hint">Save the draft as often as you like. Click "Release to Faculty" only when ready. The faculty will see this on their Annual Development Review form once released.</div>
+        <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap">
+          <button class="save-remarks" onclick="saveRemarks()">Save draft</button>
+          ${g1Released
+            ?`<button class="btn-release unrelease" onclick="toggleGate1Release(false)">Withdraw release</button>`
+            :`<button class="btn-release" onclick="toggleGate1Release(true)" ${!g1Text.trim()?'disabled':''}>Release to Faculty →</button>`}
+        </div>
+        ${g1Released?`<div class="g1-released-meta"><strong>Released to faculty</strong> on ${g1ReleasedAt?new Date(g1ReleasedAt).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'recently'}</div>`:''}
+      </div>
+    </div>`;
+
+    // GATE 2 FACULTY REMARKS. Published after presidential endorsement
+    html+=`<div class="p-section">
+      <div class="p-shead">Gate 2 Faculty Remarks <span style="font-size:10px;font-weight:400;color:var(--teal-d);text-transform:none;letter-spacing:0">. Published to faculty after President endorses</span></div>
+      <div class="remarks-section">
+        <div class="rs-label">Your annual remarks to this faculty member</div>
+        <textarea class="rs-ta" id="faculty-remarks" rows="5" placeholder="These remarks will be shown to the faculty member once the President endorses the Annual Development Review. Write what you want them to read. Recognition, guidance, or direction for the year ahead.">${currentDirReview?.faculty_remarks||''}</textarea>
+        <div class="rs-hint">The faculty member sees this after presidential endorsement. They do not see your comments to the President.</div>
         <button class="save-remarks" onclick="saveRemarks()">Save remarks</button>
       </div>
       ${currentDirReview?.faculty_remarks_history?.length?`
@@ -549,12 +609,12 @@ function renderTab(bannerHtml=''){
       </div>`).join('')}`:''}
     </div>`;
 
-    // President Comments — private channel
+    // PRESIDENT COMMENTS. Private channel
     html+=`<div class="p-section">
-      <div class="p-shead">Comments to President <span style="font-size:10px;font-weight:400;color:var(--blue-d);text-transform:none;letter-spacing:0">— private · never shared with faculty or Deans</span></div>
+      <div class="p-shead">Comments to President <span style="font-size:10px;font-weight:400;color:var(--blue-d);text-transform:none;letter-spacing:0">. Private. Never shared with faculty or Deans</span></div>
       <div class="remarks-section">
-        <div class="rs-label">Your note accompanying this evaluation <span class="rs-private">(Director ↔ President only)</span></div>
-        <textarea class="rs-ta private-field" id="president-comments" rows="5" placeholder="Context, observations, or recommendations you want the President to have before reviewing. This channel is strictly between you and the President — it does not appear anywhere else in the system.">${currentDirReview?.president_comments||''}</textarea>
+        <div class="rs-label">Your note accompanying this review <span class="rs-private">(Director ↔ President only)</span></div>
+        <textarea class="rs-ta private-field" id="president-comments" rows="5" placeholder="Context, observations, or recommendations you want the President to have before reviewing. This channel is strictly between you and the President. It does not appear anywhere else in the system.">${currentDirReview?.president_comments||''}</textarea>
         <div class="rs-hint" style="color:var(--blue-d)">Strictly private. The faculty member and Deans never see this field or know it exists.</div>
         <button class="save-remarks" onclick="saveRemarks()">Save comments</button>
       </div>
@@ -577,7 +637,7 @@ function renderActionBar(){
   const allDeansValidated=currentDeanReviews.length>=3&&currentDeanReviews.every(d=>d.validated);
 
   if(s==='endorsed'){
-    bar.innerHTML=`<div class="endorsed-state"><span style="font-size:16px">✓</span>Endorsed by President · Evaluation complete</div>`;
+    bar.innerHTML=`<div class="endorsed-state"><span style="font-size:16px">✓</span>Endorsed by President · Review complete</div>`;
     return;
   }
   if(s==='director_forwarded'||s==='president_review'){
@@ -594,13 +654,13 @@ function renderActionBar(){
     html+=`<div class="notice-not-ready">⏳ Waiting for all three Deans to validate. ${currentDeanReviews.filter(d=>d.validated).length} of ${currentDeanReviews.length} complete.</div>`;
   }
   if(s==='returned_to_director'){
-    html+=`<div style="background:#FAEEDA;border:.5px solid rgba(239,159,39,.3);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--amber-d);margin-bottom:8px">President returned this evaluation. Review their comments in the Remarks tab, then re-forward or return to faculty.</div>`;
+    html+=`<div style="background:#FAEEDA;border:.5px solid rgba(239,159,39,.3);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--amber-d);margin-bottom:8px">President returned this review. Review their comments in the Remarks tab, then re-forward or return to faculty.</div>`;
   }
   html+=`<button class="btn-forward" onclick="forwardToPresident()" ${!allDeansValidated&&s!=='returned_to_director'?'disabled':''}>
     → Forward to President for Endorsement
   </button>`;
   html+=`<button class="btn-return" onclick="returnToFaculty()">↩ Return to Faculty for Input</button>`;
-  html+=`<button class="btn-save-all" onclick="saveRemarks()">Save remarks & comments</button>`;
+  html+=`<button class="btn-save-all" onclick="saveRemarks()">Save remarks &amp; comments</button>`;
   bar.innerHTML=html;
 }
 
@@ -608,9 +668,10 @@ async function saveRemarks(){
   if(!currentEval)return;
   const fr=document.getElementById('faculty-remarks')?.value||'';
   const pc=document.getElementById('president-comments')?.value||'';
+  const g1=document.getElementById('gate1-remarks')?.value||'';
   const now=new Date().toISOString();
 
-  // Build history entries
+  // Build history entries (only for the two history-tracked fields)
   const frHistory=currentDirReview?.faculty_remarks_history||[];
   const pcHistory=currentDirReview?.president_comments_history||[];
   if(fr&&fr!==currentDirReview?.faculty_remarks)frHistory.push({text:fr,saved_at:now});
@@ -625,13 +686,40 @@ async function saveRemarks(){
     faculty_remarks_history:frHistory,
     president_comments:pc||null,
     president_comments_history:pcHistory,
+    gate1_faculty_remarks:g1||null,
     updated_at:now
   };
 
   const{error}=await sb.from('evaluation_director_reviews').upsert(payload,{onConflict:'evaluation_id'});
-  if(error){toast('Could not save',false);return;}
+  if(error){console.error(error);toast('Could not save',false);return;}
   currentDirReview={...currentDirReview,...payload};
   toast('Saved.');
+}
+
+async function toggleGate1Release(release){
+  if(!currentEval)return;
+  // Persist whatever's in the textarea first
+  const g1=document.getElementById('gate1-remarks')?.value?.trim()||'';
+  if(release&&!g1){toast('Please write Gate 1 feedback before releasing.',false);return;}
+  if(release&&!confirm('Release this Gate 1 feedback to the faculty? They will see it on their Annual Development Review form.'))return;
+  if(!release&&!confirm('Withdraw the released Gate 1 feedback from the faculty? They will no longer see it.'))return;
+  const now=new Date().toISOString();
+  await saveRemarks();
+  const payload={
+    evaluation_id:currentEval.id,
+    director_email:DIRECTOR.email,
+    director_name:DIRECTOR.name,
+    campus:DIRECTOR.campus,
+    gate1_released_to_faculty:release,
+    gate1_released_at:release?now:null,
+    updated_at:now
+  };
+  const{error}=await sb.from('evaluation_director_reviews').upsert(payload,{onConflict:'evaluation_id'});
+  if(error){console.error(error);toast('Could not '+(release?'release':'withdraw')+' Gate 1 feedback.',false);return;}
+  currentDirReview={...currentDirReview,...payload};
+  toast(release?'Gate 1 feedback released to faculty.':'Gate 1 feedback withdrawn.');
+  renderTab('');
+  renderActionBar();
 }
 
 async function forwardToPresident(){
@@ -653,7 +741,7 @@ async function forwardToPresident(){
 
 async function returnToFaculty(){
   if(!currentEval)return;
-  if(!confirm('Return this evaluation to the faculty member for additional input?'))return;
+  if(!confirm('Return this review to the faculty member for additional input?'))return;
   const now=new Date().toISOString();
   await sb.from('faculty_evaluations').update({workflow_status:'faculty_input_requested',gate2_locked:false,updated_at:now}).eq('id',currentEval.id);
   currentEval.workflow_status='faculty_input_requested';
@@ -692,12 +780,11 @@ async function requireDirectorAccess(){
   }
 
   if(profile.role==='super_admin'){
-    // Super admin sees all campuses. Banner reflects that.
     DIRECTOR={email:profile.email,name:profile.full_name||'Super Admin',campus:'All Campuses'};
     return true;
   }
 
-  // Not authorised for this page. Back to hub.
+  // Not authorised for this page
   window.location.href='index.html';
   return false;
 }
