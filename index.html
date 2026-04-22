@@ -42,7 +42,7 @@
   /* HEADER */
   .header { background: var(--navy); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(201,168,76,0.25); }
   .header-left { display: flex; align-items: center; gap: 16px; }
-  .xime-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; line-height: 1; }
+  .header-logo { height: 28px; width: auto; display: block; }
   .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.15); }
   .header-title { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; }
   .header-right { display: flex; align-items: center; gap: 12px; }
@@ -235,7 +235,7 @@
   /* FOOTER */
   .footer { background: var(--navy); border-top: 1px solid rgba(201,168,76,0.15); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
   .footer-left { display: flex; align-items: center; gap: 12px; }
-  .footer-xime { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 500; color: var(--gold); }
+  .footer-logo { height: 22px; width: auto; display: block; }
   .footer-text { font-size: 11px; color: rgba(255,255,255,0.3); }
   .footer-right { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.06em; }
 
@@ -267,7 +267,7 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-left">
-    <div class="xime-logo">XIME</div>
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="header-logo">
     <div class="header-divider"></div>
     <div class="header-title">Magis Centre</div>
   </div>
@@ -413,18 +413,18 @@
       </div>
     </div>
 
-    <!-- ANNUAL EVALUATION -->
+    <!-- ANNUAL DEVELOPMENT REVIEW -->
     <div class="module-card active" style="background:#1F1A2E;border-radius:16px;cursor:pointer;" onclick="window.location.href='evaluation.html'">
       <div class="card-body" style="background:#1F1A2E;">
         <div class="card-tag">Performance · IKIGAI</div>
         <div class="card-icon">◈</div>
-        <div class="card-title">Annual Evaluation</div>
-        <div class="card-desc">Combined performance evaluation and IKIGAI reflection. 13 sections, auto-populated from records, submitted to Dean for validation.</div>
+        <div class="card-title">Annual Development Review</div>
+        <div class="card-desc">Performance record and IKIGAI reflection in two tabs. Auto-populated from records, validated by Deans, endorsed by President.</div>
         <div class="card-arrow">→</div>
       </div>
       <div class="card-footer" style="background:rgba(201,168,76,0.08);border-top:1px solid rgba(201,168,76,0.2);">
         <div class="footer-stat"><div class="footer-num" style="color:#c9a84c;">AY</div><div class="footer-label">2025–26</div></div>
-        <div class="footer-stat"><div class="footer-num" style="color:#c9a84c;">13</div><div class="footer-label">Sections</div></div>
+        <div class="footer-stat"><div class="footer-num" style="color:#c9a84c;">2</div><div class="footer-label">Tabs</div></div>
         <span class="footer-status" style="background:rgba(201,168,76,0.15);color:#c9a84c;border:1px solid rgba(201,168,76,0.3);">New</span>
       </div>
     </div>
@@ -435,7 +435,7 @@
         <div class="card-tag" style="background:rgba(107,140,255,0.15);color:#6B8CFF;">Director Queue</div>
         <div class="card-icon">◎</div>
         <div class="card-title">Director Review</div>
-        <div class="card-desc">Review faculty evaluations forwarded by Deans. Add remarks, forward to President for endorsement.</div>
+        <div class="card-desc">Review Annual Development Reviews forwarded by Deans. Add remarks, release Gate 1 feedback, forward to President for endorsement.</div>
         <div class="card-arrow">→</div>
       </div>
       <div class="card-footer" style="background:rgba(107,140,255,0.08);border-top:1px solid rgba(107,140,255,0.15);">
@@ -450,7 +450,7 @@
         <div class="card-tag" style="background:rgba(61,191,138,0.15);color:#3DBF8A;">Dean Validation</div>
         <div class="card-icon">◉</div>
         <div class="card-title">Dean Review</div>
-        <div class="card-desc">Validate faculty evaluations in your domain and campus. Forward validated records to Director.</div>
+        <div class="card-desc">Validate Annual Development Reviews in your domain and campus. Forward validated records to Director.</div>
         <div class="card-arrow">→</div>
       </div>
       <div class="card-footer" style="background:rgba(61,191,138,0.08);border-top:1px solid rgba(61,191,138,0.15);">
@@ -465,7 +465,7 @@
         <div class="card-tag" style="background:rgba(201,168,76,0.15);color:#c9a84c;">Final Endorsement</div>
         <div class="card-icon">◈</div>
         <div class="card-title">President Review</div>
-        <div class="card-desc">Final endorsement of faculty evaluations forwarded by Directors across all three campuses.</div>
+        <div class="card-desc">Final endorsement of Annual Development Reviews forwarded by Directors across all three campuses.</div>
         <div class="card-arrow">→</div>
       </div>
       <div class="card-footer" style="background:rgba(201,168,76,0.08);border-top:1px solid rgba(201,168,76,0.2);">
@@ -619,7 +619,7 @@
 <!-- FOOTER -->
 <div class="footer">
   <div class="footer-left">
-    <div class="footer-xime">XIME</div>
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="footer-logo">
     <div class="footer-text">Magis Centre · Pilot Phase · Bengaluru</div>
   </div>
   <div class="footer-right">centre.forteen.in · AY 2025–26 · Build v3</div>
