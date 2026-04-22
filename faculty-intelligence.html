@@ -38,8 +38,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 #app{display:none}
 
 .topbar{background:var(--navy);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.wm{font-family:'Cormorant Garamond',serif;font-size:22px;color:white;letter-spacing:.1em}
-.wm em{color:var(--red);font-style:normal}
+.tb-logo{height:28px;width:auto;display:block}
 .wm-sep{width:1px;height:26px;background:rgba(255,255,255,.2);margin:0 16px}
 .wm-title{font-size:12px;color:rgba(255,255,255,.6)}
 .topbar-r{display:flex;align-items:center;gap:10px}
@@ -218,7 +217,7 @@ tr:hover td{background:var(--cream)}
 <div id="app">
   <div class="topbar">
     <div style="display:flex;align-items:center">
-      <div class="wm">X<em>I</em>ME</div>
+      <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
       <div class="wm-sep"></div>
       <div class="wm-title">Magis Centre · Faculty Intelligence</div>
     </div>
@@ -240,23 +239,23 @@ tr:hover td{background:var(--cream)}
     <!-- OVERVIEW -->
     <div id="view-overview" class="view active">
       <div class="metrics" id="metrics-row">
-        <div class="metric"><div class="metric-label">Total faculty</div><div class="metric-val" id="m-total">—</div><div class="metric-sub">across 3 campuses</div></div>
-        <div class="metric"><div class="metric-label">Bengaluru</div><div class="metric-val" id="m-blr">—</div><div class="metric-sub" id="m-blr-sub"></div></div>
-        <div class="metric"><div class="metric-label">Chennai</div><div class="metric-val" id="m-chn">—</div><div class="metric-sub" id="m-chn-sub"></div></div>
-        <div class="metric"><div class="metric-label">Kochi</div><div class="metric-val" id="m-koc">—</div><div class="metric-sub" id="m-koc-sub"></div></div>
+        <div class="metric"><div class="metric-label">Total faculty</div><div class="metric-val" id="m-total">-</div><div class="metric-sub">across 3 campuses</div></div>
+        <div class="metric"><div class="metric-label">Bengaluru</div><div class="metric-val" id="m-blr">-</div><div class="metric-sub" id="m-blr-sub"></div></div>
+        <div class="metric"><div class="metric-label">Chennai</div><div class="metric-val" id="m-chn">-</div><div class="metric-sub" id="m-chn-sub"></div></div>
+        <div class="metric"><div class="metric-label">Kochi</div><div class="metric-val" id="m-koc">-</div><div class="metric-sub" id="m-koc-sub"></div></div>
         <div class="metric" style="border-left:2px solid var(--gold);padding-left:12px">
           <div class="metric-label">Research PhD</div>
-          <div class="metric-val" id="m-phd-res">—</div>
-          <div class="metric-sub" id="m-phd-pursuing">+ — pursuing</div>
+          <div class="metric-val" id="m-phd-res">-</div>
+          <div class="metric-sub" id="m-phd-pursuing">+ - pursuing</div>
         </div>
         <div class="metric" style="border-left:2px solid rgba(201,168,76,.3);padding-left:12px">
           <div class="metric-label">DBA · FPM</div>
-          <div class="metric-val" id="m-phd-prof">—</div>
+          <div class="metric-val" id="m-phd-prof">-</div>
           <div class="metric-sub">professional doctorates</div>
         </div>
       </div>
 
-      <div class="sec-title">Designation pyramid — all campuses</div>
+      <div class="sec-title">Designation pyramid · all campuses</div>
       <div class="chart-card" style="padding:16px;background:#F9F9F9">
         <svg width="100%" viewBox="0 0 680 445" id="pyramid-svg" role="img">
           <title>XIME faculty designation pyramid</title>
@@ -283,11 +282,11 @@ tr:hover td{background:var(--cream)}
       <div class="sec-title">Campus profiles</div>
       <div class="campus-row" id="campus-cards"></div>
 
-      <div class="sec-title">Four-area performance view — Rung 2 unlocks this</div>
+      <div class="sec-title">Four-area performance view · Rung 2 unlocks this</div>
       <div class="rung2-preview">
         <div class="rung2-overlay">
-          <div class="rung2-lock">Rung 2 · 2–3 weeks</div>
-          <div class="rung2-msg">Subject specialisation, teaching effectiveness scores, and MDP activity will populate this view. Three data collection rounds — one email each.</div>
+          <div class="rung2-lock">Rung 2 · 2 to 3 weeks</div>
+          <div class="rung2-msg">Subject specialisation, teaching effectiveness scores, and MDP activity will populate this view. Three data collection rounds, one email each.</div>
         </div>
         <div class="four-axes">
           <div class="axis-card"><div class="axis-name">Teaching</div><div class="axis-bar-row"></div><div class="axis-pct">Awaiting scores</div></div>
@@ -356,7 +355,7 @@ tr:hover td{background:var(--cream)}
       <div class="sec-title">Revenue by channel</div>
       <div class="chart-card" style="padding:0 16px">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:.5px solid var(--border)">
-          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Dr. NMK Bhatta — MDPs</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Design Thinking 1 & 2 · Innovations · 3 programs</div></div>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Dr. NMK Bhatta · MDPs</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Design Thinking 1 & 2 · Innovations · 3 programs</div></div>
           <div style="text-align:right"><div style="font-size:15px;font-weight:500;color:var(--teal)">₹11,60,000</div><div style="font-size:11px;color:var(--muted)">82% of total</div></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:.5px solid var(--border)">
@@ -386,7 +385,7 @@ tr:hover td{background:var(--cream)}
           <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#378ADD"></div>FDPs</div>
           <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--bg2);border:.5px solid var(--border2)"></div>Other</div>
         </div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.6">Two sources — one faculty member and one channel partner — account for all meaningful EP revenue. Every program that ran had pre-committed participants. Every program that cancelled had none.</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.6">Two sources, one faculty member and one channel partner, account for all meaningful EP revenue. Every program that ran had pre-committed participants. Every program that cancelled had none.</div>
       </div>
 
       <div class="sec-title">All 24 programs ranked by revenue</div>
@@ -402,30 +401,30 @@ tr:hover td{background:var(--cream)}
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--muted);flex:1">Storytelling for Marketers</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--coral);width:72px;text-align:right">₹0</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--coral-l);color:var(--coral-d);flex-shrink:0">Cancelled</div></div>
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--muted);flex:1">Advanced Crisis Communication</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--coral);width:72px;text-align:right">₹0</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--coral-l);color:var(--coral-d);flex-shrink:0">Cancelled</div></div>
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)"><div style="font-size:12px;color:var(--muted);flex:1">HR Analytics & Information Systems</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--coral);width:72px;text-align:right">₹0</div><div style="font-size:10px;color:var(--coral);width:72px;text-align:right">₹0</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--coral-l);color:var(--coral-d);flex-shrink:0">Cancelled</div></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0"><div style="font-size:12px;color:var(--muted);flex:1">5 programs planned — Q1 2026</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--faint);width:72px;text-align:right">TBD</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);flex-shrink:0">Planned</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0"><div style="font-size:12px;color:var(--muted);flex:1">5 programs planned · Q1 2026</div><div style="width:140px;flex-shrink:0"><div style="height:5px;background:var(--bg2);border-radius:3px"></div></div><div style="font-size:11px;color:var(--faint);width:72px;text-align:right">TBD</div><div style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);flex-shrink:0">Planned</div></div>
       </div>
 
       <div class="sec-title">Intelligence</div>
       <div style="background:var(--amber-l);border:.5px solid #FAC775;border-radius:var(--rs);padding:12px 14px;margin-bottom:12px">
         <div style="font-size:12px;font-weight:500;color:var(--amber-d);margin-bottom:3px">Single-point-of-failure alert</div>
-        <div style="font-size:11px;color:#854F0B;line-height:1.6">82% of EP revenue is generated by one faculty member. Dr. Bhatta's absence, overload, or departure would reduce XIME's external program income to near zero. This is not an MDP practice — it is one practitioner operating without an institutional support structure.</div>
+        <div style="font-size:11px;color:#854F0B;line-height:1.6">82% of EP revenue is generated by one faculty member. Dr. Bhatta's absence, overload, or departure would reduce XIME's external program income to near zero. This is not an MDP practice. It is one practitioner operating without an institutional support structure.</div>
       </div>
       <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:12px">
         <div class="chart-card" style="margin-bottom:0">
-          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">What works — the pattern</div>
+          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">What works · the pattern</div>
           <div style="font-size:11px;color:var(--muted);line-height:1.7">Every program that ran had pre-committed participants. Bhatta brings his own network. ACMA brings its members. Programs built on market assumptions cancelled every time.</div>
         </div>
         <div class="chart-card" style="margin-bottom:0">
-          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">What fails — the pattern</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.7">8 of 24 programs didn't run. All cancelled MDPs show zero revenue — designed from the faculty side, not the market side. No confirmed demand before the date was set.</div>
+          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">What fails · the pattern</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.7">8 of 24 programs didn't run. All cancelled MDPs show zero revenue. Designed from the faculty side, not the market side. No confirmed demand before the date was set.</div>
         </div>
       </div>
       <div class="chart-card">
         <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:12px">The next three channel partners to activate</div>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">MMA Chennai — via Vijayakumar</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Association channel. Pre-committed membership base. Same model as ACMA — demand comes with the partner.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">MMA Chennai · via Vijayakumar</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Association channel. Pre-committed membership base. Same model as ACMA. Demand comes with the partner.</div></div></div>
           <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">KSUM Kerala</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Startup ecosystem channel. Entrepreneurship and innovation programs. Kochi campus delivery advantage.</div></div></div>
-          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">Electronic City corporates — direct</div><div style="font-size:11px;color:var(--muted);margin-top:2px">200+ IT companies within 5km. Mid-manager cohorts. Requires corporate sales capacity Bhatta should not carry alone.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--rs)"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:3px"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">Electronic City corporates · direct</div><div style="font-size:11px;color:var(--muted);margin-top:2px">200+ IT companies within 5km. Mid-manager cohorts. Requires corporate sales capacity Bhatta should not carry alone.</div></div></div>
         </div>
         <div style="margin-top:12px;background:var(--teal-l);border:.5px solid #9FE1CB;border-radius:var(--rs);padding:10px 12px">
           <div style="font-size:11px;font-weight:500;color:var(--teal-d);margin-bottom:3px">The target for next year</div>
@@ -439,15 +438,15 @@ tr:hover td{background:var(--cream)}
     <div id="view-next" class="view">
       <div style="max-width:680px">
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--navy);margin-bottom:8px;line-height:1.2">What unlocks the four-area view</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7">Three short data collection rounds — one conversation with each Dean — populate every radar axis.</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7">Three short data collection rounds, one conversation with each Dean, populate every radar axis.</div>
         <div style="display:flex;flex-direction:column;gap:12px">
           <div style="background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:18px;display:flex;gap:16px">
             <div style="width:32px;height:32px;border-radius:50%;background:var(--amber-l);color:var(--amber-d);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0">1</div>
-            <div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Subject specialisation · Dean Academics at each campus</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Timetable extract — faculty name against subject area. Two columns. Populates the Teaching axis label and the capability map.</div><div style="margin-top:8px;font-size:11px;font-weight:500;color:#0F6E56;background:#E1F5EE;padding:4px 10px;border-radius:20px;display:inline-block">Rajagopalan · Suresh Kumar · Joshin John</div></div>
+            <div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Subject specialisation · Dean Academics at each campus</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Timetable extract, faculty name against subject area. Two columns. Populates the Teaching axis label and the capability map.</div><div style="margin-top:8px;font-size:11px;font-weight:500;color:#0F6E56;background:#E1F5EE;padding:4px 10px;border-radius:20px;display:inline-block">Rajagopalan · Suresh Kumar · Joshin John</div></div>
           </div>
           <div style="background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:18px;display:flex;gap:16px">
             <div style="width:32px;height:32px;border-radius:50%;background:var(--amber-l);color:var(--amber-d);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0">2</div>
-            <div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Teaching effectiveness scores · Dean Academics</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Student feedback scores last term. Faculty name and score only. Triggers the 80% credit rule for faculty below 2.5.</div><div style="margin-top:8px;font-size:11px;font-weight:500;color:#0F6E56;background:#E1F5EE;padding:4px 10px;border-radius:20px;display:inline-block">Already in feedback reports — single extract needed</div></div>
+            <div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Teaching effectiveness scores · Dean Academics</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Student feedback scores last term. Faculty name and score only. Triggers the 80% credit rule for faculty below 2.5.</div><div style="margin-top:8px;font-size:11px;font-weight:500;color:#0F6E56;background:#E1F5EE;padding:4px 10px;border-radius:20px;display:inline-block">Already in feedback reports · single extract needed</div></div>
           </div>
           <div style="background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:18px;display:flex;gap:16px">
             <div style="width:32px;height:32px;border-radius:50%;background:var(--amber-l);color:var(--amber-d);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0">3</div>
@@ -456,7 +455,7 @@ tr:hover td{background:var(--cream)}
         </div>
         <div style="margin-top:24px;background:var(--navy);border-radius:var(--r);padding:18px 22px">
           <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:8px">What Rung 2 delivers</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:white;line-height:1.5">A four-area radar for every faculty member and every campus — showing not just who is here, but what each person is contributing and where the institution's capability gaps are.</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:white;line-height:1.5">A four-area radar for every faculty member and every campus, showing not just who is here, but what each person is contributing and where the institution's capability gaps are.</div>
         </div>
       </div>
     </div>
@@ -564,7 +563,7 @@ function buildOverview(data) {
 
   document.getElementById('m-phd-res').textContent = phdRes;
   document.getElementById('m-phd-pursuing').textContent = `+ ${pursuing} pursuing`;
-  document.getElementById('m-phd-prof').textContent = phdProf > 0 ? phdProf : '—';
+  document.getElementById('m-phd-prof').textContent = phdProf > 0 ? phdProf : '-';
 
   document.getElementById('m-blr').textContent = blr.length;
   document.getElementById('m-blr-sub').textContent = blr.filter(f=>f.band==='professor'||f.band==='assoc').length + ' senior faculty';
@@ -689,9 +688,9 @@ function buildExpPyramid(data) {
 
 function buildCampusCards(blr, chn, koc) {
   const campuses = [
-    {name:'Bengaluru',data:blr,tag:'Largest campus',tc:'#E1F5EE',tc2:'#085041',note:'Largest research-qualified cohort. Strong mix of depth and industry. 2024–26 recruitment added 15 new faculty.'},
-    {name:'Chennai',data:chn,tag:'Industry-rich',tc:'#FAEEDA',tc2:'#633806',note:'Highest concentration of senior industry practitioners. Suresh Kumar, Mathew Paul, Swaminathan bring 20–35 years corporate experience.'},
-    {name:'Kochi',data:koc,tag:'Research-deep',tc:'#E6F1FB',tc2:'#0C447C',note:'Strong research profile for a small cohort — 57% PhD confirmed, essentially on par with Bengaluru. Three full Professors anchor a 21-member faculty, with the pipeline concentrated at Senior Assistant Professor level.'},
+    {name:'Bengaluru',data:blr,tag:'Largest campus',tc:'#E1F5EE',tc2:'#085041',note:'Largest research-qualified cohort. Strong mix of depth and industry. 2024-26 recruitment added 15 new faculty.'},
+    {name:'Chennai',data:chn,tag:'Industry-rich',tc:'#FAEEDA',tc2:'#633806',note:'Highest concentration of senior industry practitioners. Suresh Kumar, Mathew Paul, Swaminathan bring 20-35 years corporate experience.'},
+    {name:'Kochi',data:koc,tag:'Research-deep',tc:'#E6F1FB',tc2:'#0C447C',note:'Strong research profile for a small cohort. 57% PhD confirmed, essentially on par with Bengaluru. Three full Professors anchor a 21-member faculty, with the pipeline concentrated at Senior Assistant Professor level.'},
   ];
   document.getElementById('campus-cards').innerHTML = campuses.map(c=>{
     const phds = c.data.filter(f=>f.phd==='yes').length;
@@ -724,8 +723,8 @@ function renderTable(data) {
     const total = (f.exp_industry||0)+(f.exp_academic||0);
     const indPct = total>0?Math.round((f.exp_industry/total)*100):0;
     const phdLabel = f.phd_type==='dba'?'DBA':f.phd_type==='fpm'?'FPM':'PhD';
-    const phdHtml = f.phd==='yes'?`<span class="phd-yes">${phdLabel} ${f.phd_year||''}</span>`:f.phd==='pursuing'?`<span class="phd-pursuing">Pursuing</span>`:`<span class="phd-no">—</span>`;
-    const expHtml = total>0?`<div style="display:flex;align-items:center;gap:6px"><div class="exp-bar"><div class="exp-ind" style="width:${indPct}%"></div><div class="exp-aca" style="width:${100-indPct}%"></div></div><span style="font-size:11px;color:var(--muted)">${total} yrs</span></div>`:`<span style="font-size:11px;color:var(--faint)">—</span>`;
+    const phdHtml = f.phd==='yes'?`<span class="phd-yes">${phdLabel} ${f.phd_year||''}</span>`:f.phd==='pursuing'?`<span class="phd-pursuing">Pursuing</span>`:`<span class="phd-no">-</span>`;
+    const expHtml = total>0?`<div style="display:flex;align-items:center;gap:6px"><div class="exp-bar"><div class="exp-ind" style="width:${indPct}%"></div><div class="exp-aca" style="width:${100-indPct}%"></div></div><span style="font-size:11px;color:var(--muted)">${total} yrs</span></div>`:`<span style="font-size:11px;color:var(--faint)">-</span>`;
     return `<tr><td><div class="name-cell">${f.name}</div>${f.admin_role?`<div class="admin-role">${f.admin_role}</div>`:''}</td><td><span class="badge ${campusClass[f.campus]}">${f.campus}</span></td><td><span class="badge ${bandClass[f.band]}">${bandLabel[f.band]}</span></td><td style="color:var(--muted);font-size:12px">${f.joined||''}</td><td>${phdHtml}</td><td>${expHtml}</td></tr>`;
   }).join('');
 }
@@ -779,9 +778,9 @@ function openCard(i) {
 
     <div class="dd-stats">
       <div class="dd-stat"><div class="dd-stat-label">Campus</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500">${f.campus}</div></div>
-      <div class="dd-stat"><div class="dd-stat-label">Joined XIME</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif">${f.joined||'—'}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">Joined XIME</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif">${f.joined||'-'}</div></div>
       <div class="dd-stat"><div class="dd-stat-label">PhD status</div><div class="dd-stat-val" style="font-size:14px;font-family:'DM Sans',sans-serif;color:${phdColor}">${phdText}</div></div>
-      <div class="dd-stat"><div class="dd-stat-label">Experience</div><div class="dd-stat-val">${total||'—'}${total?' yrs':''}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">Experience</div><div class="dd-stat-val">${total||'-'}${total?' yrs':''}</div></div>
     </div>
 
     ${total>0?`<div style="margin-bottom:16px">
@@ -792,8 +791,8 @@ function openCard(i) {
     <div style="height:.5px;background:var(--border);margin:4px 0 16px"></div>
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Evaluation · Capabilities</div>
-      <div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:#FAEEDA;color:#633806;border:.5px solid #FAC775">Awaiting evaluation data</div>
+      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Review · Capabilities</div>
+      <div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:#FAEEDA;color:#633806;border:.5px solid #FAC775">Awaiting review data</div>
     </div>
 
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:14px">
@@ -801,7 +800,7 @@ function openCard(i) {
       <div style="border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden">
         <div style="background:#0A3D62;padding:8px 10px">
           <div style="font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px">Performance</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.5)">AY 2024–25</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5)">AY 2024-25</div>
         </div>
         <div style="padding:10px;background:var(--bg2)">
           <div style="margin-bottom:8px">
@@ -809,7 +808,7 @@ function openCard(i) {
             <div style="height:6px;background:var(--border);border-radius:3px;position:relative;overflow:hidden">
               <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,var(--border2) 0,var(--border2) 4px,transparent 4px,transparent 8px);border-radius:3px"></div>
             </div>
-            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-style:italic">Awaiting appraisal forms</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:3px;font-style:italic">Awaiting Annual Development Review</div>
           </div>
           <div style="margin-bottom:8px">
             <div style="font-size:10px;color:var(--faint);margin-bottom:3px">Teaching effectiveness</div>
@@ -841,7 +840,7 @@ function openCard(i) {
           </div>` : ''}
           ${f.courses_taught ? `
           <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:.5px solid var(--border)">
-            <div style="font-size:10px;font-weight:500;color:var(--muted);margin-bottom:3px">Courses taught · AY 2025–26</div>
+            <div style="font-size:10px;font-weight:500;color:var(--muted);margin-bottom:3px">Courses taught · AY 2025-26</div>
             <div style="font-size:11px;color:var(--text);line-height:1.6">${f.courses_taught.split(' · ').map(c=>`<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><div style="width:4px;height:4px;border-radius:50%;background:#D4AF37;flex-shrink:0"></div>${c}</div>`).join('')}</div>
           </div>` : ''}
           ${['Research · publications','MDPs & OBPs delivered','Institution building'].map(label=>`
@@ -849,7 +848,7 @@ function openCard(i) {
             <div style="width:5px;height:5px;border-radius:50%;background:var(--border2);flex-shrink:0"></div>
             <div>
               <div style="font-size:10px;font-weight:500;color:var(--muted)">${label}</div>
-              <div style="font-size:10px;color:var(--faint);font-style:italic">Awaiting appraisal forms</div>
+              <div style="font-size:10px;color:var(--faint);font-style:italic">Awaiting Annual Development Review</div>
             </div>
           </div>`).join('')}
           <div style="font-size:10px;color:var(--faint);font-style:italic;margin-top:2px">Source: Director · each campus</div>
@@ -858,8 +857,8 @@ function openCard(i) {
 
       <div style="border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden">
         <div style="background:#0A3D62;padding:8px 10px">
-          <div style="font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px">Evaluation</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.5)">Signals &amp; flags</div>
+          <div style="font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1px">Review Signals</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5)">Flags &amp; signals</div>
         </div>
         <div style="padding:10px;background:var(--bg2)">
           <div style="background:var(--white);border:.5px dashed var(--border2);border-radius:var(--rs);padding:8px 10px;margin-bottom:8px;text-align:center">
@@ -881,7 +880,7 @@ function openCard(i) {
 
     <div style="background:#F9F9F9;border:.5px solid #D4AF37;border-radius:var(--rs);padding:10px 12px">
       <div style="font-size:10px;font-weight:500;color:#633806;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">How to unlock this view</div>
-      <div style="font-size:11px;color:#854F0B;line-height:1.6">Completed appraisal forms are with the Director at each campus. Once retrieved and loaded, every panel above populates automatically — including promotion flags, early warning signals, and the running 300-point credit total.</div>
+      <div style="font-size:11px;color:#854F0B;line-height:1.6">Once each faculty submits their Annual Development Review, every panel above populates automatically, including promotion flags, early warning signals, and the running 300-point credit total.</div>
     </div>`;
 
   document.getElementById('faculty-modal').classList.add('open');
