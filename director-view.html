@@ -24,16 +24,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.2)}
 .tb-left{display:flex;align-items:center;gap:12px}
-.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
-.wm em{color:var(--red);font-style:normal}
+.tb-logo{height:26px;width:auto;display:block}
 .tb-sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
 .tb-title{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.05em}
 .tb-right{display:flex;align-items:center;gap:10px}
 .tb-campus-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500}
 .back-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s}
 .back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
-.eval-btn{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
-.eval-btn:hover{background:var(--gold-l);color:var(--navy)}
+.review-btn{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+.review-btn:hover{background:var(--gold-l);color:var(--navy)}
 
 .nav{background:var(--white);border-bottom:.5px solid var(--border);padding:0 28px;display:flex;gap:2px}
 .tab{font-family:'DM Sans',sans-serif;font-size:13px;padding:12px 16px;border:none;background:transparent;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s}
@@ -94,7 +93,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .lb-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
 .lb-bar-val{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace;width:28px;text-align:right;flex-shrink:0}
 
-/* Research Quality strip — campus-level research aggregate */
+/* Research Quality strip. Campus-level research aggregate */
 .rq-strip{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:24px}
 .rq-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .rq-strip-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--navy)}
@@ -192,7 +191,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .m-metric-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--navy)}
 .m-metric-label{font-size:9px;color:var(--faint);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
 
-/* Performance & Evaluation panels */
+/* Performance & Review panels */
 .m-panels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .m-panel{border:.5px solid var(--border);border-radius:var(--rs);overflow:hidden}
 .m-panel-head{padding:8px 10px;background:#0A3D62}
@@ -232,13 +231,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 <div class="topbar">
   <div class="tb-left">
-    <div class="wm">X<em>I</em>ME</div>
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
     <div class="tb-sep"></div>
     <div class="tb-title">Magis Centre · Director View</div>
   </div>
   <div class="tb-right">
     <div class="tb-campus-badge" id="tb-badge" style="background:rgba(201,168,76,.15);color:var(--gold)">Loading...</div>
-    <button class="back-btn eval-btn" onclick="window.location.href='evaluation.html'">My Evaluation</button>
+    <button class="back-btn review-btn" onclick="window.location.href='evaluation.html'">My Review</button>
     <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
     <button class="back-btn" onclick="signOut()">Sign out</button>
   </div>
@@ -301,7 +300,7 @@ function campusPill(campus){
   return `<span class="pill ${cls[campus]||''}">${CAMPUS_RANKS[campus]||campus}</span>`;
 }
 
-// Does this faculty have an evaluation on file?
+// Does this faculty have a review on file?
 function hasEval(facultyId){return !!evaluationsById[facultyId]}
 
 // ---- AUTH ----
@@ -443,7 +442,7 @@ function buildLeaderboard(campuses){
     </div>`;
 }
 
-// Campus-level research quality aggregate — only shown if at least one faculty has submitted
+// Campus-level research quality aggregate. Only shown if at least one faculty has submitted.
 function buildResearchQualityStrip(campuses){
   // Sum up tier totals across faculty in each campus
   const campusAggregates=campuses.map(c=>{
@@ -574,7 +573,7 @@ function renderCards(data){
         ${ph?`<span class="pill ${f.phd==='pursuing'?'pill-pursuing':'pill-phd'}">${ph}</span>`:''}
         ${f.subject_area?`<span class="pill pill-subject">${f.subject_area}</span>`:''}
         ${f.admin_role?`<span class="pill pill-admin">${f.admin_role}</span>`:''}
-        ${evalSubmitted?`<span class="pill pill-eval">Eval on file</span>`:''}
+        ${evalSubmitted?`<span class="pill pill-eval">Review on file</span>`:''}
       </div>
       ${total>0?`<div class="fc-exp">
         <div class="fc-exp-bar"><div class="fc-exp-ind" style="width:${indPct}%"></div><div class="fc-exp-aca" style="width:${100-indPct}%"></div></div>
@@ -606,9 +605,9 @@ function openCard(id){
     </div>
     <div class="dd-stats">
       <div class="dd-stat"><div class="dd-stat-label">Campus</div><div class="dd-stat-val" style="font-size:14px;font-weight:500;color:${CAMPUS_COLORS[f.campus]}">${f.campus}</div></div>
-      <div class="dd-stat"><div class="dd-stat-label">Joined XIME</div><div class="dd-stat-val" style="font-size:14px">${f.joined||'—'}</div></div>
-      <div class="dd-stat"><div class="dd-stat-label">PhD / Doctorate</div><div class="dd-stat-val" style="font-size:14px;color:${f.phd==='yes'?'var(--teal)':f.phd==='pursuing'?'var(--amber-d)':'var(--faint)'}">${ph||'—'}</div></div>
-      <div class="dd-stat"><div class="dd-stat-label">Experience</div><div class="dd-stat-val" style="font-size:14px">${total||'—'}${total?' yrs':''}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">Joined XIME</div><div class="dd-stat-val" style="font-size:14px">${f.joined||'-'}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">PhD / Doctorate</div><div class="dd-stat-val" style="font-size:14px;color:${f.phd==='yes'?'var(--teal)':f.phd==='pursuing'?'var(--amber-d)':'var(--faint)'}">${ph||'-'}</div></div>
+      <div class="dd-stat"><div class="dd-stat-label">Experience</div><div class="dd-stat-val" style="font-size:14px">${total||'-'}${total?' yrs':''}</div></div>
     </div>
     ${total>0?`<div style="margin-bottom:14px">
       <div style="font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Experience</div>
@@ -631,17 +630,17 @@ function openCard(id){
   document.getElementById('faculty-modal').classList.add('open');
 }
 
-// Top two panels: Performance and Evaluation workflow
+// Top two panels: Performance and Review workflow
 function buildModalPerformanceContent(ev){
   const hasData=!!ev;
   const statusInfo=hasData?(WORKFLOW_LABELS[ev.workflow_status]||{label:'Draft',cls:'draft'}):null;
 
   return`
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Evaluation · Capabilities</div>
+    <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)">Performance · Review · Capabilities</div>
     ${hasData
       ?`<div class="m-panel-status ${statusInfo.cls}">${statusInfo.label}</div>`
-      :`<div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);border:.5px solid rgba(239,159,39,.3)">No evaluation on file</div>`}
+      :`<div style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;background:var(--amber-l);color:var(--amber-d);border:.5px solid rgba(239,159,39,.3)">No review on file</div>`}
   </div>
   <div class="m-panels">
     <div class="m-panel">
@@ -666,7 +665,7 @@ function buildModalPerformanceContent(ev){
       </div>
     </div>
     <div class="m-panel">
-      <div class="m-panel-head charcoal"><div class="m-panel-head-label">Evaluation Workflow</div><div class="m-panel-head-sub">Current status</div></div>
+      <div class="m-panel-head charcoal"><div class="m-panel-head-label">Review Workflow</div><div class="m-panel-head-sub">Current status</div></div>
       <div class="m-panel-body">
         <div class="m-panel-row">
           <div class="m-panel-row-label">Gate 1 · Mid-Year</div>
@@ -682,7 +681,7 @@ function buildModalPerformanceContent(ev){
         </div>
         <div class="m-panel-row">
           <div class="m-panel-row-label">Last updated</div>
-          <div class="m-panel-row-val ${ev?.updated_at?'':'na'}">${ev?.updated_at?new Date(ev.updated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</div>
+          <div class="m-panel-row-val ${ev?.updated_at?'':'na'}">${ev?.updated_at?new Date(ev.updated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'-'}</div>
         </div>
       </div>
     </div>
@@ -753,12 +752,12 @@ function buildModalFooterContent(ev){
   if(ev){
     return`<div class="unlock-box">
       <div class="unlock-label">Next Steps</div>
-      <div class="unlock-text">Faculty purpose statement, IKIGAI reflection, and development goals are visible in the Director Review page once Gate 2 is submitted. Click through from the hub to approve or return.</div>
+      <div class="unlock-text">Faculty IKIGAI statement, growth reflection, and development goals are visible in the Director Review page once Gate 2 is submitted. Click through from the hub to approve or return.</div>
     </div>`;
   }
   return`<div class="unlock-box">
     <div class="unlock-label">How to unlock this view</div>
-    <div class="unlock-text">This faculty has not yet started their performance evaluation for AY 2025–26. Once they submit Gate 1, the performance and publications data populates automatically. Promotion flags, early warning signals, and tier breakdowns all come from the same feed.</div>
+    <div class="unlock-text">This faculty has not yet started their Annual Development Review for AY 2025-26. Once they submit Gate 1, the performance and publications data populates automatically. Promotion flags, early warning signals, and tier breakdowns all come from the same feed.</div>
   </div>`;
 }
 
@@ -874,7 +873,7 @@ async function init(){
   badge.style.background=CAMPUS_COLORS[myDirector.campus]+'22';
   badge.style.color=CAMPUS_COLORS[myDirector.campus];
 
-  // Load faculty and evaluations in parallel
+  // Load faculty and reviews in parallel
   const[facRes,evalRes]=await Promise.all([
     sb.from('faculty_master').select('*').order('campus').order('band'),
     sb.from('faculty_evaluations').select('*').eq('academic_year','2025-26')
@@ -886,7 +885,7 @@ async function init(){
   }
   allData=facRes.data;
 
-  // Build the id -> evaluation lookup map
+  // Build the id -> review lookup map
   evaluationsById={};
   if(evalRes.data){
     evalRes.data.forEach(ev=>{
