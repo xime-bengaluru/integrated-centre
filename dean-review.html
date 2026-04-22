@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magis Centre · Dean Review</title>
+<title>Magis Centre · Dean Validation</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -22,15 +22,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.2)}
 .tb-l{display:flex;align-items:center;gap:12px}
-.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
-.wm em{color:var(--red);font-style:normal}
+.tb-logo{height:26px;width:auto;display:block}
 .sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
 .ttl{font-size:11px;color:rgba(255,255,255,.55)}
 .dean-badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px}
 .back-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer}
 .back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
-.eval-btn{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
-.eval-btn:hover{background:var(--gold-l);color:var(--navy)}
+.review-btn{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+.review-btn:hover{background:var(--gold-l);color:var(--navy)}
 
 .main{padding:28px;max-width:960px}
 
@@ -111,7 +110,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .fb-value{font-size:13px;color:var(--text);line-height:1.65}
 .fb-empty{font-size:12px;color:var(--faint);font-style:italic}
 
-/* Research tier display in dean-review detail panel */
+/* Research tier display */
 .dr-tier-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
 .dr-tier-cell{background:var(--white);border:.5px solid var(--border-g);border-radius:var(--rs);padding:9px 6px;text-align:center}
 .dr-tier-cell.dr-tier-premier{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.07)}
@@ -165,12 +164,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 <div class="topbar">
   <div class="tb-l">
-    <div class="wm">X<em>I</em>ME</div><div class="sep"></div>
-    <div class="ttl">Magis Centre · Dean Validation</div>
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="sep"></div>
+    <div class="ttl">Magis Centre · Dean Validation · Annual Development Review</div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <div class="dean-badge" id="dean-badge" style="background:rgba(201,168,76,.15);color:var(--gold)">Loading...</div>
-    <button class="back-btn eval-btn" onclick="window.location.href='evaluation.html'">My Evaluation</button>
+    <button class="back-btn review-btn" onclick="window.location.href='evaluation.html'">My Review</button>
     <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
     <button class="back-btn" onclick="signOut()">Sign out</button>
   </div>
@@ -417,7 +417,7 @@ function renderPage(){
       ${pending.length===0
         ? `<div class="empty-queue">
             <div style="font-size:20px;margin-bottom:8px">✓</div>
-            All evaluations in your queue have been validated.
+            All reviews in your queue have been validated.
            </div>`
         : pending.map(r=>queueCard(r)).join('')}
     </div>
@@ -432,7 +432,7 @@ function renderPage(){
 function queueCard(r){
   const ev=r.faculty_evaluations;
   const name=ev?.snap_name||'Unknown Faculty';
-  const desig=ev?.snap_designation||'—';
+  const desig=ev?.snap_designation||'-';
   const campus=ev?.snap_campus||dean.campus;
   const status=r.validated?'validated':'pending';
   const gate=r.gate==='mid_year'?'Mid-Year':'Annual';
@@ -444,7 +444,7 @@ function queueCard(r){
     </div>
     <div class="qcard-right">
       <div class="status-chip ${status==='validated'?'chip-validated':'chip-pending'}">${status==='validated'?'Validated':'Pending'}</div>
-      <div class="gate-chip">${gate} evaluation</div>
+      <div class="gate-chip">${gate} review</div>
       ${r.validated&&r.validated_at?`<div style="font-size:10px;color:var(--faint)">${new Date(r.validated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>`:''}
     </div>
   </div>`;
@@ -457,8 +457,8 @@ async function openPanel(reviewId){
   currentEval=review.faculty_evaluations;
   currentGate=review.gate||'mid_year';
 
-  document.getElementById('dp-name').textContent=currentEval?.snap_name||'—';
-  document.getElementById('dp-sub').textContent=`${currentEval?.snap_designation||'—'} · ${currentEval?.snap_campus||dean.campus}`;
+  document.getElementById('dp-name').textContent=currentEval?.snap_name||'-';
+  document.getElementById('dp-sub').textContent=`${currentEval?.snap_designation||'-'} · ${currentEval?.snap_campus||dean.campus}`;
 
   document.getElementById('btn-mid').classList.toggle('on', currentGate==='mid_year');
   document.getElementById('btn-annual').classList.toggle('on', currentGate==='annual');
@@ -484,11 +484,11 @@ async function renderDomainView(review, gateOverride){
   html+=`<div class="dp-section">
     <div class="dp-section-title">Faculty Profile</div>
     ${infoRows([
-      ['Name', ev?.snap_name||'—'],
-      ['Designation', ev?.snap_designation||'—'],
-      ['Campus', ev?.snap_campus||'—'],
-      ['Subject Area', ev?.snap_subject_area||'—'],
-      ['Admin Role', ev?.snap_admin_role||'—']
+      ['Name', ev?.snap_name||'-'],
+      ['Designation', ev?.snap_designation||'-'],
+      ['Campus', ev?.snap_campus||'-'],
+      ['Subject Area', ev?.snap_subject_area||'-'],
+      ['Admin Role', ev?.snap_admin_role||'-']
     ])}
   </div>`;
 
@@ -500,14 +500,14 @@ async function renderDomainView(review, gateOverride){
 
   html+=`<div class="domain-restricted">
     <div class="dr-icon">🔒</div>
-    Other sections of this evaluation are not visible to Deans.<br>
+    Other sections of this review are not visible to Deans.<br>
     IKIGAI reflection, development goals, and XIME objectives are<br>visible only to the Director and President.
   </div>`;
 
   html+=`<div class="notes-wrap">
     <div class="notes-label">Your Notes <span style="font-weight:400;color:var(--faint);text-transform:none;letter-spacing:0;font-size:10px">· internal, visible only to Director and above</span></div>
     <textarea class="notes-ta" id="dean-notes" rows="4" placeholder="Add your observations on this faculty member's ${c.scopeLabel.split(':')[1]?.trim().toLowerCase()||'domain'} performance. These notes are internal and not shared with the faculty member.">${review.notes||''}</textarea>
-    <div class="notes-hint">These notes travel with the evaluation to the Director. The faculty member never sees them.</div>
+    <div class="notes-hint">These notes travel with the review to the Director. The faculty member never sees them.</div>
   </div>`;
 
   if(review.validated){
@@ -517,7 +517,7 @@ async function renderDomainView(review, gateOverride){
     </div>`;
     if(review.notes){
       html+=`<div class="history-wrap">
-        <div class="history-label">Your notes on this evaluation</div>
+        <div class="history-label">Your notes on this review</div>
         <div class="history-item">
           <div class="hi-meta">Saved · ${new Date(review.updated_at||review.validated_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
           <div class="hi-text">${review.notes}</div>
@@ -535,7 +535,7 @@ async function renderDomainView(review, gateOverride){
 }
 
 function buildDomainContent(ev, gate){
-  if(!ev) return '<div class="fb-empty">Evaluation data not available.</div>';
+  if(!ev) return '<div class="fb-empty">Review data not available.</div>';
   const c=cfg();
 
   if(dean.role==='academics'){
@@ -546,10 +546,10 @@ function buildDomainContent(ev, gate){
       <div class="field-block">
         <div class="fb-label">Teaching Effectiveness Score</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
-          <div style="font-family:'DM Mono',monospace;font-size:22px;color:var(--teal-d)">${ev.teaching_effectiveness||'—'}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:22px;color:var(--teal-d)">${ev.teaching_effectiveness||'-'}</div>
           <div style="font-size:11px;color:var(--faint)">Student feedback score · you may enter below</div>
         </div>
-        <input style="margin-top:8px;width:100%;border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px" id="te-score" type="number" min="0" max="5" step="0.1" placeholder="Enter score (0.0 – 5.0)" value="${ev.teaching_effectiveness||''}">
+        <input style="margin-top:8px;width:100%;border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px" id="te-score" type="number" min="0" max="5" step="0.1" placeholder="Enter score (0.0 to 5.0)" value="${ev.teaching_effectiveness||''}">
         <div style="font-size:11px;color:var(--faint);margin-top:4px;font-style:italic">This score is auto-populated to the faculty member's record once you validate.</div>
       </div>`;
   }
@@ -629,7 +629,7 @@ function buildDomainContent(ev, gate){
             <div style="font-size:10px;color:var(--faint);margin-top:2px">Programs</div>
           </div>
           <div>
-            <div style="font-family:'DM Mono',monospace;font-size:22px;color:var(--amber-d)">${ev.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'—'}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:22px;color:var(--amber-d)">${ev.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'-'}</div>
             <div style="font-size:10px;color:var(--faint);margin-top:2px">Revenue (from EP records)</div>
           </div>
         </div>
