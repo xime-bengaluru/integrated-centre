@@ -23,8 +23,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 .topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.3)}
 .tb-l{display:flex;align-items:center;gap:12px}
-.wm{font-family:'Cormorant Garamond',serif;font-size:18px;color:#fff;letter-spacing:.1em}
-.wm em{color:var(--red);font-style:normal}
+.tb-logo{height:26px;width:auto;display:block}
 .sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
 .ttl{font-size:11px;color:rgba(255,255,255,.55)}
 .pres-badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;background:rgba(201,168,76,.2);color:var(--gold);border:1px solid rgba(201,168,76,.3)}
@@ -131,6 +130,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 .sdot{width:9px;height:9px;border-radius:50%;background:var(--border)}
 .sdot.on{background:var(--gold)}
 
+/* Research tier display */
+.pr-tier-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.pr-tier-cell{background:var(--white);border:.5px solid var(--border-g);border-radius:var(--rs);padding:9px 6px;text-align:center}
+.pr-tier-cell.pr-tier-premier{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.07)}
+.pr-tier-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--blue-d);line-height:1.1}
+.pr-tier-cell.pr-tier-premier .pr-tier-val{color:var(--gold-d)}
+.pr-tier-cell.pr-tier-zero .pr-tier-val{color:var(--faint)}
+.pr-tier-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-top:3px;letter-spacing:.04em;font-weight:500}
+.pr-tier-cell.pr-tier-premier .pr-tier-label{color:var(--gold-d);font-weight:600}
+
 .toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:9px 14px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 </style>
@@ -139,8 +148,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 
 <div class="topbar">
   <div class="tb-l">
-    <div class="wm">X<em>I</em>ME</div><div class="sep"></div>
-    <div class="ttl">Magis Centre · Presidential Review</div>
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="sep"></div>
+    <div class="ttl">Magis Centre · Presidential Review · Annual Development Review</div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <div class="pres-badge" id="pres-badge">Loading...</div>
@@ -153,7 +163,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
   <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Verifying access...</div>
 </div>
 
-<!-- Full evaluation view -->
+<!-- Full review view -->
 <div class="eval-view" id="eval-view">
   <div class="ev-header">
     <div>
@@ -162,7 +172,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
       <div class="ev-sub" id="ev-sub"></div>
       <div class="ev-tabs">
         <button class="ev-tab on" onclick="switchEvTab('record',this)">Performance Record</button>
-        <button class="ev-tab" onclick="switchEvTab('ikigai',this)">IKIGAI &amp; Goals</button>
+        <button class="ev-tab" onclick="switchEvTab('ikigai',this)">Growth &amp; Purpose</button>
       </div>
     </div>
   </div>
@@ -187,7 +197,7 @@ const avClass={Bengaluru:'av-blr',Chennai:'av-chn',Kochi:'av-koc'};
 function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 function initials(n){return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
 function evf(label,val){return`<div class="evf"><div class="evfl">${label}</div>${val?`<div class="evfv">${val}</div>`:`<div class="evfe">Not entered</div>`}</div>`}
-function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'—'}</span></div>`}
+function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'-'}</span></div>`}
 
 async function requirePresidentAccess(){
   const {data:{session}}=await sb.auth.getSession();
@@ -235,7 +245,7 @@ async function loadAll(){
     .select('*')
     .in('workflow_status',['director_forwarded','president_review','endorsed','returned_to_director'])
     .order('updated_at',{ascending:false});
-  if(error||!data){document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load evaluations.</div>';return;}
+  if(error||!data){document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load reviews.</div>';return;}
   allEvals=data;
   renderPage();
 }
@@ -247,15 +257,15 @@ function renderPage(){
 
   const isActualPresident=CURRENT_USER?.email==='president@xime.org';
   const bannerTitle=isActualPresident
-    ?'Faculty Evaluations<br>AY 2025–26'
-    :`Super Admin View<br><span style="font-size:14px;color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;font-style:italic">Reviewing evaluations as ${CURRENT_USER?.full_name||'admin'}</span>`;
+    ?'Annual Development Reviews<br>AY 2025–26'
+    :`Super Admin View<br><span style="font-size:14px;color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;font-style:italic">Reviewing as ${CURRENT_USER?.full_name||'admin'}</span>`;
 
   document.getElementById('main-content').innerHTML=`
     <div class="pres-banner" style="display:flex;align-items:center;justify-content:space-between">
       <div>
         <div class="pb-eyebrow">Magis Centre · Presidential Review</div>
         <div class="pb-title">${bannerTitle}</div>
-        <div class="pb-sub">Review, endorse, or return to Director. Endorsement publishes the evaluation to the faculty member.</div>
+        <div class="pb-sub">Review, endorse, or return to Director. Endorsement publishes the Director's remarks to the faculty member.</div>
       </div>
       <div class="pb-right">
         <div class="pb-num">${pending.length}</div>
@@ -283,7 +293,7 @@ function renderPage(){
     <div class="ql">Reviewed</div>
     <div class="queue">${done.map(e=>qCard(e,false)).join('')}</div>`:''}
 
-    ${filtered.length===0?`<div class="empty-q">No evaluations forwarded yet${activeCampus!=='all'?' for '+activeCampus:''}.</div>`:''}
+    ${filtered.length===0?`<div class="empty-q">No reviews forwarded yet${activeCampus!=='all'?' for '+activeCampus:''}.</div>`:''}
   `;
 }
 
@@ -295,7 +305,7 @@ function qCard(e,needsAction){
     <div class="qav ${avClass[e.snap_campus]||'av-blr'}">${initials(e.snap_name||'?')}</div>
     <div style="flex:1">
       <div class="qname">${e.snap_name||'Unknown'}</div>
-      <div class="qmeta">${e.snap_designation||'—'} · ${e.snap_campus||'—'}</div>
+      <div class="qmeta">${e.snap_designation||'-'} · ${e.snap_campus||'-'}</div>
     </div>
     <div class="qright">
       <div class="chip ${cls}">${label}</div>
@@ -321,7 +331,7 @@ async function openEval(evalId){
   currentPresReview=pr||null;
 
   document.getElementById('ev-name').textContent=ev.snap_name||'Faculty';
-  document.getElementById('ev-sub').textContent=`${ev.snap_designation||'—'} · ${ev.snap_campus||'—'} · ${ev.workflow_status==='endorsed'?'Endorsed':ev.workflow_status==='returned_to_director'?'Returned to Director':'Forwarded for Endorsement'}`;
+  document.getElementById('ev-sub').textContent=`${ev.snap_designation||'-'} · ${ev.snap_campus||'-'} · ${ev.workflow_status==='endorsed'?'Endorsed':ev.workflow_status==='returned_to_director'?'Returned to Director':'Forwarded for Endorsement'}`;
 
   document.querySelectorAll('.ev-tab').forEach(b=>b.classList.remove('on'));
   document.querySelector('.ev-tab').classList.add('on');
@@ -336,6 +346,22 @@ function switchEvTab(tab,btn){
   document.querySelectorAll('.ev-tab').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   renderEvContent();
+}
+
+// Renders a research tier breakdown with total and 4 tier cells
+function tierBlock(title, tiers){
+  const total=tiers.reduce((s,t)=>s+(t.val||0),0);
+  return`<div class="evf">
+    <div class="evfl" style="display:flex;justify-content:space-between;align-items:center"><span>${title}</span><span style="font-weight:400;letter-spacing:.02em;text-transform:none;color:var(--faint);font-style:italic">Total ${total}</span></div>
+    <div class="pr-tier-row">
+      ${tiers.map(t=>`
+        <div class="pr-tier-cell ${t.premier?'pr-tier-premier':''} ${t.val===0?'pr-tier-zero':''}">
+          <div class="pr-tier-val">${t.val||0}</div>
+          <div class="pr-tier-label">${t.label}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
 }
 
 function renderEvContent(){
@@ -358,15 +384,42 @@ function renderEvContent(){
       ${evf('Teaching Notes',ev.teaching_notes)}
     </div>`;
 
+    // Research with quartile tiers
     html+=`<div class="ev-section">
       <div class="sec-head" style="color:var(--blue-d)">Research</div>
       ${evf('Publications Detail',ev.publications_details)}
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:8px">
-        ${[['Scopus',ev.publications_count],['ABDC',ev.abdc_count],['WoS',ev.wos_count],['h-Index',ev.h_index]].map(([l,v])=>`
+      ${evf('Work in Progress',ev.wip_details)}
+      ${tierBlock('ABDC Ranked Publications',[
+        {val:ev.abdc_a_star,label:'A*',premier:true},
+        {val:ev.abdc_a,label:'A'},
+        {val:ev.abdc_b,label:'B'},
+        {val:ev.abdc_c,label:'C'}
+      ])}
+      ${tierBlock('Scopus · by SJR Quartile',[
+        {val:ev.scopus_q1,label:'Q1',premier:true},
+        {val:ev.scopus_q2,label:'Q2'},
+        {val:ev.scopus_q3,label:'Q3'},
+        {val:ev.scopus_q4,label:'Q4'}
+      ])}
+      ${tierBlock('Web of Science · by JIF Quartile',[
+        {val:ev.wos_q1,label:'Q1',premier:true},
+        {val:ev.wos_q2,label:'Q2'},
+        {val:ev.wos_q3,label:'Q3'},
+        {val:ev.wos_q4,label:'Q4'}
+      ])}
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:8px">
         <div class="evf" style="text-align:center;padding:8px">
-          <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--blue-d)">${v||'0'}</div>
-          <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
-        </div>`).join('')}
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--blue-d)">${ev.ugc_care_count||'0'}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px">UGC-CARE</div>
+        </div>
+        <div class="evf" style="text-align:center;padding:8px">
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--blue-d)">${ev.h_index||'0'}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px">h-Index</div>
+        </div>
+        <div class="evf" style="text-align:center;padding:8px">
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--blue-d)">${ev.conference_papers_count||'0'}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px">Conference</div>
+        </div>
       </div>
     </div>`;
 
@@ -374,19 +427,43 @@ function renderEvContent(){
       <div class="sec-head" style="color:var(--amber-d)">Industry &amp; MDP</div>
       ${evf('MDP Details',ev.mdp_details)}
       ${evf('Other Industry Engagements',ev.industry_summary)}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
+        <div class="evf" style="text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--amber-d)">${ev.mdp_count||'0'}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px">MDPs Delivered</div>
+        </div>
+        <div class="evf" style="text-align:center">
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--amber-d)">${ev.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'-'}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:2px">Revenue</div>
+        </div>
+      </div>
     </div>`;
 
+    // Institution Building: prefer JSONB entries, fall back to legacy text field
     html+=`<div class="ev-section">
-      <div class="sec-head">Institution Building</div>
-      ${evf('Contributions',ev.institution_contributions)}
-    </div>`;
+      <div class="sec-head">Institution Building</div>`;
+    if(Array.isArray(ev.institution_entries)&&ev.institution_entries.length){
+      html+=`<div style="display:flex;flex-direction:column;gap:8px">`;
+      ev.institution_entries.forEach(e=>{
+        html+=`<div class="evf">
+          <div class="evfl">${e.category||'Contribution'}</div>
+          <div class="evfv">${(e.description||'').replace(/</g,'&lt;')}</div>
+          ${e.date?`<div style="font-size:10px;color:var(--faint);margin-top:4px;font-family:'DM Mono',monospace">${e.date}</div>`:''}
+        </div>`;
+      });
+      html+=`</div>`;
+    }else{
+      html+=evf('Contributions',ev.institution_contributions);
+    }
+    html+=`</div>`;
 
   } else {
+    // GROWTH & PURPOSE TAB
     if(ev.ikigai_statement){
       html+=`<div class="ev-section">
-        <div class="sec-head">Purpose Statement</div>
+        <div class="sec-head">IKIGAI Statement</div>
         <div class="ikigai-hero">
-          <div class="iki-l">IKIGAI · Personal Purpose</div>
+          <div class="iki-l">Personal Purpose · Private to Director and President</div>
           <div class="iki-t">${ev.ikigai_statement}</div>
         </div>
       </div>`;
@@ -397,41 +474,65 @@ function renderEvContent(){
       ${evf('Teaching Energy',ev.ikigai_passion?.split('\n\n')[0])}
       ${evf('Research Pull',ev.ikigai_passion?.split('\n\n')[1])}
       ${evf('Industry Engagement',ev.ikigai_passion?.split('\n\n')[2])}
+      ${evf('Institutional Roles',ev.ikigai_passion?.split('\n\n')[3])}
+      ${evf('Impact That Matters',ev.ikigai_passion?.split('\n\n')[4])}
     </div>`;
 
     html+=`<div class="ev-section">
       <div class="sec-head">Self-Rated Strengths</div>
       <div style="background:var(--white);border:.5px solid var(--border);border-radius:var(--rs);padding:12px 16px;margin-bottom:8px">
-        ${[['Teaching',ev.ikigai_strength_teaching],['Research',ev.ikigai_strength_research],['Industry',ev.ikigai_strength_industry],['Institution',ev.ikigai_strength_institution]].map(([l,v])=>`
+        ${[['Teaching Effectiveness',ev.ikigai_strength_teaching],['Research Capability',ev.ikigai_strength_research],['Industry Engagement',ev.ikigai_strength_industry],['Institution Building',ev.ikigai_strength_institution]].map(([l,v])=>`
         <div class="str-row">
           <span class="strl">${l}</span>
           <div class="strd">${[1,2,3,4,5].map(i=>`<div class="sdot${(v&&i<=v)?' on':''}"></div>`).join('')}</div>
         </div>`).join('')}
       </div>
       ${evf('Known For',ev.ikigai_strengths_text)}
-      ${evf('Growth Areas',ev.ikigai_growth_areas)}
+      ${evf('Areas to Develop',ev.ikigai_develop_areas||ev.ikigai_growth_areas)}
     </div>`;
 
-    if(ev.alloc_teaching||ev.alloc_industry){
+    html+=`<div class="ev-section">
+      <div class="sec-head">Impact Focus</div>
+      ${evf('The Gap This Faculty Wants to Close',ev.ikigai_impact_focus)}
+    </div>`;
+
+    html+=`<div class="ev-section">
+      <div class="sec-head">Contribution</div>
+      ${ev.courses_current&&ev.courses_current.length?evf('Currently Delivering',ev.courses_current.join(', ')):''}
+      ${ev.courses_aspire&&ev.courses_aspire.length?evf('Aspires to Deliver',ev.courses_aspire.join(', ')):''}
+      ${evf('Domain Course Gaps',ev.domain_course_gaps||ev.ikigai_contribution)}
+      ${evf('New Courses to Design',ev.new_courses_to_design)}
+      ${evf('Courses to Stop',ev.courses_to_stop)}
+      ${evf('Consulting / Training Capabilities',ev.consulting_capabilities)}
+      ${evf('Consulting / Training Delivered',ev.consulting_delivered)}
+      ${evf('New Programmes to Design',ev.new_programmes_to_design)}
+      ${evf('Research Publication Potential',ev.research_publication_potential)}
+    </div>`;
+
+    if(ev.alloc_teaching!=null||ev.alloc_research!=null||ev.alloc_institution!=null){
       html+=`<div class="ev-section">
-        <div class="sec-head">Time Allocation</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px">
-          ${[['Teaching',ev.alloc_teaching],['Research',ev.alloc_research],['Industry',ev.alloc_industry],['Institution',ev.alloc_institution]].map(([l,v])=>`
+        <div class="sec-head">Time Allocation · Current</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px">
+          ${[['Teaching',ev.alloc_teaching],['Research',ev.alloc_research],['Institution',ev.alloc_institution]].map(([l,v])=>`
           <div class="evf" style="text-align:center;padding:8px">
             <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--navy)">${v||'0'}%</div>
             <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
           </div>`).join('')}
         </div>
-        ${ev.alloc_industry&&ev.alloc_industry<10?`<div style="background:var(--amber-l);border:.5px solid rgba(239,159,39,.3);border-radius:var(--rs);padding:8px 12px;font-size:11px;color:var(--amber-d)">Industry allocation is below the 10% minimum.</div>`:''}
+        ${(ev.alloc_teaching_ideal!=null||ev.alloc_research_ideal!=null||ev.alloc_institution_ideal!=null)?`
+        <div class="sec-head" style="margin-top:12px">Time Allocation · Ideal</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px">
+          ${[['Teaching',ev.alloc_teaching_ideal],['Research',ev.alloc_research_ideal],['Institution',ev.alloc_institution_ideal]].map(([l,v])=>`
+          <div class="evf" style="text-align:center;padding:8px">
+            <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--gold-d)">${v||'0'}%</div>
+            <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
+          </div>`).join('')}
+        </div>`:''}
+        ${ev.alloc_change_reason?evf('Why this shift matters',ev.alloc_change_reason):''}
+        ${ev.alloc_change_actions?evf('What faculty will do',ev.alloc_change_actions):''}
+        ${ev.alloc_change_support?evf('Support faculty needs from XIME',ev.alloc_change_support):''}
       </div>`;
     }
-
-    html+=`<div class="ev-section">
-      <div class="sec-head">Goals for XIME</div>
-      ${evf('How They Want to Contribute',ev.xime_contribution)}
-      ${evf('Primary Objectives This Year',ev.primary_objectives)}
-      ${evf('Objectives for Next Year',ev.next_year_objectives)}
-    </div>`;
 
     html+=`<div class="ev-section">
       <div class="sec-head">Action Plan</div>
@@ -439,6 +540,7 @@ function renderEvContent(){
         <div class="evf" style="background:#E1F5EE;border-color:rgba(29,158,117,.25)"><div class="evfl" style="color:var(--teal-d)">Start</div><div class="evfv" style="color:var(--teal-d)">${ev.action_start||'<span class="evfe">Not entered</span>'}</div></div>
         <div class="evf" style="background:#FCEBEB;border-color:rgba(226,75,74,.25)"><div class="evfl" style="color:#501313">Stop</div><div class="evfv" style="color:#501313">${ev.action_stop||'<span class="evfe">Not entered</span>'}</div></div>
       </div>
+      ${evf('Continue',ev.action_continue)}
       ${evf('Key Goal',ev.action_key_goal)}
       ${evf('Support Requested from XIME',ev.action_support)}
     </div>`;
@@ -491,7 +593,7 @@ function renderSidebar(){
     }
     html+=`<div>
       <div class="action-title">Your Action</div>
-      <button class="endorse-btn" onclick="endorseEval()">✓ &nbsp;Endorse Evaluation</button>
+      <button class="endorse-btn" onclick="endorseEval()">✓ &nbsp;Endorse Review</button>
     </div>`;
 
     html+=`<div class="return-section">
@@ -508,7 +610,7 @@ function renderSidebar(){
 
 async function endorseEval(){
   if(!currentEval)return;
-  if(!confirm('Endorse this evaluation? The Director\'s remarks will be published to the faculty member.'))return;
+  if(!confirm('Endorse this review? The Director\'s remarks will be published to the faculty member.'))return;
   const now=new Date().toISOString();
   await sb.from('evaluation_president_reviews').upsert({evaluation_id:currentEval.id,endorsement_status:'endorsed',endorsed_at:now,updated_at:now},{onConflict:'evaluation_id'});
   await sb.from('faculty_evaluations').update({workflow_status:'endorsed',updated_at:now}).eq('id',currentEval.id);
