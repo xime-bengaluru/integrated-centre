@@ -114,7 +114,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .gst-open{background:rgba(29,158,117,.2);color:#9FE1CB;border:1px solid rgba(29,158,117,.3)}
 .gst-locked{background:rgba(239,159,39,.2);color:#FAC775;border:1px solid rgba(239,159,39,.3)}
 
-/* Gate 1 Director remarks (released) */
+/* Gate 1 Director remarks */
 .g1rmbox{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--r);padding:16px 20px;margin-bottom:22px}
 .g1rml{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);margin-bottom:6px;display:flex;align-items:center;gap:8px}
 .g1rml-dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
@@ -186,7 +186,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .inst-form-btn:hover{background:var(--navy-2)}
 .inst-empty{font-size:12px;color:var(--faint);font-style:italic;padding:8px 0}
 
-/* IKIGAI preview-style */
+/* IKIGAI */
 .ikigai-intro{text-align:center;margin-bottom:36px;padding-bottom:30px;border-bottom:1px solid var(--line)}
 .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-2);font-weight:700;margin-bottom:12px}
 .ikigai-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--navy);margin:0 0 12px;letter-spacing:-0.5px}
@@ -212,12 +212,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .strength-value{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--navy);text-align:center}
 .strength-legend{display:flex;justify-content:space-between;font-size:10px;color:var(--faint);margin-top:12px;padding-top:10px;border-top:.5px dashed var(--line);letter-spacing:.03em}
 
-/* Sublabels for 2.4 etc */
+/* Sublabels */
 .sublabel{font-size:13px;font-weight:500;color:var(--navy);margin:22px 0 4px;display:flex;align-items:center;gap:6px}
 .sublabel:first-child{margin-top:0}
 .sublabel-hint{font-size:12px;color:var(--mute);font-style:italic;margin-bottom:8px}
 
-/* List rows (strengths, develop) */
+/* List rows */
 .list-row{display:grid;grid-template-columns:28px 1fr 36px;gap:8px;align-items:center;margin-bottom:8px}
 .list-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d);font-weight:500}
 .list-row input[type="text"]{font-family:inherit;font-size:13.5px;padding:9px 11px;border:1px solid var(--line);border-radius:3px;background:#fff;width:100%}
@@ -239,7 +239,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .big-box{width:100%;min-height:110px;border:1px solid var(--line);border-radius:var(--rs);padding:12px 14px;font-family:inherit;font-size:14px;color:var(--ink);resize:vertical;background:#fff}
 .big-box:focus{outline:none;border-color:var(--gold)}
 
-/* Statement frame (for IKIGAI statement) */
+/* Statement frame */
 .statement-frame{background:var(--navy-dark);border-radius:var(--r);padding:24px 28px;position:relative;overflow:hidden}
 .statement-frame::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(201,168,76,.06)}
 .statement-frame textarea{background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,.3);padding:10px 0;font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:#fff;font-weight:300;line-height:1.65;width:100%;min-height:110px;resize:vertical}
@@ -320,6 +320,117 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
 .blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
 
+/* ===================================================
+   TAB 3: TEACHING EFFECTIVENESS FEEDBACK
+   =================================================== */
+
+/* Tab 3 intro banner */
+.tab3-intro{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy-2) 100%);border-radius:var(--r);padding:22px 28px;margin-bottom:28px;position:relative;overflow:hidden}
+.tab3-intro::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(201,168,76,.06);pointer-events:none}
+.tab3-intro::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none}
+.tab3-label{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.tab3-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#fff;margin-bottom:6px;letter-spacing:-.3px}
+.tab3-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.7;max-width:560px}
+.tab3-note{display:flex;align-items:flex-start;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.35)}
+.tab3-note-icon{flex-shrink:0;font-size:14px;margin-top:-1px}
+
+/* Feedback entry cards */
+.fb-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.fb-card-header{background:var(--navy-dark);padding:18px 22px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;position:relative}
+.fb-card-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold) 0%,transparent 60%)}
+.fb-course-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff;line-height:1.2}
+.fb-course-meta{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);margin-top:5px;letter-spacing:.05em;line-height:1.6}
+.fb-score-block{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.fb-pct{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:var(--gold);line-height:1}
+.fb-pct-label{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;text-align:right;margin-top:2px}
+.fb-mean-line{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);text-align:right}
+.fb-students-line{font-size:10px;color:rgba(255,255,255,.3);text-align:right;margin-top:2px}
+
+/* Questions section */
+.fb-questions{padding:20px 22px;border-bottom:1px solid var(--line)}
+.fb-qs-label{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.fb-qs-label::after{content:'';flex:1;height:.5px;background:var(--line)}
+.fb-q-row{padding:12px 0;border-bottom:.5px solid var(--line)}
+.fb-q-row:last-child{border-bottom:none;padding-bottom:0}
+.fb-q-text{font-size:12px;color:var(--charcoal);margin-bottom:10px;line-height:1.5;max-width:580px}
+.fb-q-bottom{display:flex;align-items:center;gap:16px}
+.fb-dist-wrap{flex:1}
+.fb-dist-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:1px}
+.fb-seg-e{background:var(--teal-d)}
+.fb-seg-vg{background:var(--teal)}
+.fb-seg-g{background:var(--gold)}
+.fb-seg-s{background:var(--amber)}
+.fb-seg-p{background:var(--red)}
+.fb-dist-counts{display:flex;margin-top:5px;gap:1px}
+.fb-dist-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);text-align:center}
+.fb-q-mean{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--navy);flex-shrink:0;min-width:44px;text-align:right}
+.fb-dist-legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:.5px dashed var(--line)}
+.fb-legend-item{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--faint)}
+.fb-legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* Subjective responses */
+.fb-subjective{padding:20px 22px}
+.fb-sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.fb-sub-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.fb-responses{display:flex;flex-direction:column;gap:5px;max-height:240px;overflow-y:auto;padding-right:4px}
+.fb-responses::-webkit-scrollbar{width:3px}
+.fb-responses::-webkit-scrollbar-track{background:transparent}
+.fb-responses::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:2px}
+.fb-resp{font-size:12px;color:var(--charcoal);padding:7px 10px;background:var(--parchment);border-left:2px solid var(--gold);border-radius:0 4px 4px 0;line-height:1.5}
+.fb-resp.feature{border-left-color:var(--teal);background:var(--teal-l);color:var(--teal-d);font-style:italic}
+.fb-card-footer{padding:12px 22px;background:var(--cream);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.fb-source-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint)}
+.fb-remove{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--faint);background:transparent;border:1px solid var(--line);padding:5px 12px;border-radius:var(--rs);cursor:pointer;transition:all .15s}
+.fb-remove:hover{background:rgba(200,16,46,.06);border-color:rgba(200,16,46,.25);color:#A32D2D}
+
+/* Add entry form */
+.fb-empty-state{text-align:center;padding:36px 24px;background:var(--cream);border:1.5px dashed var(--border-g);border-radius:var(--r);margin-bottom:20px}
+.fb-empty-icon{font-size:28px;margin-bottom:10px;opacity:.4}
+.fb-empty-text{font-size:13px;color:var(--faint);margin-bottom:16px;line-height:1.6}
+.fb-add-trigger{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.fb-add-trigger:hover{background:var(--navy-2)}
+
+.fb-form-wrap{background:#fff;border:1.5px dashed var(--border-g);border-radius:var(--r);padding:24px 28px;margin-top:20px;display:none}
+.fb-form-wrap.open{display:block}
+.fb-form-head{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy);margin-bottom:6px}
+.fb-form-sub{font-size:12px;color:var(--mute);margin-bottom:20px;line-height:1.6}
+.fb-form-sec{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.fb-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fb-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fb-field{display:flex;flex-direction:column;gap:5px}
+.fb-label{font-size:11px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.fb-input{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);border:1px solid var(--line);border-radius:var(--rs);padding:9px 11px;background:#fff;outline:none;transition:border-color .15s}
+.fb-input:focus{border-color:var(--gold)}
+.fb-input[readonly]{background:var(--parchment);color:var(--gold-d);font-family:'DM Mono',monospace;font-weight:500;border-color:var(--border-g)}
+
+/* Question input blocks */
+.fb-q-input{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:13px 15px;margin-bottom:10px}
+.fb-q-input-label{font-size:12px;color:var(--charcoal);font-weight:500;margin-bottom:10px;line-height:1.45}
+.fb-q-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold-d);font-weight:600;margin-right:6px}
+.fb-counts-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
+.fb-count-col{display:flex;flex-direction:column;align-items:center;gap:5px}
+.fb-count-lbl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:10px}
+.lbl-e{background:var(--teal-l);color:var(--teal-d)}
+.lbl-vg{background:#e0f7ef;color:#0a6640}
+.lbl-g{background:rgba(201,168,76,.15);color:var(--gold-d)}
+.lbl-s{background:var(--amber-l);color:var(--amber-d)}
+.lbl-p{background:rgba(200,16,46,.08);color:#A32D2D}
+.fb-count-n{width:52px;height:40px;border:1px solid var(--line);border-radius:var(--rs);text-align:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--navy);background:#fff;outline:none}
+.fb-count-n:focus{border-color:var(--gold)}
+.fb-q-mean-display{display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:11px;color:var(--mute)}
+.fb-q-mean-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d);font-weight:500}
+
+/* Form actions */
+.fb-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.fb-cancel{background:transparent;border:1px solid var(--line);color:var(--mute);padding:9px 20px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.fb-cancel:hover{border-color:var(--navy);color:var(--navy)}
+.fb-save-entry{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.fb-save-entry:hover{background:var(--gold);color:var(--navy-dark)}
+
+/* Add course button (when entries exist) */
+.fb-add-more{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);background:transparent;border:1.5px dashed var(--border-g);padding:11px 18px;border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;justify-content:center;margin-top:8px;transition:all .15s}
+.fb-add-more:hover{border-color:var(--gold);color:var(--gold-d)}
+
 @media(max-width:900px){
   .layout{grid-template-columns:1fr}
   .sidebar{display:none}
@@ -332,6 +443,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
   .strength-row{grid-template-columns:140px 1fr 42px;gap:10px}
   .tb-m{display:none}
   .tb-mobile-tabs{display:flex}
+  .fb-sub-grid{grid-template-columns:1fr}
+  .fb-grid2{grid-template-columns:1fr}
+  .fb-grid3{grid-template-columns:1fr 1fr}
 }
 .tb-mobile-tabs{display:none}
 </style>
@@ -350,6 +464,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
     </button>
     <button class="tab-btn" data-tab="growth" onclick="switchTab('growth')">
       <span class="tab-num">02</span>Growth &amp; Purpose
+    </button>
+    <button class="tab-btn" data-tab="feedback" onclick="switchTab('feedback')">
+      <span class="tab-num">03</span>Teaching Effectiveness
     </button>
   </div>
   <div class="tb-r">
@@ -373,7 +490,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
   <div class="sbh">
     <div class="sbn" id="sb-name">Loading...</div>
     <div class="sbr" id="sb-role"></div>
-    <div class="sby">AY 2025–26</div>
+    <div class="sby">AY 2025-26</div>
   </div>
   <div class="pw">
     <div class="pw-lbl">Completion</div>
@@ -414,6 +531,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
     <div class="ni" onclick="goTo('s-allocation')" id="n-s-allocation"><div class="ndot"></div><div class="nt">4 Role Allocation</div></div>
     <div class="ni" onclick="goTo('s-action')" id="n-s-action"><div class="ndot"></div><div class="nt">5 Action Plan</div></div>
   </div>
+
+  <!-- Feedback tab sidebar -->
+  <div class="sidebar-group" id="sg-feedback">
+    <div class="ngl">Teaching Effectiveness</div>
+    <div class="ni" onclick="goTo('s-fb-entries')" id="n-s-fb-entries"><div class="ndot"></div><div class="nt">Course Feedback</div></div>
+    <div class="ni" onclick="goTo('s-fb-add')" id="n-s-fb-add"><div class="ndot"></div><div class="nt">Add Entry</div></div>
+  </div>
 </aside>
 
 <main class="main">
@@ -425,10 +549,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 <!-- ========================================================= -->
 <div class="tab-content active" id="tab-performance">
 
-  <!-- Points ledger -->
   <div class="ledger" id="points-ledger">
     <div class="ledger-l">
-      <div class="ledger-label">Points Ledger · AY 2025–26</div>
+      <div class="ledger-label">Points Ledger · AY 2025-26</div>
     </div>
     <div class="ledger-items">
       <div class="ledger-item">
@@ -445,7 +568,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
     </div>
   </div>
 
-  <!-- Gate 1 Director remarks (released) -->
   <div id="g1-remarks-box" style="display:none">
     <div class="g1rmbox">
       <div class="g1rml"><span class="g1rml-dot"></span>Director's Gate 1 Feedback</div>
@@ -516,100 +638,47 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
     </div>
     <div class="srl"></div>
     <div style="margin-top:18px">
-
       <div class="f">
         <div class="fl fl-with-hint">
           <span>ABDC Ranked Publications <span class="ab">Business standard</span></span>
           <span class="fl-hint">Australian Business Deans Council list</span>
         </div>
         <div class="tier-row">
-          <div class="tier-cell tier-premier">
-            <input class="tier-input" id="f-abdc-a-star" type="number" min="0" placeholder="0">
-            <div class="tier-label">A*</div>
-            <div class="tier-hint">Premier outlets</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-abdc-a" type="number" min="0" placeholder="0">
-            <div class="tier-label">A</div>
-            <div class="tier-hint">Excellent</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-abdc-b" type="number" min="0" placeholder="0">
-            <div class="tier-label">B</div>
-            <div class="tier-hint">Well-regarded</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-abdc-c" type="number" min="0" placeholder="0">
-            <div class="tier-label">C</div>
-            <div class="tier-hint">Recognised</div>
-          </div>
+          <div class="tier-cell tier-premier"><input class="tier-input" id="f-abdc-a-star" type="number" min="0" placeholder="0"><div class="tier-label">A*</div><div class="tier-hint">Premier outlets</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-abdc-a" type="number" min="0" placeholder="0"><div class="tier-label">A</div><div class="tier-hint">Excellent</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-abdc-b" type="number" min="0" placeholder="0"><div class="tier-label">B</div><div class="tier-hint">Well-regarded</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-abdc-c" type="number" min="0" placeholder="0"><div class="tier-label">C</div><div class="tier-hint">Recognised</div></div>
         </div>
       </div>
-
       <div class="f">
         <div class="fl fl-with-hint">
           <span>Scopus <span class="ab">by SJR Quartile</span></span>
           <span class="fl-hint">Scimago Journal Rank in subject category</span>
         </div>
         <div class="tier-row">
-          <div class="tier-cell tier-premier">
-            <input class="tier-input" id="f-scopus-q1" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q1</div>
-            <div class="tier-hint">Top 25%</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-scopus-q2" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q2</div>
-            <div class="tier-hint">25 to 50%</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-scopus-q3" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q3</div>
-            <div class="tier-hint">50 to 75%</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-scopus-q4" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q4</div>
-            <div class="tier-hint">Bottom 25%</div>
-          </div>
+          <div class="tier-cell tier-premier"><input class="tier-input" id="f-scopus-q1" type="number" min="0" placeholder="0"><div class="tier-label">Q1</div><div class="tier-hint">Top 25%</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-scopus-q2" type="number" min="0" placeholder="0"><div class="tier-label">Q2</div><div class="tier-hint">25 to 50%</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-scopus-q3" type="number" min="0" placeholder="0"><div class="tier-label">Q3</div><div class="tier-hint">50 to 75%</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-scopus-q4" type="number" min="0" placeholder="0"><div class="tier-label">Q4</div><div class="tier-hint">Bottom 25%</div></div>
         </div>
       </div>
-
       <div class="f">
         <div class="fl fl-with-hint">
           <span>Web of Science <span class="ab">by JIF Quartile</span></span>
           <span class="fl-hint">SSCI · SCIE · by Journal Impact Factor</span>
         </div>
         <div class="tier-row">
-          <div class="tier-cell tier-premier">
-            <input class="tier-input" id="f-wos-q1" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q1</div>
-            <div class="tier-hint">Top 25%</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-wos-q2" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q2</div>
-            <div class="tier-hint">25 to 50%</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-wos-q3" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q3</div>
-            <div class="tier-hint">50 to 75%</div>
-          </div>
-          <div class="tier-cell">
-            <input class="tier-input" id="f-wos-q4" type="number" min="0" placeholder="0">
-            <div class="tier-label">Q4</div>
-            <div class="tier-hint">Bottom 25%</div>
-          </div>
+          <div class="tier-cell tier-premier"><input class="tier-input" id="f-wos-q1" type="number" min="0" placeholder="0"><div class="tier-label">Q1</div><div class="tier-hint">Top 25%</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-wos-q2" type="number" min="0" placeholder="0"><div class="tier-label">Q2</div><div class="tier-hint">25 to 50%</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-wos-q3" type="number" min="0" placeholder="0"><div class="tier-label">Q3</div><div class="tier-hint">50 to 75%</div></div>
+          <div class="tier-cell"><input class="tier-input" id="f-wos-q4" type="number" min="0" placeholder="0"><div class="tier-label">Q4</div><div class="tier-hint">Bottom 25%</div></div>
         </div>
       </div>
-
       <div class="thc">
         <div class="f"><div class="fl">UGC-CARE Listed <span class="ab">India</span></div><input class="fi" id="f-ugc-care" type="number" min="0" placeholder="0"></div>
         <div class="f"><div class="fl">h-Index</div><input class="fi" id="f-hi" type="number" min="0" placeholder="0"></div>
         <div class="f"><div class="fl">Conference Papers</div><input class="fi" id="f-conf" type="number" min="0" placeholder="0"></div>
       </div>
-
       <div class="f"><div class="fl">Publications Detail</div><textarea class="fi" id="f-pub" rows="4" placeholder="Title · Journal · Indexing (ABDC tier or Quartile) · Year. Most recent first."></textarea></div>
       <div class="f"><div class="fl">Work in Progress</div><textarea class="fi" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects..."></textarea></div>
     </div>
@@ -648,15 +717,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
     <div class="srl"></div>
     <div style="margin-top:18px">
       <div class="f"><div class="fl">Administrative Role <span class="ab">HR Records</span></div><input class="fi lk" id="f-admin" readonly></div>
-
       <div class="f">
         <div class="fl">Your Institution Building Contributions</div>
         <div class="fh" style="margin-bottom:12px">Add individual entries across categories. Each entry is dated and can be edited before Gate 1 submission.</div>
-
-        <div class="inst-entry-list" id="inst-entries">
-          <div class="inst-empty">No entries yet. Add your first contribution below.</div>
-        </div>
-
+        <div class="inst-entry-list" id="inst-entries"><div class="inst-empty">No entries yet. Add your first contribution below.</div></div>
         <div class="inst-form" id="inst-form">
           <div class="inst-form-row">
             <div>
@@ -723,124 +787,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
   <!-- SECTION 2.1 PASSION -->
   <section class="sec" id="s-passion">
-    <div class="sh">
-      <div class="sn-mini">2.1</div>
-      <div>
-        <div class="si-t">What You Love <span class="si-tag">Passion</span></div>
-        <div class="si-s">Reflect on your full professional identity, not just teaching</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">2.1</div><div><div class="si-t">What You Love <span class="si-tag">Passion</span></div><div class="si-s">Reflect on your full professional identity, not just teaching</div></div></div>
     <div class="srl"></div>
     <div style="margin-top:20px">
-
-      <div class="prompt-block">
-        <div class="prompt-marker">
-          <span class="prompt-chev">▸</span>
-          <span class="prompt-text">Teaching activities that energise you
-            <span class="prompt-hint">e.g. classroom delivery, case discussions, mentoring</span>
-          </span>
-        </div>
-        <textarea id="f-pt" placeholder="What makes time disappear in the classroom or in preparation..."></textarea>
-      </div>
-
-      <div class="prompt-block">
-        <div class="prompt-marker">
-          <span class="prompt-chev">▸</span>
-          <span class="prompt-text">Research areas or topics you are deeply curious about</span>
-        </div>
-        <textarea id="f-pr" placeholder="The question you keep circling back to..."></textarea>
-      </div>
-
-      <div class="prompt-block">
-        <div class="prompt-marker">
-          <span class="prompt-chev">▸</span>
-          <span class="prompt-text">Industry or consulting engagements you find genuinely fulfilling</span>
-        </div>
-        <textarea id="f-pi" placeholder="The kind of practitioner interaction that energises you..."></textarea>
-      </div>
-
-      <div class="prompt-block">
-        <div class="prompt-marker">
-          <span class="prompt-chev">▸</span>
-          <span class="prompt-text">Institutional roles that excite you
-            <span class="prompt-hint">e.g. programme building, student development, leadership</span>
-          </span>
-        </div>
-        <textarea id="f-ps" placeholder="The institutional work you say yes to without hesitation..."></textarea>
-      </div>
-
-      <div class="prompt-block">
-        <div class="prompt-marker">
-          <span class="prompt-chev">▸</span>
-          <span class="prompt-text">The kind of impact that matters most to you
-            <span class="prompt-hint">on students, industry, or society</span>
-          </span>
-        </div>
-        <textarea id="f-pimp" placeholder="What you hope your work contributes to beyond yourself..."></textarea>
-      </div>
+      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Teaching activities that energise you<span class="prompt-hint">e.g. classroom delivery, case discussions, mentoring</span></span></div><textarea id="f-pt" placeholder="What makes time disappear in the classroom or in preparation..."></textarea></div>
+      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Research areas or topics you are deeply curious about</span></div><textarea id="f-pr" placeholder="The question you keep circling back to..."></textarea></div>
+      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Industry or consulting engagements you find genuinely fulfilling</span></div><textarea id="f-pi" placeholder="The kind of practitioner interaction that energises you..."></textarea></div>
+      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Institutional roles that excite you<span class="prompt-hint">e.g. programme building, student development, leadership</span></span></div><textarea id="f-ps" placeholder="The institutional work you say yes to without hesitation..."></textarea></div>
+      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">The kind of impact that matters most to you<span class="prompt-hint">on students, industry, or society</span></span></div><textarea id="f-pimp" placeholder="What you hope your work contributes to beyond yourself..."></textarea></div>
     </div>
   </section>
 
   <!-- SECTION 2.2 STRENGTHS -->
   <section class="sec" id="s-strengths">
-    <div class="sh">
-      <div class="sn-mini">2.2</div>
-      <div>
-        <div class="si-t">Your Strengths <span class="si-tag">What you are good at</span></div>
-        <div class="si-s">1 Developing · 5 Exemplary. Be honest.</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">2.2</div><div><div class="si-t">Your Strengths <span class="si-tag">What you are good at</span></div><div class="si-s">1 Developing · 5 Exemplary. Be honest.</div></div></div>
     <div class="srl"></div>
     <div class="sec-intro" style="margin-top:20px">This is a reflective instrument, not a performance evaluation. Inflated scores make the exercise less useful to you.</div>
-
     <div style="background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px 20px">
-      <div class="strength-row">
-        <div class="strength-label">Teaching Effectiveness</div>
-        <input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-t" oninput="updateStrength('t')">
-        <div class="strength-value" id="sv-t">3</div>
-      </div>
-      <div class="strength-row">
-        <div class="strength-label">Research Capability</div>
-        <input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-r" oninput="updateStrength('r')">
-        <div class="strength-value" id="sv-r">3</div>
-      </div>
-      <div class="strength-row">
-        <div class="strength-label">Industry Engagement &amp; Consulting</div>
-        <input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-i" oninput="updateStrength('i')">
-        <div class="strength-value" id="sv-i">3</div>
-      </div>
-      <div class="strength-row">
-        <div class="strength-label">Institutional Leadership</div>
-        <input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-s" oninput="updateStrength('s')">
-        <div class="strength-value" id="sv-s">3</div>
-      </div>
-      <div class="strength-legend">
-        <span>1 Developing</span>
-        <span>2 Competent</span>
-        <span>3 Accomplished</span>
-        <span>4 Distinctive</span>
-        <span>5 Exemplary</span>
-      </div>
+      <div class="strength-row"><div class="strength-label">Teaching Effectiveness</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-t" oninput="updateStrength('t')"><div class="strength-value" id="sv-t">3</div></div>
+      <div class="strength-row"><div class="strength-label">Research Capability</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-r" oninput="updateStrength('r')"><div class="strength-value" id="sv-r">3</div></div>
+      <div class="strength-row"><div class="strength-label">Industry Engagement &amp; Consulting</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-i" oninput="updateStrength('i')"><div class="strength-value" id="sv-i">3</div></div>
+      <div class="strength-row"><div class="strength-label">Institutional Leadership</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-s" oninput="updateStrength('s')"><div class="strength-value" id="sv-s">3</div></div>
+      <div class="strength-legend"><span>1 Developing</span><span>2 Competent</span><span>3 Accomplished</span><span>4 Distinctive</span><span>5 Exemplary</span></div>
     </div>
-
     <div class="sublabel" style="margin-top:24px">Your Key Strengths</div>
-    <div class="sublabel-hint">What are the things you do better than most? The capabilities you are known for. List up to five.</div>
+    <div class="sublabel-hint">What are the things you do better than most? List up to five.</div>
     <div id="strengths-list">
-      <div class="list-row">
-        <div class="list-num">1.</div>
-        <input type="text" placeholder="A capability you are known for...">
-        <button class="remove-row" onclick="removeStrengthRow(this)">×</button>
-      </div>
-      <div class="list-row">
-        <div class="list-num">2.</div>
-        <input type="text" placeholder="Another capability...">
-        <button class="remove-row" onclick="removeStrengthRow(this)">×</button>
-      </div>
-      <div class="list-row">
-        <div class="list-num">3.</div>
-        <input type="text" placeholder="Another capability...">
-        <button class="remove-row" onclick="removeStrengthRow(this)">×</button>
-      </div>
+      <div class="list-row"><div class="list-num">1.</div><input type="text" placeholder="A capability you are known for..."><button class="remove-row" onclick="removeStrengthRow(this)">×</button></div>
+      <div class="list-row"><div class="list-num">2.</div><input type="text" placeholder="Another capability..."><button class="remove-row" onclick="removeStrengthRow(this)">×</button></div>
+      <div class="list-row"><div class="list-num">3.</div><input type="text" placeholder="Another capability..."><button class="remove-row" onclick="removeStrengthRow(this)">×</button></div>
     </div>
     <button class="add-row" onclick="addStrengthRow()">+ Add another</button>
     <div class="min-note">Up to five. You can leave rows blank if you have fewer.</div>
@@ -848,33 +823,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
   <!-- SECTION 2.2b DEVELOP -->
   <section class="sec" id="s-develop">
-    <div class="sh">
-      <div class="sn-mini">2.2b</div>
-      <div>
-        <div class="si-t">Areas You Want to Develop <span class="si-tag">Minimum three</span></div>
-        <div class="si-s">These flow into your Faculty Development Plan and the development conversation with your Director</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">2.2b</div><div><div class="si-t">Areas You Want to Develop <span class="si-tag">Minimum three</span></div><div class="si-s">These flow into your Faculty Development Plan</div></div></div>
     <div class="srl"></div>
     <div class="sec-intro" style="margin-top:20px">Specify at least three areas where you want to grow in the coming year. Be specific.</div>
-
     <div class="develop-panel">
       <div id="develop-list">
-        <div class="list-row">
-          <div class="list-num">1.</div>
-          <input type="text" placeholder="e.g. Case writing and teaching methodology for executive audiences">
-          <button class="remove-row" onclick="removeDevelopRow(this)">×</button>
-        </div>
-        <div class="list-row">
-          <div class="list-num">2.</div>
-          <input type="text" placeholder="e.g. Quantitative research methods and advanced statistical techniques">
-          <button class="remove-row" onclick="removeDevelopRow(this)">×</button>
-        </div>
-        <div class="list-row">
-          <div class="list-num">3.</div>
-          <input type="text" placeholder="e.g. Building an industry consulting practice in my domain">
-          <button class="remove-row" onclick="removeDevelopRow(this)">×</button>
-        </div>
+        <div class="list-row"><div class="list-num">1.</div><input type="text" placeholder="e.g. Case writing and teaching methodology for executive audiences"><button class="remove-row" onclick="removeDevelopRow(this)">×</button></div>
+        <div class="list-row"><div class="list-num">2.</div><input type="text" placeholder="e.g. Quantitative research methods and advanced statistical techniques"><button class="remove-row" onclick="removeDevelopRow(this)">×</button></div>
+        <div class="list-row"><div class="list-num">3.</div><input type="text" placeholder="e.g. Building an industry consulting practice in my domain"><button class="remove-row" onclick="removeDevelopRow(this)">×</button></div>
       </div>
       <button class="add-row" onclick="addDevelopRow()">+ Add another area</button>
       <div class="min-note" id="develop-min-note">Minimum three areas required.</div>
@@ -883,13 +839,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
   <!-- SECTION 2.3 IMPACT -->
   <section class="sec" id="s-impact">
-    <div class="sh">
-      <div class="sn-mini">2.3</div>
-      <div>
-        <div class="si-t">What the World Needs <span class="si-tag">Impact</span></div>
-        <div class="si-s">One focused question. A concrete commitment.</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">2.3</div><div><div class="si-t">What the World Needs <span class="si-tag">Impact</span></div><div class="si-s">One focused question. A concrete commitment.</div></div></div>
     <div class="srl"></div>
     <div style="margin-top:20px">
       <div class="focus-q italic">What is the specific gap in XIME's management education you most want to help close, and why?</div>
@@ -899,213 +849,84 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
   <!-- SECTION 2.4 CONTRIBUTION -->
   <section class="sec" id="s-contribution">
-    <div class="sh">
-      <div class="sn-mini">2.4</div>
-      <div>
-        <div class="si-t">What You Can Be Valued For <span class="si-tag">Contribution</span></div>
-        <div class="si-s">The concrete offer. Courses, capabilities, research pathway.</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">2.4</div><div><div class="si-t">What You Can Be Valued For <span class="si-tag">Contribution</span></div><div class="si-s">The concrete offer. Courses, capabilities, research pathway.</div></div></div>
     <div class="srl"></div>
     <div class="sec-intro" style="margin-top:20px">The concrete offer. Courses you deliver or would like to deliver, consulting or executive education capabilities, and research areas with publication or funding potential.</div>
-
-    <!-- Courses currently delivering -->
     <div class="sublabel">▸ Courses you are currently delivering</div>
     <div class="sublabel-hint">Select from the XIME course catalog.</div>
-    <div class="course-selector">
-      <div class="course-chips" id="chips-current"><div class="empty-chips">No courses selected yet</div></div>
-      <input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'current')">
-      <div class="course-filter-pills" id="filters-current"></div>
-      <div class="course-list" id="list-current"></div>
-    </div>
-
-    <!-- Courses aspire -->
+    <div class="course-selector"><div class="course-chips" id="chips-current"><div class="empty-chips">No courses selected yet</div></div><input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'current')"><div class="course-filter-pills" id="filters-current"></div><div class="course-list" id="list-current"></div></div>
     <div class="sublabel">▸ Other XIME courses you would like to deliver</div>
-    <div class="course-selector">
-      <div class="course-chips" id="chips-aspire"><div class="empty-chips">No courses selected yet</div></div>
-      <input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'aspire')">
-      <div class="course-filter-pills" id="filters-aspire"></div>
-      <div class="course-list" id="list-aspire"></div>
-    </div>
-
+    <div class="course-selector"><div class="course-chips" id="chips-aspire"><div class="empty-chips">No courses selected yet</div></div><input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'aspire')"><div class="course-filter-pills" id="filters-aspire"></div><div class="course-list" id="list-aspire"></div></div>
     <div class="sublabel">▸ Gaps in the XIME course offering in your domain</div>
-    <div class="sublabel-hint">What is missing that should be there?</div>
-    <textarea class="fi" id="f-gaps" rows="3" placeholder="Where the current offering falls short relative to industry or academic benchmarks..."></textarea>
-
+    <textarea class="fi" id="f-gaps" rows="3" placeholder="Where the current offering falls short..."></textarea>
     <div class="sublabel">▸ New courses you would like to design and deliver</div>
     <textarea class="fi" id="f-newcourses" rows="3" placeholder="Course titles, brief description, target audience..."></textarea>
-
     <div class="sublabel">▸ Courses you would like to stop delivering, and why</div>
-    <textarea class="fi" id="f-stopcourses" rows="2" placeholder="Course name and the reason. Honest answers help us allocate better."></textarea>
-
+    <textarea class="fi" id="f-stopcourses" rows="2" placeholder="Course name and the reason..."></textarea>
     <div class="fdiv"></div>
-
     <div class="sublabel">▸ Consulting, training, or executive education capabilities you can offer</div>
-    <div class="sublabel-hint">Capabilities and intent. You can say Not Applicable if none.</div>
     <textarea class="fi" id="f-caps" rows="3" placeholder="Domains where you can deliver MDPs, consulting, or executive programmes..."></textarea>
-
     <div class="sublabel">▸ Are you currently delivering, or have you delivered, any Consulting / Training / Executive Education Programmes?</div>
     <textarea class="fi" id="f-delivered" rows="2" placeholder="Programmes, clients, dates. NA is an acceptable answer."></textarea>
-
     <div class="sublabel">▸ New programmes you would like to design and deliver</div>
     <textarea class="fi" id="f-newprogs" rows="2" placeholder="MDP or executive programme concepts you believe XIME should offer..."></textarea>
-
     <div class="fdiv"></div>
-
     <div class="sublabel">▸ Research areas with strong publication or external funding potential</div>
-    <div class="sublabel-hint">Your most promising research bets for the next two to three years.</div>
     <textarea class="fi" id="f-respotential" rows="3" placeholder="List five or so areas with the clearest publication or funding opportunity..."></textarea>
   </section>
 
   <!-- SECTION 3 STATEMENT -->
   <section class="sec" id="s-statement">
-    <div class="sh">
-      <div class="sn-mini">3</div>
-      <div>
-        <div class="si-t">Your IKIGAI Statement</div>
-        <div class="si-s">Distil your reflections into a single statement of purpose</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">3</div><div><div class="si-t">Your IKIGAI Statement</div><div class="si-s">Distil your reflections into a single statement of purpose</div></div></div>
     <div class="srl"></div>
     <div class="sec-intro" style="margin-top:20px">Write in your own voice. This is personal, not institutional. Visible only to your Director and the President.</div>
-
     <div class="focus-q italic">Why do you do what you do, not for your CV, but for yourself?</div>
-
-    <div class="statement-frame">
-      <textarea id="f-iki" placeholder="I do this work because..."></textarea>
-    </div>
+    <div class="statement-frame"><textarea id="f-iki" placeholder="I do this work because..."></textarea></div>
     <div class="statement-note">Not visible to Deans. Visible only to your Director and the President after submission.</div>
   </section>
 
   <!-- SECTION 4 ALLOCATION -->
   <section class="sec" id="s-allocation">
-    <div class="sh">
-      <div class="sn-mini">4</div>
-      <div>
-        <div class="si-t">Role Preference Allocation</div>
-        <div class="si-s">Current vs ideal · must total 100%</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">4</div><div><div class="si-t">Role Preference Allocation</div><div class="si-s">Current vs ideal · must total 100%</div></div></div>
     <div class="srl"></div>
     <div class="sec-intro" style="margin-top:20px"><strong>4a.</strong> Indicate the percentage of your professional time you are spending in each role today. The total must add up to 100%.</div>
-
     <div class="alloc-grid">
       <div class="alloc-col">
         <h4>4a. Current Allocation</h4>
-        <div class="alloc-row">
-          <span class="alloc-label">Teaching</span>
-          <input type="number" class="alloc-input" id="al-t" min="0" max="100" oninput="updateAlloc()">
-          <span class="alloc-pct">%</span>
-        </div>
-        <div class="alloc-row">
-          <span class="alloc-label">Research</span>
-          <input type="number" class="alloc-input" id="al-r" min="0" max="100" oninput="updateAlloc()">
-          <span class="alloc-pct">%</span>
-        </div>
-        <div class="alloc-row">
-          <span class="alloc-label">Institutional Leadership<sup>*</sup></span>
-          <input type="number" class="alloc-input" id="al-s" min="0" max="100" oninput="updateAlloc()">
-          <span class="alloc-pct">%</span>
-        </div>
-        <div class="alloc-total warn" id="total-current">
-          <span>Total</span>
-          <span><strong>0%</strong></span>
-        </div>
+        <div class="alloc-row"><span class="alloc-label">Teaching</span><input type="number" class="alloc-input" id="al-t" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-row"><span class="alloc-label">Research</span><input type="number" class="alloc-input" id="al-r" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-row"><span class="alloc-label">Industry &amp; EP<sup>*</sup></span><input type="number" class="alloc-input" id="al-ind" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-row"><span class="alloc-label">Institutional Leadership<sup>*</sup></span><input type="number" class="alloc-input" id="al-s" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-total warn" id="total-current"><span>Total</span><span><strong>0%</strong></span></div>
       </div>
-
       <div class="alloc-col">
         <h4>4b. Ideal Allocation</h4>
-        <div class="alloc-row">
-          <span class="alloc-label">Teaching</span>
-          <input type="number" class="alloc-input" id="ali-t" min="0" max="100" oninput="updateAlloc()">
-          <span class="alloc-pct">%</span>
-        </div>
-        <div class="alloc-row">
-          <span class="alloc-label">Research</span>
-          <input type="number" class="alloc-input" id="ali-r" min="0" max="100" oninput="updateAlloc()">
-          <span class="alloc-pct">%</span>
-        </div>
-        <div class="alloc-row">
-          <span class="alloc-label">Institutional Leadership<sup>*</sup></span>
-          <input type="number" class="alloc-input" id="ali-s" min="0" max="100" oninput="updateAlloc()">
-          <span class="alloc-pct">%</span>
-        </div>
-        <div class="alloc-total warn" id="total-ideal">
-          <span>Total</span>
-          <span><strong>0%</strong></span>
-        </div>
+        <div class="alloc-row"><span class="alloc-label">Teaching</span><input type="number" class="alloc-input" id="ali-t" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-row"><span class="alloc-label">Research</span><input type="number" class="alloc-input" id="ali-r" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-row"><span class="alloc-label">Industry &amp; EP<sup>*</sup></span><input type="number" class="alloc-input" id="ali-ind" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-row"><span class="alloc-label">Institutional Leadership<sup>*</sup></span><input type="number" class="alloc-input" id="ali-s" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
+        <div class="alloc-total warn" id="total-ideal"><span>Total</span><span><strong>0%</strong></span></div>
       </div>
     </div>
-
-    <div class="footnote-alloc">
-      <sup>*</sup> Includes the administrative workload associated with the role (committees, accreditation work, coordinator responsibilities, and similar).
-    </div>
-
-    <!-- 4c reveal -->
+    <div class="footnote-alloc"><sup>*</sup> Industry minimum is 10%. Institutional includes committees, accreditation work, and coordinator responsibilities.</div>
     <div class="change-reveal" id="change-reveal">
-      <div class="change-reveal-header">
-        <span class="change-badge">4c · Significant Change</span>
-        <span class="change-title">You have indicated a meaningful shift between current and ideal allocation.</span>
-      </div>
-
-      <div class="change-q">
-        <label>Why is this shift important to you?</label>
-        <textarea id="f-changewhy" placeholder="What is driving the change you want to see..."></textarea>
-      </div>
-
-      <div class="change-q">
-        <label>What will you do to drive this change?</label>
-        <textarea id="f-changeact" placeholder="Your own commitment. Concrete actions, not aspirations..."></textarea>
-      </div>
-
-      <div class="change-q">
-        <label>What can XIME help you with?</label>
-        <textarea id="f-changesupp" placeholder="Institutional support, resources, time, mentorship..."></textarea>
-      </div>
+      <div class="change-reveal-header"><span class="change-badge">4c · Significant Change</span><span class="change-title">You have indicated a meaningful shift between current and ideal allocation.</span></div>
+      <div class="change-q"><label>Why is this shift important to you?</label><textarea id="f-changewhy" placeholder="What is driving the change you want to see..."></textarea></div>
+      <div class="change-q"><label>What will you do to drive this change?</label><textarea id="f-changeact" placeholder="Your own commitment. Concrete actions, not aspirations..."></textarea></div>
+      <div class="change-q"><label>What can XIME help you with?</label><textarea id="f-changesupp" placeholder="Institutional support, resources, time, mentorship..."></textarea></div>
     </div>
   </section>
 
   <!-- SECTION 5 ACTION -->
   <section class="sec" id="s-action">
-    <div class="sh">
-      <div class="sn-mini">5</div>
-      <div>
-        <div class="si-t">Action Plan · The Year Ahead</div>
-        <div class="si-s">Translate your reflections into concrete commitments for the next twelve months</div>
-      </div>
-    </div>
+    <div class="sh"><div class="sn-mini">5</div><div><div class="si-t">Action Plan · The Year Ahead</div><div class="si-s">Translate your reflections into concrete commitments for the next twelve months</div></div></div>
     <div class="srl"></div>
     <div class="sec-intro" style="margin-top:20px">Be honest and specific. This plan is yours.</div>
-
-    <div class="action-card">
-      <div class="action-label">Start</div>
-      <div class="action-hint">What new practice, activity, or commitment will you begin this year?</div>
-      <textarea class="action-input" id="f-sta" placeholder="Start..."></textarea>
-    </div>
-
-    <div class="action-card">
-      <div class="action-label">Stop</div>
-      <div class="action-hint">What are you currently doing that no longer serves your growth or your students?</div>
-      <textarea class="action-input" id="f-stp" placeholder="Stop..."></textarea>
-    </div>
-
-    <div class="action-card">
-      <div class="action-label">Continue</div>
-      <div class="action-hint">What are you doing well that you wish to sustain and deepen?</div>
-      <textarea class="action-input" id="f-cnt" placeholder="Continue..."></textarea>
-    </div>
-
-    <div class="action-card key">
-      <div class="action-label">Key Goal</div>
-      <div class="action-hint">The single most important outcome you want to achieve this year.</div>
-      <textarea class="action-input" id="f-kg" placeholder="My key goal this year is..."></textarea>
-    </div>
-
-    <div class="action-card">
-      <div class="action-label">Support Needed</div>
-      <div class="action-hint">What resources, mentoring, or institutional backing would help you succeed?</div>
-      <textarea class="action-input" id="f-sup" placeholder="To succeed, I need..."></textarea>
-    </div>
+    <div class="action-card"><div class="action-label">Start</div><div class="action-hint">What new practice, activity, or commitment will you begin this year?</div><textarea class="action-input" id="f-sta" placeholder="Start..."></textarea></div>
+    <div class="action-card"><div class="action-label">Stop</div><div class="action-hint">What are you currently doing that no longer serves your growth or your students?</div><textarea class="action-input" id="f-stp" placeholder="Stop..."></textarea></div>
+    <div class="action-card"><div class="action-label">Continue</div><div class="action-hint">What are you doing well that you wish to sustain and deepen?</div><textarea class="action-input" id="f-cnt" placeholder="Continue..."></textarea></div>
+    <div class="action-card key"><div class="action-label">Key Goal</div><div class="action-hint">The single most important outcome you want to achieve this year.</div><textarea class="action-input" id="f-kg" placeholder="My key goal this year is..."></textarea></div>
+    <div class="action-card"><div class="action-label">Support Needed</div><div class="action-hint">What resources, mentoring, or institutional backing would help you succeed?</div><textarea class="action-input" id="f-sup" placeholder="To succeed, I need..."></textarea></div>
   </section>
 
   <div id="rmbox" style="display:none">
@@ -1122,6 +943,118 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
 </div>
 <!-- END TAB 2 -->
+
+<!-- ========================================================= -->
+<!-- TAB 3: TEACHING EFFECTIVENESS FEEDBACK                    -->
+<!-- ========================================================= -->
+<div class="tab-content" id="tab-feedback">
+
+  <div class="tab3-intro">
+    <div class="tab3-label">Part C · Student Voice</div>
+    <div class="tab3-title">Teaching Effectiveness Feedback</div>
+    <div class="tab3-sub">A record of end-term student feedback across courses you have taught this academic year. Each entry captures score distributions, question-level means, and student responses verbatim from the XIME BA-05 feedback instrument.</div>
+    <div class="tab3-note">
+      <span class="tab3-note-icon">&#9432;</span>
+      <span>Faculty self-enter scores from the official PDF report. Source document upload available for verification. Data integrity validation will be introduced in a future release.</span>
+    </div>
+  </div>
+
+  <!-- Entries section -->
+  <section class="sec" id="s-fb-entries">
+    <div class="sh">
+      <div class="sn-mini">3.1</div>
+      <div>
+        <div class="si-t">Course Feedback Entries</div>
+        <div class="si-s">One entry per course per term. Add all courses taught in AY 2025-26.</div>
+      </div>
+    </div>
+    <div class="srl"></div>
+    <div style="margin-top:22px" id="fb-cards-container">
+      <!-- Cards rendered by JS -->
+    </div>
+  </section>
+
+  <!-- Add entry section -->
+  <section class="sec" id="s-fb-add">
+    <div class="sh">
+      <div class="sn-mini">3.2</div>
+      <div>
+        <div class="si-t">Add Course Entry</div>
+        <div class="si-s">Enter data from your BA-05 End Term Faculty Feedback PDF</div>
+      </div>
+    </div>
+    <div class="srl"></div>
+
+    <div style="margin-top:18px">
+      <button class="fb-add-more" id="fb-toggle-form" onclick="toggleFbForm()">
+        <span style="font-size:18px;line-height:1">+</span>
+        <span>Add a course feedback entry</span>
+      </button>
+
+      <div class="fb-form-wrap" id="fb-form-wrap">
+        <div class="fb-form-head">Course Details</div>
+        <div class="fb-form-sub">Fill in exactly as shown on your feedback PDF. All fields from the header section.</div>
+
+        <div class="fb-form-sec">Course Information</div>
+        <div class="fb-grid2">
+          <div class="fb-field"><div class="fb-label">Course Name</div><input class="fb-input" id="fb-course-name" placeholder="e.g. Project Management"></div>
+          <div class="fb-field"><div class="fb-label">Course Code</div><input class="fb-input" id="fb-course-code" placeholder="e.g. XB-2527-BA-T3-C04"></div>
+          <div class="fb-field">
+            <div class="fb-label">Term</div>
+            <select class="fb-input" id="fb-term">
+              <option value="">Select term...</option>
+              <option>1</option><option>2</option><option>3</option>
+              <option>4</option><option>5</option><option>6</option>
+            </select>
+          </div>
+          <div class="fb-field"><div class="fb-label">Academic Year</div><input class="fb-input" id="fb-ay" value="2025-26" readonly></div>
+        </div>
+
+        <div class="fb-form-sec">Scores</div>
+        <div class="fb-grid3">
+          <div class="fb-field"><div class="fb-label">Students Who Submitted</div><input class="fb-input" id="fb-students" type="number" min="1" placeholder="e.g. 46" oninput="recalcOverall()"></div>
+          <div class="fb-field"><div class="fb-label">Overall Percentage Score</div><input class="fb-input" id="fb-overall-pct" readonly placeholder="Auto-calculated"></div>
+          <div class="fb-field"><div class="fb-label">Overall Mean Score</div><input class="fb-input" id="fb-overall-mean" readonly placeholder="Auto-calculated"></div>
+        </div>
+
+        <div class="fb-form-sec">Objective Questions · Response Distribution</div>
+        <div class="fh" style="margin-bottom:14px">Enter the count of students who selected each option for each question. Mean auto-calculates.</div>
+
+        <div id="fb-q-inputs"></div>
+
+        <div class="fb-form-sec">Subjective Responses</div>
+        <div class="fb-grid2" style="margin-bottom:14px">
+          <div class="fb-field">
+            <div class="fb-label">What did this faculty do best?</div>
+            <div class="fh" style="margin-bottom:6px">Paste all student responses, one per line</div>
+            <textarea class="fi" id="fb-did-best" rows="8" placeholder="Easy explanations&#10;Real world learning&#10;...one response per line"></textarea>
+          </div>
+          <div class="fb-field">
+            <div class="fb-label">What one change would have made this course more effective?</div>
+            <div class="fh" style="margin-bottom:6px">Paste all student responses, one per line</div>
+            <textarea class="fi" id="fb-one-change" rows="8" placeholder="More workshops&#10;More case studies&#10;...one response per line"></textarea>
+          </div>
+        </div>
+
+        <div class="fb-form-sec">Source Document</div>
+        <div class="fb-grid2">
+          <div class="fb-field"><div class="fb-label">Source Note</div><input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2025-26"></div>
+          <div class="fb-field">
+            <div class="fb-label">Upload PDF <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional, for reference)</span></div>
+            <input type="file" accept=".pdf" class="fb-input" id="fb-pdf" style="padding:7px">
+          </div>
+        </div>
+
+        <div class="fb-form-actions">
+          <button class="fb-cancel" onclick="toggleFbForm()">Cancel</button>
+          <button class="fb-save-entry" onclick="saveFbEntry()">Add Course Entry +</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<!-- END TAB 3 -->
 
 </main>
 </div>
@@ -1155,7 +1088,296 @@ const courseState={
 };
 
 let INST_ENTRIES=[];
+let FEEDBACK_ENTRIES=[];
 
+/* ======================================================
+   FEEDBACK QUESTIONS
+   ====================================================== */
+const FB_QUESTIONS=[
+  'This faculty is genuinely interested in my progress and is accessible when I need guidance or support.',
+  'This faculty uses relevant real-world examples and business cases that make concepts meaningful and relatable.',
+  'The course is designed to be application-oriented, enabling students to apply concepts in practice.',
+  'This faculty creates a classroom environment that is engaging, participative, and energizing.',
+  'This faculty maintains an orderly and focused classroom, creating an environment that is conducive to effective learning.'
+];
+
+/* Madhu Kumar demo seed data */
+const MADHU_SEED={
+  id:'fb-madhu-pm-2526',
+  course_name:'Project Management',
+  course_code:'XB-2527-BA-T3-C04',
+  term:'3',
+  academic_year:'2025-26',
+  students:46,
+  overall_pct:90.54,
+  overall_mean:3.62,
+  questions:[
+    {excellent:34,very_good:8,good:3,satisfactory:1,poor:0,mean:3.63},
+    {excellent:36,very_good:6,good:3,satisfactory:1,poor:0,mean:3.67},
+    {excellent:33,very_good:9,good:3,satisfactory:1,poor:0,mean:3.61},
+    {excellent:34,very_good:7,good:4,satisfactory:1,poor:0,mean:3.61},
+    {excellent:33,very_good:8,good:4,satisfactory:1,poor:0,mean:3.59}
+  ],
+  did_best:[
+    'Easy explanations that made complex concepts approachable',
+    'Uses relevant real-world examples and business cases',
+    'Helped to relate the concepts with real world case problems',
+    'Way of teaching feels more like a dialogue than a monologue',
+    'He genuinely wanted all the students to understand the concepts and become a good PM',
+    'Making sure everyone understood concepts and teaching from a placement perspective. Really helpful.',
+    'Bringing industry experience examples to every concept to show the relevance',
+    'Madhu Sir is the course. Without him I would not have learnt half of what I did. As long as he is teaching, there is no need to make any changes.',
+    'Excellent conceptual clarity with strong industry connect'
+  ],
+  one_change:[
+    'More workshops around the subject',
+    'More case studies on real life practical implication beyond course curriculum',
+    'More practice questions',
+    'Could have briefed about current PM tools used in the market',
+    'More classes',
+    'Reduce portion a bit but overall satisfied'
+  ],
+  source_note:'XIME BA-05 End Term Faculty Feedback, Term 3, AY 2025-26',
+  source_doc:'MadhuKumarPS_ProjectManagement_XB2527BAT3C04.pdf'
+};
+
+/* ======================================================
+   FEEDBACK RENDERING
+   ====================================================== */
+function renderFeedbackEntries(){
+  const container=document.getElementById('fb-cards-container');
+  if(FEEDBACK_ENTRIES.length===0){
+    container.innerHTML=`<div class="fb-empty-state">
+      <div class="fb-empty-icon">&#128203;</div>
+      <div class="fb-empty-text">No course feedback entries yet.<br>Add your first entry using the form below.</div>
+    </div>`;
+    return;
+  }
+  container.innerHTML=FEEDBACK_ENTRIES.map(e=>renderFbCard(e)).join('');
+}
+
+function renderFbCard(e){
+  const total=e.students||46;
+  const isMadhu=e.id===MADHU_SEED.id;
+  const featuredBest=isMadhu?[e.did_best[7]]:(e.did_best||[]).filter(r=>r.length>60).slice(0,1);
+  const regularBest=(e.did_best||[]).filter(r=>!featuredBest.includes(r));
+
+  const questionsHtml=FB_QUESTIONS.map((q,i)=>{
+    const qd=e.questions&&e.questions[i]?e.questions[i]:{excellent:0,very_good:0,good:0,satisfactory:0,poor:0,mean:0};
+    const E=qd.excellent||0,VG=qd.very_good||0,G=qd.good||0,S=qd.satisfactory||0,P=qd.poor||0;
+    const ep=((E/total)*100).toFixed(1);
+    const vgp=((VG/total)*100).toFixed(1);
+    const gp=((G/total)*100).toFixed(1);
+    const sp=((S/total)*100).toFixed(1);
+    const pp=((P/total)*100).toFixed(1);
+    const segW=n=>Math.round((n/total)*100);
+    return`<div class="fb-q-row">
+      <div class="fb-q-text">${q}</div>
+      <div class="fb-q-bottom">
+        <div class="fb-dist-wrap">
+          <div class="fb-dist-bar">
+            ${E>0?`<div class="fb-seg-e" style="flex:${segW(E)}" title="Excellent: ${E}"></div>`:''}
+            ${VG>0?`<div class="fb-seg-vg" style="flex:${segW(VG)}" title="Very Good: ${VG}"></div>`:''}
+            ${G>0?`<div class="fb-seg-g" style="flex:${segW(G)}" title="Good: ${G}"></div>`:''}
+            ${S>0?`<div class="fb-seg-s" style="flex:${segW(S)}" title="Satisfactory: ${S}"></div>`:''}
+            ${P>0?`<div class="fb-seg-p" style="flex:${segW(P)}" title="Poor: ${P}"></div>`:''}
+          </div>
+          <div class="fb-dist-counts">
+            <div class="fb-dist-count" style="flex:${segW(E)};min-width:24px">${E}</div>
+            <div class="fb-dist-count" style="flex:${segW(VG)};min-width:20px">${VG}</div>
+            <div class="fb-dist-count" style="flex:${segW(G)};min-width:18px">${G}</div>
+            <div class="fb-dist-count" style="flex:${segW(S)};min-width:16px">${S}</div>
+            <div class="fb-dist-count" style="flex:${segW(P)};min-width:12px">${P||''}</div>
+          </div>
+        </div>
+        <div class="fb-q-mean">${(qd.mean||0).toFixed(2)}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const didBestHtml=[
+    ...featuredBest.map(r=>`<div class="fb-resp feature">${r}</div>`),
+    ...regularBest.map(r=>`<div class="fb-resp">${r}</div>`)
+  ].join('');
+
+  const oneChangeHtml=(e.one_change||[]).filter(r=>r&&r.length>2&&!['na','nil','n/a','none','nothing','no','good','-','..'].includes(r.toLowerCase().trim())).map(r=>`<div class="fb-resp">${r}</div>`).join('');
+
+  return`<div class="fb-card">
+    <div class="fb-card-header">
+      <div>
+        <div class="fb-course-name">${e.course_name}</div>
+        <div class="fb-course-meta">
+          ${e.course_code} &nbsp;·&nbsp; Term ${e.term} &nbsp;·&nbsp; AY ${e.academic_year}
+        </div>
+      </div>
+      <div class="fb-score-block">
+        <div class="fb-pct">${(e.overall_pct||0).toFixed(2)}<span style="font-size:18px;color:rgba(201,168,76,.6)">%</span></div>
+        <div class="fb-pct-label">Overall Score</div>
+        <div class="fb-mean-line">Mean ${(e.overall_mean||0).toFixed(2)} / 4.00</div>
+        <div class="fb-students-line">${e.students} students</div>
+      </div>
+    </div>
+
+    <div class="fb-questions">
+      <div class="fb-qs-label">
+        Objective Questions
+        <span style="font-size:9px;color:var(--faint);font-weight:400;text-transform:none;letter-spacing:0">
+          &nbsp; E = Excellent &nbsp; VG = Very Good &nbsp; G = Good &nbsp; S = Satisfactory &nbsp; P = Poor
+        </span>
+      </div>
+      ${questionsHtml}
+    </div>
+
+    <div class="fb-subjective">
+      <div class="fb-sub-grid">
+        <div>
+          <div class="fb-sub-title">What this faculty did best</div>
+          <div class="fb-responses">${didBestHtml||'<span style="font-size:12px;color:var(--faint);font-style:italic">No responses recorded</span>'}</div>
+        </div>
+        <div>
+          <div class="fb-sub-title">What one change would have helped</div>
+          <div class="fb-responses">${oneChangeHtml||'<span style="font-size:12px;color:var(--faint);font-style:italic">No substantive suggestions recorded</span>'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fb-card-footer">
+      <div class="fb-source-note">${e.source_note||''} ${e.source_doc?'· '+e.source_doc:''}</div>
+      ${IS_PREVIEW?'':`<button class="fb-remove" onclick="removeFbEntry('${e.id}')">Remove</button>`}
+    </div>
+  </div>`;
+}
+
+function removeFbEntry(id){
+  if(!confirm('Remove this course feedback entry?'))return;
+  FEEDBACK_ENTRIES=FEEDBACK_ENTRIES.filter(e=>e.id!==id);
+  renderFeedbackEntries();
+  upProg();
+  toast('Entry removed');
+}
+
+function toggleFbForm(){
+  const wrap=document.getElementById('fb-form-wrap');
+  wrap.classList.toggle('open');
+  if(wrap.classList.contains('open')){
+    buildFbQInputs();
+    wrap.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function buildFbQInputs(){
+  const container=document.getElementById('fb-q-inputs');
+  container.innerHTML=FB_QUESTIONS.map((q,i)=>`
+    <div class="fb-q-input">
+      <div class="fb-q-input-label"><span class="fb-q-num">Q${i+1}</span>${q}</div>
+      <div class="fb-counts-row">
+        <div class="fb-count-col"><div class="fb-count-lbl lbl-e">E</div><input class="fb-count-n" id="fb-q${i}-e" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
+        <div class="fb-count-col"><div class="fb-count-lbl lbl-vg">VG</div><input class="fb-count-n" id="fb-q${i}-vg" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
+        <div class="fb-count-col"><div class="fb-count-lbl lbl-g">G</div><input class="fb-count-n" id="fb-q${i}-g" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
+        <div class="fb-count-col"><div class="fb-count-lbl lbl-s">S</div><input class="fb-count-n" id="fb-q${i}-s" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
+        <div class="fb-count-col"><div class="fb-count-lbl lbl-p">P</div><input class="fb-count-n" id="fb-q${i}-p" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
+      </div>
+      <div class="fb-q-mean-display">Mean: <span class="fb-q-mean-val" id="fb-q${i}-mean">0.00</span></div>
+    </div>`).join('');
+}
+
+function calcQMean(qi){
+  const E=parseInt(document.getElementById('fb-q'+qi+'-e').value)||0;
+  const VG=parseInt(document.getElementById('fb-q'+qi+'-vg').value)||0;
+  const G=parseInt(document.getElementById('fb-q'+qi+'-g').value)||0;
+  const S=parseInt(document.getElementById('fb-q'+qi+'-s').value)||0;
+  const P=parseInt(document.getElementById('fb-q'+qi+'-p').value)||0;
+  const total=E+VG+G+S+P;
+  const mean=total>0?((4*E+3*VG+2*G+1*S+0*P)/total):0;
+  document.getElementById('fb-q'+qi+'-mean').textContent=mean.toFixed(2);
+  recalcOverall();
+}
+
+function recalcOverall(){
+  const students=parseInt(document.getElementById('fb-students').value)||0;
+  if(students===0)return;
+  let totalMean=0;let validQ=0;
+  FB_QUESTIONS.forEach((_,i)=>{
+    const E=parseInt(document.getElementById('fb-q'+i+'-e')?.value)||0;
+    const VG=parseInt(document.getElementById('fb-q'+i+'-vg')?.value)||0;
+    const G=parseInt(document.getElementById('fb-q'+i+'-g')?.value)||0;
+    const S=parseInt(document.getElementById('fb-q'+i+'-s')?.value)||0;
+    const P=parseInt(document.getElementById('fb-q'+i+'-p')?.value)||0;
+    const t=E+VG+G+S+P;
+    if(t>0){
+      const m=(4*E+3*VG+2*G+1*S+0*P)/t;
+      totalMean+=m;validQ++;
+    }
+  });
+  if(validQ>0){
+    const overallMean=totalMean/validQ;
+    const overallPct=(overallMean/4)*100;
+    document.getElementById('fb-overall-mean').value=overallMean.toFixed(2);
+    document.getElementById('fb-overall-pct').value=overallPct.toFixed(2);
+  }
+}
+
+function saveFbEntry(){
+  const courseName=document.getElementById('fb-course-name').value.trim();
+  const courseCode=document.getElementById('fb-course-code').value.trim();
+  const term=document.getElementById('fb-term').value;
+  const students=parseInt(document.getElementById('fb-students').value)||0;
+
+  if(!courseName){toast('Please enter the course name',false);return;}
+  if(!term){toast('Please select the term',false);return;}
+  if(students<1){toast('Please enter the number of students who submitted',false);return;}
+
+  const questions=FB_QUESTIONS.map((_,i)=>({
+    excellent:parseInt(document.getElementById('fb-q'+i+'-e').value)||0,
+    very_good:parseInt(document.getElementById('fb-q'+i+'-vg').value)||0,
+    good:parseInt(document.getElementById('fb-q'+i+'-g').value)||0,
+    satisfactory:parseInt(document.getElementById('fb-q'+i+'-s').value)||0,
+    poor:parseInt(document.getElementById('fb-q'+i+'-p').value)||0,
+    mean:parseFloat(document.getElementById('fb-q'+i+'-mean').textContent)||0
+  }));
+
+  const didBestRaw=document.getElementById('fb-did-best').value;
+  const oneChangeRaw=document.getElementById('fb-one-change').value;
+  const didBest=didBestRaw.split('\n').map(s=>s.trim()).filter(Boolean);
+  const oneChange=oneChangeRaw.split('\n').map(s=>s.trim()).filter(Boolean);
+
+  const entry={
+    id:'fb-'+Date.now(),
+    course_name:courseName,
+    course_code:courseCode,
+    term:term,
+    academic_year:document.getElementById('fb-ay').value||'2025-26',
+    students:students,
+    overall_pct:parseFloat(document.getElementById('fb-overall-pct').value)||0,
+    overall_mean:parseFloat(document.getElementById('fb-overall-mean').value)||0,
+    questions:questions,
+    did_best:didBest,
+    one_change:oneChange,
+    source_note:document.getElementById('fb-source-note').value.trim(),
+    source_doc:document.getElementById('fb-pdf').files[0]?.name||''
+  };
+
+  FEEDBACK_ENTRIES.push(entry);
+  renderFeedbackEntries();
+  toggleFbForm();
+  upProg();
+  toast('Course feedback entry added');
+
+  document.getElementById('fb-course-name').value='';
+  document.getElementById('fb-course-code').value='';
+  document.getElementById('fb-term').value='';
+  document.getElementById('fb-students').value='';
+  document.getElementById('fb-overall-pct').value='';
+  document.getElementById('fb-overall-mean').value='';
+  document.getElementById('fb-did-best').value='';
+  document.getElementById('fb-one-change').value='';
+  document.getElementById('fb-source-note').value='';
+  buildFbQInputs();
+}
+
+/* ======================================================
+   UTILITY FUNCTIONS
+   ====================================================== */
 function toast(m,ok=true){
   const t=document.getElementById('toast');
   t.textContent=m;
@@ -1164,7 +1386,6 @@ function toast(m,ok=true){
   setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-/* ---------- Tab switching ---------- */
 function switchTab(which){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===which));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+which));
@@ -1209,8 +1430,7 @@ async function resolveAccess(){
     const{data:ownRow}=await sb.from('faculty_master')
       .select('*').eq('email',profile.email).maybeSingle();
     if(!ownRow){
-      document.getElementById('blocker').textContent=
-        'Your faculty profile is not linked to the review system yet. Please contact your Director.';
+      document.getElementById('blocker').textContent='Your faculty profile is not linked to the review system yet. Please contact your Director.';
       document.getElementById('blocker').style.display='block';
       return null;
     }
@@ -1224,8 +1444,7 @@ async function resolveAccess(){
       const{data:firstPilot}=await sb.from('faculty_master')
         .select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
       if(!firstPilot){
-        document.getElementById('blocker').textContent=
-          'No faculty have been linked to the review system yet.';
+        document.getElementById('blocker').textContent='No faculty have been linked to the review system yet.';
         document.getElementById('blocker').style.display='block';
         return null;
       }
@@ -1242,9 +1461,7 @@ function enterPreviewMode(faculty){
   IS_PREVIEW=true;
   const banner=document.getElementById('preview-banner');
   banner.classList.add('visible');
-  document.getElementById('preview-who').textContent=
-    `Super Admin Preview: ${faculty.name}`;
-
+  document.getElementById('preview-who').textContent=`Super Admin Preview: ${faculty.name}`;
   document.querySelectorAll('input,textarea,select').forEach(el=>{
     el.setAttribute('readonly','true');
     el.classList.add('lk');
@@ -1253,7 +1470,7 @@ function enterPreviewMode(faculty){
   document.querySelectorAll('.tier-cell').forEach(el=>el.classList.add('lk'));
   document.getElementById('g1box').style.display='none';
   document.getElementById('g2box').style.display='none';
-  document.querySelectorAll('.add-row,.remove-row,.inst-form-btn').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.add-row,.remove-row,.inst-form-btn,.fb-save-entry,.fb-add-more,.fb-toggle-form').forEach(b=>{if(b)b.disabled=true});
 }
 
 function showDualRoleNote(faculty){
@@ -1261,7 +1478,7 @@ function showDualRoleNote(faculty){
   const note=document.getElementById('dual-role-note');
   const roleLabel=USER_ROLE==='director'?'Director':'Dean';
   note.classList.add('visible');
-  note.innerHTML=`<strong>Note:</strong> You are completing this review as faculty. In your role as ${roleLabel} you will receive and validate reviews from other faculty in the usual way; you will not be asked to validate your own submission.`;
+  note.innerHTML=`<strong>Note:</strong> You are completing this review as faculty. In your role as ${roleLabel} you will receive and validate reviews from other faculty in the usual way.`;
 }
 
 /* ---------- Strength sliders ---------- */
@@ -1272,14 +1489,14 @@ function updateStrength(k){
   upProg();
 }
 
-/* ---------- Strengths list (up to 5) ---------- */
+/* ---------- Strengths list ---------- */
 function addStrengthRow(){
   const list=document.getElementById('strengths-list');
   if(list.children.length>=5)return;
   const n=list.children.length+1;
   const row=document.createElement('div');
   row.className='list-row';
-  row.innerHTML=`<div class="list-num">${n}.</div><input type="text" placeholder="Another capability..."><button class="remove-row" onclick="removeStrengthRow(this)">×</button>`;
+  row.innerHTML=`<div class="list-num">${n}.</div><input type="text" placeholder="Another capability..."><button class="remove-row" onclick="removeStrengthRow(this)">x</button>`;
   list.appendChild(row);
 }
 function removeStrengthRow(btn){
@@ -1289,13 +1506,13 @@ function removeStrengthRow(btn){
   renumber('strengths-list');
 }
 
-/* ---------- Develop list (min 3) ---------- */
+/* ---------- Develop list ---------- */
 function addDevelopRow(){
   const list=document.getElementById('develop-list');
   const n=list.children.length+1;
   const row=document.createElement('div');
   row.className='list-row';
-  row.innerHTML=`<div class="list-num">${n}.</div><input type="text" placeholder="Another development area..."><button class="remove-row" onclick="removeDevelopRow(this)">×</button>`;
+  row.innerHTML=`<div class="list-num">${n}.</div><input type="text" placeholder="Another development area..."><button class="remove-row" onclick="removeDevelopRow(this)">x</button>`;
   list.appendChild(row);
   checkDevelopMin();
 }
@@ -1308,13 +1525,8 @@ function checkDevelopMin(){
   const list=document.getElementById('develop-list');
   const note=document.getElementById('develop-min-note');
   const filled=[...list.querySelectorAll('input[type="text"]')].filter(i=>i.value.trim()).length;
-  if(filled<3){
-    note.className='min-note required';
-    note.textContent=`${filled} of 3 minimum entered. At least ${3-filled} more required.`;
-  }else{
-    note.className='min-note met';
-    note.textContent=`${filled} areas entered. Good.`;
-  }
+  if(filled<3){note.className='min-note required';note.textContent=`${filled} of 3 minimum entered. At least ${3-filled} more required.`;}
+  else{note.className='min-note met';note.textContent=`${filled} areas entered. Good.`;}
 }
 
 function renumber(listId){
@@ -1339,7 +1551,7 @@ function setListValues(listId,values){
     const row=document.createElement('div');
     row.className='list-row';
     const removeFn=listId==='develop-list'?'removeDevelopRow':'removeStrengthRow';
-    row.innerHTML=`<div class="list-num">${i+1}.</div><input type="text" value="${(clean[i]||'').replace(/"/g,'&quot;')}" placeholder="..."><button class="remove-row" onclick="${removeFn}(this)">×</button>`;
+    row.innerHTML=`<div class="list-num">${i+1}.</div><input type="text" value="${(clean[i]||'').replace(/"/g,'&quot;')}" placeholder="..."><button class="remove-row" onclick="${removeFn}(this)">x</button>`;
     list.appendChild(row);
   }
   if(listId==='develop-list')checkDevelopMin();
@@ -1347,8 +1559,8 @@ function setListValues(listId,values){
 
 /* ---------- Allocation ---------- */
 function updateAlloc(){
-  const cur=['al-t','al-r','al-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);
-  const ide=['ali-t','ali-r','ali-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);
+  const cur=['al-t','al-r','al-ind','al-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id)?.value)||0),0);
+  const ide=['ali-t','ali-r','ali-ind','ali-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id)?.value)||0),0);
 
   const cEl=document.getElementById('total-current');
   cEl.querySelector('strong').textContent=cur+'%';
@@ -1360,12 +1572,11 @@ function updateAlloc(){
 
   let maxDelta=0;
   ['t','r','s'].forEach(k=>{
-    const c=parseInt(document.getElementById('al-'+k).value)||0;
-    const i=parseInt(document.getElementById('ali-'+k).value)||0;
-    maxDelta=Math.max(maxDelta,Math.abs(c-i));
+    const c=parseInt(document.getElementById('al-'+k)?.value)||0;
+    const ii=parseInt(document.getElementById('ali-'+k)?.value)||0;
+    maxDelta=Math.max(maxDelta,Math.abs(c-ii));
   });
   document.getElementById('change-reveal').classList.toggle('active',maxDelta>15);
-
   upProg();
 }
 
@@ -1382,10 +1593,11 @@ function upProg(){
   fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&el.value.trim()&&el.value!=='0')filled++;});
   if(R.t!==3||R.r!==3||R.i!==3||R.s!==3)filled+=2;
   if(INST_ENTRIES.length>0)filled++;
+  if(FEEDBACK_ENTRIES.length>0)filled+=2;
   if(courseState.current.selected.size>0)filled++;
   if(getListValues('strengths-list').length>0)filled++;
   if(getListValues('develop-list').length>=3)filled++;
-  const totalFields=fids.length+6;
+  const totalFields=fids.length+8;
   const pct=Math.min(100,Math.round((filled/totalFields)*100));
   document.getElementById('pf').style.width=pct+'%';
   document.getElementById('pp').textContent=pct+'%';
@@ -1461,36 +1673,15 @@ function numVal(id){const v=val(id);return v!==null?parseInt(v):null;}
 
 function g1Data(){
   return{
-    snap_name:fac?.name,
-    snap_designation:fac?.designation,
-    snap_campus:fac?.campus,
-    snap_subject_area:fac?.subject_area,
-    snap_courses_taught:fac?.courses_taught,
-    snap_admin_role:fac?.admin_role,
-    scholar_url:val('f-scholar'),
-    orcid_id:val('f-orcid'),
-    terms_taught:val('f-terms'),
-    teaching_notes:val('f-tnotes'),
-    abdc_a_star:numVal('f-abdc-a-star'),
-    abdc_a:numVal('f-abdc-a'),
-    abdc_b:numVal('f-abdc-b'),
-    abdc_c:numVal('f-abdc-c'),
-    scopus_q1:numVal('f-scopus-q1'),
-    scopus_q2:numVal('f-scopus-q2'),
-    scopus_q3:numVal('f-scopus-q3'),
-    scopus_q4:numVal('f-scopus-q4'),
-    wos_q1:numVal('f-wos-q1'),
-    wos_q2:numVal('f-wos-q2'),
-    wos_q3:numVal('f-wos-q3'),
-    wos_q4:numVal('f-wos-q4'),
-    ugc_care_count:numVal('f-ugc-care'),
-    h_index:numVal('f-hi'),
-    conference_papers_count:numVal('f-conf'),
-    publications_details:val('f-pub'),
-    wip_details:val('f-wip'),
-    mdp_count:numVal('f-mdpc'),
-    mdp_details:val('f-mdpd'),
-    industry_summary:val('f-ind'),
+    snap_name:fac?.name,snap_designation:fac?.designation,snap_campus:fac?.campus,
+    snap_subject_area:fac?.subject_area,snap_courses_taught:fac?.courses_taught,snap_admin_role:fac?.admin_role,
+    scholar_url:val('f-scholar'),orcid_id:val('f-orcid'),terms_taught:val('f-terms'),teaching_notes:val('f-tnotes'),
+    abdc_a_star:numVal('f-abdc-a-star'),abdc_a:numVal('f-abdc-a'),abdc_b:numVal('f-abdc-b'),abdc_c:numVal('f-abdc-c'),
+    scopus_q1:numVal('f-scopus-q1'),scopus_q2:numVal('f-scopus-q2'),scopus_q3:numVal('f-scopus-q3'),scopus_q4:numVal('f-scopus-q4'),
+    wos_q1:numVal('f-wos-q1'),wos_q2:numVal('f-wos-q2'),wos_q3:numVal('f-wos-q3'),wos_q4:numVal('f-wos-q4'),
+    ugc_care_count:numVal('f-ugc-care'),h_index:numVal('f-hi'),conference_papers_count:numVal('f-conf'),
+    publications_details:val('f-pub'),wip_details:val('f-wip'),
+    mdp_count:numVal('f-mdpc'),mdp_details:val('f-mdpd'),industry_summary:val('f-ind'),
     institution_entries:INST_ENTRIES,
     updated_at:new Date().toISOString()
   };
@@ -1499,10 +1690,7 @@ function g1Data(){
 function g2Data(){
   return{
     ikigai_passion:[val('f-pt'),val('f-pr'),val('f-pi'),val('f-ps'),val('f-pimp')].filter(Boolean).join('\n\n')||null,
-    ikigai_strength_teaching:R.t,
-    ikigai_strength_research:R.r,
-    ikigai_strength_industry:R.i,
-    ikigai_strength_institution:R.s,
+    ikigai_strength_teaching:R.t,ikigai_strength_research:R.r,ikigai_strength_industry:R.i,ikigai_strength_institution:R.s,
     ikigai_strengths_text:getListValues('strengths-list').join('\n')||null,
     ikigai_develop_areas:getListValues('develop-list').join('\n')||null,
     ikigai_growth_areas:getListValues('develop-list').join('\n')||null,
@@ -1511,28 +1699,16 @@ function g2Data(){
     ikigai_statement:val('f-iki'),
     courses_current:Array.from(courseState.current.selected),
     courses_aspire:Array.from(courseState.aspire.selected),
-    domain_course_gaps:val('f-gaps'),
-    new_courses_to_design:val('f-newcourses'),
-    courses_to_stop:val('f-stopcourses'),
-    consulting_capabilities:val('f-caps'),
-    consulting_delivered:val('f-delivered'),
-    new_programmes_to_design:val('f-newprogs'),
+    domain_course_gaps:val('f-gaps'),new_courses_to_design:val('f-newcourses'),courses_to_stop:val('f-stopcourses'),
+    consulting_capabilities:val('f-caps'),consulting_delivered:val('f-delivered'),new_programmes_to_design:val('f-newprogs'),
     research_publication_potential:val('f-respotential'),
-    alloc_teaching:numVal('al-t'),
-    alloc_research:numVal('al-r'),
-    alloc_institution:numVal('al-s'),
-    alloc_industry:null,
-    alloc_teaching_ideal:numVal('ali-t'),
-    alloc_research_ideal:numVal('ali-r'),
-    alloc_institution_ideal:numVal('ali-s'),
-    alloc_change_reason:val('f-changewhy'),
-    alloc_change_actions:val('f-changeact'),
-    alloc_change_support:val('f-changesupp'),
-    action_start:val('f-sta'),
-    action_stop:val('f-stp'),
-    action_continue:val('f-cnt'),
-    action_key_goal:val('f-kg'),
-    action_support:val('f-sup'),
+    alloc_teaching:numVal('al-t'),alloc_research:numVal('al-r'),alloc_institution:numVal('al-s'),
+    alloc_industry:numVal('al-ind'),
+    alloc_teaching_ideal:numVal('ali-t'),alloc_research_ideal:numVal('ali-r'),alloc_institution_ideal:numVal('ali-s'),
+    alloc_industry_ideal:numVal('ali-ind'),
+    alloc_change_reason:val('f-changewhy'),alloc_change_actions:val('f-changeact'),alloc_change_support:val('f-changesupp'),
+    action_start:val('f-sta'),action_stop:val('f-stp'),action_continue:val('f-cnt'),action_key_goal:val('f-kg'),action_support:val('f-sup'),
+    teaching_feedback_entries:FEEDBACK_ENTRIES,
     updated_at:new Date().toISOString()
   };
 }
@@ -1606,14 +1782,11 @@ async function submitGate2(){
     }
     const skipDirector=DIRECTOR.email===fac.email;
     await sb.from('evaluation_director_reviews').upsert({
-      evaluation_id:eid,
-      director_email:DIRECTOR.email,
-      director_name:DIRECTOR.name,
-      campus:fac.campus,
-      status:skipDirector?'forwarded_to_president':'pending'
+      evaluation_id:eid,director_email:DIRECTOR.email,director_name:DIRECTOR.name,
+      campus:fac.campus,status:skipDirector?'forwarded_to_president':'pending'
     },{onConflict:'evaluation_id'});
     applyLocks();
-    toast('Annual Development Review submitted. Your Deans have been notified.');
+    toast('Annual Development Review submitted.');
   }catch(e){
     console.error(e);
     toast('Submission failed: '+(e.message||'unknown error'),false);
@@ -1623,10 +1796,7 @@ async function submitGate2(){
 /* ---------- Institution Building ---------- */
 function renderInstEntries(){
   const el=document.getElementById('inst-entries');
-  if(INST_ENTRIES.length===0){
-    el.innerHTML='<div class="inst-empty">No entries yet. Add your first contribution below.</div>';
-    return;
-  }
+  if(INST_ENTRIES.length===0){el.innerHTML='<div class="inst-empty">No entries yet. Add your first contribution below.</div>';return;}
   el.innerHTML=INST_ENTRIES.map(e=>`
     <div class="inst-entry">
       <div>
@@ -1634,7 +1804,7 @@ function renderInstEntries(){
         <div class="inst-entry-desc">${(e.description||'').replace(/</g,'&lt;')}</div>
         <div class="inst-entry-date">${e.date||'No date'}</div>
       </div>
-      ${g1Locked()?'':`<button class="inst-entry-remove" onclick="removeInstitutionEntry('${e.id}')">×</button>`}
+      ${g1Locked()?'':`<button class="inst-entry-remove" onclick="removeInstitutionEntry('${e.id}')">x</button>`}
     </div>`).join('');
 }
 
@@ -1645,12 +1815,7 @@ function addInstitutionEntry(){
   const date=document.getElementById('inst-date').value;
   if(!cat){toast('Please select a category',false);return;}
   if(!desc){toast('Please enter a description',false);return;}
-  INST_ENTRIES.push({
-    id:'e'+Date.now(),
-    category:cat,
-    description:desc,
-    date:date||null
-  });
+  INST_ENTRIES.push({id:'e'+Date.now(),category:cat,description:desc,date:date||null});
   document.getElementById('inst-cat').value='';
   document.getElementById('inst-desc').value='';
   document.getElementById('inst-date').value='';
@@ -1668,7 +1833,7 @@ function removeInstitutionEntry(id){
 /* ---------- Course catalog ---------- */
 async function loadCourseCatalog(){
   const{data,error}=await sb.from('course_catalog').select('*').eq('active',true).order('domain').order('name');
-  if(error||!data){console.error('Course catalog load failed',error);COURSE_CATALOG=[];return;}
+  if(error||!data){COURSE_CATALOG=[];return;}
   COURSE_CATALOG=data;
 }
 
@@ -1688,24 +1853,17 @@ function renderCourseList(which){
   const container=document.getElementById('list-'+which);
   const filtered=COURSE_CATALOG.filter(c=>{
     if(state.filter!=='all'){
-      if(['pgdm_core','pgdm_ba_core','elective','non_credit'].includes(state.filter)){
-        if(c.course_type!==state.filter)return false;
-      }else{
-        if(c.domain!==state.filter)return false;
-      }
+      if(['pgdm_core','pgdm_ba_core','elective','non_credit'].includes(state.filter)){if(c.course_type!==state.filter)return false;}
+      else{if(c.domain!==state.filter)return false;}
     }
     if(state.search&&!c.name.toLowerCase().includes(state.search.toLowerCase()))return false;
     return true;
   });
-  if(filtered.length===0){
-    container.innerHTML='<div style="padding:12px;color:var(--faint);font-size:12px;text-align:center;font-style:italic">No courses match</div>';
-    return;
-  }
+  if(filtered.length===0){container.innerHTML='<div style="padding:12px;color:var(--faint);font-size:12px;text-align:center;font-style:italic">No courses match</div>';return;}
   container.innerHTML=filtered.map(c=>{
     const tag=c.course_type==='elective'?(c.domain||'Elective'):(c.course_type==='pgdm_core'?'PGDM':c.course_type==='pgdm_ba_core'?'PGDM-BA':'Non-credit');
     return`<div class="course-option ${state.selected.has(c.name)?'selected':''}" onclick="toggleCourse('${which}','${c.name.replace(/'/g,"\\'")}')">
-      <span>${c.name}</span>
-      <span class="cat-tag">${tag}</span>
+      <span>${c.name}</span><span class="cat-tag">${tag}</span>
     </div>`;
   }).join('');
 }
@@ -1713,15 +1871,9 @@ function renderCourseList(which){
 function renderCourseChips(which){
   const state=courseState[which];
   const container=document.getElementById('chips-'+which);
-  if(state.selected.size===0){
-    container.innerHTML='<div class="empty-chips">No courses selected yet</div>';
-    return;
-  }
+  if(state.selected.size===0){container.innerHTML='<div class="empty-chips">No courses selected yet</div>';return;}
   container.innerHTML=Array.from(state.selected).map(name=>`
-    <div class="course-chip">
-      <span>${name}</span>
-      <button onclick="toggleCourse('${which}','${name.replace(/'/g,"\\'")}')">×</button>
-    </div>`).join('');
+    <div class="course-chip"><span>${name}</span><button onclick="toggleCourse('${which}','${name.replace(/'/g,"\\'")}')">x</button></div>`).join('');
 }
 
 function toggleCourse(which,name){
@@ -1767,28 +1919,21 @@ function restore(d){
     'f-ugc-care':d.ugc_care_count,'f-hi':d.h_index,'f-conf':d.conference_papers_count,
     'f-pub':d.publications_details,'f-wip':d.wip_details,
     'f-mdpc':d.mdp_count,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,
-    'f-pt':d.ikigai_passion?.split('\n\n')[0],
-    'f-pr':d.ikigai_passion?.split('\n\n')[1],
-    'f-pi':d.ikigai_passion?.split('\n\n')[2],
-    'f-ps':d.ikigai_passion?.split('\n\n')[3],
+    'f-pt':d.ikigai_passion?.split('\n\n')[0],'f-pr':d.ikigai_passion?.split('\n\n')[1],
+    'f-pi':d.ikigai_passion?.split('\n\n')[2],'f-ps':d.ikigai_passion?.split('\n\n')[3],
     'f-pimp':d.ikigai_passion?.split('\n\n')[4],
-    'f-impact':d.ikigai_impact_focus,
-    'f-iki':d.ikigai_statement,
-    'f-gaps':d.domain_course_gaps||d.ikigai_contribution,
-    'f-newcourses':d.new_courses_to_design,
-    'f-stopcourses':d.courses_to_stop,
-    'f-caps':d.consulting_capabilities,
-    'f-delivered':d.consulting_delivered,
-    'f-newprogs':d.new_programmes_to_design,
-    'f-respotential':d.research_publication_potential,
-    'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-s':d.alloc_institution,
-    'ali-t':d.alloc_teaching_ideal,'ali-r':d.alloc_research_ideal,'ali-s':d.alloc_institution_ideal,
+    'f-impact':d.ikigai_impact_focus,'f-iki':d.ikigai_statement,
+    'f-gaps':d.domain_course_gaps||d.ikigai_contribution,'f-newcourses':d.new_courses_to_design,
+    'f-stopcourses':d.courses_to_stop,'f-caps':d.consulting_capabilities,'f-delivered':d.consulting_delivered,
+    'f-newprogs':d.new_programmes_to_design,'f-respotential':d.research_publication_potential,
+    'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-s':d.alloc_institution,'al-ind':d.alloc_industry,
+    'ali-t':d.alloc_teaching_ideal,'ali-r':d.alloc_research_ideal,'ali-s':d.alloc_institution_ideal,'ali-ind':d.alloc_industry_ideal,
     'f-changewhy':d.alloc_change_reason,'f-changeact':d.alloc_change_actions,'f-changesupp':d.alloc_change_support,
     'f-sta':d.action_start,'f-stp':d.action_stop,'f-cnt':d.action_continue,'f-kg':d.action_key_goal,'f-sup':d.action_support
   };
   Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;});
   if(d.teaching_effectiveness){document.getElementById('f-te').value=d.teaching_effectiveness+' / 5.0';}
-  if(d.mdp_revenue){document.getElementById('f-mdpr').value='₹'+Number(d.mdp_revenue).toLocaleString('en-IN');}
+  if(d.mdp_revenue){document.getElementById('f-mdpr').value='Rs '+Number(d.mdp_revenue).toLocaleString('en-IN');}
   ['t','r','i','s'].forEach(k=>{
     const dbKey='ikigai_strength_'+(k==='t'?'teaching':k==='r'?'research':k==='i'?'industry':'institution');
     if(d[dbKey]){R[k]=d[dbKey];document.getElementById('sl-'+k).value=d[dbKey];document.getElementById('sv-'+k).textContent=d[dbKey];}
@@ -1799,7 +1944,14 @@ function restore(d){
   if(Array.isArray(d.courses_current)){d.courses_current.forEach(n=>courseState.current.selected.add(n));}
   if(Array.isArray(d.courses_aspire)){d.courses_aspire.forEach(n=>courseState.aspire.selected.add(n));}
   if(Array.isArray(d.institution_entries)){INST_ENTRIES=d.institution_entries;}
+
+  /* Restore feedback entries */
+  if(Array.isArray(d.teaching_feedback_entries)&&d.teaching_feedback_entries.length>0){
+    FEEDBACK_ENTRIES=d.teaching_feedback_entries;
+  }
+
   renderInstEntries();
+  renderFeedbackEntries();
   renderCourseChips('current');renderCourseChips('aspire');
   renderCourseList('current');renderCourseList('aspire');
   updateAlloc();
@@ -1834,9 +1986,7 @@ async function init(){
     ?fac.courses_taught.split(' · ').map(c=>`<div class="cpill">${c}</div>`).join('')
     :'<span style="font-size:12px;color:var(--faint);font-style:italic">No Digii data yet</span>';
   const rows=[
-    ['Name',fac.name],
-    ['Designation',fac.designation],
-    ['Campus',fac.campus],
+    ['Name',fac.name],['Designation',fac.designation],['Campus',fac.campus],
     ['Joined',fac.joined||'Not recorded'],
     ['PhD',fac.phd==='yes'?`PhD ${fac.phd_year||''}`:fac.phd==='pursuing'?'Pursuing':'Not recorded'],
     ['Subject',fac.subject_area||'Not recorded']
@@ -1856,6 +2006,15 @@ async function init(){
     .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26').maybeSingle();
   if(ev){eid=ev.id;erec=ev;restore(ev);}
   else erec={gate1_locked:false,gate2_locked:false,workflow_status:'draft'};
+
+  /* Seed Madhu's demo data if this is Madhu and no feedback entries loaded */
+  if(fac.name&&fac.name.toLowerCase().includes('madhu')&&FEEDBACK_ENTRIES.length===0){
+    FEEDBACK_ENTRIES=[MADHU_SEED];
+    renderFeedbackEntries();
+  }
+
+  /* Ensure feedback renders even if no seed */
+  if(FEEDBACK_ENTRIES.length===0)renderFeedbackEntries();
 
   renderInstEntries();
   checkDevelopMin();
