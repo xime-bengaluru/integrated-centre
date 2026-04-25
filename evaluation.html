@@ -321,6 +321,142 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
 
 /* ===================================================
+   PUBLICATIONS REDESIGN
+   =================================================== */
+
+/* Portfolio summary strip */
+.pub-summary{background:#fff;border:1px solid var(--border-g);border-radius:var(--r);padding:16px 22px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.pub-summary-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.pub-stat{display:flex;flex-direction:column;align-items:flex-start;min-width:55px}
+.pub-stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--navy);line-height:1}
+.pub-stat-num.pub-stat-premier{color:var(--gold-d)}
+.pub-stat-label{font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-top:4px}
+.pub-stat-sep{width:1px;height:36px;background:var(--line-strong);flex-shrink:0}
+
+/* Toolbar */
+.pub-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.pub-filters{display:flex;gap:6px;flex-wrap:wrap}
+.pub-filter{padding:6px 14px;font-size:11.5px;font-weight:500;background:#fff;border:1px solid var(--line);color:var(--mute);cursor:pointer;border-radius:20px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.pub-filter:hover{border-color:var(--gold-d);color:var(--gold-d)}
+.pub-filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.pub-add-btn{padding:8px 18px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s}
+.pub-add-btn:hover{background:var(--gold);color:var(--navy-dark)}
+
+/* Table */
+.pub-table-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.pub-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.pub-table thead{background:var(--cream)}
+.pub-table th{padding:10px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--mute);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line);white-space:nowrap}
+.pub-th-title{width:auto;min-width:280px}
+.pub-th-narrow{width:80px}
+.pub-th-actions{width:50px}
+.pub-table td{padding:11px 12px;vertical-align:top;border-bottom:.5px solid var(--line)}
+.pub-table tbody tr{transition:background .12s}
+.pub-table tbody tr:hover{background:var(--parchment)}
+.pub-table tbody tr:last-child td{border-bottom:none}
+.pub-row-title{font-weight:500;color:var(--ink);line-height:1.4;margin-bottom:3px;font-size:13px}
+.pub-row-source{font-size:11px;color:var(--mute);font-style:italic;line-height:1.4}
+.pub-row-source-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-top:3px;letter-spacing:.02em}
+.pub-row-doi{color:var(--gold-d);text-decoration:none;font-family:'DM Mono',monospace;font-size:10px}
+.pub-row-doi:hover{text-decoration:underline}
+.pub-row-year{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--charcoal);font-weight:500}
+.pub-tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-family:'DM Sans',sans-serif}
+.pub-tag-journal{background:rgba(29,158,117,.1);color:var(--teal-d);border:.5px solid rgba(29,158,117,.25)}
+.pub-tag-book_chapter{background:rgba(76,29,149,.08);color:#4C1D95;border:.5px solid rgba(76,29,149,.2)}
+.pub-tag-book{background:rgba(124,45,18,.08);color:#7C2D12;border:.5px solid rgba(124,45,18,.2)}
+.pub-tag-case{background:rgba(201,168,76,.12);color:var(--gold-d);border:.5px solid rgba(201,168,76,.3)}
+.pub-tag-conference{background:rgba(26,42,74,.06);color:var(--navy);border:.5px solid rgba(26,42,74,.18)}
+.pub-tag-abdc{font-family:'DM Mono',monospace;font-weight:600;font-size:11px;padding:3px 8px;border-radius:5px}
+.pub-tag-abdc-astar{background:var(--gold);color:var(--navy-dark)}
+.pub-tag-abdc-a{background:var(--gold-l);color:var(--gold-d)}
+.pub-tag-abdc-b{background:rgba(201,168,76,.12);color:var(--gold-d)}
+.pub-tag-abdc-c{background:rgba(0,0,0,.05);color:var(--mute)}
+.pub-tag-quartile{font-family:'DM Mono',monospace;font-weight:600;font-size:11px;padding:3px 8px;border-radius:5px}
+.pub-tag-quartile-q1{background:var(--teal-d);color:#fff}
+.pub-tag-quartile-q2{background:var(--teal);color:#fff}
+.pub-tag-quartile-q3{background:rgba(29,158,117,.2);color:var(--teal-d)}
+.pub-tag-quartile-q4{background:rgba(0,0,0,.05);color:var(--mute)}
+.pub-tag-indexed{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--cream);color:var(--charcoal);font-weight:500;letter-spacing:.03em;font-family:'DM Mono',monospace}
+.pub-author-pos{font-size:11px;color:var(--charcoal);font-weight:500}
+.pub-author-pos-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-left:2px}
+.pub-row-actions{display:flex;gap:4px}
+.pub-row-action{background:transparent;border:none;color:var(--faint);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;line-height:1;transition:all .12s}
+.pub-row-action:hover{background:var(--cream);color:var(--navy)}
+.pub-row-action.delete:hover{background:rgba(200,16,46,.08);color:#A32D2D}
+.pub-empty-row{padding:30px 20px;text-align:center;color:var(--faint);font-style:italic;font-size:12.5px}
+
+/* Form modal */
+.pub-form-wrap{display:none;background:rgba(0,0,0,.4);position:fixed;top:0;left:0;right:0;bottom:0;z-index:300;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;backdrop-filter:blur(3px)}
+.pub-form-wrap.open{display:flex}
+.pub-form-inner{background:var(--paper);border-radius:var(--r);width:100%;max-width:680px;max-height:calc(100vh - 80px);overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid var(--border-g)}
+.pub-form-head{padding:22px 28px;background:var(--navy-dark);color:#fff;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-radius:var(--r) var(--r) 0 0;position:relative}
+.pub-form-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold) 0%,transparent 60%)}
+.pub-form-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#fff;line-height:1.2}
+.pub-form-sub{font-size:11.5px;color:rgba(255,255,255,.5);margin-top:4px}
+.pub-close{background:transparent;border:none;color:rgba(255,255,255,.5);font-size:24px;cursor:pointer;line-height:1;padding:0 6px;transition:color .15s}
+.pub-close:hover{color:#fff}
+
+/* Type tabs */
+.pub-type-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:14px;background:var(--cream);border-bottom:1px solid var(--line)}
+.pub-type-tab{background:#fff;border:1px solid var(--line);padding:10px 6px;cursor:pointer;border-radius:var(--rs);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s}
+.pub-type-tab:hover{border-color:var(--gold-d);background:var(--paper)}
+.pub-type-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.pub-type-icon{font-size:16px;line-height:1}
+.pub-type-name{font-size:10.5px;font-weight:500;letter-spacing:.02em}
+
+/* Form sections */
+.pub-form-section{padding:18px 28px;border-bottom:1px solid var(--line)}
+.pub-form-section:last-of-type{border-bottom:none}
+.pub-section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:14px;padding-bottom:6px;border-bottom:.5px solid var(--line)}
+.pub-field{margin-bottom:14px}
+.pub-field:last-child{margin-bottom:0}
+.pub-label{font-size:11px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pub-label-hint{font-size:10px;color:var(--faint);font-style:italic;text-transform:none;letter-spacing:0;font-weight:400}
+.pub-input{width:100%;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .15s;resize:vertical}
+.pub-input:focus{border-color:var(--gold)}
+.pub-input[type="number"]{font-family:'DM Mono',monospace}
+select.pub-input{cursor:pointer}
+.pub-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pub-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* Radio group */
+.pub-radio-group{display:flex;gap:14px}
+.pub-radio{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--charcoal);padding:8px 14px;border:1px solid var(--line);border-radius:var(--rs);background:#fff;transition:all .15s;flex:1;justify-content:center}
+.pub-radio:hover{border-color:var(--gold-d)}
+.pub-radio input[type="radio"]{margin:0;cursor:pointer;accent-color:var(--gold)}
+.pub-radio:has(input:checked){background:var(--cream);border-color:var(--gold);color:var(--gold-d);font-weight:500}
+
+/* Form actions */
+.pub-form-actions{padding:18px 28px;display:flex;justify-content:flex-end;gap:10px;background:var(--cream);border-radius:0 0 var(--r) var(--r);border-top:1px solid var(--line)}
+.pub-btn-cancel{background:transparent;border:1px solid var(--line);color:var(--mute);padding:9px 20px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;cursor:pointer}
+.pub-btn-cancel:hover{border-color:var(--navy);color:var(--navy)}
+.pub-btn-save{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s}
+.pub-btn-save:hover{background:var(--gold);color:var(--navy-dark)}
+
+/* Research infrastructure block */
+.research-infra-block{background:linear-gradient(135deg,var(--cream) 0%,#fff 100%);border:1px solid var(--border-g);border-left:3px solid var(--gold);border-radius:var(--rs);padding:18px 22px;margin-top:8px}
+.research-infra-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:.5px solid var(--line)}
+.research-infra-icon{font-size:16px;color:var(--gold-d);flex-shrink:0;margin-top:1px}
+.research-infra-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--navy);line-height:1.2}
+.research-infra-sub{font-size:11.5px;color:var(--mute);margin-top:2px;line-height:1.5}
+.research-source-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.research-source-chk{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);cursor:pointer;font-size:12.5px;color:var(--charcoal);transition:all .12s}
+.research-source-chk:hover{border-color:var(--gold-d);background:var(--parchment)}
+.research-source-chk input[type="checkbox"]{margin:0;cursor:pointer;accent-color:var(--gold)}
+.research-source-chk:has(input:checked){background:var(--cream);border-color:var(--gold);color:var(--gold-d);font-weight:500}
+
+@media(max-width:900px){
+  .pub-summary-row{gap:14px}
+  .pub-stat{min-width:48px}
+  .pub-type-tabs{grid-template-columns:repeat(3,1fr)}
+  .pub-grid3{grid-template-columns:1fr}
+  .pub-grid2{grid-template-columns:1fr}
+  .research-source-grid{grid-template-columns:1fr}
+  .pub-table-wrap{overflow-x:auto}
+  .pub-table{min-width:780px}
+}
+
+/* ===================================================
    TAB 3: TEACHING EFFECTIVENESS FEEDBACK
    =================================================== */
 
@@ -633,54 +769,299 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
       <div class="sn">03</div>
       <div>
         <div class="si-t">Research &amp; Publications <span class="locked-badge">Locked</span></div>
-        <div class="si-s">Validated by Dean Research · Quality-tiered by global B-school standards</div>
+        <div class="si-s">Validated by Dean Research · Add each publication individually for portfolio analytics</div>
       </div>
     </div>
     <div class="srl"></div>
+
     <div style="margin-top:18px">
-      <div class="f">
-        <div class="fl fl-with-hint">
-          <span>ABDC Ranked Publications <span class="ab">Business standard</span></span>
-          <span class="fl-hint">Australian Business Deans Council list</span>
-        </div>
-        <div class="tier-row">
-          <div class="tier-cell tier-premier"><input class="tier-input" id="f-abdc-a-star" type="number" min="0" placeholder="0"><div class="tier-label">A*</div><div class="tier-hint">Premier outlets</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-abdc-a" type="number" min="0" placeholder="0"><div class="tier-label">A</div><div class="tier-hint">Excellent</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-abdc-b" type="number" min="0" placeholder="0"><div class="tier-label">B</div><div class="tier-hint">Well-regarded</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-abdc-c" type="number" min="0" placeholder="0"><div class="tier-label">C</div><div class="tier-hint">Recognised</div></div>
-        </div>
-      </div>
-      <div class="f">
-        <div class="fl fl-with-hint">
-          <span>Scopus <span class="ab">by SJR Quartile</span></span>
-          <span class="fl-hint">Scimago Journal Rank in subject category</span>
-        </div>
-        <div class="tier-row">
-          <div class="tier-cell tier-premier"><input class="tier-input" id="f-scopus-q1" type="number" min="0" placeholder="0"><div class="tier-label">Q1</div><div class="tier-hint">Top 25%</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-scopus-q2" type="number" min="0" placeholder="0"><div class="tier-label">Q2</div><div class="tier-hint">25 to 50%</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-scopus-q3" type="number" min="0" placeholder="0"><div class="tier-label">Q3</div><div class="tier-hint">50 to 75%</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-scopus-q4" type="number" min="0" placeholder="0"><div class="tier-label">Q4</div><div class="tier-hint">Bottom 25%</div></div>
+
+      <!-- Publications portfolio summary -->
+      <div class="pub-summary">
+        <div class="pub-summary-row">
+          <div class="pub-stat"><div class="pub-stat-num" id="ps-total">0</div><div class="pub-stat-label">Total</div></div>
+          <div class="pub-stat-sep"></div>
+          <div class="pub-stat"><div class="pub-stat-num" id="ps-journal">0</div><div class="pub-stat-label">Journal</div></div>
+          <div class="pub-stat"><div class="pub-stat-num" id="ps-chapter">0</div><div class="pub-stat-label">Chapter</div></div>
+          <div class="pub-stat"><div class="pub-stat-num" id="ps-book">0</div><div class="pub-stat-label">Book</div></div>
+          <div class="pub-stat"><div class="pub-stat-num" id="ps-case">0</div><div class="pub-stat-label">Case</div></div>
+          <div class="pub-stat"><div class="pub-stat-num" id="ps-conf">0</div><div class="pub-stat-label">Conference</div></div>
+          <div class="pub-stat-sep"></div>
+          <div class="pub-stat pub-stat-tier"><div class="pub-stat-num pub-stat-premier" id="ps-astar">0</div><div class="pub-stat-label">A* / Q1</div></div>
         </div>
       </div>
-      <div class="f">
-        <div class="fl fl-with-hint">
-          <span>Web of Science <span class="ab">by JIF Quartile</span></span>
-          <span class="fl-hint">SSCI · SCIE · by Journal Impact Factor</span>
+
+      <!-- Filter and search bar -->
+      <div class="pub-toolbar">
+        <div class="pub-filters">
+          <button class="pub-filter active" data-pub-filter="all" onclick="filterPubs('all',this)">All</button>
+          <button class="pub-filter" data-pub-filter="journal" onclick="filterPubs('journal',this)">Journals</button>
+          <button class="pub-filter" data-pub-filter="book_chapter" onclick="filterPubs('book_chapter',this)">Chapters</button>
+          <button class="pub-filter" data-pub-filter="book" onclick="filterPubs('book',this)">Books</button>
+          <button class="pub-filter" data-pub-filter="case" onclick="filterPubs('case',this)">Cases</button>
+          <button class="pub-filter" data-pub-filter="conference" onclick="filterPubs('conference',this)">Conferences</button>
         </div>
-        <div class="tier-row">
-          <div class="tier-cell tier-premier"><input class="tier-input" id="f-wos-q1" type="number" min="0" placeholder="0"><div class="tier-label">Q1</div><div class="tier-hint">Top 25%</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-wos-q2" type="number" min="0" placeholder="0"><div class="tier-label">Q2</div><div class="tier-hint">25 to 50%</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-wos-q3" type="number" min="0" placeholder="0"><div class="tier-label">Q3</div><div class="tier-hint">50 to 75%</div></div>
-          <div class="tier-cell"><input class="tier-input" id="f-wos-q4" type="number" min="0" placeholder="0"><div class="tier-label">Q4</div><div class="tier-hint">Bottom 25%</div></div>
+        <button class="pub-add-btn" onclick="openPubForm()" id="pub-add-btn">+ Add Publication</button>
+      </div>
+
+      <!-- Publications consolidated table -->
+      <div class="pub-table-wrap">
+        <table class="pub-table">
+          <thead>
+            <tr>
+              <th class="pub-th-title">Title &amp; Source</th>
+              <th class="pub-th-narrow">Year</th>
+              <th class="pub-th-narrow">Type</th>
+              <th class="pub-th-narrow">ABDC</th>
+              <th class="pub-th-narrow">Quartile</th>
+              <th class="pub-th-narrow">Indexed</th>
+              <th class="pub-th-narrow">Author</th>
+              <th class="pub-th-actions"></th>
+            </tr>
+          </thead>
+          <tbody id="pub-table-body">
+            <tr><td colspan="8" class="pub-empty-row">Loading publications...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add/Edit Publication Form (modal-style inline) -->
+      <div class="pub-form-wrap" id="pub-form-wrap">
+        <div class="pub-form-inner">
+          <div class="pub-form-head">
+            <div>
+              <div class="pub-form-title" id="pub-form-title">Add Publication</div>
+              <div class="pub-form-sub">Each publication is recorded individually for cross-faculty analytics</div>
+            </div>
+            <button class="pub-close" onclick="closePubForm()">&times;</button>
+          </div>
+
+          <!-- Publication type selector -->
+          <div class="pub-type-tabs">
+            <button class="pub-type-tab active" data-pubtype="journal" onclick="selectPubType('journal',this)">
+              <div class="pub-type-icon">&#9776;</div>
+              <div class="pub-type-name">Journal</div>
+            </button>
+            <button class="pub-type-tab" data-pubtype="book_chapter" onclick="selectPubType('book_chapter',this)">
+              <div class="pub-type-icon">&#9783;</div>
+              <div class="pub-type-name">Book Chapter</div>
+            </button>
+            <button class="pub-type-tab" data-pubtype="book" onclick="selectPubType('book',this)">
+              <div class="pub-type-icon">&#128218;</div>
+              <div class="pub-type-name">Book</div>
+            </button>
+            <button class="pub-type-tab" data-pubtype="case" onclick="selectPubType('case',this)">
+              <div class="pub-type-icon">&#9999;</div>
+              <div class="pub-type-name">Case</div>
+            </button>
+            <button class="pub-type-tab" data-pubtype="conference" onclick="selectPubType('conference',this)">
+              <div class="pub-type-icon">&#128172;</div>
+              <div class="pub-type-name">Conference</div>
+            </button>
+          </div>
+
+          <!-- Common fields -->
+          <div class="pub-form-section">
+            <div class="pub-section-label">Publication Details</div>
+            <div class="pub-field"><div class="pub-label">Title</div><textarea class="pub-input" id="pub-title" rows="2" placeholder="Full title of the publication..."></textarea></div>
+            <div class="pub-grid2">
+              <div class="pub-field"><div class="pub-label">Year</div><input class="pub-input" id="pub-year" type="number" min="2000" max="2030" placeholder="e.g. 2025"></div>
+              <div class="pub-field"><div class="pub-label">Month</div>
+                <select class="pub-input" id="pub-month">
+                  <option value="">Select month...</option>
+                  <option>January</option><option>February</option><option>March</option>
+                  <option>April</option><option>May</option><option>June</option>
+                  <option>July</option><option>August</option><option>September</option>
+                  <option>October</option><option>November</option><option>December</option>
+                </select>
+              </div>
+            </div>
+            <div class="pub-field"><div class="pub-label">Co-authors <span class="pub-label-hint">comma-separated, or "Solo" if sole author</span></div><input class="pub-input" id="pub-coauthors" placeholder="e.g. A. Sharma, R. Kumar"></div>
+          </div>
+
+          <!-- Author position (journal, chapter, book, case) -->
+          <div class="pub-form-section" id="pub-section-position">
+            <div class="pub-section-label">Authorship Position</div>
+            <div class="pub-grid2">
+              <div class="pub-field">
+                <div class="pub-label">Position</div>
+                <select class="pub-input" id="pub-position">
+                  <option value="">Select position...</option>
+                  <option value="sole_author">Sole Author</option>
+                  <option value="first_author">First Author</option>
+                  <option value="co_author">Co-author</option>
+                </select>
+              </div>
+              <div class="pub-field" id="pub-section-position-num" style="display:none">
+                <div class="pub-label">Position Number <span class="pub-label-hint">2 for second author, 3 for third</span></div>
+                <input class="pub-input" id="pub-position-num" type="number" min="2" max="20" placeholder="e.g. 2">
+              </div>
+            </div>
+          </div>
+
+          <!-- Journal-specific -->
+          <div class="pub-form-section" id="pub-section-journal" style="display:none">
+            <div class="pub-section-label">Journal Information</div>
+            <div class="pub-field"><div class="pub-label">Journal Name</div><input class="pub-input" id="pub-journal-name" placeholder="e.g. International Journal of Project Management"></div>
+            <div class="pub-field"><div class="pub-label">DOI Link</div><input class="pub-input" id="pub-doi" placeholder="e.g. 10.1016/j.ijproman.2025.04.012"></div>
+            <div class="pub-grid3">
+              <div class="pub-field">
+                <div class="pub-label">ABDC Category</div>
+                <select class="pub-input" id="pub-abdc">
+                  <option value="">Not ABDC listed</option>
+                  <option value="A*">A* (Premier)</option>
+                  <option value="A">A (Excellent)</option>
+                  <option value="B">B (Well-regarded)</option>
+                  <option value="C">C (Recognised)</option>
+                </select>
+              </div>
+              <div class="pub-field">
+                <div class="pub-label">Indexed In</div>
+                <select class="pub-input" id="pub-indexed">
+                  <option value="">Not indexed</option>
+                  <option value="Scopus_WoS_ABDC">Scopus + WoS + ABDC</option>
+                  <option value="Scopus_WoS">Scopus + WoS</option>
+                  <option value="Scopus_ABDC">Scopus + ABDC</option>
+                  <option value="WoS_ABDC">WoS + ABDC</option>
+                  <option value="Scopus">Scopus only</option>
+                  <option value="WoS">Web of Science only</option>
+                  <option value="ABDC">ABDC only</option>
+                  <option value="None">Other / None</option>
+                </select>
+              </div>
+              <div class="pub-field">
+                <div class="pub-label">SJR Quartile</div>
+                <select class="pub-input" id="pub-quartile">
+                  <option value="">Not quartile-rated</option>
+                  <option value="Q1">Q1 (Top 25%)</option>
+                  <option value="Q2">Q2 (25-50%)</option>
+                  <option value="Q3">Q3 (50-75%)</option>
+                  <option value="Q4">Q4 (Bottom 25%)</option>
+                </select>
+              </div>
+            </div>
+            <div class="pub-field">
+              <div class="pub-label">Research Category</div>
+              <select class="pub-input" id="pub-research-category">
+                <option value="">Select category...</option>
+                <option value="Faculty">Faculty (sole or with another faculty)</option>
+                <option value="Collaborative">Collaborative (with external academics)</option>
+                <option value="Faculty_and_Students">Faculty and Students</option>
+                <option value="Faculty_and_Research_Scholar">Faculty and Research Scholar</option>
+                <option value="International_Collaborative">International Collaborative</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Book chapter specific -->
+          <div class="pub-form-section" id="pub-section-chapter" style="display:none">
+            <div class="pub-section-label">Book &amp; Publisher</div>
+            <div class="pub-field"><div class="pub-label">Publisher</div>
+              <select class="pub-input" id="pub-chapter-publisher" onchange="checkScopusPublisher()">
+                <option value="">Select publisher...</option>
+                <option value="IGI Global">IGI Global (Scopus-indexed)</option>
+                <option value="Wiley">Wiley (Scopus-indexed)</option>
+                <option value="Springer">Springer (Scopus-indexed)</option>
+                <option value="Taylor and Francis">Taylor and Francis (Scopus-indexed)</option>
+                <option value="Other">Other publisher</option>
+              </select>
+            </div>
+            <div class="pub-field" id="pub-chapter-other-wrap" style="display:none">
+              <div class="pub-label">Specify publisher name</div>
+              <input class="pub-input" id="pub-chapter-other" placeholder="Publisher name">
+            </div>
+          </div>
+
+          <!-- Book specific -->
+          <div class="pub-form-section" id="pub-section-book" style="display:none">
+            <div class="pub-section-label">Book Details</div>
+            <div class="pub-grid2">
+              <div class="pub-field"><div class="pub-label">Publisher</div><input class="pub-input" id="pub-book-publisher" placeholder="e.g. Springer, Sage, Pearson"></div>
+              <div class="pub-field"><div class="pub-label">ISBN</div><input class="pub-input" id="pub-isbn" placeholder="e.g. 978-3-16-148410-0"></div>
+            </div>
+          </div>
+
+          <!-- Case specific -->
+          <div class="pub-form-section" id="pub-section-case" style="display:none">
+            <div class="pub-section-label">Case Publisher</div>
+            <div class="pub-field">
+              <div class="pub-label">Publisher</div>
+              <select class="pub-input" id="pub-case-publisher">
+                <option value="">Select publisher...</option>
+                <option value="Emerald">Emerald</option>
+                <option value="Harvard">Harvard Business Publishing</option>
+                <option value="IVEY">IVEY</option>
+                <option value="SAGE">SAGE</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Conference specific -->
+          <div class="pub-form-section" id="pub-section-conference" style="display:none">
+            <div class="pub-section-label">Conference Details</div>
+            <div class="pub-field"><div class="pub-label">Conference Name</div><input class="pub-input" id="pub-conf-name" placeholder="e.g. PMI India Research and Academic Conference 2026"></div>
+            <div class="pub-field">
+              <div class="pub-label">Conference Type</div>
+              <div class="pub-radio-group">
+                <label class="pub-radio"><input type="radio" name="pub-conf-type" value="National"><span>National</span></label>
+                <label class="pub-radio"><input type="radio" name="pub-conf-type" value="International" checked><span>International</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="pub-form-actions">
+            <button class="pub-btn-cancel" onclick="closePubForm()">Cancel</button>
+            <button class="pub-btn-save" onclick="savePublication()" id="pub-save-btn">Save Publication</button>
+          </div>
         </div>
       </div>
+
+      <div class="fdiv"></div>
+
+      <!-- Supporting research metrics -->
       <div class="thc">
-        <div class="f"><div class="fl">UGC-CARE Listed <span class="ab">India</span></div><input class="fi" id="f-ugc-care" type="number" min="0" placeholder="0"></div>
         <div class="f"><div class="fl">h-Index</div><input class="fi" id="f-hi" type="number" min="0" placeholder="0"></div>
-        <div class="f"><div class="fl">Conference Papers</div><input class="fi" id="f-conf" type="number" min="0" placeholder="0"></div>
+        <div class="f"><div class="fl">Google Scholar Citations</div><input class="fi" id="f-gscholar-cites" type="number" min="0" placeholder="0"></div>
+        <div class="f"><div class="fl">UGC-CARE Listed <span class="ab">India</span></div><input class="fi" id="f-ugc-care" type="number" min="0" placeholder="0"></div>
       </div>
-      <div class="f"><div class="fl">Publications Detail</div><textarea class="fi" id="f-pub" rows="4" placeholder="Title · Journal · Indexing (ABDC tier or Quartile) · Year. Most recent first."></textarea></div>
-      <div class="f"><div class="fl">Work in Progress</div><textarea class="fi" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects..."></textarea></div>
+
+      <div class="f"><div class="fl">Work in Progress</div><textarea class="fi" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects, working titles..."></textarea></div>
+
+      <div class="fdiv"></div>
+
+      <!-- Research infrastructure questions (per President walkthrough) -->
+      <div class="research-infra-block">
+        <div class="research-infra-head">
+          <div class="research-infra-icon">&#9432;</div>
+          <div>
+            <div class="research-infra-title">Research Infrastructure</div>
+            <div class="research-infra-sub">Helps Dean Research understand library subscription value and identify gaps</div>
+          </div>
+        </div>
+
+        <div class="f">
+          <div class="fl">XIME data sources used for your publications this year</div>
+          <div class="fh" style="margin-bottom:10px">Tick all that apply</div>
+          <div class="research-source-grid">
+            <label class="research-source-chk"><input type="checkbox" id="ds-statista"><span>STATISTA</span></label>
+            <label class="research-source-chk"><input type="checkbox" id="ds-tracxn"><span>TRACXN</span></label>
+            <label class="research-source-chk"><input type="checkbox" id="ds-thomson"><span>Thomson Reuters</span></label>
+            <label class="research-source-chk"><input type="checkbox" id="ds-ebsco"><span>EBSCO</span></label>
+            <label class="research-source-chk"><input type="checkbox" id="ds-delnet"><span>DELNET</span></label>
+            <label class="research-source-chk"><input type="checkbox" id="ds-hbp"><span>Harvard Business Publishing</span></label>
+            <label class="research-source-chk"><input type="checkbox" id="ds-sage"><span>SAGE</span></label>
+            <label class="research-source-chk"><input type="checkbox" id="ds-none"><span>None of these</span></label>
+          </div>
+        </div>
+
+        <div class="f" style="margin-top:14px">
+          <div class="fl">External research resources you rely on that XIME does not currently provide</div>
+          <div class="fh" style="margin-bottom:6px">Databases, archives, or tools you pay for personally or access via other institutions</div>
+          <textarea class="fi" id="f-external-resources" rows="3" placeholder="e.g. JSTOR, Bloomberg Terminal, CMIE Prowess, specific journal subscriptions..."></textarea>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1075,12 +1456,6 @@ let DIRECTOR=null;
 let fac=null,eid=null,erec=null;
 const R={t:3,r:3,i:3,s:3};
 
-const RESEARCH_TIER_IDS=[
-  'f-abdc-a-star','f-abdc-a','f-abdc-b','f-abdc-c',
-  'f-scopus-q1','f-scopus-q2','f-scopus-q3','f-scopus-q4',
-  'f-wos-q1','f-wos-q2','f-wos-q3','f-wos-q4'
-];
-
 let COURSE_CATALOG=[];
 const courseState={
   current:{selected:new Set(),filter:'all',search:''},
@@ -1089,6 +1464,330 @@ const courseState={
 
 let INST_ENTRIES=[];
 let FEEDBACK_ENTRIES=[];
+let PUBLICATIONS=[];
+let PUB_FILTER='all';
+let PUB_EDIT_ID=null;
+let PUB_CURRENT_TYPE='journal';
+
+/* ======================================================
+   PUBLICATIONS CRUD
+   ====================================================== */
+
+const PUB_TYPE_LABELS={
+  journal:'Journal',
+  book_chapter:'Book Chapter',
+  book:'Book',
+  case:'Case',
+  conference:'Conference'
+};
+
+const PUB_AUTHOR_LABELS={
+  sole_author:'Sole',
+  first_author:'First',
+  co_author:'Co'
+};
+
+async function loadPublications(){
+  if(!fac)return;
+  const{data,error}=await sb.from('faculty_publications')
+    .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26')
+    .order('year',{ascending:false}).order('month',{ascending:false});
+  if(error){console.error('Pub load:',error);PUBLICATIONS=[];return;}
+  PUBLICATIONS=data||[];
+}
+
+function pubStats(){
+  const stats={total:0,journal:0,book_chapter:0,book:0,case:0,conference:0,astar_q1:0};
+  PUBLICATIONS.forEach(p=>{
+    stats.total++;
+    stats[p.publication_type]=(stats[p.publication_type]||0)+1;
+    if(p.abdc_category==='A*'||p.sjr_quartile==='Q1')stats.astar_q1++;
+  });
+  return stats;
+}
+
+function renderPubSummary(){
+  const s=pubStats();
+  document.getElementById('ps-total').textContent=s.total;
+  document.getElementById('ps-journal').textContent=s.journal;
+  document.getElementById('ps-chapter').textContent=s.book_chapter;
+  document.getElementById('ps-book').textContent=s.book;
+  document.getElementById('ps-case').textContent=s.case;
+  document.getElementById('ps-conf').textContent=s.conference;
+  document.getElementById('ps-astar').textContent=s.astar_q1;
+}
+
+function renderPubTable(){
+  const tbody=document.getElementById('pub-table-body');
+  if(!tbody)return;
+  const filtered=PUB_FILTER==='all'?PUBLICATIONS:PUBLICATIONS.filter(p=>p.publication_type===PUB_FILTER);
+  if(filtered.length===0){
+    tbody.innerHTML='<tr><td colspan="8" class="pub-empty-row">No publications recorded yet. Click + Add Publication to get started.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=filtered.map(p=>renderPubRow(p)).join('');
+}
+
+function renderPubRow(p){
+  const sourceLine=getPubSourceLine(p);
+  const sourceMeta=getPubSourceMeta(p);
+  const abdcCell=p.abdc_category?`<span class="pub-tag-abdc pub-tag-abdc-${(p.abdc_category||'').toLowerCase().replace('*','star')}">${p.abdc_category}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
+  const quartileCell=p.sjr_quartile?`<span class="pub-tag-quartile pub-tag-quartile-${p.sjr_quartile.toLowerCase()}">${p.sjr_quartile}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
+  const indexedCell=p.indexed_in&&p.indexed_in!=='None'?`<span class="pub-tag-indexed">${p.indexed_in.replace(/_/g,' + ')}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
+  const positionCell=p.author_position?`<span class="pub-author-pos">${PUB_AUTHOR_LABELS[p.author_position]||p.author_position}${p.author_position==='co_author'&&p.author_position_number?`<span class="pub-author-pos-num">#${p.author_position_number}</span>`:''}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
+  const yearCell=p.year?`<span class="pub-row-year">${p.month?p.month.substr(0,3)+' ':''}${p.year}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
+  return`<tr>
+    <td>
+      <div class="pub-row-title">${escapeHtml(p.title||'')}</div>
+      ${sourceLine?`<div class="pub-row-source">${escapeHtml(sourceLine)}</div>`:''}
+      ${sourceMeta?`<div class="pub-row-source-meta">${sourceMeta}</div>`:''}
+    </td>
+    <td>${yearCell}</td>
+    <td><span class="pub-tag pub-tag-${p.publication_type}">${PUB_TYPE_LABELS[p.publication_type]}</span></td>
+    <td>${abdcCell}</td>
+    <td>${quartileCell}</td>
+    <td>${indexedCell}</td>
+    <td>${positionCell}</td>
+    <td>
+      <div class="pub-row-actions">
+        ${IS_PREVIEW||g1Locked()?'':`<button class="pub-row-action" onclick="editPublication('${p.id}')" title="Edit">&#9998;</button>
+        <button class="pub-row-action delete" onclick="deletePublication('${p.id}')" title="Delete">&times;</button>`}
+      </div>
+    </td>
+  </tr>`;
+}
+
+function getPubSourceLine(p){
+  switch(p.publication_type){
+    case 'journal':return p.journal_name||'';
+    case 'book_chapter':return p.publisher?'In: '+p.publisher:'';
+    case 'book':return p.publisher?'Published by '+p.publisher:'';
+    case 'case':return p.case_publisher?p.case_publisher+' Publishing':'';
+    case 'conference':return p.conference_name||'';
+    default:return '';
+  }
+}
+
+function getPubSourceMeta(p){
+  const parts=[];
+  if(p.co_authors&&p.co_authors.toLowerCase()!=='solo')parts.push('with '+p.co_authors);
+  if(p.doi)parts.push(`<a href="https://doi.org/${p.doi}" target="_blank" class="pub-row-doi">doi:${p.doi}</a>`);
+  if(p.isbn)parts.push('ISBN '+p.isbn);
+  if(p.conference_type)parts.push(p.conference_type);
+  if(p.research_category)parts.push(p.research_category.replace(/_/g,' '));
+  return parts.join(' · ');
+}
+
+function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function filterPubs(type,btn){
+  PUB_FILTER=type;
+  document.querySelectorAll('.pub-filter').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPubTable();
+}
+
+function openPubForm(){
+  if(IS_PREVIEW){toast('Preview mode. Cannot add publications.',false);return;}
+  if(g1Locked()){toast('Gate 1 locked. Cannot add publications.',false);return;}
+  PUB_EDIT_ID=null;
+  document.getElementById('pub-form-title').textContent='Add Publication';
+  resetPubForm();
+  selectPubType('journal',document.querySelector('[data-pubtype="journal"]'));
+  document.getElementById('pub-form-wrap').classList.add('open');
+}
+
+function editPublication(id){
+  const p=PUBLICATIONS.find(x=>x.id===id);
+  if(!p)return;
+  PUB_EDIT_ID=id;
+  document.getElementById('pub-form-title').textContent='Edit Publication';
+  resetPubForm();
+  selectPubType(p.publication_type,document.querySelector(`[data-pubtype="${p.publication_type}"]`));
+
+  document.getElementById('pub-title').value=p.title||'';
+  document.getElementById('pub-year').value=p.year||'';
+  document.getElementById('pub-month').value=p.month||'';
+  document.getElementById('pub-coauthors').value=p.co_authors||'';
+  document.getElementById('pub-position').value=p.author_position||'';
+  document.getElementById('pub-position-num').value=p.author_position_number||'';
+  togglePositionNum();
+
+  if(p.publication_type==='journal'){
+    document.getElementById('pub-journal-name').value=p.journal_name||'';
+    document.getElementById('pub-doi').value=p.doi||'';
+    document.getElementById('pub-abdc').value=p.abdc_category||'';
+    document.getElementById('pub-indexed').value=p.indexed_in||'';
+    document.getElementById('pub-quartile').value=p.sjr_quartile||'';
+    document.getElementById('pub-research-category').value=p.research_category||'';
+  }
+  if(p.publication_type==='book_chapter'){
+    if(['IGI Global','Wiley','Springer','Taylor and Francis'].includes(p.publisher)){
+      document.getElementById('pub-chapter-publisher').value=p.publisher;
+    }else if(p.publisher){
+      document.getElementById('pub-chapter-publisher').value='Other';
+      document.getElementById('pub-chapter-other').value=p.publisher;
+      document.getElementById('pub-chapter-other-wrap').style.display='block';
+    }
+  }
+  if(p.publication_type==='book'){
+    document.getElementById('pub-book-publisher').value=p.publisher||'';
+    document.getElementById('pub-isbn').value=p.isbn||'';
+  }
+  if(p.publication_type==='case'){
+    document.getElementById('pub-case-publisher').value=p.case_publisher||'';
+  }
+  if(p.publication_type==='conference'){
+    document.getElementById('pub-conf-name').value=p.conference_name||'';
+    document.querySelectorAll('input[name="pub-conf-type"]').forEach(r=>{r.checked=(r.value===p.conference_type);});
+  }
+  document.getElementById('pub-form-wrap').classList.add('open');
+}
+
+function closePubForm(){
+  document.getElementById('pub-form-wrap').classList.remove('open');
+}
+
+function resetPubForm(){
+  ['pub-title','pub-year','pub-month','pub-coauthors','pub-position','pub-position-num',
+   'pub-journal-name','pub-doi','pub-abdc','pub-indexed','pub-quartile','pub-research-category',
+   'pub-chapter-publisher','pub-chapter-other','pub-book-publisher','pub-isbn',
+   'pub-case-publisher','pub-conf-name'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.value='';
+  });
+  document.getElementById('pub-chapter-other-wrap').style.display='none';
+  document.querySelectorAll('input[name="pub-conf-type"]').forEach((r,i)=>{r.checked=(i===1);});
+}
+
+function selectPubType(type,btn){
+  PUB_CURRENT_TYPE=type;
+  document.querySelectorAll('.pub-type-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+
+  ['journal','chapter','book','case','conference'].forEach(t=>{
+    const sec=document.getElementById('pub-section-'+t);
+    if(sec)sec.style.display='none';
+  });
+
+  const positionSec=document.getElementById('pub-section-position');
+  positionSec.style.display=(type==='conference')?'none':'block';
+
+  const map={journal:'journal',book_chapter:'chapter',book:'book',case:'case',conference:'conference'};
+  const sec=document.getElementById('pub-section-'+map[type]);
+  if(sec)sec.style.display='block';
+}
+
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='pub-position')togglePositionNum();
+});
+
+function togglePositionNum(){
+  const pos=document.getElementById('pub-position').value;
+  document.getElementById('pub-section-position-num').style.display=(pos==='co_author')?'block':'none';
+}
+
+function checkScopusPublisher(){
+  const v=document.getElementById('pub-chapter-publisher').value;
+  document.getElementById('pub-chapter-other-wrap').style.display=(v==='Other')?'block':'none';
+}
+
+async function savePublication(){
+  if(IS_PREVIEW){toast('Preview mode. Cannot save.',false);return;}
+  const title=document.getElementById('pub-title').value.trim();
+  if(!title){toast('Please enter the title',false);return;}
+  const year=parseInt(document.getElementById('pub-year').value)||null;
+  if(!year){toast('Please enter the year',false);return;}
+
+  const data={
+    faculty_master_id:fac.id,
+    academic_year:'2025-26',
+    publication_type:PUB_CURRENT_TYPE,
+    title:title,
+    year:year,
+    month:document.getElementById('pub-month').value||null,
+    co_authors:document.getElementById('pub-coauthors').value.trim()||null,
+    evaluation_id:eid||null
+  };
+
+  if(PUB_CURRENT_TYPE!=='conference'){
+    const pos=document.getElementById('pub-position').value;
+    data.author_position=pos||null;
+    if(pos==='co_author'){
+      data.author_position_number=parseInt(document.getElementById('pub-position-num').value)||null;
+    }
+  }
+
+  if(PUB_CURRENT_TYPE==='journal'){
+    data.journal_name=document.getElementById('pub-journal-name').value.trim()||null;
+    data.doi=document.getElementById('pub-doi').value.trim()||null;
+    data.abdc_category=document.getElementById('pub-abdc').value||null;
+    data.indexed_in=document.getElementById('pub-indexed').value||null;
+    data.sjr_quartile=document.getElementById('pub-quartile').value||null;
+    data.research_category=document.getElementById('pub-research-category').value||null;
+  }
+  if(PUB_CURRENT_TYPE==='book_chapter'){
+    const sel=document.getElementById('pub-chapter-publisher').value;
+    if(sel==='Other'){
+      data.publisher=document.getElementById('pub-chapter-other').value.trim()||null;
+      data.is_scopus_indexed_publisher=false;
+    }else{
+      data.publisher=sel||null;
+      data.is_scopus_indexed_publisher=['IGI Global','Wiley','Springer','Taylor and Francis'].includes(sel);
+    }
+    data.publisher_category=sel||null;
+  }
+  if(PUB_CURRENT_TYPE==='book'){
+    data.publisher=document.getElementById('pub-book-publisher').value.trim()||null;
+    data.isbn=document.getElementById('pub-isbn').value.trim()||null;
+  }
+  if(PUB_CURRENT_TYPE==='case'){
+    data.case_publisher=document.getElementById('pub-case-publisher').value||null;
+  }
+  if(PUB_CURRENT_TYPE==='conference'){
+    data.conference_name=document.getElementById('pub-conf-name').value.trim()||null;
+    const radios=document.querySelectorAll('input[name="pub-conf-type"]');
+    let confType='International';
+    radios.forEach(r=>{if(r.checked)confType=r.value;});
+    data.conference_type=confType;
+  }
+
+  try{
+    if(PUB_EDIT_ID){
+      const{error}=await sb.from('faculty_publications').update(data).eq('id',PUB_EDIT_ID);
+      if(error)throw error;
+      toast('Publication updated');
+    }else{
+      const{error}=await sb.from('faculty_publications').insert(data);
+      if(error)throw error;
+      toast('Publication added');
+    }
+    closePubForm();
+    await loadPublications();
+    renderPubSummary();
+    renderPubTable();
+    upProg();
+  }catch(e){
+    console.error(e);
+    toast('Save failed: '+(e.message||'unknown error'),false);
+  }
+}
+
+async function deletePublication(id){
+  if(!confirm('Remove this publication?'))return;
+  try{
+    const{error}=await sb.from('faculty_publications').delete().eq('id',id);
+    if(error)throw error;
+    await loadPublications();
+    renderPubSummary();
+    renderPubTable();
+    upProg();
+    toast('Publication removed');
+  }catch(e){
+    console.error(e);
+    toast('Delete failed',false);
+  }
+}
 
 /* ======================================================
    FEEDBACK QUESTIONS
@@ -1583,8 +2282,8 @@ function updateAlloc(){
 /* ---------- Progress ---------- */
 function upProg(){
   const fids=['f-tnotes','f-terms',
-    ...RESEARCH_TIER_IDS,
-    'f-ugc-care','f-hi','f-conf','f-pub','f-mdpc','f-mdpd','f-ind',
+    'f-ugc-care','f-hi','f-gscholar-cites','f-mdpc','f-mdpd','f-ind',
+    'f-external-resources',
     'f-pt','f-pr','f-pi','f-ps','f-pimp','f-impact','f-iki',
     'al-t','al-r','al-s','ali-t','ali-r','ali-s',
     'f-gaps','f-newcourses','f-stopcourses','f-caps','f-delivered','f-newprogs','f-respotential',
@@ -1594,10 +2293,16 @@ function upProg(){
   if(R.t!==3||R.r!==3||R.i!==3||R.s!==3)filled+=2;
   if(INST_ENTRIES.length>0)filled++;
   if(FEEDBACK_ENTRIES.length>0)filled+=2;
+  if(PUBLICATIONS.length>0)filled+=2;
   if(courseState.current.selected.size>0)filled++;
   if(getListValues('strengths-list').length>0)filled++;
   if(getListValues('develop-list').length>=3)filled++;
-  const totalFields=fids.length+8;
+  /* Data sources checkbox count */
+  const dsChecked=['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].some(k=>{
+    const el=document.getElementById('ds-'+k);return el&&el.checked;
+  });
+  if(dsChecked)filled++;
+  const totalFields=fids.length+10;
   const pct=Math.min(100,Math.round((filled/totalFields)*100));
   document.getElementById('pf').style.width=pct+'%';
   document.getElementById('pp').textContent=pct+'%';
@@ -1612,10 +2317,16 @@ function applyLocks(){
   if(g1Locked()){
     document.querySelectorAll('#tab-performance .sec').forEach(el=>el.classList.add('locked'));
     ['f-scholar','f-orcid','f-terms','f-tnotes',
-     ...RESEARCH_TIER_IDS,
-     'f-ugc-care','f-hi','f-conf','f-pub','f-wip','f-mdpc','f-mdpd','f-ind'
+     'f-ugc-care','f-hi','f-gscholar-cites','f-wip','f-external-resources',
+     'f-mdpc','f-mdpd','f-ind'
     ].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
-    document.querySelectorAll('#tab-performance .tier-cell').forEach(el=>el.classList.add('lk'));
+    /* Lock data source checkboxes */
+    ['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].forEach(k=>{
+      const el=document.getElementById('ds-'+k);if(el)el.disabled=true;
+    });
+    /* Disable publications add button */
+    const padd=document.getElementById('pub-add-btn');
+    if(padd){padd.disabled=true;padd.style.opacity='0.4';padd.style.cursor='not-allowed';}
     const instForm=document.getElementById('inst-form');
     if(instForm)instForm.style.display='none';
     document.getElementById('g1box').style.display='none';
@@ -1672,15 +2383,21 @@ function val(id){const el=document.getElementById(id);return el&&el.value&&el.va
 function numVal(id){const v=val(id);return v!==null?parseInt(v):null;}
 
 function g1Data(){
+  const dataSources=[];
+  ['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].forEach(k=>{
+    const el=document.getElementById('ds-'+k);
+    if(el&&el.checked)dataSources.push(k);
+  });
   return{
     snap_name:fac?.name,snap_designation:fac?.designation,snap_campus:fac?.campus,
     snap_subject_area:fac?.subject_area,snap_courses_taught:fac?.courses_taught,snap_admin_role:fac?.admin_role,
     scholar_url:val('f-scholar'),orcid_id:val('f-orcid'),terms_taught:val('f-terms'),teaching_notes:val('f-tnotes'),
-    abdc_a_star:numVal('f-abdc-a-star'),abdc_a:numVal('f-abdc-a'),abdc_b:numVal('f-abdc-b'),abdc_c:numVal('f-abdc-c'),
-    scopus_q1:numVal('f-scopus-q1'),scopus_q2:numVal('f-scopus-q2'),scopus_q3:numVal('f-scopus-q3'),scopus_q4:numVal('f-scopus-q4'),
-    wos_q1:numVal('f-wos-q1'),wos_q2:numVal('f-wos-q2'),wos_q3:numVal('f-wos-q3'),wos_q4:numVal('f-wos-q4'),
-    ugc_care_count:numVal('f-ugc-care'),h_index:numVal('f-hi'),conference_papers_count:numVal('f-conf'),
-    publications_details:val('f-pub'),wip_details:val('f-wip'),
+    h_index:numVal('f-hi'),
+    gscholar_citations:numVal('f-gscholar-cites'),
+    ugc_care_count:numVal('f-ugc-care'),
+    wip_details:val('f-wip'),
+    data_sources_used:dataSources,
+    external_resources_needed:val('f-external-resources'),
     mdp_count:numVal('f-mdpc'),mdp_details:val('f-mdpd'),industry_summary:val('f-ind'),
     institution_entries:INST_ENTRIES,
     updated_at:new Date().toISOString()
@@ -1913,11 +2630,10 @@ async function loadPointsLedger(){
 function restore(d){
   const m={
     'f-scholar':d.scholar_url,'f-orcid':d.orcid_id,'f-terms':d.terms_taught,'f-tnotes':d.teaching_notes,
-    'f-abdc-a-star':d.abdc_a_star,'f-abdc-a':d.abdc_a,'f-abdc-b':d.abdc_b,'f-abdc-c':d.abdc_c,
-    'f-scopus-q1':d.scopus_q1,'f-scopus-q2':d.scopus_q2,'f-scopus-q3':d.scopus_q3,'f-scopus-q4':d.scopus_q4,
-    'f-wos-q1':d.wos_q1,'f-wos-q2':d.wos_q2,'f-wos-q3':d.wos_q3,'f-wos-q4':d.wos_q4,
-    'f-ugc-care':d.ugc_care_count,'f-hi':d.h_index,'f-conf':d.conference_papers_count,
-    'f-pub':d.publications_details,'f-wip':d.wip_details,
+    'f-ugc-care':d.ugc_care_count,'f-hi':d.h_index,
+    'f-gscholar-cites':d.gscholar_citations,
+    'f-wip':d.wip_details,
+    'f-external-resources':d.external_resources_needed,
     'f-mdpc':d.mdp_count,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,
     'f-pt':d.ikigai_passion?.split('\n\n')[0],'f-pr':d.ikigai_passion?.split('\n\n')[1],
     'f-pi':d.ikigai_passion?.split('\n\n')[2],'f-ps':d.ikigai_passion?.split('\n\n')[3],
@@ -1934,6 +2650,15 @@ function restore(d){
   Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;});
   if(d.teaching_effectiveness){document.getElementById('f-te').value=d.teaching_effectiveness+' / 5.0';}
   if(d.mdp_revenue){document.getElementById('f-mdpr').value='Rs '+Number(d.mdp_revenue).toLocaleString('en-IN');}
+
+  /* Restore data sources checkboxes */
+  if(Array.isArray(d.data_sources_used)){
+    d.data_sources_used.forEach(k=>{
+      const el=document.getElementById('ds-'+k);
+      if(el)el.checked=true;
+    });
+  }
+
   ['t','r','i','s'].forEach(k=>{
     const dbKey='ikigai_strength_'+(k==='t'?'teaching':k==='r'?'research':k==='i'?'industry':'institution');
     if(d[dbKey]){R[k]=d[dbKey];document.getElementById('sl-'+k).value=d[dbKey];document.getElementById('sv-'+k).textContent=d[dbKey];}
@@ -2007,14 +2732,16 @@ async function init(){
   if(ev){eid=ev.id;erec=ev;restore(ev);}
   else erec={gate1_locked:false,gate2_locked:false,workflow_status:'draft'};
 
-  /* Seed Madhu's demo data if this is Madhu and no feedback entries loaded */
-  if(fac.name&&fac.name.toLowerCase().includes('madhu')&&FEEDBACK_ENTRIES.length===0){
+  /* Load publications from faculty_publications table */
+  await loadPublications();
+  renderPubSummary();
+  renderPubTable();
+
+  /* Seed feedback demo data if no entries (universal demo placeholder) */
+  if(FEEDBACK_ENTRIES.length===0){
     FEEDBACK_ENTRIES=[MADHU_SEED];
     renderFeedbackEntries();
   }
-
-  /* Ensure feedback renders even if no seed */
-  if(FEEDBACK_ENTRIES.length===0)renderFeedbackEntries();
 
   renderInstEntries();
   checkDevelopMin();
