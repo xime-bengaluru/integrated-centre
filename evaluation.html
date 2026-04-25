@@ -8,15 +8,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --navy:#1a2a4a;--navy-dark:#111827;--navy-2:#253556;
-  --red:#E8241C;
-  --gold:#c9a84c;--gold-2:#b8962f;--gold-l:#f0dfa0;--gold-d:#8a6e1e;
-  --paper:#fafaf7;--cream:#f5f3ec;--parchment:#faf8f3;
-  --charcoal:#2a2a2a;--ink:#1a1a18;--mute:#6b6b6b;--faint:#9a9a94;
-  --line:#e5e3dc;--line-strong:#d6d3c8;--border:rgba(0,0,0,.09);--border-g:rgba(201,168,76,.35);
-  --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#085041;
-  --amber:#EF9F27;--amber-l:#FAEEDA;--amber-d:#633806;
-  --ok:#3d7a5a;--warn:#a86b1c;
+  --navy:#0D1F35;--navy-dark:#0A1828;--navy-2:#1A3352;
+  --red:#C8102E;
+  --gold:#C9A84C;--gold-2:#A88828;--gold-l:#F0DFA0;--gold-d:#7A6118;
+  --paper:#FBFAF6;--cream:#F4F2EA;--parchment:#F8F6EE;
+  --charcoal:#1F1F1F;--ink:#0F0F0E;--mute:#4A5568;--faint:#6B7280;
+  --line:#D8D4C7;--line-strong:#BFB9A8;--border:rgba(0,0,0,.12);--border-g:rgba(201,168,76,.45);
+  --teal:#0D9268;--teal-l:#D4F0E5;--teal-d:#054C36;
+  --amber:#D97706;--amber-l:#FCE9C8;--amber-d:#4A2900;
+  --ok:#2F6B4A;--warn:#8E4F0F;
   --r:10px;--rs:6px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -126,19 +126,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .sh{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
 .sn{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:rgba(201,168,76,.35);line-height:1;flex-shrink:0;min-width:44px}
 .sn-mini{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--gold-2);letter-spacing:.1em;min-width:44px;flex-shrink:0;padding-top:6px}
-.si-t{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:500;color:var(--navy);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.si-t{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--navy);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .si-tag{font-size:12px;font-style:italic;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
-.si-s{font-size:12px;color:var(--mute);margin-top:2px}
+.si-s{font-size:12.5px;color:var(--mute);margin-top:3px;font-weight:400}
 .srl{height:.5px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);margin-top:10px}
-.sec-intro{font-size:13px;color:var(--mute);margin-bottom:22px;line-height:1.7;max-width:720px}
-.sec-intro strong{color:var(--charcoal);font-weight:600}
+.sec-intro{font-size:13.5px;color:var(--charcoal);margin-bottom:22px;line-height:1.7;max-width:720px}
+.sec-intro strong{color:var(--ink);font-weight:600}
 
 .locked-badge{display:none;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--amber-d);background:rgba(239,159,39,.1);padding:3px 9px;border-radius:10px;border:.5px solid rgba(239,159,39,.3);vertical-align:middle}
 .sec.locked .locked-badge{display:inline-block}
 
 /* Fields */
 .f{margin-bottom:16px}
-.fl{font-size:11px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.fl{font-size:11.5px;font-weight:600;color:var(--charcoal);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;display:flex;align-items:center;gap:6px}
 .ab{font-size:9px;font-weight:400;color:var(--gold-d);background:rgba(201,168,76,.1);border:1px solid var(--border-g);padding:1px 5px;border-radius:10px;text-transform:none;letter-spacing:.02em}
 .fi{width:100%;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);transition:border-color .15s;resize:vertical}
 .fi:focus{outline:none;border-color:var(--gold)}
@@ -457,6 +457,124 @@ select.pub-input{cursor:pointer}
 }
 
 /* ===================================================
+   INDUSTRY & EP REDESIGN
+   =================================================== */
+
+.ep-summary{background:#fff;border:1px solid var(--border-g);border-radius:var(--r);padding:16px 22px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.ep-summary-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.ep-stat{display:flex;flex-direction:column;align-items:flex-start;min-width:55px}
+.ep-stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--navy);line-height:1}
+.ep-stat-num.ep-stat-revenue{color:var(--gold-2);font-size:22px}
+.ep-stat-label{font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:4px}
+.ep-stat-sep{width:1px;height:36px;background:var(--line-strong);flex-shrink:0}
+
+.ep-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.ep-filters{display:flex;gap:6px;flex-wrap:wrap}
+.ep-filter{padding:6px 14px;font-size:11.5px;font-weight:500;background:#fff;border:1px solid var(--line);color:var(--charcoal);cursor:pointer;border-radius:20px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.ep-filter:hover{border-color:var(--gold-2);color:var(--gold-2)}
+.ep-filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ep-add-btn{padding:8px 18px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s}
+.ep-add-btn:hover{background:var(--gold);color:var(--navy-dark)}
+
+.ep-table-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.ep-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.ep-table thead{background:var(--cream)}
+.ep-table th{padding:10px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--charcoal);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line);white-space:nowrap}
+.ep-th-title{width:auto;min-width:240px}
+.ep-th-narrow{width:90px}
+.ep-th-actions{width:50px}
+.ep-table td{padding:11px 12px;vertical-align:top;border-bottom:.5px solid var(--line)}
+.ep-table tbody tr{transition:background .12s}
+.ep-table tbody tr:hover{background:var(--parchment)}
+.ep-table tbody tr:last-child td{border-bottom:none}
+.ep-row-title{font-weight:600;color:var(--ink);line-height:1.4;margin-bottom:3px;font-size:13px}
+.ep-row-client{font-size:11px;color:var(--mute);font-style:italic;line-height:1.4}
+.ep-row-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--charcoal);font-weight:500;letter-spacing:.02em}
+.ep-row-revenue{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--gold-2);font-weight:600}
+.ep-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.ep-tag-MDP{background:rgba(13,146,104,.12);color:var(--teal-d);border:.5px solid rgba(13,146,104,.3)}
+.ep-tag-OBP{background:rgba(76,29,149,.1);color:#4C1D95;border:.5px solid rgba(76,29,149,.25)}
+.ep-tag-Consulting{background:rgba(124,45,18,.1);color:#7C2D12;border:.5px solid rgba(124,45,18,.25)}
+.ep-tag-Conference_Sponsored{background:rgba(201,168,76,.15);color:var(--gold-2);border:.5px solid rgba(201,168,76,.35)}
+.ep-tag-role{font-family:'DM Mono',monospace;font-weight:600;font-size:10px;padding:3px 8px;border-radius:5px;background:var(--cream);color:var(--charcoal)}
+.ep-tag-role-Organiser{background:var(--gold);color:var(--navy-dark)}
+.ep-tag-role-Coordinator{background:rgba(201,168,76,.18);color:var(--gold-2)}
+.ep-tag-role-Facilitator{background:rgba(13,146,104,.15);color:var(--teal-d)}
+.ep-tag-role-Resource_Person{background:rgba(0,0,0,.06);color:var(--charcoal)}
+.ep-row-actions{display:flex;gap:4px}
+.ep-row-action{background:transparent;border:none;color:var(--mute);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;line-height:1;transition:all .12s}
+.ep-row-action:hover{background:var(--cream);color:var(--navy)}
+.ep-row-action.delete:hover{background:rgba(200,16,46,.08);color:#A32D2D}
+.ep-empty-row{padding:30px 20px;text-align:center;color:var(--mute);font-style:italic;font-size:12.5px}
+
+/* EP form modal */
+.ep-form-wrap{display:none;background:rgba(0,0,0,.45);position:fixed;top:0;left:0;right:0;bottom:0;z-index:300;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;backdrop-filter:blur(3px)}
+.ep-form-wrap.open{display:flex}
+.ep-form-inner{background:var(--paper);border-radius:var(--r);width:100%;max-width:700px;max-height:calc(100vh - 80px);overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid var(--border-g)}
+.ep-form-head{padding:22px 28px;background:var(--navy-dark);color:#fff;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-radius:var(--r) var(--r) 0 0;position:relative}
+.ep-form-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold) 0%,transparent 60%)}
+.ep-form-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#fff;line-height:1.2}
+.ep-form-sub{font-size:11.5px;color:rgba(255,255,255,.55);margin-top:4px}
+.ep-close{background:transparent;border:none;color:rgba(255,255,255,.5);font-size:24px;cursor:pointer;line-height:1;padding:0 6px;transition:color .15s}
+.ep-close:hover{color:#fff}
+
+.ep-type-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:14px;background:var(--cream);border-bottom:1px solid var(--line)}
+.ep-type-tab{background:#fff;border:1px solid var(--line);padding:12px 8px;cursor:pointer;border-radius:var(--rs);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s}
+.ep-type-tab:hover{border-color:var(--gold-2);background:var(--parchment)}
+.ep-type-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ep-type-icon{font-size:18px;line-height:1}
+.ep-type-name{font-size:12px;font-weight:600;letter-spacing:.02em}
+.ep-type-hint{font-size:9.5px;font-weight:400;color:var(--mute);text-align:center}
+.ep-type-tab.active .ep-type-hint{color:rgba(255,255,255,.65)}
+
+.ep-form-section{padding:18px 28px;border-bottom:1px solid var(--line)}
+.ep-form-section:last-of-type{border-bottom:none}
+.ep-section-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-2);margin-bottom:14px;padding-bottom:6px;border-bottom:.5px solid var(--line)}
+.ep-field{margin-bottom:14px}
+.ep-field:last-child{margin-bottom:0}
+.ep-label{font-size:11px;font-weight:600;color:var(--charcoal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ep-label-hint{font-size:10px;color:var(--mute);font-style:italic;text-transform:none;letter-spacing:0;font-weight:400}
+.ep-input{width:100%;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .15s;resize:vertical}
+.ep-input:focus{border-color:var(--gold)}
+.ep-input[readonly]{background:var(--parchment);color:var(--gold-2);font-family:'DM Mono',monospace;font-weight:600;border-color:var(--border-g)}
+.ep-input[type="number"],.ep-input[type="date"]{font-family:'DM Mono',monospace}
+.ep-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ep-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* Role selector cards */
+.ep-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ep-role-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#fff;border:1.5px solid var(--line);border-radius:var(--rs);cursor:pointer;transition:all .15s}
+.ep-role-card:hover{border-color:var(--gold-2);background:var(--parchment)}
+.ep-role-card input[type="radio"]{margin-top:2px;cursor:pointer;accent-color:var(--gold);flex-shrink:0}
+.ep-role-card:has(input:checked){background:var(--cream);border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.ep-role-card-content{flex:1}
+.ep-role-name{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.ep-role-hint{font-size:11px;color:var(--mute);line-height:1.4}
+
+.ep-form-actions{padding:18px 28px;display:flex;justify-content:flex-end;gap:10px;background:var(--cream);border-radius:0 0 var(--r) var(--r);border-top:1px solid var(--line)}
+.ep-btn-cancel{background:transparent;border:1px solid var(--line-strong);color:var(--charcoal);padding:9px 20px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;cursor:pointer}
+.ep-btn-cancel:hover{border-color:var(--navy);color:var(--navy)}
+.ep-btn-save{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s}
+.ep-btn-save:hover{background:var(--gold);color:var(--navy-dark)}
+
+/* Referral block */
+.ep-referral-block{background:linear-gradient(135deg,var(--cream) 0%,#fff 100%);border:1px solid var(--border-g);border-left:3px solid var(--gold);border-radius:var(--rs);padding:18px 22px;margin-top:8px}
+.ep-referral-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:.5px solid var(--line)}
+.ep-referral-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--navy);line-height:1.2}
+.ep-referral-sub{font-size:11.5px;color:var(--mute);margin-top:2px;line-height:1.5}
+
+@media(max-width:900px){
+  .ep-summary-row{gap:14px}
+  .ep-stat{min-width:48px}
+  .ep-type-tabs{grid-template-columns:1fr 1fr}
+  .ep-grid3{grid-template-columns:1fr}
+  .ep-grid2{grid-template-columns:1fr}
+  .ep-role-grid{grid-template-columns:1fr}
+  .ep-table-wrap{overflow-x:auto}
+  .ep-table{min-width:780px}
+}
+
+/* ===================================================
    TAB 3: TEACHING EFFECTIVENESS FEEDBACK
    =================================================== */
 
@@ -650,7 +768,7 @@ select.pub-input{cursor:pointer}
     <div class="ni active" onclick="goTo('s-profile')" id="n-s-profile"><div class="ndot"></div><div class="nt">Profile</div></div>
     <div class="ni" onclick="goTo('s-teaching')" id="n-s-teaching"><div class="ndot"></div><div class="nt">Teaching</div></div>
     <div class="ni" onclick="goTo('s-research')" id="n-s-research"><div class="ndot"></div><div class="nt">Research</div></div>
-    <div class="ni" onclick="goTo('s-industry')" id="n-s-industry"><div class="ndot"></div><div class="nt">Industry &amp; MDP</div></div>
+    <div class="ni" onclick="goTo('s-industry')" id="n-s-industry"><div class="ndot"></div><div class="nt">Industry &amp; EP</div></div>
     <div class="ni" onclick="goTo('s-institution')" id="n-s-institution"><div class="ndot"></div><div class="nt">Institution Building</div></div>
   </div>
 
@@ -1065,24 +1183,224 @@ select.pub-input{cursor:pointer}
     </div>
   </section>
 
-  <!-- Section: Industry -->
+  <!-- Section: Industry & EP -->
   <section class="sec" id="s-industry">
     <div class="sh">
       <div class="sn">04</div>
       <div>
-        <div class="si-t">Industry &amp; External Programs <span class="locked-badge">Locked</span></div>
-        <div class="si-s">Validated by Dean EP</div>
+        <div class="si-t">Industry &amp; EP <span class="locked-badge">Locked</span></div>
+        <div class="si-s">Validated by Dean EP · Each programme captured individually with role, sessions, and revenue</div>
       </div>
     </div>
     <div class="srl"></div>
+
     <div style="margin-top:18px">
-      <div class="tc">
-        <div class="f"><div class="fl">MDPs / OBPs Delivered</div><input class="fi" id="f-mdpc" type="number" min="0" placeholder="0"></div>
-        <div class="f"><div class="fl">MDP Revenue <span class="ab">EP Records</span></div><input class="fi lk" id="f-mdpr" readonly placeholder="Awaiting EP records"></div>
+
+      <!-- EP portfolio summary -->
+      <div class="ep-summary">
+        <div class="ep-summary-row">
+          <div class="ep-stat"><div class="ep-stat-num" id="es-total">0</div><div class="ep-stat-label">Programmes</div></div>
+          <div class="ep-stat-sep"></div>
+          <div class="ep-stat"><div class="ep-stat-num" id="es-sessions">0</div><div class="ep-stat-label">Sessions</div></div>
+          <div class="ep-stat"><div class="ep-stat-num" id="es-participants">0</div><div class="ep-stat-label">Participants</div></div>
+          <div class="ep-stat-sep"></div>
+          <div class="ep-stat"><div class="ep-stat-num ep-stat-revenue" id="es-revenue">0</div><div class="ep-stat-label">Revenue (Rs)</div></div>
+          <div class="ep-stat-sep"></div>
+          <div class="ep-stat"><div class="ep-stat-num" id="es-referrals">0</div><div class="ep-stat-label">Referrals</div></div>
+        </div>
       </div>
-      <div class="f"><div class="fl">MDP Details</div><textarea class="fi" id="f-mdpd" rows="3" placeholder="Program · Client · Role · Dates"></textarea></div>
+
+      <!-- EP filter and add bar -->
+      <div class="ep-toolbar">
+        <div class="ep-filters">
+          <button class="ep-filter active" data-ep-filter="all" onclick="filterEps('all',this)">All</button>
+          <button class="ep-filter" data-ep-filter="MDP" onclick="filterEps('MDP',this)">MDP</button>
+          <button class="ep-filter" data-ep-filter="OBP" onclick="filterEps('OBP',this)">OBP</button>
+          <button class="ep-filter" data-ep-filter="Consulting" onclick="filterEps('Consulting',this)">Consulting</button>
+          <button class="ep-filter" data-ep-filter="Conference_Sponsored" onclick="filterEps('Conference_Sponsored',this)">Conference Sponsored</button>
+        </div>
+        <button class="ep-add-btn" onclick="openEpForm()" id="ep-add-btn">+ Add Programme</button>
+      </div>
+
+      <!-- EP consolidated table -->
+      <div class="ep-table-wrap">
+        <table class="ep-table">
+          <thead>
+            <tr>
+              <th class="ep-th-title">Programme &amp; Client</th>
+              <th class="ep-th-narrow">Type</th>
+              <th class="ep-th-narrow">Date</th>
+              <th class="ep-th-narrow">Sessions</th>
+              <th class="ep-th-narrow">Participants</th>
+              <th class="ep-th-narrow">Revenue</th>
+              <th class="ep-th-narrow">Role</th>
+              <th class="ep-th-actions"></th>
+            </tr>
+          </thead>
+          <tbody id="ep-table-body">
+            <tr><td colspan="8" class="ep-empty-row">Loading programmes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add/Edit EP Form (modal) -->
+      <div class="ep-form-wrap" id="ep-form-wrap">
+        <div class="ep-form-inner">
+          <div class="ep-form-head">
+            <div>
+              <div class="ep-form-title" id="ep-form-title">Add Programme</div>
+              <div class="ep-form-sub">Each programme is recorded individually for accurate role-based credit allocation</div>
+            </div>
+            <button class="ep-close" onclick="closeEpForm()">&times;</button>
+          </div>
+
+          <!-- Type selector -->
+          <div class="ep-type-tabs">
+            <button class="ep-type-tab active" data-eptype="MDP" onclick="selectEpType('MDP',this)">
+              <div class="ep-type-icon">&#9776;</div>
+              <div class="ep-type-name">MDP</div>
+              <div class="ep-type-hint">Open enrolment</div>
+            </button>
+            <button class="ep-type-tab" data-eptype="OBP" onclick="selectEpType('OBP',this)">
+              <div class="ep-type-icon">&#9783;</div>
+              <div class="ep-type-name">OBP</div>
+              <div class="ep-type-hint">In-company</div>
+            </button>
+            <button class="ep-type-tab" data-eptype="Consulting" onclick="selectEpType('Consulting',this)">
+              <div class="ep-type-icon">&#128218;</div>
+              <div class="ep-type-name">Consulting</div>
+              <div class="ep-type-hint">Advisory or project</div>
+            </button>
+            <button class="ep-type-tab" data-eptype="Conference_Sponsored" onclick="selectEpType('Conference_Sponsored',this)">
+              <div class="ep-type-icon">&#127942;</div>
+              <div class="ep-type-name">Conference</div>
+              <div class="ep-type-hint">Sponsored attendance</div>
+            </button>
+          </div>
+
+          <!-- Common fields -->
+          <div class="ep-form-section">
+            <div class="ep-section-label">Programme Details</div>
+            <div class="ep-field"><div class="ep-label">Programme Title</div><input class="ep-input" id="ep-title" placeholder="e.g. Strategic Decision-Making for Mid-Career Managers"></div>
+            <div class="ep-grid2">
+              <div class="ep-field"><div class="ep-label">Client / Organisation</div><input class="ep-input" id="ep-client" placeholder="e.g. Bosch India, ACMA, Self-organised"></div>
+              <div class="ep-field"><div class="ep-label">Date Conducted</div><input class="ep-input" id="ep-date" type="date"></div>
+            </div>
+          </div>
+
+          <!-- Sessions and participants -->
+          <div class="ep-form-section">
+            <div class="ep-section-label">Delivery &amp; Engagement</div>
+            <div class="ep-grid3">
+              <div class="ep-field">
+                <div class="ep-label">Number of Sessions <span class="ep-label-hint">conducted by you</span></div>
+                <input class="ep-input" id="ep-sessions" type="number" min="0" placeholder="e.g. 4">
+              </div>
+              <div class="ep-field">
+                <div class="ep-label">Participants</div>
+                <input class="ep-input" id="ep-participants" type="number" min="0" placeholder="e.g. 35" oninput="calcRevenuePerHead()">
+              </div>
+              <div class="ep-field">
+                <div class="ep-label">Duration</div>
+                <input class="ep-input" id="ep-duration" placeholder="e.g. 2 days, 8 hours">
+              </div>
+            </div>
+            <div class="ep-grid2">
+              <div class="ep-field">
+                <div class="ep-label">Total Revenue Generated <span class="ep-label-hint">in INR</span></div>
+                <input class="ep-input" id="ep-revenue" type="number" min="0" placeholder="e.g. 350000" oninput="calcRevenuePerHead()">
+              </div>
+              <div class="ep-field">
+                <div class="ep-label">Revenue per Participant</div>
+                <input class="ep-input" id="ep-revenue-per" readonly placeholder="Auto-calculated">
+              </div>
+            </div>
+          </div>
+
+          <!-- Role -->
+          <div class="ep-form-section">
+            <div class="ep-section-label">Your Role</div>
+            <div class="ep-role-grid">
+              <label class="ep-role-card">
+                <input type="radio" name="ep-role" value="Organiser">
+                <div class="ep-role-card-content">
+                  <div class="ep-role-name">Organiser</div>
+                  <div class="ep-role-hint">End-to-end programme ownership and revenue accountability</div>
+                </div>
+              </label>
+              <label class="ep-role-card">
+                <input type="radio" name="ep-role" value="Coordinator" checked>
+                <div class="ep-role-card-content">
+                  <div class="ep-role-name">Coordinator</div>
+                  <div class="ep-role-hint">Programme management and delivery coordination</div>
+                </div>
+              </label>
+              <label class="ep-role-card">
+                <input type="radio" name="ep-role" value="Facilitator">
+                <div class="ep-role-card-content">
+                  <div class="ep-role-name">Facilitator</div>
+                  <div class="ep-role-hint">Lead session delivery for multiple sessions</div>
+                </div>
+              </label>
+              <label class="ep-role-card">
+                <input type="radio" name="ep-role" value="Resource_Person">
+                <div class="ep-role-card-content">
+                  <div class="ep-role-name">Resource Person</div>
+                  <div class="ep-role-hint">Subject expert delivering one or two sessions</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="ep-form-section">
+            <div class="ep-section-label">Additional Context</div>
+            <div class="ep-field">
+              <div class="ep-label">Notes <span class="ep-label-hint">optional</span></div>
+              <textarea class="ep-input" id="ep-notes" rows="2" placeholder="Co-facilitators, special context, follow-on plans..."></textarea>
+            </div>
+          </div>
+
+          <div class="ep-form-actions">
+            <button class="ep-btn-cancel" onclick="closeEpForm()">Cancel</button>
+            <button class="ep-btn-save" onclick="saveEp()" id="ep-save-btn">Save Programme</button>
+          </div>
+        </div>
+      </div>
+
       <div class="fdiv"></div>
-      <div class="f"><div class="fl">Other Industry Engagements</div><textarea class="fi" id="f-ind" rows="3" placeholder="Consulting, advisory boards, speaking, live projects..."></textarea></div>
+
+      <!-- Referral logging -->
+      <div class="ep-referral-block">
+        <div class="ep-referral-head">
+          <div>
+            <div class="ep-referral-title">MDP Referrals Generated</div>
+            <div class="ep-referral-sub">Track enquiries or conversions you brought to the EP team</div>
+          </div>
+        </div>
+        <div class="ep-grid2">
+          <div class="ep-field">
+            <div class="ep-label">Referrals Sent <span class="ep-label-hint">enquiries forwarded to EP this year</span></div>
+            <input class="fi" id="f-referrals-sent" type="number" min="0" placeholder="0">
+          </div>
+          <div class="ep-field">
+            <div class="ep-label">Referrals Converted <span class="ep-label-hint">that became actual programmes</span></div>
+            <input class="fi" id="f-referrals-converted" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+        <div class="ep-field" style="margin-top:12px">
+          <div class="ep-label">Referral Details <span class="ep-label-hint">brief context for each referral</span></div>
+          <textarea class="fi" id="f-referrals-detail" rows="2" placeholder="e.g. Bosch India, introduced via alumni network, 35 participants programme"></textarea>
+        </div>
+      </div>
+
+      <div class="fdiv"></div>
+
+      <div class="f">
+        <div class="fl">Other Industry Engagements</div>
+        <div class="fh" style="margin-bottom:6px">Advisory boards, expert panels, speaking engagements not captured above</div>
+        <textarea class="fi" id="f-ind" rows="3" placeholder="Industry roles, advisory positions, conference talks, live projects supervised..."></textarea>
+      </div>
     </div>
   </section>
 
@@ -1137,9 +1455,9 @@ select.pub-input{cursor:pointer}
   <div class="subbox" id="g1box">
     <div>
       <div class="sbt">Submit Gate 1 · Mid-Year Record</div>
-      <div class="sbn2">Sections 01 to 05 will freeze. Deans receive the record for validation. Growth &amp; Purpose tab unlocks until 15 June 2026.</div>
+      <div class="sbn2">Sections 01 to 05 will be sent to your Deans for validation. During the test phase you can continue to edit and re-submit.</div>
     </div>
-    <button class="subbtn" onclick="submitGate1()" id="g1btn">Lock &amp; Submit Gate 1 →</button>
+    <button class="subbtn" onclick="submitGate1()" id="g1btn">Submit Gate 1 →</button>
   </div>
 
 </div>
@@ -1317,7 +1635,7 @@ select.pub-input{cursor:pointer}
   <div class="subbox" id="g2box">
     <div>
       <div class="sbt">Submit Annual Development Review</div>
-      <div class="sbn2">Sent to your Deans for validation, then Director, then President for endorsement. Cannot edit after submission.</div>
+      <div class="sbn2">Sent to your Deans, Director, then President for endorsement. During the test phase you can continue to edit and re-submit.</div>
     </div>
     <button class="subbtn" onclick="submitGate2()" id="g2btn">Submit Annual Review →</button>
   </div>
@@ -1783,6 +2101,235 @@ async function deletePublication(id){
     renderPubTable();
     upProg();
     toast('Publication removed');
+  }catch(e){
+    console.error(e);
+    toast('Delete failed',false);
+  }
+}
+
+/* ======================================================
+   INDUSTRY & EP CRUD
+   ====================================================== */
+
+let EP_PROGRAMMES=[];
+let EP_FILTER='all';
+let EP_EDIT_ID=null;
+let EP_CURRENT_TYPE='MDP';
+
+const EP_TYPE_LABELS={
+  MDP:'MDP',
+  OBP:'OBP',
+  Consulting:'Consulting',
+  Conference_Sponsored:'Conf'
+};
+
+const EP_ROLE_LABELS={
+  Organiser:'Organiser',
+  Coordinator:'Coordinator',
+  Facilitator:'Facilitator',
+  Resource_Person:'Resource'
+};
+
+async function loadEpProgrammes(){
+  if(!fac)return;
+  const{data,error}=await sb.from('ep_programmes')
+    .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26')
+    .order('date_conducted',{ascending:false,nullsFirst:false});
+  if(error){console.error('EP load:',error);EP_PROGRAMMES=[];return;}
+  EP_PROGRAMMES=data||[];
+}
+
+function epStats(){
+  const stats={total:0,sessions:0,participants:0,revenue:0,referrals:0};
+  EP_PROGRAMMES.forEach(p=>{
+    stats.total++;
+    stats.sessions+=(p.sessions_count||0);
+    stats.participants+=(p.participants_count||0);
+    stats.revenue+=(p.revenue||0);
+  });
+  const sent=parseInt(document.getElementById('f-referrals-sent')?.value)||0;
+  const conv=parseInt(document.getElementById('f-referrals-converted')?.value)||0;
+  stats.referrals=sent+conv;
+  return stats;
+}
+
+function formatINR(n){
+  if(!n)return '0';
+  if(n>=10000000)return (n/10000000).toFixed(1)+' Cr';
+  if(n>=100000)return (n/100000).toFixed(1)+' L';
+  if(n>=1000)return (n/1000).toFixed(0)+'K';
+  return ''+n;
+}
+
+function renderEpSummary(){
+  const s=epStats();
+  document.getElementById('es-total').textContent=s.total;
+  document.getElementById('es-sessions').textContent=s.sessions;
+  document.getElementById('es-participants').textContent=s.participants;
+  document.getElementById('es-revenue').textContent=formatINR(s.revenue);
+  document.getElementById('es-referrals').textContent=s.referrals;
+}
+
+function renderEpTable(){
+  const tbody=document.getElementById('ep-table-body');
+  if(!tbody)return;
+  const filtered=EP_FILTER==='all'?EP_PROGRAMMES:EP_PROGRAMMES.filter(p=>p.programme_type===EP_FILTER);
+  if(filtered.length===0){
+    tbody.innerHTML='<tr><td colspan="8" class="ep-empty-row">No programmes recorded yet. Click + Add Programme to get started.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=filtered.map(p=>renderEpRow(p)).join('');
+}
+
+function renderEpRow(p){
+  const dateDisplay=p.date_conducted?new Date(p.date_conducted).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}):'-';
+  const revPerHead=p.participants_count&&p.revenue?Math.round(p.revenue/p.participants_count):0;
+  return`<tr>
+    <td>
+      <div class="ep-row-title">${escapeHtml(p.title||'')}</div>
+      <div class="ep-row-client">${escapeHtml(p.client||'No client specified')}</div>
+    </td>
+    <td><span class="ep-tag ep-tag-${p.programme_type}">${EP_TYPE_LABELS[p.programme_type]||p.programme_type}</span></td>
+    <td><span class="ep-row-meta">${dateDisplay}</span></td>
+    <td><span class="ep-row-meta">${p.sessions_count||'-'}</span></td>
+    <td><span class="ep-row-meta">${p.participants_count||'-'}</span></td>
+    <td>
+      <span class="ep-row-revenue">${p.revenue?'Rs '+formatINR(p.revenue):'-'}</span>
+      ${revPerHead?`<div style="font-size:9.5px;color:var(--mute);margin-top:2px">Rs ${formatINR(revPerHead)}/head</div>`:''}
+    </td>
+    <td><span class="ep-tag-role ep-tag-role-${p.role}">${EP_ROLE_LABELS[p.role]||p.role||'-'}</span></td>
+    <td>
+      <div class="ep-row-actions">
+        ${IS_PREVIEW?'':`<button class="ep-row-action" onclick="editEp('${p.id}')" title="Edit">&#9998;</button>
+        <button class="ep-row-action delete" onclick="deleteEp('${p.id}')" title="Delete">&times;</button>`}
+      </div>
+    </td>
+  </tr>`;
+}
+
+function filterEps(type,btn){
+  EP_FILTER=type;
+  document.querySelectorAll('.ep-filter').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEpTable();
+}
+
+function openEpForm(){
+  if(IS_PREVIEW){toast('Preview mode. Cannot add programmes.',false);return;}
+  EP_EDIT_ID=null;
+  document.getElementById('ep-form-title').textContent='Add Programme';
+  resetEpForm();
+  selectEpType('MDP',document.querySelector('[data-eptype="MDP"]'));
+  document.getElementById('ep-form-wrap').classList.add('open');
+}
+
+function editEp(id){
+  const p=EP_PROGRAMMES.find(x=>x.id===id);
+  if(!p)return;
+  EP_EDIT_ID=id;
+  document.getElementById('ep-form-title').textContent='Edit Programme';
+  resetEpForm();
+  selectEpType(p.programme_type,document.querySelector(`[data-eptype="${p.programme_type}"]`));
+  document.getElementById('ep-title').value=p.title||'';
+  document.getElementById('ep-client').value=p.client||'';
+  document.getElementById('ep-date').value=p.date_conducted||'';
+  document.getElementById('ep-sessions').value=p.sessions_count||'';
+  document.getElementById('ep-participants').value=p.participants_count||'';
+  document.getElementById('ep-duration').value=p.duration||'';
+  document.getElementById('ep-revenue').value=p.revenue||'';
+  document.getElementById('ep-notes').value=p.notes||'';
+  if(p.role){
+    document.querySelectorAll('input[name="ep-role"]').forEach(r=>{r.checked=(r.value===p.role);});
+  }
+  calcRevenuePerHead();
+  document.getElementById('ep-form-wrap').classList.add('open');
+}
+
+function closeEpForm(){
+  document.getElementById('ep-form-wrap').classList.remove('open');
+}
+
+function resetEpForm(){
+  ['ep-title','ep-client','ep-date','ep-sessions','ep-participants','ep-duration','ep-revenue','ep-revenue-per','ep-notes'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.querySelectorAll('input[name="ep-role"]').forEach((r,i)=>{r.checked=(i===1);});
+}
+
+function selectEpType(type,btn){
+  EP_CURRENT_TYPE=type;
+  document.querySelectorAll('.ep-type-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+function calcRevenuePerHead(){
+  const rev=parseInt(document.getElementById('ep-revenue').value)||0;
+  const part=parseInt(document.getElementById('ep-participants').value)||0;
+  const out=document.getElementById('ep-revenue-per');
+  if(rev>0&&part>0){
+    out.value='Rs '+Math.round(rev/part).toLocaleString('en-IN')+' per participant';
+  }else{
+    out.value='';
+  }
+}
+
+async function saveEp(){
+  if(IS_PREVIEW){toast('Preview mode.',false);return;}
+  const title=document.getElementById('ep-title').value.trim();
+  if(!title){toast('Please enter the programme title',false);return;}
+  const date=document.getElementById('ep-date').value;
+  if(!date){toast('Please select the date',false);return;}
+
+  let role='Coordinator';
+  document.querySelectorAll('input[name="ep-role"]').forEach(r=>{if(r.checked)role=r.value;});
+
+  const data={
+    faculty_master_id:fac.id,
+    academic_year:'2025-26',
+    programme_type:EP_CURRENT_TYPE,
+    title:title,
+    client:document.getElementById('ep-client').value.trim()||null,
+    date_conducted:date,
+    sessions_count:parseInt(document.getElementById('ep-sessions').value)||0,
+    participants_count:parseInt(document.getElementById('ep-participants').value)||0,
+    duration:document.getElementById('ep-duration').value.trim()||null,
+    revenue:parseInt(document.getElementById('ep-revenue').value)||0,
+    role:role,
+    notes:document.getElementById('ep-notes').value.trim()||null,
+    evaluation_id:eid||null
+  };
+
+  try{
+    if(EP_EDIT_ID){
+      const{error}=await sb.from('ep_programmes').update(data).eq('id',EP_EDIT_ID);
+      if(error)throw error;
+      toast('Programme updated');
+    }else{
+      const{error}=await sb.from('ep_programmes').insert(data);
+      if(error)throw error;
+      toast('Programme added');
+    }
+    closeEpForm();
+    await loadEpProgrammes();
+    renderEpSummary();
+    renderEpTable();
+    upProg();
+  }catch(e){
+    console.error(e);
+    toast('Save failed: '+(e.message||'unknown error'),false);
+  }
+}
+
+async function deleteEp(id){
+  if(!confirm('Remove this programme?'))return;
+  try{
+    const{error}=await sb.from('ep_programmes').delete().eq('id',id);
+    if(error)throw error;
+    await loadEpProgrammes();
+    renderEpSummary();
+    renderEpTable();
+    upProg();
+    toast('Programme removed');
   }catch(e){
     console.error(e);
     toast('Delete failed',false);
@@ -2282,8 +2829,9 @@ function updateAlloc(){
 /* ---------- Progress ---------- */
 function upProg(){
   const fids=['f-tnotes','f-terms',
-    'f-ugc-care','f-hi','f-gscholar-cites','f-mdpc','f-mdpd','f-ind',
+    'f-ugc-care','f-hi','f-gscholar-cites','f-ind',
     'f-external-resources',
+    'f-referrals-sent','f-referrals-converted','f-referrals-detail',
     'f-pt','f-pr','f-pi','f-ps','f-pimp','f-impact','f-iki',
     'al-t','al-r','al-s','ali-t','ali-r','ali-s',
     'f-gaps','f-newcourses','f-stopcourses','f-caps','f-delivered','f-newprogs','f-respotential',
@@ -2294,15 +2842,15 @@ function upProg(){
   if(INST_ENTRIES.length>0)filled++;
   if(FEEDBACK_ENTRIES.length>0)filled+=2;
   if(PUBLICATIONS.length>0)filled+=2;
+  if(EP_PROGRAMMES.length>0)filled+=2;
   if(courseState.current.selected.size>0)filled++;
   if(getListValues('strengths-list').length>0)filled++;
   if(getListValues('develop-list').length>=3)filled++;
-  /* Data sources checkbox count */
   const dsChecked=['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].some(k=>{
     const el=document.getElementById('ds-'+k);return el&&el.checked;
   });
   if(dsChecked)filled++;
-  const totalFields=fids.length+10;
+  const totalFields=fids.length+12;
   const pct=Math.min(100,Math.round((filled/totalFields)*100));
   document.getElementById('pf').style.width=pct+'%';
   document.getElementById('pp').textContent=pct+'%';
@@ -2314,47 +2862,32 @@ function g2Locked(){return erec?.gate2_locked===true;}
 
 function applyLocks(){
   const s=erec?.workflow_status||'draft';
-  if(g1Locked()){
-    document.querySelectorAll('#tab-performance .sec').forEach(el=>el.classList.add('locked'));
-    ['f-scholar','f-orcid','f-terms','f-tnotes',
-     'f-ugc-care','f-hi','f-gscholar-cites','f-wip','f-external-resources',
-     'f-mdpc','f-mdpd','f-ind'
-    ].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
-    /* Lock data source checkboxes */
-    ['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].forEach(k=>{
-      const el=document.getElementById('ds-'+k);if(el)el.disabled=true;
-    });
-    /* Disable publications add button */
-    const padd=document.getElementById('pub-add-btn');
-    if(padd){padd.disabled=true;padd.style.opacity='0.4';padd.style.cursor='not-allowed';}
-    const instForm=document.getElementById('inst-form');
-    if(instForm)instForm.style.display='none';
-    document.getElementById('g1box').style.display='none';
-    document.getElementById('g1s').textContent='Locked';
-    document.getElementById('g1bs').textContent='Locked';
-    document.getElementById('g1bs').className='gbst gst-locked';
-    document.getElementById('g1i').className='gi gi-locked';
-  }
-  if(g2Locked()){
-    ['f-pt','f-pr','f-pi','f-ps','f-pimp','f-impact','f-iki',
-     'al-t','al-r','al-s','ali-t','ali-r','ali-s',
-     'f-gaps','f-newcourses','f-stopcourses','f-caps','f-delivered','f-newprogs','f-respotential',
-     'f-changewhy','f-changeact','f-changesupp',
-     'f-sta','f-stp','f-cnt','f-kg','f-sup'
-    ].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('lk');el.readOnly=true;}});
-    ['sl-t','sl-r','sl-i','sl-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=true;});
-    document.querySelectorAll('#tab-growth input[type="text"]').forEach(el=>{el.classList.add('lk');el.readOnly=true;});
-    document.querySelectorAll('.add-row,.remove-row').forEach(b=>b.disabled=true);
-    document.getElementById('g2box').style.display='none';
-    document.getElementById('g2s').textContent='Submitted';
-    document.getElementById('g2bs').textContent='Submitted';
-    document.getElementById('g2bs').className='gbst gst-locked';
-  }
+  /* TEST PHASE: locks open. Faculty can re-edit after submission.
+     Submit buttons stay visible. No fields are read-only. */
+  /* Status pill still reflects workflow state for visibility */
   const pm={draft:'sp-draft',mid_year_locked:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked'};
-  const pl={draft:'Draft',mid_year_locked:'Gate 1 Locked',mid_year_validated:'Mid-Year Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
+  const pl={draft:'Draft',mid_year_locked:'Gate 1 Submitted',mid_year_validated:'Mid-Year Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
   const pill=document.getElementById('spill');
   pill.className='spill '+(pm[s]||'sp-draft');
   pill.textContent=pl[s]||s;
+
+  /* Update Gate 1 label to indicate submission status */
+  if(g1Locked()){
+    document.getElementById('g1s').textContent='Submitted (re-editable)';
+    document.getElementById('g1bs').textContent='Submitted';
+    document.getElementById('g1bs').className='gbst gst-locked';
+    /* Keep submit button text indicating re-submission */
+    const g1btn=document.getElementById('g1btn');
+    if(g1btn)g1btn.textContent='Re-submit Gate 1 →';
+  }
+  if(g2Locked()){
+    document.getElementById('g2s').textContent='Submitted (re-editable)';
+    document.getElementById('g2bs').textContent='Submitted';
+    document.getElementById('g2bs').className='gbst gst-locked';
+    const g2btn=document.getElementById('g2btn');
+    if(g2btn)g2btn.textContent='Re-submit Annual Review →';
+  }
+
   if(s==='endorsed')loadRemarks();
   loadGate1Remarks();
 }
@@ -2398,7 +2931,10 @@ function g1Data(){
     wip_details:val('f-wip'),
     data_sources_used:dataSources,
     external_resources_needed:val('f-external-resources'),
-    mdp_count:numVal('f-mdpc'),mdp_details:val('f-mdpd'),industry_summary:val('f-ind'),
+    referrals_sent:numVal('f-referrals-sent'),
+    referrals_converted:numVal('f-referrals-converted'),
+    referrals_detail:val('f-referrals-detail'),
+    industry_summary:val('f-ind'),
     institution_entries:INST_ENTRIES,
     updated_at:new Date().toISOString()
   };
@@ -2460,19 +2996,23 @@ async function submitGate1(){
   if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
   const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
-  if(reviewingDeans.length===0){toast('No other deans configured for your campus. Contact admin.',false);return;}
-  if(!confirm('Lock and submit Gate 1? Sections 01 to 05 on the Performance tab will freeze.'))return;
+  /* TEST PHASE: dean check relaxed - submission proceeds even without configured deans */
+  const isResubmit=g1Locked();
+  const msg=isResubmit?'Re-submit Gate 1 with the latest edits? Your previous submission will be updated.':'Submit Gate 1 Performance Record? You can continue to edit and re-submit during the test phase.';
+  if(!confirm(msg))return;
   try{
     await upsert({...g1Data(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
     erec={...erec,gate1_locked:true,workflow_status:'mid_year_locked'};
-    for(const d of reviewingDeans){
-      await sb.from('evaluation_dean_reviews').upsert({
-        evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
-        campus:fac.campus,gate:'mid_year',validated:false
-      },{onConflict:'evaluation_id,dean_email,gate'});
+    if(reviewingDeans.length>0){
+      for(const d of reviewingDeans){
+        await sb.from('evaluation_dean_reviews').upsert({
+          evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
+          campus:fac.campus,gate:'mid_year',validated:false
+        },{onConflict:'evaluation_id,dean_email,gate'});
+      }
     }
     applyLocks();
-    toast('Gate 1 submitted and locked. Deans notified.');
+    toast(isResubmit?'Gate 1 re-submitted with latest edits.':'Gate 1 submitted. You can still edit and re-submit.');
   }catch(e){
     console.error(e);
     toast('Submission failed: '+(e.message||'unknown error'),false);
@@ -2482,12 +3022,14 @@ async function submitGate1(){
 async function submitGate2(){
   if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
-  if(!g1Locked()){toast('Please submit Gate 1 first.',false);return;}
+  /* TEST PHASE: Gate 1 dependency removed. Both gates can be submitted independently. */
   if(!val('f-iki')){toast('Please complete your IKIGAI Statement (Section 3) first.',false);return;}
   if(getListValues('develop-list').length<3){toast('Please enter at least 3 Areas to Develop (Section 2.2b).',false);return;}
   if(!DIRECTOR){toast('No director configured for your campus. Contact admin.',false);return;}
   const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
-  if(!confirm('Submit your complete Annual Development Review? This cannot be undone.'))return;
+  const isResubmit=g2Locked();
+  const msg=isResubmit?'Re-submit your Annual Development Review with the latest edits?':'Submit your complete Annual Development Review?';
+  if(!confirm(msg))return;
   try{
     await upsert({...g2Data(),gate2_locked:true,gate2_submitted_at:new Date().toISOString(),workflow_status:'annual_submitted',status:'submitted'});
     erec={...erec,gate2_locked:true,workflow_status:'annual_submitted'};
@@ -2634,7 +3176,11 @@ function restore(d){
     'f-gscholar-cites':d.gscholar_citations,
     'f-wip':d.wip_details,
     'f-external-resources':d.external_resources_needed,
-    'f-mdpc':d.mdp_count,'f-mdpd':d.mdp_details,'f-ind':d.industry_summary,
+    'f-mdpc':null,'f-mdpd':null,
+    'f-referrals-sent':d.referrals_sent,
+    'f-referrals-converted':d.referrals_converted,
+    'f-referrals-detail':d.referrals_detail,
+    'f-ind':d.industry_summary,
     'f-pt':d.ikigai_passion?.split('\n\n')[0],'f-pr':d.ikigai_passion?.split('\n\n')[1],
     'f-pi':d.ikigai_passion?.split('\n\n')[2],'f-ps':d.ikigai_passion?.split('\n\n')[3],
     'f-pimp':d.ikigai_passion?.split('\n\n')[4],
@@ -2736,6 +3282,11 @@ async function init(){
   await loadPublications();
   renderPubSummary();
   renderPubTable();
+
+  /* Load EP programmes from ep_programmes table */
+  await loadEpProgrammes();
+  renderEpSummary();
+  renderEpTable();
 
   /* Seed feedback demo data if no entries (universal demo placeholder) */
   if(FEEDBACK_ENTRIES.length===0){
