@@ -317,8 +317,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .rmt{font-size:13.5px;color:var(--teal-d);line-height:1.7;font-style:italic}
 
 /* Toast */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--navy-dark);color:#fff;font-size:12px;padding:10px 16px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
-.toast.show{transform:translateY(0);opacity:1}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy-dark);color:#fff;font-size:13px;font-weight:500;padding:14px 22px;border-radius:var(--rs);border-left:4px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;pointer-events:none;max-width:520px;line-height:1.55;box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.toast.show{transform:translateY(0);opacity:1;pointer-events:auto}
 
 .blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
 
@@ -2630,8 +2630,15 @@ function toast(m,ok=true){
   const t=document.getElementById('toast');
   t.textContent=m;
   t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';
+  t.style.background=ok?'var(--navy-dark)':'#7A1A1A';
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2800);
+  /* Errors stay visible 12 seconds. Success disappears in 3. */
+  const dwell=ok?3000:12000;
+  if(t._timer)clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{t.classList.remove('show');t.style.background='';},dwell);
+  /* Click to dismiss */
+  t.style.cursor='pointer';
+  t.onclick=()=>{t.classList.remove('show');t.style.background='';};
 }
 
 function switchTab(which){
@@ -2984,13 +2991,22 @@ async function upsert(data){
 async function saveDraft(){
   if(IS_PREVIEW){toast('Preview mode. Changes are not saved.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
+  const btn=document.getElementById('savebtn');
+  const orig=btn?.textContent;
+  if(btn){btn.textContent='Saving...';btn.disabled=true;}
   try{
     await upsert({...g1Data(),...g2Data(),status:'draft',workflow_status:'draft'});
-    toast('Draft saved');
+    toast('Draft saved successfully');
     upProg();
   }catch(e){
-    console.error(e);
-    toast('Save failed: '+(e.message||'unknown error'),false);
+    console.error('SAVE FAILED:',e);
+    console.dir(e);
+    /* Surface a clear, actionable message. Show the actual DB error code if we have one. */
+    const code=e.code?` [${e.code}]`:'';
+    const detail=e.message||e.hint||'unknown error';
+    toast('Save failed'+code+': '+detail+'. Please tell Girish.',false);
+  }finally{
+    if(btn){btn.textContent=orig||'Save draft';btn.disabled=false;}
   }
 }
 
@@ -3016,8 +3032,11 @@ async function submitGate1(){
     applyLocks();
     toast(isResubmit?'Gate 1 re-submitted with latest edits.':'Gate 1 submitted. You can still edit and re-submit.');
   }catch(e){
-    console.error(e);
-    toast('Submission failed: '+(e.message||'unknown error'),false);
+    console.error('GATE 1 SUBMIT FAILED:',e);
+    console.dir(e);
+    const code=e.code?` [${e.code}]`:'';
+    const detail=e.message||e.hint||'unknown error';
+    toast('Gate 1 submission failed'+code+': '+detail+'. Please tell Girish.',false);
   }
 }
 
@@ -3049,8 +3068,11 @@ async function submitGate2(){
     applyLocks();
     toast('3X Annual Review submitted.');
   }catch(e){
-    console.error(e);
-    toast('Submission failed: '+(e.message||'unknown error'),false);
+    console.error('GATE 2 SUBMIT FAILED:',e);
+    console.dir(e);
+    const code=e.code?` [${e.code}]`:'';
+    const detail=e.message||e.hint||'unknown error';
+    toast('Annual submission failed'+code+': '+detail+'. Please tell Girish.',false);
   }
 }
 
