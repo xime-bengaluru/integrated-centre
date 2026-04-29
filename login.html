@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magis Centre · Sign In</title>
+<title>X-Hub · Sign In</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -19,8 +19,8 @@
   --white:       #FFFFFF;
   --text:        #0D1F35;
   --sub:         #4A5D72;
-  --muted:       #7A8FA6;
-  --border:      #E2DDD4;
+  --muted:       #5A6B82;
+  --border:      #D8D2C5;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -131,27 +131,27 @@ body::after {
 
 .logo-tagline {
   font-size: 10.5px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.8);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1.4;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .card-title { position: relative; z-index: 1; }
 
 .card-title h1 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 600;
   color: white;
   line-height: 1.2;
 }
 
 .card-title p {
   font-size: 12px;
-  color: rgba(255,255,255,0.65);
-  margin-top: 4px;
+  color: rgba(255,255,255,0.75);
+  margin-top: 5px;
   letter-spacing: 0.02em;
 }
 
@@ -313,8 +313,8 @@ body::after {
       <div class="logo-tagline">Shaping Future Leaders</div>
     </div>
     <div class="card-title">
-      <h1>Magis Centre</h1>
-      <p>Faculty Development · HR &amp; Recruitment · Evaluation</p>
+      <h1>X-Hub</h1>
+      <p><strong>3X</strong> &middot; Faculty Performance, Purpose &amp; Impact</p>
     </div>
   </div>
 
@@ -333,7 +333,7 @@ body::after {
       <label class="form-label">Password</label>
       <div class="pw-wrap">
         <input class="form-input" type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password" style="padding-right:42px">
-        <button class="pw-toggle" onclick="togglePw('login-password', this)" tabindex="-1">👁</button>
+        <button class="pw-toggle" onclick="togglePw('login-password', this)" tabindex="-1">&#128065;</button>
       </div>
     </div>
 
@@ -341,7 +341,7 @@ body::after {
       <button class="forgot-link" onclick="showReset()">Forgot password?</button>
     </div>
 
-    <button class="btn-submit" id="login-btn" onclick="doLogin()">Sign In →</button>
+    <button class="btn-submit" id="login-btn" onclick="doLogin()">Sign In &rarr;</button>
   </div>
 
   <div class="card-body reset-form" id="reset-view">
@@ -356,21 +356,21 @@ body::after {
     </div>
 
     <button class="btn-submit" id="reset-btn" onclick="doReset()" style="margin-bottom:12px">Send Reset Link</button>
-    <button onclick="showLogin()" style="width:100%;padding:10px;background:none;border:1.5px solid #E2DDD4;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;color:#4A5D72;cursor:pointer;">← Back to Sign In</button>
+    <button onclick="showLogin()" style="width:100%;padding:10px;background:none;border:1.5px solid #D8D2C5;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;color:#4A5D72;cursor:pointer;">&larr; Back to Sign In</button>
   </div>
 
   <div class="card-body change-pw-screen" id="changepw-view">
     <div class="msg msg-error" id="changepw-error"></div>
 
     <p style="font-size:13.5px;color:#4A5D72;margin-bottom:20px;line-height:1.6;">
-      Welcome to the Magis Centre. Please set a new password to continue.
+      Welcome to <strong>X-Hub</strong>. Please set a new password to continue.
     </p>
 
     <div class="form-group">
       <label class="form-label">New Password</label>
       <div class="pw-wrap">
         <input class="form-input" type="password" id="new-password" placeholder="Minimum 8 characters" style="padding-right:42px">
-        <button class="pw-toggle" onclick="togglePw('new-password', this)" tabindex="-1">👁</button>
+        <button class="pw-toggle" onclick="togglePw('new-password', this)" tabindex="-1">&#128065;</button>
       </div>
     </div>
 
@@ -378,16 +378,16 @@ body::after {
       <label class="form-label">Confirm Password</label>
       <div class="pw-wrap">
         <input class="form-input" type="password" id="confirm-password" placeholder="Repeat your password" style="padding-right:42px">
-        <button class="pw-toggle" onclick="togglePw('confirm-password', this)" tabindex="-1">👁</button>
+        <button class="pw-toggle" onclick="togglePw('confirm-password', this)" tabindex="-1">&#128065;</button>
       </div>
     </div>
 
-    <button class="btn-submit" id="changepw-btn" onclick="doChangePassword()">Set Password &amp; Continue →</button>
+    <button class="btn-submit" id="changepw-btn" onclick="doChangePassword()">Set Password &amp; Continue &rarr;</button>
   </div>
 
   <div class="card-footer">
-    <div class="footer-secure">🔒 Secured by Supabase Auth</div>
-    <div class="footer-version">v2.2 · 2026</div>
+    <div class="footer-secure">&#128274; Secured by Supabase Auth</div>
+    <div class="footer-version">v3.0 &middot; 2026</div>
   </div>
 
 </div>
@@ -398,21 +398,18 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
 
-// Role to landing page. Single source of truth for where each role lands on sign in.
-// Edit this map to change routing behaviour without touching control flow.
 const ROLE_LANDING = {
-  super_admin: '/index.html',                   // Full hub, all modules
-  org_admin:   '/index.html',                   // Full hub, all modules
-  director:    '/index.html',                   // Hub, director tiles route into review or view
-  dean:        '/dean-review.html',             // Direct to domain and campus scoped queue
-  hrms_user:   '/recruitment-pilot-live.html',  // Direct to recruitment pipeline
-  fdp_user:    '/faculty-portfolio-home.html'   // Direct to faculty portfolio
+  super_admin: '/index.html',
+  org_admin:   '/index.html',
+  director:    '/index.html',
+  dean:        '/dean-review.html',
+  hrms_user:   '/recruitment-pilot-live.html',
+  fdp_user:    '/faculty-portfolio-home.html'
 };
 
 async function checkSession() {
   const { data: { session } } = await db.auth.getSession();
   if (session) {
-    // Check must_change_password flag in user_profiles (source of truth)
     const mustChange = await getMustChangePassword(session.user.id);
     if (mustChange) {
       showChangePw();
@@ -432,7 +429,6 @@ async function getMustChangePassword(userId) {
     .select('must_change_password')
     .eq('id', userId)
     .single();
-  // Default to true if the column is somehow missing or null, to fail safe
   return data?.must_change_password !== false;
 }
 
@@ -448,8 +444,14 @@ async function redirectByRole(userId) {
   const role = data.role;
   const modules = data.module_access || [];
 
-  // Multi-module non-admins go to the hub so they can pick. Covers Lavanya (hrms + fdp).
   if (modules.length > 1 && !['super_admin','org_admin'].includes(role)) {
+    window.location.href = '/index.html';
+    return;
+  }
+
+  /* Test phase: faculty land on the X-Hub home so they see 3X clearly,
+     not on the old faculty-portfolio-home which is locked during pilot. */
+  if (role === 'fdp_user') {
     window.location.href = '/index.html';
     return;
   }
@@ -476,7 +478,7 @@ async function doLogin() {
   const { data, error } = await db.auth.signInWithPassword({ email, password });
 
   if (error) {
-    btn.textContent = 'Sign In →';
+    btn.textContent = 'Sign In \u2192';
     btn.disabled = false;
     showMsg(errEl, error.message === 'Invalid login credentials'
       ? 'Incorrect email or password. Please try again.'
@@ -484,7 +486,6 @@ async function doLogin() {
     return;
   }
 
-  // Check must_change_password flag in user_profiles (source of truth)
   const mustChange = await getMustChangePassword(data.user.id);
   if (mustChange) {
     showChangePw();
@@ -525,7 +526,6 @@ async function doChangePassword() {
   if (pw1.length < 8) { showMsg(errEl, 'Password must be at least 8 characters.'); return; }
   if (pw1 !== pw2) { showMsg(errEl, 'Passwords do not match.'); return; }
 
-  // Block setting it to the default temp password again
   if (pw1 === 'Xime@2026') {
     showMsg(errEl, 'Please choose a password different from the temporary one.');
     return;
@@ -534,23 +534,20 @@ async function doChangePassword() {
   btn.textContent = 'Saving...';
   btn.disabled = true;
 
-  // Update the auth password
   const { data, error } = await db.auth.updateUser({ password: pw1 });
 
   if (error) {
-    btn.textContent = 'Set Password & Continue →';
+    btn.textContent = 'Set Password & Continue \u2192';
     btn.disabled = false;
     showMsg(errEl, error.message);
     return;
   }
 
-  // Flip the flag in user_profiles so we don't force-change again
   const { error: flagError } = await db.from('user_profiles')
     .update({ must_change_password: false })
     .eq('id', data.user.id);
 
   if (flagError) {
-    // Password changed, but flag didn't flip. Warn but continue so user isn't trapped.
     console.warn('Password updated but must_change_password flag not cleared:', flagError);
   }
 
@@ -559,8 +556,8 @@ async function doChangePassword() {
 
 function togglePw(inputId, btn) {
   const inp = document.getElementById(inputId);
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁'; }
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '\uD83D\uDE48'; }
+  else { inp.type = 'password'; btn.textContent = '\uD83D\uDC41'; }
 }
 
 function showMsg(el, msg) {
