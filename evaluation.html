@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magis Centre · Annual Development Review</title>
+<title>X-Hub · 3X</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -29,11 +29,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .sep{width:1px;height:22px;background:rgba(255,255,255,.18)}
 .ttl{font-size:11px;color:rgba(255,255,255,.55);font-weight:500;letter-spacing:.04em}
 .tb-m{display:flex;align-items:center;gap:0;flex:1;justify-content:center}
-.tab-btn{padding:9px 20px;font-size:12px;font-weight:500;color:rgba(255,255,255,.6);border:none;background:transparent;cursor:pointer;letter-spacing:.05em;border-radius:4px 4px 0 0;transition:all .15s;position:relative;top:3px;font-family:'DM Sans',sans-serif}
-.tab-btn:hover{color:rgba(255,255,255,.9)}
+.tab-btn{padding:7px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.65);border:none;background:transparent;cursor:pointer;letter-spacing:.02em;border-radius:6px 6px 0 0;transition:all .15s;position:relative;top:3px;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:flex-start;gap:1px;line-height:1.2}
+.tab-btn:hover{color:rgba(255,255,255,.95)}
 .tab-btn.active{background:var(--paper);color:var(--navy);font-weight:600}
-.tab-btn .tab-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);margin-right:6px}
+.tab-btn .tab-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:.06em;font-weight:500}
 .tab-btn.active .tab-num{color:var(--gold-2)}
+.tab-btn .tab-x{font-size:13.5px;font-weight:700;letter-spacing:.01em}
+.tab-btn .tab-sub{font-size:9.5px;font-weight:400;opacity:.65;letter-spacing:.04em;text-transform:uppercase;font-family:'DM Mono',monospace}
 .tb-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .spill{font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
 .sp-draft{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15)}
@@ -710,17 +712,17 @@ select.pub-input{cursor:pointer}
   <div class="tb-l">
     <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
     <div class="sep"></div>
-    <div class="ttl">Magis Centre · Annual Development Review</div>
+    <div class="ttl">X-Hub · <strong>3X</strong></div>
   </div>
   <div class="tb-m">
     <button class="tab-btn active" data-tab="performance" onclick="switchTab('performance')">
-      <span class="tab-num">01</span>Performance Record
+      <span class="tab-num">01</span><span class="tab-x">X-Drive</span><span class="tab-sub">Performance Record</span>
     </button>
     <button class="tab-btn" data-tab="growth" onclick="switchTab('growth')">
-      <span class="tab-num">02</span>Growth &amp; Purpose
+      <span class="tab-num">02</span><span class="tab-x">X-Purpose</span><span class="tab-sub">Growth &amp; Purpose</span>
     </button>
     <button class="tab-btn" data-tab="feedback" onclick="switchTab('feedback')">
-      <span class="tab-num">03</span>Teaching Effectiveness
+      <span class="tab-num">03</span><span class="tab-x">X-Impact</span><span class="tab-sub">Teaching Effectiveness</span>
     </button>
   </div>
   <div class="tb-r">
@@ -1477,7 +1479,7 @@ select.pub-input{cursor:pointer}
 
   <div class="gb gb2">
     <div>
-      <div class="gbl">Gate 2 · Annual Development Review</div>
+      <div class="gbl">Gate 2 · 3X Annual Submission</div>
       <div class="gbt">Purpose, direction, year ahead</div>
       <div class="gbs">IKIGAI reflection · time allocation · action plan · due 15 June 2026</div>
     </div>
@@ -1634,10 +1636,10 @@ select.pub-input{cursor:pointer}
 
   <div class="subbox" id="g2box">
     <div>
-      <div class="sbt">Submit Annual Development Review</div>
+      <div class="sbt">Submit Your 3X Annual Review</div>
       <div class="sbn2">Sent to your Deans, Director, then President for endorsement. During the test phase you can continue to edit and re-submit.</div>
     </div>
-    <button class="subbtn" onclick="submitGate2()" id="g2btn">Submit Annual Review →</button>
+    <button class="subbtn" onclick="submitGate2()" id="g2btn">Submit 3X Review →</button>
   </div>
 
 </div>
@@ -3028,7 +3030,7 @@ async function submitGate2(){
   if(!DIRECTOR){toast('No director configured for your campus. Contact admin.',false);return;}
   const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
   const isResubmit=g2Locked();
-  const msg=isResubmit?'Re-submit your Annual Development Review with the latest edits?':'Submit your complete Annual Development Review?';
+  const msg=isResubmit?'Re-submit your 3X Annual Review with the latest edits?':'Submit your complete 3X Annual Review?';
   if(!confirm(msg))return;
   try{
     await upsert({...g2Data(),gate2_locked:true,gate2_submitted_at:new Date().toISOString(),workflow_status:'annual_submitted',status:'submitted'});
@@ -3045,7 +3047,7 @@ async function submitGate2(){
       campus:fac.campus,status:skipDirector?'forwarded_to_president':'pending'
     },{onConflict:'evaluation_id'});
     applyLocks();
-    toast('Annual Development Review submitted.');
+    toast('3X Annual Review submitted.');
   }catch(e){
     console.error(e);
     toast('Submission failed: '+(e.message||'unknown error'),false);
