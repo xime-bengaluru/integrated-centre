@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Feedback · XIME FDP · X-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --parchment:#faf6ec;
+  --parchment-2:#f4ecd8;
+  --ink:#1a1408;
+  --ink-80:rgba(26,20,8,0.82);
+  --ink-65:rgba(26,20,8,0.65);
+  --ink-45:rgba(26,20,8,0.45);
+  --ink-25:rgba(26,20,8,0.22);
+  --ink-12:rgba(26,20,8,0.10);
+  --navy:#0F1C2E;
+  --gold:#a8892f;
+  --gold-d:#8b6f23;
+  --gold-l:#c9a84c;
+  --gold-pale:#ede0b8;
+  --gold-12:rgba(168,137,47,0.12);
+  --rule:#d4c9a8;
+  --rule-soft:#e5dcc4;
+  --error:#a23a2a;
+  --success:#3a6b3a;
+}
+html{scroll-behavior:smooth}
+body{
+  background:#2e2a20;
+  color:var(--ink);
+  font-family:"DM Sans",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:32px 16px;
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.6;
+}
+
+/* PAGE */
+.page{
+  max-width:760px;
+  margin:0 auto;
+  background:var(--parchment);
+  padding:48px 52px 40px;
+  position:relative;
+  box-shadow:0 30px 80px rgba(0,0,0,0.4);
+  background-image:
+    radial-gradient(ellipse at 18% 8%, rgba(168,137,47,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 82% 92%, rgba(168,137,47,0.04) 0%, transparent 55%);
+}
+
+/* HEADER */
+.head{
+  text-align:center;
+  padding-bottom:24px;
+  border-bottom:1px solid var(--rule);
+  margin-bottom:32px;
+  position:relative;
+}
+.head::after{
+  content:"";
+  position:absolute;
+  bottom:-1px;
+  left:50%;
+  transform:translateX(-50%);
+  width:64px;
+  height:1.5px;
+  background:var(--gold);
+}
+.head-eyebrow{
+  font-family:"DM Mono",monospace;
+  font-size:9.5px;
+  letter-spacing:0.32em;
+  color:var(--gold-d);
+  text-transform:uppercase;
+  margin-bottom:14px;
+  font-weight:500;
+}
+.head-title{
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(32px,5vw,42px);
+  font-weight:300;
+  color:var(--ink);
+  line-height:1.1;
+  letter-spacing:-0.01em;
+  margin-bottom:14px;
+}
+.head-title em{font-style:italic;color:var(--gold-d);font-weight:400}
+.head-rule{
+  width:42px;
+  height:1px;
+  background:var(--gold);
+  margin:14px auto;
+  opacity:0.6;
+}
+.head-sub{
+  font-family:"Cormorant Garamond",serif;
+  font-size:16px;
+  font-style:italic;
+  color:var(--ink-65);
+  max-width:480px;
+  margin:0 auto;
+  line-height:1.55;
+}
+
+/* SECTIONS */
+.section{
+  margin-bottom:36px;
+}
+.section-label{
+  font-family:"DM Mono",monospace;
+  font-size:10px;
+  letter-spacing:0.28em;
+  color:var(--gold-d);
+  text-transform:uppercase;
+  margin-bottom:18px;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  gap:0.7rem;
+}
+.section-label::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--rule-soft);
+}
+
+/* QUESTIONS */
+.q{
+  margin-bottom:24px;
+}
+.q-label{
+  display:block;
+  font-family:"Cormorant Garamond",serif;
+  font-size:18px;
+  font-weight:500;
+  color:var(--ink);
+  margin-bottom:12px;
+  line-height:1.35;
+}
+.q-hint{
+  font-family:"DM Sans",sans-serif;
+  font-size:12px;
+  color:var(--ink-45);
+  font-style:italic;
+  font-weight:400;
+  margin-left:6px;
+}
+
+/* INPUT FIELDS */
+input[type="text"],
+textarea,
+select{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid var(--ink-25);
+  background:#fff;
+  border-radius:4px;
+  font-family:"DM Sans",sans-serif;
+  font-size:14px;
+  color:var(--ink);
+  line-height:1.5;
+  transition:border-color 0.15s, box-shadow 0.15s;
+}
+input[type="text"]:focus,
+textarea:focus,
+select:focus{
+  outline:none;
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-12);
+}
+textarea{
+  resize:vertical;
+  min-height:70px;
+  font-family:"DM Sans",sans-serif;
+}
+select{
+  appearance:none;
+  -webkit-appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%231a1408' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  padding-right:38px;
+  cursor:pointer;
+}
+
+/* RADIO PILLS for campus */
+.pills{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.pill-input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.pill-label{
+  flex:1;
+  min-width:90px;
+  padding:11px 14px;
+  border:1px solid var(--ink-25);
+  background:#fff;
+  border-radius:4px;
+  font-family:"DM Sans",sans-serif;
+  font-size:14px;
+  color:var(--ink-80);
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.15s;
+  user-select:none;
+}
+.pill-label:hover{
+  border-color:var(--gold);
+  background:var(--gold-12);
+}
+.pill-input:checked + .pill-label{
+  background:var(--navy);
+  color:var(--parchment);
+  border-color:var(--navy);
+  font-weight:500;
+}
+
+/* LIKERT 1-5 */
+.likert{
+  display:flex;
+  gap:8px;
+  align-items:stretch;
+}
+.likert-input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.likert-label{
+  flex:1;
+  padding:14px 4px 10px;
+  border:1px solid var(--ink-25);
+  background:#fff;
+  border-radius:4px;
+  font-family:"Cormorant Garamond",serif;
+  font-size:22px;
+  font-weight:500;
+  color:var(--ink-80);
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.15s;
+  user-select:none;
+  line-height:1;
+}
+.likert-label:hover{
+  border-color:var(--gold);
+  background:var(--gold-12);
+}
+.likert-input:checked + .likert-label{
+  background:var(--gold);
+  color:var(--parchment);
+  border-color:var(--gold);
+}
+.likert-anchors{
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+  font-family:"DM Mono",monospace;
+  font-size:9.5px;
+  letter-spacing:0.18em;
+  color:var(--ink-45);
+  text-transform:uppercase;
+  font-weight:500;
+}
+
+/* SUBMIT */
+.submit-row{
+  margin-top:36px;
+  padding-top:28px;
+  border-top:1px solid var(--rule);
+  position:relative;
+}
+.submit-row::before{
+  content:"";
+  position:absolute;
+  top:-1px;
+  left:0;
+  width:64px;
+  height:1.5px;
+  background:var(--gold);
+}
+.submit-btn{
+  width:100%;
+  padding:16px 24px;
+  background:var(--navy);
+  color:var(--parchment);
+  border:none;
+  border-radius:4px;
+  font-family:"DM Sans",sans-serif;
+  font-size:15px;
+  font-weight:500;
+  letter-spacing:0.04em;
+  cursor:pointer;
+  transition:background 0.15s, transform 0.05s;
+}
+.submit-btn:hover{
+  background:#1a2c44;
+}
+.submit-btn:active{
+  transform:translateY(1px);
+}
+.submit-btn:disabled{
+  background:var(--ink-25);
+  cursor:wait;
+}
+
+.error-msg{
+  color:var(--error);
+  font-size:13px;
+  margin-top:12px;
+  text-align:center;
+  font-style:italic;
+  display:none;
+}
+.error-msg.show{display:block}
+
+/* PRIVACY NOTE */
+.privacy{
+  font-family:"DM Sans",sans-serif;
+  font-size:12px;
+  color:var(--ink-45);
+  text-align:center;
+  margin-top:18px;
+  font-style:italic;
+}
+
+/* FOOTER */
+.foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  padding-top:24px;
+  margin-top:32px;
+  border-top:1px solid var(--rule-soft);
+  gap:16px;
+}
+.foot-mark{
+  font-family:"DM Mono",monospace;
+  font-size:8.5px;
+  letter-spacing:0.2em;
+  color:var(--ink-45);
+  text-transform:uppercase;
+  font-weight:500;
+}
+.foot-logo svg{height:18px;width:auto;display:block}
+
+/* THANK YOU SCREEN */
+.thanks{
+  display:none;
+  text-align:center;
+  padding:48px 20px 20px;
+}
+.thanks.show{display:block}
+.thanks-mark{
+  width:48px;
+  height:48px;
+  margin:0 auto 24px;
+  border:1.5px solid var(--gold);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold);
+}
+.thanks-mark svg{width:24px;height:24px}
+.thanks-title{
+  font-family:"Cormorant Garamond",serif;
+  font-size:32px;
+  font-weight:300;
+  color:var(--ink);
+  margin-bottom:12px;
+  line-height:1.15;
+}
+.thanks-title em{font-style:italic;color:var(--gold-d);font-weight:400}
+.thanks-sub{
+  font-family:"Cormorant Garamond",serif;
+  font-size:16px;
+  font-style:italic;
+  color:var(--ink-65);
+  max-width:420px;
+  margin:0 auto;
+  line-height:1.55;
+}
+
+/* RESPONSIVE */
+@media (max-width:680px){
+  body{padding:12px 8px}
+  .page{padding:30px 22px 28px}
+  .head-title{font-size:28px}
+  .likert-label{font-size:18px;padding:12px 2px 8px}
+  .pill-label{font-size:13px;padding:10px 8px;min-width:0}
+  .likert-anchors{font-size:8.5px;letter-spacing:0.14em}
+  .foot{flex-direction:column;align-items:flex-start;gap:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<!-- FORM -->
+<div id="form-container">
+
+  <!-- HEADER -->
+  <header class="head">
+    <p class="head-eyebrow">FDP Kochi &nbsp;&middot;&nbsp; AI &amp; Critical Thinking &nbsp;&middot;&nbsp; Module 1</p>
+    <h1 class="head-title">Your <em>feedback</em></h1>
+    <div class="head-rule"></div>
+    <p class="head-sub">Two days, ninety minutes of your time was the cost. Help us spend the next module better.</p>
+  </header>
+
+  <form id="feedback-form" autocomplete="off">
+
+    <!-- SECTION 1: IDENTITY -->
+    <div class="section">
+      <p class="section-label">About you</p>
+
+      <div class="q">
+        <label class="q-label">Which campus do you teach at?</label>
+        <div class="pills">
+          <input type="radio" id="c-blr" name="campus" value="Bengaluru" class="pill-input" required>
+          <label for="c-blr" class="pill-label">Bengaluru</label>
+          <input type="radio" id="c-chn" name="campus" value="Chennai" class="pill-input">
+          <label for="c-chn" class="pill-label">Chennai</label>
+          <input type="radio" id="c-koc" name="campus" value="Kochi" class="pill-input">
+          <label for="c-koc" class="pill-label">Kochi</label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="discipline">Your primary discipline</label>
+        <select id="discipline" name="discipline" required>
+          <option value="">Select your discipline</option>
+          <option value="HR">HR &amp; OB</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Finance">Finance</option>
+          <option value="IT/Analytics">IT &amp; Analytics</option>
+          <option value="Operations">Operations &amp; SCM</option>
+          <option value="Strategy">Strategy</option>
+          <option value="Economics">Economics</option>
+          <option value="Entrepreneurship">Entrepreneurship</option>
+          <option value="General Management">General Management</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SECTION 2: HOW DID WE DO -->
+    <div class="section">
+      <p class="section-label">How did we do</p>
+
+      <div class="q">
+        <label class="q-label">Overall value of the two days</label>
+        <div class="likert">
+          <input type="radio" id="ov1" name="overall_value" value="1" class="likert-input" required>
+          <label for="ov1" class="likert-label">1</label>
+          <input type="radio" id="ov2" name="overall_value" value="2" class="likert-input">
+          <label for="ov2" class="likert-label">2</label>
+          <input type="radio" id="ov3" name="overall_value" value="3" class="likert-input">
+          <label for="ov3" class="likert-label">3</label>
+          <input type="radio" id="ov4" name="overall_value" value="4" class="likert-input">
+          <label for="ov4" class="likert-label">4</label>
+          <input type="radio" id="ov5" name="overall_value" value="5" class="likert-input">
+          <label for="ov5" class="likert-label">5</label>
+        </div>
+        <div class="likert-anchors">
+          <span>Low</span>
+          <span>High</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Day 1 (AI in the Classroom)</label>
+        <div class="likert">
+          <input type="radio" id="d1v1" name="day1_value" value="1" class="likert-input" required>
+          <label for="d1v1" class="likert-label">1</label>
+          <input type="radio" id="d1v2" name="day1_value" value="2" class="likert-input">
+          <label for="d1v2" class="likert-label">2</label>
+          <input type="radio" id="d1v3" name="day1_value" value="3" class="likert-input">
+          <label for="d1v3" class="likert-label">3</label>
+          <input type="radio" id="d1v4" name="day1_value" value="4" class="likert-input">
+          <label for="d1v4" class="likert-label">4</label>
+          <input type="radio" id="d1v5" name="day1_value" value="5" class="likert-input">
+          <label for="d1v5" class="likert-label">5</label>
+        </div>
+        <div class="likert-anchors">
+          <span>Low</span>
+          <span>High</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Day 2 (Critical Thinking)</label>
+        <div class="likert">
+          <input type="radio" id="d2v1" name="day2_value" value="1" class="likert-input" required>
+          <label for="d2v1" class="likert-label">1</label>
+          <input type="radio" id="d2v2" name="day2_value" value="2" class="likert-input">
+          <label for="d2v2" class="likert-label">2</label>
+          <input type="radio" id="d2v3" name="day2_value" value="3" class="likert-input">
+          <label for="d2v3" class="likert-label">3</label>
+          <input type="radio" id="d2v4" name="day2_value" value="4" class="likert-input">
+          <label for="d2v4" class="likert-label">4</label>
+          <input type="radio" id="d2v5" name="day2_value" value="5" class="likert-input">
+          <label for="d2v5" class="likert-label">5</label>
+        </div>
+        <div class="likert-anchors">
+          <span>Low</span>
+          <span>High</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: SPECIFICS -->
+    <div class="section">
+      <p class="section-label">The specifics</p>
+
+      <div class="q">
+        <label class="q-label" for="most_valuable">Most valuable session for you <span class="q-hint">(name a session or moment)</span></label>
+        <input type="text" id="most_valuable" name="most_valuable" maxlength="200" placeholder="e.g., the table exercise on Day 2, or Austin's session on AI tools">
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="least_valuable">Least valuable session for you <span class="q-hint">(honesty helps)</span></label>
+        <input type="text" id="least_valuable" name="least_valuable" maxlength="200" placeholder="Be specific if you can">
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="keep">One thing we should keep</label>
+        <textarea id="keep" name="one_thing_to_keep" maxlength="500" placeholder="What worked that we should not lose"></textarea>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="change">One thing we should change</label>
+        <textarea id="change" name="one_thing_to_change" maxlength="500" placeholder="What you would do differently"></textarea>
+      </div>
+    </div>
+
+    <!-- SECTION 4: MODULE 2 -->
+    <div class="section">
+      <p class="section-label">Looking ahead</p>
+
+      <div class="q">
+        <label class="q-label">How much are you looking forward to Module 2?</label>
+        <div class="likert">
+          <input type="radio" id="m2a1" name="module2_anticipation" value="1" class="likert-input" required>
+          <label for="m2a1" class="likert-label">1</label>
+          <input type="radio" id="m2a2" name="module2_anticipation" value="2" class="likert-input">
+          <label for="m2a2" class="likert-label">2</label>
+          <input type="radio" id="m2a3" name="module2_anticipation" value="3" class="likert-input">
+          <label for="m2a3" class="likert-label">3</label>
+          <input type="radio" id="m2a4" name="module2_anticipation" value="4" class="likert-input">
+          <label for="m2a4" class="likert-label">4</label>
+          <input type="radio" id="m2a5" name="module2_anticipation" value="5" class="likert-input">
+          <label for="m2a5" class="likert-label">5</label>
+        </div>
+        <div class="likert-anchors">
+          <span>Not really</span>
+          <span>Very much</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: ANYTHING ELSE -->
+    <div class="section">
+      <p class="section-label">Anything else</p>
+
+      <div class="q">
+        <label class="q-label" for="comment">Open comment <span class="q-hint">(optional)</span></label>
+        <textarea id="comment" name="additional_comment" maxlength="1000" placeholder="Anything we did not ask but you want to say"></textarea>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-row">
+      <button type="submit" class="submit-btn" id="submit-btn">Submit your feedback</button>
+      <p class="error-msg" id="error-msg">Something went wrong. Please try again, or let Girish know.</p>
+      <p class="privacy">Your response is anonymous. No name, no email, no IP captured.</p>
+    </div>
+
+  </form>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <p class="foot-mark">X-Hub &nbsp;&middot;&nbsp; XIME &nbsp;&middot;&nbsp; FDP Module 1</p>
+    <div class="foot-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="150 85 1325 406" role="img" aria-label="XIME"><path fill="#0F1C2E" d="M155.07,424.69c4.7-.4,9.4-1.13,14.1-1.14,7.32-.01,13.75-2.47,19.99-5.94,4.85-2.7,8.85-6.38,12.76-10.24,7.29-7.2,14.88-14.11,21.98-21.5,5.82-6.06,11.1-12.63,16.62-18.98,1.73-1.98,3.42-4,5.23-5.91,5.09-5.36,10.21-10.69,15.35-16,6.83-7.07,13.7-14.09,20.51-21.17,3.22-3.34,6.43-6.69,9.51-10.17,5.72-6.45,11.35-12.98,16.98-19.51,2.61-3.02,2.83-5.32.31-8.45-3.36-4.16-6.36-8.68-10.86-11.8-.48-.34-.74-1-1.11-1.5-5.42-7.35-10.74-14.77-16.29-22.02-6.82-8.92-13.78-17.73-20.79-26.51-4.98-6.24-10.09-12.38-15.24-18.47-7.13-8.41-14.1-16.93-20.8-25.71-4.27-5.59-8.77-11.03-13.82-16-6.29-6.2-13.79-9.48-22.45-10.27-6.07-.55-12.16-.86-18.23-1.31-.82-.06-1.62-.41-2.44-.54-1.3-.21-1.77-.98-1.72-2.22.03-.74,0-1.48,0-2.22,0-15.99.03-31.97-.03-47.96,0-2.44.29-4.64,2.69-6.64h2.58c21.6,0,43.21-.54,64.79.13,29.51.91,59.03-.27,88.52.66,15.23.48,30.43.12,45.65.48.53.01,1.05.07,1.79.12.12.68.33,1.37.34,2.06.03,4.13.39,8.3-.06,12.38-1.07,9.71-.21,19.43-.58,29.14-.18,4.72-.59,9.43-.93,14.55-2.35.23-4.81.61-7.28.69-7.8.28-15.61.43-23.41.68-2.15.07-2.46.51-2.67,2.66-.28,2.85,1.01,5.18,2.54,7.3,3.32,4.6,6.8,9.08,10.31,13.55,3.37,4.3,6.84,8.52,10.3,12.75,3.27,3.99,6.69,7.85,9.85,11.92,3.34,4.3,6.44,8.78,9.93,13.56.13-.03.91-.02,1.41-.4,1.59-1.21,3.16-2.48,4.58-3.88,4.38-4.3,8.82-8.56,13.01-13.04,5.83-6.23,11.53-12.59,17.15-19.02,4.29-4.91,8.4-9.99,12.49-15.07,1.18-1.46,2.19-3.12,2.99-4.83,1.12-2.41.39-4.47-2.06-5.42-2.33-.89-4.8-1.72-7.26-1.87-3.66-.23-7.36.18-11.04.28-2.96.08-5.92.25-8.87.1-1.97-.1-2.7-1.11-2.71-3.17-.04-6.46-.5-12.96.1-19.36.88-9.31.15-18.59.54-27.87.12-2.92.55-5.83.85-8.91h458.5c4.25,15.13,8.48,30.26,12.77,45.37,2.99,10.52,6.11,21,9.09,31.51,3.79,13.35,7.47,26.73,11.24,40.08,2.97,10.52,6.02,21.03,9.04,31.54,3.02,10.51,6.1,21,9.01,31.55.69,2.51.61,5.22,1.17,7.78,1.15,5.23,2.53,10.41,3.77,15.62,1.46,6.12,2.85,12.25,4.31,18.36.22.9.61,1.77.93,2.68,1.78.35,2.24-.67,2.59-2.03,1.19-4.56,2.45-9.1,3.69-13.65.41-1.52.86-3.02,1.28-4.54,3.36-12.37,6.66-24.75,10.09-37.1,3.91-14.08,7.88-28.14,11.93-42.18,2.88-10.01,5.93-19.97,8.89-29.95,3.19-10.79,6.32-21.6,9.56-32.38,1.72-5.74,3.66-11.42,5.42-17.15,3.27-10.64,6.48-21.29,9.75-31.93,1.42-4.62,2.91-9.22,4.39-13.82.19-.58.57-1.11.96-1.85h3.46c136.78,0,273.56.02,410.34-.06,5.95,0,8.27,2.42,9.67,7.1.48,1.6.93,3.24,1.14,4.89.22,1.7-.38,3.59,1.77,4.58.34.16.41.94.58,1.43,2.64,7.54,5.23,15.09,7.93,22.61,3.88,10.8,7.86,21.57,11.76,32.36,1.72,4.76,3.3,9.56,4.98,14.34,3.57,10.14,7.11,20.29,10.79,30.39.94,2.58,1.05,5.15.94,7.79-.1,2.42-1.07,3.52-3.51,4.11-6.79,1.64-13.12,4.49-19.43,7.38-8.05,3.7-16.45,6.41-24.92,8.91-1.19.35-2.46.39-3.91.61-.26-.62-.55-1.26-.8-1.91-2.28-6-4.86-11.85-8.03-17.46-2.64-4.67-4.81-9.61-8.06-13.93-1.13-1.51-2.18-3.11-3.46-4.49-1.95-2.11-2.99-4.74-4.47-7.12-3.56-5.74-8.46-10.13-13.87-14-8.8-6.3-18.45-11.03-28.67-14.48-7.27-2.45-14.72-4.02-22.54-3.96-22.97.16-45.95.06-68.92.06-1.35,0-2.7,0-3.95,0-.72,2.75-.84,84.66-.18,88.44,1.05.06,2.18.17,3.3.17,10.9.01,21.81-.06,32.71.04,3.99.04,7.19-1.58,9.95-4.15,4.31-4.02,6.98-8.92,7.34-14.93.16-2.62.49-5.23.59-7.85.26-7.17.42-14.34.69-21.51.05-1.24.27-2.56.76-3.69.92-2.14,2.87-2.54,5.02-2.54,14.4.02,28.8.01,43.19.01.42,0,.85.01,1.27.01,1.44-.01,2.14.69,2.11,2.14-.02.85,0,1.69,0,2.54,0,22.87-.54,45.75.14,68.6.85,28.46.11,56.91.52,85.36.02,1.14.35,2.27.48,3.41.22,1.89.29,3.73-.63,5.55-1.2,2.37-2.68,3.49-5.61,3.45-14.18-.19-28.37-.08-42.56-.09-4.08,0-4.7-.63-4.73-4.83-.02-3.07.07-6.14-.02-9.21-.17-6.22-.12-12.47-.72-18.65-.53-5.42-1.51-10.86-4.89-15.48-2.81-3.84-6.49-6.32-11.19-7.07-2.48-.4-5.02-.62-7.53-.64-8.89-.07-17.79-.03-26.68-.03-1.15,0-2.3,0-3.64,0-.12,1.08-.29,1.89-.29,2.71-.01,32.19-.02,64.37,0,96.56,0,3.91,1.91,5.78,5.7,5.91,1.03.03,2.05.34,3.09.47,3.95.49,7.9,1.3,11.86,1.36,11.85.18,23.71.13,35.57.04,5.79-.05,11.61-.13,17.37-.7,4.45-.45,8.9-1.43,13.23-2.63,11.56-3.22,22.74-7.52,33.51-12.84,4.18-2.06,7.98-4.72,11.47-7.74,3.98-3.46,7.89-7.03,11.49-10.88,3.36-3.6,6.38-7.54,9.34-11.49,3.46-4.61,6.74-9.37,10.03-14.11,5.88-8.46,9.81-17.82,12.79-27.64.91-3,2.21-5.91,3.56-8.74,1.41-2.95,3.07-3.62,6.2-2.65,2.1.66,4.13,1.55,6.16,2.41,4.75,2.02,9.58,3.73,14.75,4.33.39.04,1.01.19,1.1.43.75,2.1,2.78,2.08,4.38,2.66,6.12,2.23,12.28,4.33,18.41,6.53,2.43.87,2.65,1.5,2.34,4.2-1.05,9.07-4.21,17.55-7.16,26.11-3.05,8.86-5.88,17.79-8.81,26.69-1.78,5.41-3.51,10.83-5.4,16.2-2.34,6.66-4.82,13.27-7.25,19.9-1.38,3.76-2.81,7.5-4.14,11.28-.66,1.88-1.09,3.84-1.72,5.74-3.19,9.57-6.42,19.13-9.63,28.7-1.17,3.49-2.35,6.98-3.55,10.46-1,2.9-1.05,2.94-3.98,2.97-1.27.01-2.54,0-3.81,0-128.1,0-256.2-.09-384.3.14-12.77.02-25.56.48-38.34.43-3.32-.01-6.69-.63-9.95-1.34-3.49-.76-4.39-2.2-4.39-5.9,0-16.52-.01-33.03,0-49.55,0-3.88,1.02-4.74,4.88-4.69,6.14.08,12.29.29,18.42-.06,4.36-.25,8.73-1.12,12.84-2.81,1.88-.77,3.54-1.79,4.61-3.66.51-.89,1.26-1.78,2.12-2.33,2.07-1.32,2.26-3.18,2.26-5.4-.05-38.22.52-76.45-.2-114.66-.66-35.02-.08-70.04-.48-105.05-.01-.94-.1-1.87-.74-2.95-.7,2.29-1.46,4.56-2.11,6.86-2.32,8.27-4.62,16.55-6.9,24.83-3.01,10.91-5.99,21.83-9.02,32.73-2.02,7.27-4.13,14.51-6.18,21.77-1.51,5.35-2.98,10.7-4.49,16.05-2.13,7.56-4.26,15.13-6.42,22.68-4.06,14.21-8.18,28.4-12.2,42.62-4.4,15.53-8.77,31.06-13.05,46.62-3.76,13.64-7.44,27.3-11.06,40.97-3.44,12.96-6.76,25.95-10.13,38.93-.78,3-1.59,3.76-4.51,3.76-17.57.02-35.15,0-52.72,0-.31,0-.62-.1-.54-.09-.53-2.39-.93-4.62-1.54-6.8-2.82-10.1-5.67-20.19-8.57-30.27-2.67-9.27-5.46-18.51-8.11-27.79-3.26-11.4-6.43-22.82-9.67-34.22-2.73-9.59-5.53-19.15-8.27-28.74-3.2-11.2-6.32-22.41-9.54-33.6-3.1-10.79-6.34-21.54-9.42-32.34-2.62-9.17-5.09-18.39-7.64-27.58-2.3-8.28-4.64-16.56-6.93-24.84-2.57-9.3-5.12-18.6-7.68-27.9-1.16-4.25-2.3-8.5-3.48-12.74-.13-.46-.46-.86-1.07-1.98-.1,1.75-.2,2.75-.2,3.75,0,68.61-.01,137.22,0,205.82,0,4.53,1.26,8.75,4.01,12.38,2.5,3.3,6.22,4.63,10.09,5.35,2.67.49,5.43.62,8.15.67,5.5.1,11.01.05,16.51.02,1.35,0,2.71-.18,4.37-.3,1.34,1.91,1.89,4.41,1.91,6.87.1,15.88.06,31.76.02,47.64,0,1.13-.29,2.3-.65,3.38-.82,2.51-1.78,3.18-4.38,3.29-.74.03-1.48,0-2.22,0-151.81,0-303.63,0-455.44,0-.64,0-1.27,0-1.91,0-3.09-.02-4.16-.76-4.79-3.8-.59-2.87-1.13-5.78-1.32-8.7-.37-5.68-.71-11.38-.64-17.06.13-9.81.58-19.62.9-29.64,2.57-1.85,5.67-2.38,9-2.34,8.05.08,16.09.03,24.14.03,1.15,0,2.3,0,3.63,0,.63-3.48.98-6.71-1.09-9.59-4.66-6.5-9.33-13-14.16-19.38-3.87-5.12-7.81-10.19-12-15.04-3.28-3.79-6.23-7.9-10.61-10.74-2.02-1.31-3.31-3.77-4.84-5.78-4.21-5.52-8.37-11.08-12.57-16.61-.23-.3-.66-.45-1.04-.71-2.19,2.27-4.35,4.39-6.37,6.64-2.74,3.05-5.33,6.24-8.08,9.28-3.11,3.44-6.37,6.76-9.5,10.19-4.12,4.51-8.1,9.16-12.31,13.59-3.19,3.36-6.69,6.43-9.95,9.72-2.9,2.92-5.62,6.01-8.5,8.95-2.69,2.75-4.85,5.85-6.49,9.3-1.1,2.31-1.69,4.73-.62,7.26.8,1.91,1.96,3.01,4.3,2.97,7.83-.12,15.67-.05,23.5-.05.74,0,1.49-.03,2.22.03,1.48.11,2.31.93,2.38,2.43.04.74.02,1.48.02,2.22,0,17.36,0,34.73,0,52.09,0,.85.14,1.74-.09,2.52-.17.59-.74,1.25-1.29,1.49-.95.4-2.02.64-3.05.7-4.94.27-9.89.46-14.83.67-5.05.22-10.14.91-15.15.54-14.05-1.03-28.13.13-42.15-.64-19.03-1.04-38.06-.57-57.08-.36-8.53.1-17.09.38-25.64.38-3.42,0-6.84-.75-10.25-1.16,0-19.91,0-39.81,0-59.72ZM652.38,289.34c0,39.79.04,79.59-.06,119.38-.01,3.8.87,7.05,3.18,9.96,2.23,2.81,4.96,4.79,8.74,4.79,17.46,0,34.92,0,52.38,0,.83,0,1.73.02,2.49-.27,6.13-2.3,11.78-8.94,11.78-16.43-.06-76.1-.04-152.19-.04-228.29,0-.85,0-1.7-.07-2.54-.38-4.18-.97-8.35-1.12-12.53-.07-2.07-.8-3.65-1.99-5.14-.72-.9-1.54-1.76-2.45-2.48-3.16-2.51-6.53-4.87-10.71-4.9-16.3-.11-32.6-.13-48.89,0-4.51.04-8,2.38-10.27,6.33-2.1,3.64-2.97,7.59-2.97,11.78,0,40.11,0,80.22,0,120.34ZM554.03,290.26c0-36.94.02-73.87-.03-110.81,0-3.88-.13-7.81-.7-11.64-.5-3.4-1.47-6.77-2.66-10-.9-2.43-2.57-4.07-5.76-3.88-3.81.23-7.35,1.09-10.38,3.27-4.86,3.5-9.49,7.3-14.24,10.96-1.33,1.02-2.59,2.45-4.09,2.83-1.86.46-2.96,1.58-4.01,2.85-4.48,5.43-8.71,11.07-13.36,16.34-5.64,6.41-11.61,12.53-17.42,18.78-2.44,2.62-4.86,5.26-7.28,7.91-5.55,6.06-11.02,12.2-16.65,18.19-5.78,6.16-11.7,12.19-17.59,18.25-2.28,2.35-4.68,4.6-6.94,6.98-2.32,2.44-4.61,4.92-6.8,7.48-1.77,2.08-1.7,2.82-.23,5.31,4.92,8.38,11.51,15.48,17.59,22.96,3.11,3.83,6.47,7.48,9.3,11.5,3.34,4.75,7.04,9.15,11.05,13.32,2.56,2.65,5.02,5.37,6.42,8.89.38.96,1.06,1.82,1.7,2.65,5.66,7.3,11.33,14.59,17.02,21.86,3.49,4.47,6.99,8.92,10.53,13.35,3.8,4.76,7.64,9.49,11.5,14.21,2.86,3.49,5.73,6.98,8.68,10.4,2.2,2.55,4.69,4.87,6.76,7.52,4.6,5.87,10.22,10.59,16.27,14.84,1.71,1.2,3.66,2.11,5.59,2.94,1.78.76,3.34.24,3.69-1.21.88-3.65,2.11-7.18,2.1-11.09-.1-38.31-.06-76.63-.06-114.94ZM1116.52,288.94c0,39.27.02,78.54-.04,117.81,0,2.73.54,5.29,1.65,7.64,1.93,4.11,4.63,7.4,9.95,6.56.62-.1,1.27-.05,1.9,0,2.76.19,4.61-1.16,5.92-3.44,2.47-4.28,3.77-8.94,3.77-13.83.04-78.12.03-156.23.02-234.35,0-4.17-1.57-7.81-4.33-10.88-3.91-4.36-9.4-4.53-13.54-.4-3.51,3.49-5.29,7.81-5.29,12.77-.02,39.38,0,78.75-.01,118.13Z"/></svg>
+    </div>
+  </footer>
+
+</div>
+
+<!-- THANK YOU SCREEN -->
+<div class="thanks" id="thanks-screen">
+  <div class="thanks-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12l5 5L20 7"/>
+    </svg>
+  </div>
+  <h2 class="thanks-title">Thank you for the <em>candour</em></h2>
+  <p class="thanks-sub">Your feedback shapes Module 2. The work is better because you took the time to write back.</p>
+</div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+
+const form = document.getElementById('feedback-form');
+const submitBtn = document.getElementById('submit-btn');
+const errorMsg = document.getElementById('error-msg');
+const formContainer = document.getElementById('form-container');
+const thanksScreen = document.getElementById('thanks-screen');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorMsg.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+
+  const formData = new FormData(form);
+  const payload = {
+    campus: formData.get('campus'),
+    discipline: formData.get('discipline'),
+    overall_value: parseInt(formData.get('overall_value')),
+    day1_value: parseInt(formData.get('day1_value')),
+    day2_value: parseInt(formData.get('day2_value')),
+    most_valuable: (formData.get('most_valuable') || '').trim() || null,
+    least_valuable: (formData.get('least_valuable') || '').trim() || null,
+    one_thing_to_keep: (formData.get('one_thing_to_keep') || '').trim() || null,
+    one_thing_to_change: (formData.get('one_thing_to_change') || '').trim() || null,
+    module2_anticipation: parseInt(formData.get('module2_anticipation')),
+    additional_comment: (formData.get('additional_comment') || '').trim() || null
+  };
+
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/fdp_program_feedback`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    formContainer.style.display = 'none';
+    thanksScreen.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    console.error('Submission error:', err);
+    errorMsg.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit your feedback';
+  }
+});
+</script>
+
+</body>
+</html>
