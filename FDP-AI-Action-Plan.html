@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My AI Teaching Journey · XIME FDP · X-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --parchment:#faf6ec;
+  --parchment-2:#f4ecd8;
+  --parchment-3:#ede2c4;
+  --ink:#1a1408;
+  --ink-80:rgba(26,20,8,0.82);
+  --ink-65:rgba(26,20,8,0.65);
+  --ink-45:rgba(26,20,8,0.45);
+  --ink-25:rgba(26,20,8,0.22);
+  --ink-12:rgba(26,20,8,0.10);
+  --navy:#0F1C2E;
+  --gold:#a8892f;
+  --gold-d:#8b6f23;
+  --gold-l:#c9a84c;
+  --gold-12:rgba(168,137,47,0.12);
+  --rule:#d4c9a8;
+  --rule-soft:#e5dcc4;
+  --error:#a23a2a;
+}
+html{scroll-behavior:smooth}
+body{
+  background:#2e2a20;color:var(--ink);
+  font-family:"DM Sans",sans-serif;-webkit-font-smoothing:antialiased;
+  padding:32px 12px;min-height:100vh;font-size:15px;line-height:1.6;
+}
+.page{
+  max-width:920px;margin:0 auto;background:var(--parchment);
+  padding:48px 50px 40px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.4);
+  background-image:
+    radial-gradient(ellipse at 18% 8%, rgba(168,137,47,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 82% 92%, rgba(168,137,47,0.04) 0%, transparent 55%);
+}
+.head{
+  text-align:center;padding-bottom:24px;border-bottom:1px solid var(--rule);
+  margin-bottom:32px;position:relative;
+}
+.head::after{
+  content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+  width:64px;height:1.5px;background:var(--gold);
+}
+.head-eyebrow{
+  font-family:"DM Mono",monospace;font-size:9.5px;letter-spacing:0.32em;
+  color:var(--gold-d);text-transform:uppercase;margin-bottom:14px;font-weight:500;
+}
+.head-title{
+  font-family:"Cormorant Garamond",serif;font-size:clamp(32px,5vw,46px);
+  font-weight:300;color:var(--ink);line-height:1.1;letter-spacing:-0.01em;margin-bottom:14px;
+}
+.head-title em{font-style:italic;color:var(--gold-d);font-weight:400}
+.head-rule{width:42px;height:1px;background:var(--gold);margin:14px auto;opacity:0.6}
+.head-sub{
+  font-family:"Cormorant Garamond",serif;font-size:17px;font-style:italic;
+  color:var(--ink-65);max-width:560px;margin:0 auto;line-height:1.55;
+}
+
+.part-head{
+  margin-top:48px;margin-bottom:32px;padding:24px 0 18px;
+  border-top:2px solid var(--gold);border-bottom:1px solid var(--rule);text-align:center;
+}
+.part-head:first-of-type{margin-top:0}
+.part-head-eyebrow{
+  font-family:"DM Mono",monospace;font-size:10px;letter-spacing:0.32em;
+  color:var(--gold-d);text-transform:uppercase;margin-bottom:8px;font-weight:500;
+}
+.part-head-title{
+  font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:300;
+  color:var(--ink);line-height:1.15;
+}
+.part-head-title em{font-style:italic;color:var(--gold-d);font-weight:400}
+.part-head-sub{
+  font-family:"Cormorant Garamond",serif;font-size:15px;font-style:italic;
+  color:var(--ink-65);margin-top:8px;max-width:600px;margin-left:auto;margin-right:auto;
+}
+
+.section{margin-bottom:36px}
+.section-label{
+  font-family:"DM Mono",monospace;font-size:10px;letter-spacing:0.28em;
+  color:var(--gold-d);text-transform:uppercase;margin-bottom:8px;font-weight:500;
+  display:flex;align-items:center;gap:0.7rem;
+}
+.section-label::after{content:"";flex:1;height:1px;background:var(--rule-soft)}
+.section-title{
+  font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:500;
+  color:var(--ink);margin-bottom:6px;font-style:italic;
+}
+.section-desc{
+  font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink-65);
+  margin-bottom:18px;font-style:italic;line-height:1.55;
+}
+
+.q{margin-bottom:22px}
+.q-label{
+  display:block;font-family:"Cormorant Garamond",serif;font-size:17px;
+  font-weight:500;color:var(--ink);margin-bottom:10px;line-height:1.35;
+}
+
+input[type="text"],input[type="date"],textarea,select{
+  width:100%;padding:10px 12px;border:1px solid var(--ink-25);background:#fff;
+  border-radius:4px;font-family:"DM Sans",sans-serif;font-size:13.5px;
+  color:var(--ink);line-height:1.5;transition:border-color 0.15s, box-shadow 0.15s;
+}
+input:focus,textarea:focus,select:focus{
+  outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-12);
+}
+textarea{resize:vertical;min-height:60px}
+select{
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%231a1408' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:34px;cursor:pointer;
+}
+
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill-input{position:absolute;opacity:0;pointer-events:none}
+.pill-label{
+  flex:1;min-width:90px;padding:10px 14px;border:1px solid var(--ink-25);
+  background:#fff;border-radius:4px;font-family:"DM Sans",sans-serif;
+  font-size:13.5px;color:var(--ink-80);text-align:center;cursor:pointer;
+  transition:all 0.15s;user-select:none;
+}
+.pill-label:hover{border-color:var(--gold);background:var(--gold-12)}
+.pill-input:checked + .pill-label{
+  background:var(--navy);color:var(--parchment);border-color:var(--navy);font-weight:500;
+}
+
+.tbl-wrap{overflow-x:auto;margin:0 -4px;padding:0 4px}
+.tbl{
+  width:100%;border-collapse:separate;border-spacing:0;
+  font-family:"DM Sans",sans-serif;font-size:13px;background:#fff;
+  border:1px solid var(--ink-25);border-radius:4px;overflow:hidden;
+}
+.tbl th{
+  background:var(--parchment-2);font-family:"DM Mono",monospace;font-size:9.5px;
+  letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-65);font-weight:500;
+  padding:10px 8px;text-align:left;border-bottom:1px solid var(--ink-25);
+}
+.tbl td{padding:5px 6px;border-bottom:1px solid var(--ink-12);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:first-child{
+  text-align:center;color:var(--ink-45);font-family:"DM Mono",monospace;
+  font-size:11px;width:36px;
+}
+.tbl input,.tbl select{
+  border:1px solid transparent;background:transparent;padding:6px 8px;
+  font-size:13px;border-radius:3px;
+}
+.tbl input:hover,.tbl select:hover{border-color:var(--ink-12);background:#fafafa}
+.tbl input:focus,.tbl select:focus{
+  border-color:var(--gold);background:#fff;box-shadow:0 0 0 2px var(--gold-12);
+}
+.tbl-num-cell{width:80px;text-align:center}
+.tbl-total{
+  font-family:"Cormorant Garamond",serif;font-size:18px;font-weight:500;
+  color:var(--gold-d);text-align:center;
+}
+.tbl-check-cell{width:90px;text-align:center}
+.tbl input[type="checkbox"]{width:18px;height:18px;cursor:pointer;accent-color:var(--gold)}
+
+.exp{
+  background:#fff;border:1px solid var(--ink-25);border-left:4px solid var(--gold);
+  border-radius:4px;padding:18px 20px;margin-bottom:18px;
+}
+.exp-head{
+  font-family:"Cormorant Garamond",serif;font-size:20px;font-style:italic;
+  color:var(--gold-d);margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--rule-soft);
+}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.exp-grid .exp-full{grid-column:1/-1}
+.exp-q-label{
+  display:block;font-family:"DM Mono",monospace;font-size:9.5px;
+  letter-spacing:0.18em;color:var(--ink-65);text-transform:uppercase;
+  margin-bottom:5px;font-weight:500;
+}
+
+.commit{
+  background:var(--gold-12);border:1px solid var(--gold);border-radius:6px;
+  padding:22px 24px;margin-top:14px;
+}
+.commit-headline{
+  font-family:"Cormorant Garamond",serif;font-size:18px;font-style:italic;
+  color:var(--ink);line-height:1.5;margin-bottom:18px;
+}
+.commit-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.submit-row{
+  margin-top:48px;padding-top:32px;border-top:1px solid var(--rule);position:relative;
+}
+.submit-row::before{
+  content:"";position:absolute;top:-1px;left:0;width:64px;height:1.5px;background:var(--gold);
+}
+.submit-btn{
+  width:100%;padding:16px 24px;background:var(--navy);color:var(--parchment);
+  border:none;border-radius:4px;font-family:"DM Sans",sans-serif;font-size:15px;
+  font-weight:500;letter-spacing:0.04em;cursor:pointer;
+  transition:background 0.15s, transform 0.05s;
+}
+.submit-btn:hover{background:#1a2c44}
+.submit-btn:active{transform:translateY(1px)}
+.submit-btn:disabled{background:var(--ink-25);cursor:wait}
+
+.error-msg{
+  color:var(--error);font-size:13px;margin-top:12px;text-align:center;
+  font-style:italic;display:none;
+}
+.error-msg.show{display:block}
+.privacy{
+  font-family:"DM Sans",sans-serif;font-size:12px;color:var(--ink-45);
+  text-align:center;margin-top:18px;font-style:italic;
+}
+
+.foot{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  padding-top:24px;margin-top:32px;border-top:1px solid var(--rule-soft);gap:16px;
+}
+.foot-mark{
+  font-family:"DM Mono",monospace;font-size:8.5px;letter-spacing:0.2em;
+  color:var(--ink-45);text-transform:uppercase;font-weight:500;
+}
+.foot-logo svg{height:18px;width:auto;display:block}
+
+.thanks{display:none}
+.thanks.show{display:block}
+.thanks-mark{
+  width:48px;height:48px;margin:0 auto 24px;border:1.5px solid var(--gold);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);
+}
+.thanks-mark svg{width:24px;height:24px}
+.thanks-head{text-align:center;margin-bottom:36px}
+.thanks-title{
+  font-family:"Cormorant Garamond",serif;font-size:36px;font-weight:300;
+  color:var(--ink);margin-bottom:12px;line-height:1.15;
+}
+.thanks-title em{font-style:italic;color:var(--gold-d);font-weight:400}
+.thanks-sub{
+  font-family:"Cormorant Garamond",serif;font-size:17px;font-style:italic;
+  color:var(--ink-65);max-width:520px;margin:0 auto;line-height:1.55;
+}
+.thanks-actions{
+  display:flex;gap:12px;justify-content:center;margin:28px 0 0;
+  padding-top:24px;border-top:1px solid var(--rule);
+}
+.thanks-btn{
+  padding:12px 24px;border-radius:4px;font-family:"DM Sans",sans-serif;
+  font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;
+}
+.thanks-btn.primary{background:var(--navy);color:var(--parchment)}
+.thanks-btn.primary:hover{background:#1a2c44}
+
+.summary{margin-top:36px}
+.summary-section{margin-bottom:32px}
+.summary-section h3{
+  font-family:"Cormorant Garamond",serif;font-size:24px;font-weight:500;
+  color:var(--ink);margin-bottom:14px;font-style:italic;
+  border-bottom:1px solid var(--rule);padding-bottom:8px;
+}
+.summary-section h4{
+  font-family:"DM Mono",monospace;font-size:10px;letter-spacing:0.24em;
+  color:var(--gold-d);text-transform:uppercase;margin:14px 0 8px;font-weight:500;
+}
+.summary-tbl{
+  width:100%;border-collapse:collapse;font-size:13px;background:#fff;
+  border:1px solid var(--ink-12);
+}
+.summary-tbl th,.summary-tbl td{
+  padding:8px 10px;border-bottom:1px solid var(--ink-12);text-align:left;vertical-align:top;
+}
+.summary-tbl th{
+  background:var(--parchment-2);font-family:"DM Mono",monospace;font-size:9.5px;
+  letter-spacing:0.18em;text-transform:uppercase;font-weight:500;
+}
+.summary-text{
+  font-family:"DM Sans",sans-serif;font-size:13.5px;line-height:1.6;
+  color:var(--ink-80);background:#fff;padding:12px 14px;border-radius:4px;
+  border:1px solid var(--ink-12);margin-top:6px;white-space:pre-wrap;
+}
+.summary-meta{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;
+  background:var(--parchment-2);padding:14px 18px;border-radius:4px;
+}
+.summary-meta-item{font-size:13px;color:var(--ink-80)}
+.summary-meta-item strong{
+  display:block;font-family:"DM Mono",monospace;font-size:9.5px;
+  letter-spacing:0.18em;color:var(--gold-d);text-transform:uppercase;
+  margin-bottom:3px;font-weight:500;
+}
+
+@media (max-width:740px){
+  body{padding:12px 4px}
+  .page{padding:30px 18px 28px}
+  .head-title{font-size:30px}
+  .id-grid,.exp-grid,.commit-grid,.summary-meta{grid-template-columns:1fr}
+  .pill-label{font-size:13px;padding:9px 8px;min-width:0}
+  .tbl{font-size:12px;min-width:600px}
+  .foot{flex-direction:column;align-items:flex-start;gap:10px}
+  .thanks-actions{flex-direction:column}
+}
+
+@media print{
+  body{background:#fff;padding:0;margin:0}
+  .page{box-shadow:none;margin:0;max-width:none;padding:24px 28px}
+  #form-container{display:none}
+  .thanks-mark,.thanks-actions{display:none}
+  .thanks{display:block !important}
+  .summary-section{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<div id="form-container">
+
+  <header class="head">
+    <p class="head-eyebrow">FDP Module 1 &nbsp;&middot;&nbsp; AI Tools for Teaching</p>
+    <h1 class="head-title">My AI Teaching <em>Journey</em></h1>
+    <div class="head-rule"></div>
+    <p class="head-sub">A reflective brainstorm and a thirty-day plan. Take your time. There are no right answers, only honest ones.</p>
+  </header>
+
+  <form id="plan-form" autocomplete="off">
+
+    <div class="section">
+      <p class="section-label">About you</p>
+      <div class="q">
+        <label class="q-label">Your details</label>
+        <div class="id-grid">
+          <input type="text" name="name" placeholder="Full name" required maxlength="120">
+          <input type="text" name="institution" placeholder="Institution" required maxlength="120" value="XIME">
+        </div>
+      </div>
+      <div class="q">
+        <label class="q-label">Campus</label>
+        <div class="pills">
+          <input type="radio" id="c-blr" name="campus" value="Bengaluru" class="pill-input" required>
+          <label for="c-blr" class="pill-label">Bengaluru</label>
+          <input type="radio" id="c-chn" name="campus" value="Chennai" class="pill-input">
+          <label for="c-chn" class="pill-label">Chennai</label>
+          <input type="radio" id="c-koc" name="campus" value="Kochi" class="pill-input">
+          <label for="c-koc" class="pill-label">Kochi</label>
+        </div>
+      </div>
+      <div class="q">
+        <label class="q-label" for="discipline">Primary discipline</label>
+        <select id="discipline" name="discipline" required>
+          <option value="">Select your discipline</option>
+          <option value="HR">HR &amp; OB</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Finance">Finance</option>
+          <option value="IT/Analytics">IT &amp; Analytics</option>
+          <option value="Operations">Operations &amp; SCM</option>
+          <option value="Strategy">Strategy</option>
+          <option value="Economics">Economics</option>
+          <option value="Entrepreneurship">Entrepreneurship</option>
+          <option value="General Management">General Management</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="part-head">
+      <p class="part-head-eyebrow">Part A</p>
+      <h2 class="part-head-title">Teaching Activity &amp; <em>AI Use Case Planner</em></h2>
+      <p class="part-head-sub">Take ten minutes to reflect on your regular teaching activities and identify where AI can help. This is a personal brainstorm.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">A1</p>
+      <h3 class="section-title">My Regular Teaching Activities</h3>
+      <p class="section-desc">List the teaching tasks you carry out regularly. Include both in-class and out-of-class activities. Fill as many rows as apply.</p>
+      <div class="tbl-wrap">
+        <table class="tbl" id="tbl-a1">
+          <thead><tr><th>#</th><th>Teaching Activity</th><th>Subject / Course</th><th>How Often?</th><th>Time It Takes</th></tr></thead>
+          <tbody id="a1-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">A2</p>
+      <h3 class="section-title">AI Use Cases I Can Try</h3>
+      <p class="section-desc">Pick five or six activities from A1 and brainstorm how AI tools (ChatGPT, Gemini, Claude, Copilot, Perplexity etc.) could help.</p>
+      <div class="tbl-wrap">
+        <table class="tbl" id="tbl-a2">
+          <thead><tr><th>#</th><th>Teaching Activity</th><th>AI Use Case Idea</th><th>Which Tool?</th><th>Potential Benefit</th></tr></thead>
+          <tbody id="a2-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">A3</p>
+      <h3 class="section-title">Quick Reflection</h3>
+      <div class="q">
+        <label class="q-label" for="a3_most_time">Which teaching task takes the most time and could benefit most from AI assistance?</label>
+        <textarea id="a3_most_time" name="a3_most_time" maxlength="600"></textarea>
+      </div>
+      <div class="q">
+        <label class="q-label" for="a3_hesitation">What is your biggest hesitation about using AI in teaching?</label>
+        <textarea id="a3_hesitation" name="a3_hesitation" maxlength="600"></textarea>
+      </div>
+      <div class="q">
+        <label class="q-label" for="a3_one_thing">If you could only try one AI task in the next month, what would it be?</label>
+        <textarea id="a3_one_thing" name="a3_one_thing" maxlength="600"></textarea>
+      </div>
+    </div>
+
+    <div class="part-head">
+      <p class="part-head-eyebrow">Part B</p>
+      <h2 class="part-head-title">My 30-Day <em>AI Action Plan</em></h2>
+      <p class="part-head-sub">The vacation period is the ideal time to explore AI tools without semester pressure. Set clear, achievable goals for the next thirty days.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">B1</p>
+      <h3 class="section-title">Prioritisation Matrix</h3>
+      <p class="section-desc">Take the use cases from A2. Rate each on Ease and Value. Total auto-calculates. Mark your Top 3 to attempt.</p>
+      <div class="tbl-wrap">
+        <table class="tbl" id="tbl-b1">
+          <thead><tr><th>#</th><th>AI Use Case</th><th class="tbl-num-cell">Ease (1-5)</th><th class="tbl-num-cell">Value (1-5)</th><th class="tbl-num-cell">Total</th><th class="tbl-check-cell">Top 3</th></tr></thead>
+          <tbody id="b1-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">B2</p>
+      <h3 class="section-title">My 30-Day Experiment Plan</h3>
+      <p class="section-desc">For each of your Top 3 selected use cases, fill in the details below to create a concrete action plan.</p>
+
+      <div class="exp">
+        <p class="exp-head">Experiment One</p>
+        <div class="exp-grid">
+          <div class="exp-full"><label class="exp-q-label">AI Use Case</label><input type="text" name="exp1_use_case" maxlength="200"></div>
+          <div><label class="exp-q-label">AI Tool I Will Use</label><input type="text" name="exp1_tool" maxlength="100"></div>
+          <div><label class="exp-q-label">The Course / Context</label><input type="text" name="exp1_course" maxlength="200"></div>
+          <div class="exp-full"><label class="exp-q-label">Specific Action I Will Take</label><textarea name="exp1_action" maxlength="500" rows="2"></textarea></div>
+          <div><label class="exp-q-label">Target Date to Complete</label><input type="date" name="exp1_target_date"></div>
+          <div><label class="exp-q-label">How I Will Know It Worked</label><input type="text" name="exp1_success" maxlength="200"></div>
+        </div>
+      </div>
+
+      <div class="exp">
+        <p class="exp-head">Experiment Two</p>
+        <div class="exp-grid">
+          <div class="exp-full"><label class="exp-q-label">AI Use Case</label><input type="text" name="exp2_use_case" maxlength="200"></div>
+          <div><label class="exp-q-label">AI Tool I Will Use</label><input type="text" name="exp2_tool" maxlength="100"></div>
+          <div><label class="exp-q-label">The Course / Context</label><input type="text" name="exp2_course" maxlength="200"></div>
+          <div class="exp-full"><label class="exp-q-label">Specific Action I Will Take</label><textarea name="exp2_action" maxlength="500" rows="2"></textarea></div>
+          <div><label class="exp-q-label">Target Date to Complete</label><input type="date" name="exp2_target_date"></div>
+          <div><label class="exp-q-label">How I Will Know It Worked</label><input type="text" name="exp2_success" maxlength="200"></div>
+        </div>
+      </div>
+
+      <div class="exp">
+        <p class="exp-head">Experiment Three</p>
+        <div class="exp-grid">
+          <div class="exp-full"><label class="exp-q-label">AI Use Case</label><input type="text" name="exp3_use_case" maxlength="200"></div>
+          <div><label class="exp-q-label">AI Tool I Will Use</label><input type="text" name="exp3_tool" maxlength="100"></div>
+          <div><label class="exp-q-label">The Course / Context</label><input type="text" name="exp3_course" maxlength="200"></div>
+          <div class="exp-full"><label class="exp-q-label">Specific Action I Will Take</label><textarea name="exp3_action" maxlength="500" rows="2"></textarea></div>
+          <div><label class="exp-q-label">Target Date to Complete</label><input type="date" name="exp3_target_date"></div>
+          <div><label class="exp-q-label">How I Will Know It Worked</label><input type="text" name="exp3_success" maxlength="200"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">B3</p>
+      <h3 class="section-title">My Commitment &amp; Sharing Plan</h3>
+      <div class="commit">
+        <p class="commit-headline">I commit to trying the above AI experiments during my vacation, and I will share my findings with a colleague.</p>
+        <div class="commit-grid">
+          <div><label class="exp-q-label">Sharing Date</label><input type="date" name="commit_date" required></div>
+          <div><label class="exp-q-label">Colleague / Buddy</label><input type="text" name="commit_buddy" maxlength="120" required></div>
+          <div class="exp-full" style="grid-column:1/-1"><label class="exp-q-label">What I Will Share</label><textarea name="commit_what" maxlength="500" rows="2" required></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="submit-btn" id="submit-btn">Submit my plan</button>
+      <p class="error-msg" id="error-msg">Something went wrong. Please try again, or let Girish know.</p>
+      <p class="privacy">Your plan will be saved and visible to you on the next screen for printing.</p>
+    </div>
+
+  </form>
+
+  <footer class="foot">
+    <p class="foot-mark">X-Hub &nbsp;&middot;&nbsp; XIME &nbsp;&middot;&nbsp; FDP Module 1</p>
+    <div class="foot-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="150 85 1325 406" role="img" aria-label="XIME"><path fill="#0F1C2E" d="M155.07,424.69c4.7-.4,9.4-1.13,14.1-1.14,7.32-.01,13.75-2.47,19.99-5.94,4.85-2.7,8.85-6.38,12.76-10.24,7.29-7.2,14.88-14.11,21.98-21.5,5.82-6.06,11.1-12.63,16.62-18.98,1.73-1.98,3.42-4,5.23-5.91,5.09-5.36,10.21-10.69,15.35-16,6.83-7.07,13.7-14.09,20.51-21.17,3.22-3.34,6.43-6.69,9.51-10.17,5.72-6.45,11.35-12.98,16.98-19.51,2.61-3.02,2.83-5.32.31-8.45-3.36-4.16-6.36-8.68-10.86-11.8-.48-.34-.74-1-1.11-1.5-5.42-7.35-10.74-14.77-16.29-22.02-6.82-8.92-13.78-17.73-20.79-26.51-4.98-6.24-10.09-12.38-15.24-18.47-7.13-8.41-14.1-16.93-20.8-25.71-4.27-5.59-8.77-11.03-13.82-16-6.29-6.2-13.79-9.48-22.45-10.27-6.07-.55-12.16-.86-18.23-1.31-.82-.06-1.62-.41-2.44-.54-1.3-.21-1.77-.98-1.72-2.22.03-.74,0-1.48,0-2.22,0-15.99.03-31.97-.03-47.96,0-2.44.29-4.64,2.69-6.64h2.58c21.6,0,43.21-.54,64.79.13,29.51.91,59.03-.27,88.52.66,15.23.48,30.43.12,45.65.48.53.01,1.05.07,1.79.12.12.68.33,1.37.34,2.06.03,4.13.39,8.3-.06,12.38-1.07,9.71-.21,19.43-.58,29.14-.18,4.72-.59,9.43-.93,14.55-2.35.23-4.81.61-7.28.69-7.8.28-15.61.43-23.41.68-2.15.07-2.46.51-2.67,2.66-.28,2.85,1.01,5.18,2.54,7.3,3.32,4.6,6.8,9.08,10.31,13.55,3.37,4.3,6.84,8.52,10.3,12.75,3.27,3.99,6.69,7.85,9.85,11.92,3.34,4.3,6.44,8.78,9.93,13.56.13-.03.91-.02,1.41-.4,1.59-1.21,3.16-2.48,4.58-3.88,4.38-4.3,8.82-8.56,13.01-13.04,5.83-6.23,11.53-12.59,17.15-19.02,4.29-4.91,8.4-9.99,12.49-15.07,1.18-1.46,2.19-3.12,2.99-4.83,1.12-2.41.39-4.47-2.06-5.42-2.33-.89-4.8-1.72-7.26-1.87-3.66-.23-7.36.18-11.04.28-2.96.08-5.92.25-8.87.1-1.97-.1-2.7-1.11-2.71-3.17-.04-6.46-.5-12.96.1-19.36.88-9.31.15-18.59.54-27.87.12-2.92.55-5.83.85-8.91h458.5c4.25,15.13,8.48,30.26,12.77,45.37,2.99,10.52,6.11,21,9.09,31.51,3.79,13.35,7.47,26.73,11.24,40.08,2.97,10.52,6.02,21.03,9.04,31.54,3.02,10.51,6.1,21,9.01,31.55.69,2.51.61,5.22,1.17,7.78,1.15,5.23,2.53,10.41,3.77,15.62,1.46,6.12,2.85,12.25,4.31,18.36.22.9.61,1.77.93,2.68,1.78.35,2.24-.67,2.59-2.03,1.19-4.56,2.45-9.1,3.69-13.65.41-1.52.86-3.02,1.28-4.54,3.36-12.37,6.66-24.75,10.09-37.1,3.91-14.08,7.88-28.14,11.93-42.18,2.88-10.01,5.93-19.97,8.89-29.95,3.19-10.79,6.32-21.6,9.56-32.38,1.72-5.74,3.66-11.42,5.42-17.15,3.27-10.64,6.48-21.29,9.75-31.93,1.42-4.62,2.91-9.22,4.39-13.82.19-.58.57-1.11.96-1.85h3.46c136.78,0,273.56.02,410.34-.06,5.95,0,8.27,2.42,9.67,7.1.48,1.6.93,3.24,1.14,4.89.22,1.7-.38,3.59,1.77,4.58.34.16.41.94.58,1.43,2.64,7.54,5.23,15.09,7.93,22.61,3.88,10.8,7.86,21.57,11.76,32.36,1.72,4.76,3.3,9.56,4.98,14.34,3.57,10.14,7.11,20.29,10.79,30.39.94,2.58,1.05,5.15.94,7.79-.1,2.42-1.07,3.52-3.51,4.11-6.79,1.64-13.12,4.49-19.43,7.38-8.05,3.7-16.45,6.41-24.92,8.91-1.19.35-2.46.39-3.91.61-.26-.62-.55-1.26-.8-1.91-2.28-6-4.86-11.85-8.03-17.46-2.64-4.67-4.81-9.61-8.06-13.93-1.13-1.51-2.18-3.11-3.46-4.49-1.95-2.11-2.99-4.74-4.47-7.12-3.56-5.74-8.46-10.13-13.87-14-8.8-6.3-18.45-11.03-28.67-14.48-7.27-2.45-14.72-4.02-22.54-3.96-22.97.16-45.95.06-68.92.06-1.35,0-2.7,0-3.95,0-.72,2.75-.84,84.66-.18,88.44,1.05.06,2.18.17,3.3.17,10.9.01,21.81-.06,32.71.04,3.99.04,7.19-1.58,9.95-4.15,4.31-4.02,6.98-8.92,7.34-14.93.16-2.62.49-5.23.59-7.85.26-7.17.42-14.34.69-21.51.05-1.24.27-2.56.76-3.69.92-2.14,2.87-2.54,5.02-2.54,14.4.02,28.8.01,43.19.01.42,0,.85.01,1.27.01,1.44-.01,2.14.69,2.11,2.14-.02.85,0,1.69,0,2.54,0,22.87-.54,45.75.14,68.6.85,28.46.11,56.91.52,85.36.02,1.14.35,2.27.48,3.41.22,1.89.29,3.73-.63,5.55-1.2,2.37-2.68,3.49-5.61,3.45-14.18-.19-28.37-.08-42.56-.09-4.08,0-4.7-.63-4.73-4.83-.02-3.07.07-6.14-.02-9.21-.17-6.22-.12-12.47-.72-18.65-.53-5.42-1.51-10.86-4.89-15.48-2.81-3.84-6.49-6.32-11.19-7.07-2.48-.4-5.02-.62-7.53-.64-8.89-.07-17.79-.03-26.68-.03-1.15,0-2.3,0-3.64,0-.12,1.08-.29,1.89-.29,2.71-.01,32.19-.02,64.37,0,96.56,0,3.91,1.91,5.78,5.7,5.91,1.03.03,2.05.34,3.09.47,3.95.49,7.9,1.3,11.86,1.36,11.85.18,23.71.13,35.57.04,5.79-.05,11.61-.13,17.37-.7,4.45-.45,8.9-1.43,13.23-2.63,11.56-3.22,22.74-7.52,33.51-12.84,4.18-2.06,7.98-4.72,11.47-7.74,3.98-3.46,7.89-7.03,11.49-10.88,3.36-3.6,6.38-7.54,9.34-11.49,3.46-4.61,6.74-9.37,10.03-14.11,5.88-8.46,9.81-17.82,12.79-27.64.91-3,2.21-5.91,3.56-8.74,1.41-2.95,3.07-3.62,6.2-2.65,2.1.66,4.13,1.55,6.16,2.41,4.75,2.02,9.58,3.73,14.75,4.33.39.04,1.01.19,1.1.43.75,2.1,2.78,2.08,4.38,2.66,6.12,2.23,12.28,4.33,18.41,6.53,2.43.87,2.65,1.5,2.34,4.2-1.05,9.07-4.21,17.55-7.16,26.11-3.05,8.86-5.88,17.79-8.81,26.69-1.78,5.41-3.51,10.83-5.4,16.2-2.34,6.66-4.82,13.27-7.25,19.9-1.38,3.76-2.81,7.5-4.14,11.28-.66,1.88-1.09,3.84-1.72,5.74-3.19,9.57-6.42,19.13-9.63,28.7-1.17,3.49-2.35,6.98-3.55,10.46-1,2.9-1.05,2.94-3.98,2.97-1.27.01-2.54,0-3.81,0-128.1,0-256.2-.09-384.3.14-12.77.02-25.56.48-38.34.43-3.32-.01-6.69-.63-9.95-1.34-3.49-.76-4.39-2.2-4.39-5.9,0-16.52-.01-33.03,0-49.55,0-3.88,1.02-4.74,4.88-4.69,6.14.08,12.29.29,18.42-.06,4.36-.25,8.73-1.12,12.84-2.81,1.88-.77,3.54-1.79,4.61-3.66.51-.89,1.26-1.78,2.12-2.33,2.07-1.32,2.26-3.18,2.26-5.4-.05-38.22.52-76.45-.2-114.66-.66-35.02-.08-70.04-.48-105.05-.01-.94-.1-1.87-.74-2.95-.7,2.29-1.46,4.56-2.11,6.86-2.32,8.27-4.62,16.55-6.9,24.83-3.01,10.91-5.99,21.83-9.02,32.73-2.02,7.27-4.13,14.51-6.18,21.77-1.51,5.35-2.98,10.7-4.49,16.05-2.13,7.56-4.26,15.13-6.42,22.68-4.06,14.21-8.18,28.4-12.2,42.62-4.4,15.53-8.77,31.06-13.05,46.62-3.76,13.64-7.44,27.3-11.06,40.97-3.44,12.96-6.76,25.95-10.13,38.93-.78,3-1.59,3.76-4.51,3.76-17.57.02-35.15,0-52.72,0-.31,0-.62-.1-.54-.09-.53-2.39-.93-4.62-1.54-6.8-2.82-10.1-5.67-20.19-8.57-30.27-2.67-9.27-5.46-18.51-8.11-27.79-3.26-11.4-6.43-22.82-9.67-34.22-2.73-9.59-5.53-19.15-8.27-28.74-3.2-11.2-6.32-22.41-9.54-33.6-3.1-10.79-6.34-21.54-9.42-32.34-2.62-9.17-5.09-18.39-7.64-27.58-2.3-8.28-4.64-16.56-6.93-24.84-2.57-9.3-5.12-18.6-7.68-27.9-1.16-4.25-2.3-8.5-3.48-12.74-.13-.46-.46-.86-1.07-1.98-.1,1.75-.2,2.75-.2,3.75,0,68.61-.01,137.22,0,205.82,0,4.53,1.26,8.75,4.01,12.38,2.5,3.3,6.22,4.63,10.09,5.35,2.67.49,5.43.62,8.15.67,5.5.1,11.01.05,16.51.02,1.35,0,2.71-.18,4.37-.3,1.34,1.91,1.89,4.41,1.91,6.87.1,15.88.06,31.76.02,47.64,0,1.13-.29,2.3-.65,3.38-.82,2.51-1.78,3.18-4.38,3.29-.74.03-1.48,0-2.22,0-151.81,0-303.63,0-455.44,0-.64,0-1.27,0-1.91,0-3.09-.02-4.16-.76-4.79-3.8-.59-2.87-1.13-5.78-1.32-8.7-.37-5.68-.71-11.38-.64-17.06.13-9.81.58-19.62.9-29.64,2.57-1.85,5.67-2.38,9-2.34,8.05.08,16.09.03,24.14.03,1.15,0,2.3,0,3.63,0,.63-3.48.98-6.71-1.09-9.59-4.66-6.5-9.33-13-14.16-19.38-3.87-5.12-7.81-10.19-12-15.04-3.28-3.79-6.23-7.9-10.61-10.74-2.02-1.31-3.31-3.77-4.84-5.78-4.21-5.52-8.37-11.08-12.57-16.61-.23-.3-.66-.45-1.04-.71-2.19,2.27-4.35,4.39-6.37,6.64-2.74,3.05-5.33,6.24-8.08,9.28-3.11,3.44-6.37,6.76-9.5,10.19-4.12,4.51-8.1,9.16-12.31,13.59-3.19,3.36-6.69,6.43-9.95,9.72-2.9,2.92-5.62,6.01-8.5,8.95-2.69,2.75-4.85,5.85-6.49,9.3-1.1,2.31-1.69,4.73-.62,7.26.8,1.91,1.96,3.01,4.3,2.97,7.83-.12,15.67-.05,23.5-.05.74,0,1.49-.03,2.22.03,1.48.11,2.31.93,2.38,2.43.04.74.02,1.48.02,2.22,0,17.36,0,34.73,0,52.09,0,.85.14,1.74-.09,2.52-.17.59-.74,1.25-1.29,1.49-.95.4-2.02.64-3.05.7-4.94.27-9.89.46-14.83.67-5.05.22-10.14.91-15.15.54-14.05-1.03-28.13.13-42.15-.64-19.03-1.04-38.06-.57-57.08-.36-8.53.1-17.09.38-25.64.38-3.42,0-6.84-.75-10.25-1.16,0-19.91,0-39.81,0-59.72ZM652.38,289.34c0,39.79.04,79.59-.06,119.38-.01,3.8.87,7.05,3.18,9.96,2.23,2.81,4.96,4.79,8.74,4.79,17.46,0,34.92,0,52.38,0,.83,0,1.73.02,2.49-.27,6.13-2.3,11.78-8.94,11.78-16.43-.06-76.1-.04-152.19-.04-228.29,0-.85,0-1.7-.07-2.54-.38-4.18-.97-8.35-1.12-12.53-.07-2.07-.8-3.65-1.99-5.14-.72-.9-1.54-1.76-2.45-2.48-3.16-2.51-6.53-4.87-10.71-4.9-16.3-.11-32.6-.13-48.89,0-4.51.04-8,2.38-10.27,6.33-2.1,3.64-2.97,7.59-2.97,11.78,0,40.11,0,80.22,0,120.34ZM554.03,290.26c0-36.94.02-73.87-.03-110.81,0-3.88-.13-7.81-.7-11.64-.5-3.4-1.47-6.77-2.66-10-.9-2.43-2.57-4.07-5.76-3.88-3.81.23-7.35,1.09-10.38,3.27-4.86,3.5-9.49,7.3-14.24,10.96-1.33,1.02-2.59,2.45-4.09,2.83-1.86.46-2.96,1.58-4.01,2.85-4.48,5.43-8.71,11.07-13.36,16.34-5.64,6.41-11.61,12.53-17.42,18.78-2.44,2.62-4.86,5.26-7.28,7.91-5.55,6.06-11.02,12.2-16.65,18.19-5.78,6.16-11.7,12.19-17.59,18.25-2.28,2.35-4.68,4.6-6.94,6.98-2.32,2.44-4.61,4.92-6.8,7.48-1.77,2.08-1.7,2.82-.23,5.31,4.92,8.38,11.51,15.48,17.59,22.96,3.11,3.83,6.47,7.48,9.3,11.5,3.34,4.75,7.04,9.15,11.05,13.32,2.56,2.65,5.02,5.37,6.42,8.89.38.96,1.06,1.82,1.7,2.65,5.66,7.3,11.33,14.59,17.02,21.86,3.49,4.47,6.99,8.92,10.53,13.35,3.8,4.76,7.64,9.49,11.5,14.21,2.86,3.49,5.73,6.98,8.68,10.4,2.2,2.55,4.69,4.87,6.76,7.52,4.6,5.87,10.22,10.59,16.27,14.84,1.71,1.2,3.66,2.11,5.59,2.94,1.78.76,3.34.24,3.69-1.21.88-3.65,2.11-7.18,2.1-11.09-.1-38.31-.06-76.63-.06-114.94ZM1116.52,288.94c0,39.27.02,78.54-.04,117.81,0,2.73.54,5.29,1.65,7.64,1.93,4.11,4.63,7.4,9.95,6.56.62-.1,1.27-.05,1.9,0,2.76.19,4.61-1.16,5.92-3.44,2.47-4.28,3.77-8.94,3.77-13.83.04-78.12.03-156.23.02-234.35,0-4.17-1.57-7.81-4.33-10.88-3.91-4.36-9.4-4.53-13.54-.4-3.51,3.49-5.29,7.81-5.29,12.77-.02,39.38,0,78.75-.01,118.13Z"/></svg>
+    </div>
+  </footer>
+
+</div>
+
+<div class="thanks" id="thanks-screen">
+  <div class="thanks-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12l5 5L20 7"/>
+    </svg>
+  </div>
+  <div class="thanks-head">
+    <h2 class="thanks-title">Your plan is <em>committed</em></h2>
+    <p class="thanks-sub">Your AI Teaching Journey for the next thirty days is below. Print this page or save as PDF for your reference. We will see what you have done when we reconvene.</p>
+  </div>
+  <div class="summary" id="summary-content"></div>
+  <div class="thanks-actions">
+    <button class="thanks-btn primary" onclick="window.print()">Print or save as PDF</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+
+const A1_ROWS = 8, A2_ROWS = 6, B1_ROWS = 6;
+
+function buildA1(){
+  const tbody = document.getElementById('a1-body');
+  let html = '';
+  for(let i=1;i<=A1_ROWS;i++){
+    html += `<tr>
+      <td>${i}</td>
+      <td><input type="text" name="a1_activity_${i}" maxlength="200"></td>
+      <td><input type="text" name="a1_course_${i}" maxlength="120"></td>
+      <td><input type="text" name="a1_frequency_${i}" maxlength="60"></td>
+      <td><input type="text" name="a1_time_${i}" maxlength="60"></td>
+    </tr>`;
+  }
+  tbody.innerHTML = html;
+}
+function buildA2(){
+  const tbody = document.getElementById('a2-body');
+  let html = '';
+  for(let i=1;i<=A2_ROWS;i++){
+    html += `<tr>
+      <td>${i}</td>
+      <td><input type="text" name="a2_activity_${i}" maxlength="200"></td>
+      <td><input type="text" name="a2_use_case_${i}" maxlength="200"></td>
+      <td><input type="text" name="a2_tool_${i}" maxlength="80"></td>
+      <td><input type="text" name="a2_benefit_${i}" maxlength="200"></td>
+    </tr>`;
+  }
+  tbody.innerHTML = html;
+}
+function buildB1(){
+  const tbody = document.getElementById('b1-body');
+  let html = '';
+  for(let i=1;i<=B1_ROWS;i++){
+    html += `<tr>
+      <td>${i}</td>
+      <td><input type="text" name="b1_use_case_${i}" maxlength="200"></td>
+      <td class="tbl-num-cell"><select name="b1_ease_${i}" data-row="${i}" class="b1-score">
+        <option value="">-</option><option value="1">1</option><option value="2">2</option>
+        <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+      </select></td>
+      <td class="tbl-num-cell"><select name="b1_value_${i}" data-row="${i}" class="b1-score">
+        <option value="">-</option><option value="1">1</option><option value="2">2</option>
+        <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+      </select></td>
+      <td class="tbl-total" id="b1_total_${i}">-</td>
+      <td class="tbl-check-cell"><input type="checkbox" name="b1_top3_${i}" class="b1-top3"></td>
+    </tr>`;
+  }
+  tbody.innerHTML = html;
+
+  document.querySelectorAll('.b1-score').forEach(el => {
+    el.addEventListener('change', () => {
+      const row = el.dataset.row;
+      const ease = parseInt(document.querySelector(`[name="b1_ease_${row}"]`).value) || 0;
+      const val = parseInt(document.querySelector(`[name="b1_value_${row}"]`).value) || 0;
+      const total = ease + val;
+      document.getElementById(`b1_total_${row}`).textContent = total > 0 ? total : '-';
+    });
+  });
+  document.querySelectorAll('.b1-top3').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if(document.querySelectorAll('.b1-top3:checked').length > 3){
+        cb.checked = false;
+        alert('Top 3 only. Uncheck one before selecting another.');
+      }
+    });
+  });
+}
+buildA1(); buildA2(); buildB1();
+
+const form = document.getElementById('plan-form');
+const submitBtn = document.getElementById('submit-btn');
+const errorMsg = document.getElementById('error-msg');
+const formContainer = document.getElementById('form-container');
+const thanksScreen = document.getElementById('thanks-screen');
+const summaryContent = document.getElementById('summary-content');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorMsg.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+
+  const fd = new FormData(form);
+
+  const a1 = [];
+  for(let i=1;i<=A1_ROWS;i++){
+    const activity = (fd.get(`a1_activity_${i}`) || '').trim();
+    if(!activity) continue;
+    a1.push({
+      activity, course: (fd.get(`a1_course_${i}`) || '').trim(),
+      frequency: (fd.get(`a1_frequency_${i}`) || '').trim(),
+      time: (fd.get(`a1_time_${i}`) || '').trim()
+    });
+  }
+  const a2 = [];
+  for(let i=1;i<=A2_ROWS;i++){
+    const activity = (fd.get(`a2_activity_${i}`) || '').trim();
+    const useCase = (fd.get(`a2_use_case_${i}`) || '').trim();
+    if(!activity && !useCase) continue;
+    a2.push({
+      activity, use_case: useCase,
+      tool: (fd.get(`a2_tool_${i}`) || '').trim(),
+      benefit: (fd.get(`a2_benefit_${i}`) || '').trim()
+    });
+  }
+  const b1 = [];
+  for(let i=1;i<=B1_ROWS;i++){
+    const useCase = (fd.get(`b1_use_case_${i}`) || '').trim();
+    if(!useCase) continue;
+    const ease = parseInt(fd.get(`b1_ease_${i}`)) || null;
+    const val = parseInt(fd.get(`b1_value_${i}`)) || null;
+    b1.push({
+      use_case: useCase, ease, value: val,
+      total: (ease && val) ? ease + val : null,
+      top3: !!fd.get(`b1_top3_${i}`)
+    });
+  }
+
+  const payload = {
+    name: fd.get('name').trim(),
+    institution: fd.get('institution').trim(),
+    campus: fd.get('campus'),
+    discipline: fd.get('discipline'),
+    a1_activities: a1,
+    a2_use_cases: a2,
+    a3_most_time: (fd.get('a3_most_time') || '').trim() || null,
+    a3_hesitation: (fd.get('a3_hesitation') || '').trim() || null,
+    a3_one_thing: (fd.get('a3_one_thing') || '').trim() || null,
+    b1_matrix: b1,
+    experiment_1: {
+      use_case: (fd.get('exp1_use_case') || '').trim(),
+      tool: (fd.get('exp1_tool') || '').trim(),
+      course: (fd.get('exp1_course') || '').trim(),
+      action: (fd.get('exp1_action') || '').trim(),
+      target_date: fd.get('exp1_target_date') || null,
+      success: (fd.get('exp1_success') || '').trim()
+    },
+    experiment_2: {
+      use_case: (fd.get('exp2_use_case') || '').trim(),
+      tool: (fd.get('exp2_tool') || '').trim(),
+      course: (fd.get('exp2_course') || '').trim(),
+      action: (fd.get('exp2_action') || '').trim(),
+      target_date: fd.get('exp2_target_date') || null,
+      success: (fd.get('exp2_success') || '').trim()
+    },
+    experiment_3: {
+      use_case: (fd.get('exp3_use_case') || '').trim(),
+      tool: (fd.get('exp3_tool') || '').trim(),
+      course: (fd.get('exp3_course') || '').trim(),
+      action: (fd.get('exp3_action') || '').trim(),
+      target_date: fd.get('exp3_target_date') || null,
+      success: (fd.get('exp3_success') || '').trim()
+    },
+    commit_date: fd.get('commit_date') || null,
+    commit_buddy: (fd.get('commit_buddy') || '').trim(),
+    commit_what: (fd.get('commit_what') || '').trim()
+  };
+
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/fdp_ai_action_plan`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    renderSummary(payload);
+    formContainer.style.display = 'none';
+    thanksScreen.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(err){
+    console.error('Submission error:', err);
+    errorMsg.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit my plan';
+  }
+});
+
+function esc(s){
+  if(s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+}
+function txt(s){ return s ? esc(s) : '<span style="color:var(--ink-45);font-style:italic">-</span>'; }
+function dt(d){ if(!d) return '-'; try{ return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}); }catch(e){ return d; } }
+
+function renderSummary(p){
+  const a1Rows = p.a1_activities.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.activity)}</td><td>${esc(r.course)}</td><td>${esc(r.frequency)}</td><td>${esc(r.time)}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--ink-45);font-style:italic">no entries</td></tr>';
+  const a2Rows = p.a2_use_cases.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.activity)}</td><td>${esc(r.use_case)}</td><td>${esc(r.tool)}</td><td>${esc(r.benefit)}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--ink-45);font-style:italic">no entries</td></tr>';
+  const b1Rows = p.b1_matrix.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.use_case)}</td><td style="text-align:center">${r.ease ?? '-'}</td><td style="text-align:center">${r.value ?? '-'}</td><td style="text-align:center;font-weight:600">${r.total ?? '-'}</td><td style="text-align:center">${r.top3 ? '✓' : ''}</td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--ink-45);font-style:italic">no entries</td></tr>';
+
+  function expBlock(label, e){
+    return `
+      <h4>${label}</h4>
+      <table class="summary-tbl">
+        <tr><th style="width:34%">AI Use Case</th><td>${txt(e.use_case)}</td></tr>
+        <tr><th>AI Tool</th><td>${txt(e.tool)}</td></tr>
+        <tr><th>Course / Context</th><td>${txt(e.course)}</td></tr>
+        <tr><th>Specific Action</th><td>${txt(e.action)}</td></tr>
+        <tr><th>Target Date</th><td>${dt(e.target_date)}</td></tr>
+        <tr><th>How I Will Know It Worked</th><td>${txt(e.success)}</td></tr>
+      </table>`;
+  }
+
+  summaryContent.innerHTML = `
+    <div class="summary-meta">
+      <div class="summary-meta-item"><strong>Name</strong>${esc(p.name)}</div>
+      <div class="summary-meta-item"><strong>Institution</strong>${esc(p.institution)}</div>
+      <div class="summary-meta-item"><strong>Campus</strong>${esc(p.campus)}</div>
+      <div class="summary-meta-item"><strong>Discipline</strong>${esc(p.discipline)}</div>
+    </div>
+    <div class="summary-section">
+      <h3>Part A · Reflection</h3>
+      <h4>A1 · Regular Teaching Activities</h4>
+      <table class="summary-tbl"><thead><tr><th>#</th><th>Activity</th><th>Course</th><th>Frequency</th><th>Time</th></tr></thead><tbody>${a1Rows}</tbody></table>
+      <h4>A2 · AI Use Cases I Can Try</h4>
+      <table class="summary-tbl"><thead><tr><th>#</th><th>Activity</th><th>Use Case</th><th>Tool</th><th>Benefit</th></tr></thead><tbody>${a2Rows}</tbody></table>
+      <h4>A3 · Quick Reflection</h4>
+      <p style="font-size:13px;color:var(--ink-65);font-style:italic;margin-bottom:4px">Most time-consuming task that could benefit from AI</p>
+      <div class="summary-text">${esc(p.a3_most_time || '')}</div>
+      <p style="font-size:13px;color:var(--ink-65);font-style:italic;margin:14px 0 4px">Biggest hesitation about using AI in teaching</p>
+      <div class="summary-text">${esc(p.a3_hesitation || '')}</div>
+      <p style="font-size:13px;color:var(--ink-65);font-style:italic;margin:14px 0 4px">If I could only try one AI task next month</p>
+      <div class="summary-text">${esc(p.a3_one_thing || '')}</div>
+    </div>
+    <div class="summary-section">
+      <h3>Part B · 30-Day Action Plan</h3>
+      <h4>B1 · Prioritisation Matrix</h4>
+      <table class="summary-tbl"><thead><tr><th>#</th><th>Use Case</th><th style="text-align:center">Ease</th><th style="text-align:center">Value</th><th style="text-align:center">Total</th><th style="text-align:center">Top 3</th></tr></thead><tbody>${b1Rows}</tbody></table>
+      <h4>B2 · The Three Experiments</h4>
+      ${expBlock('Experiment One', p.experiment_1)}
+      ${expBlock('Experiment Two', p.experiment_2)}
+      ${expBlock('Experiment Three', p.experiment_3)}
+      <h4>B3 · My Commitment</h4>
+      <table class="summary-tbl">
+        <tr><th style="width:34%">Sharing Date</th><td>${dt(p.commit_date)}</td></tr>
+        <tr><th>Colleague / Buddy</th><td>${txt(p.commit_buddy)}</td></tr>
+        <tr><th>What I Will Share</th><td>${txt(p.commit_what)}</td></tr>
+      </table>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
