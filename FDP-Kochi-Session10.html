@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Session 10 — Apply It to Yourself</title>
+<title>Session 10 - Apply It to Yourself</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -79,6 +79,13 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
 .fi{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease,transform 0.6s ease}
 .fi.v{opacity:1;transform:translateY(0)}
 .fi.d1{transition-delay:0.1s}.fi.d2{transition-delay:0.22s}.fi.d3{transition-delay:0.34s}.fi.d4{transition-delay:0.46s}.fi.d5{transition-delay:0.58s}
+
+/* DOWNLOAD BUTTON */
+.dl-block{margin-top:1.6rem;text-align:center}
+.dl-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;background:transparent;color:var(--egg);border:1px solid var(--gold-40);border-radius:4px;font-family:"DM Sans",sans-serif;font-size:0.78rem;font-weight:500;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;transition:all 0.2s}
+.dl-btn:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.dl-btn svg{width:14px;height:14px}
+.dl-note{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:2.5px;color:var(--egg-35);text-transform:uppercase;margin-top:0.9rem;font-weight:500}
 </style>
 </head>
 <body>
@@ -95,7 +102,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="dot" onclick="goTo(8)"></div>
 </div>
 
-<!-- S0: TITLE — moss -->
+<!-- S0: TITLE - moss -->
 <div class="room moss" id="s0">
   <div class="wm-m">10</div>
   <div class="centered" style="gap:0">
@@ -109,7 +116,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc">01 / 09</div>
 </div>
 
-<!-- S1: THE ANCHOR — moss -->
+<!-- S1: THE ANCHOR - moss -->
 <div class="room moss" id="s1">
   <div class="wm-m">?</div>
   <div class="centered" style="gap:0">
@@ -123,7 +130,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc">02 / 09</div>
 </div>
 
-<!-- S2: CHOOSE YOUR DECISION — egg -->
+<!-- S2: CHOOSE YOUR DECISION - egg -->
 <div class="room egg" id="s2">
   <div class="wm-e">1</div>
   <div class="left" style="max-width:780px">
@@ -142,7 +149,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc-e">03 / 09</div>
 </div>
 
-<!-- S3: PROBABILITY CHECK — egg -->
+<!-- S3: PROBABILITY CHECK - egg -->
 <div class="room egg" id="s3">
   <div class="wm-e">2</div>
   <div class="left" style="max-width:780px">
@@ -164,7 +171,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc-e">04 / 09</div>
 </div>
 
-<!-- S4: SKEPTIC'S TEST — egg -->
+<!-- S4: SKEPTIC'S TEST - egg -->
 <div class="room egg" id="s4">
   <div class="wm-e">3</div>
   <div class="left" style="max-width:780px">
@@ -186,7 +193,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc-e">05 / 09</div>
 </div>
 
-<!-- S5: BIAS AUDIT — egg -->
+<!-- S5: BIAS AUDIT - egg -->
 <div class="room egg" id="s5">
   <div class="wm-e">4</div>
   <div class="left" style="max-width:780px">
@@ -208,7 +215,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc-e">06 / 09</div>
 </div>
 
-<!-- S6: DECISION REVISITED — egg -->
+<!-- S6: DECISION REVISITED - egg -->
 <div class="room egg" id="s6">
   <div class="wm-e">5</div>
   <div class="left" style="max-width:780px">
@@ -230,7 +237,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc-e">07 / 09</div>
 </div>
 
-<!-- S7: WHAT YOU NOTICED — moss -->
+<!-- S7: WHAT YOU NOTICED - moss -->
 <div class="room moss" id="s7">
   <div class="wm-m">!</div>
   <div class="left">
@@ -270,7 +277,7 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
   <div class="rc">08 / 09</div>
 </div>
 
-<!-- S8: TAKEAWAY — moss -->
+<!-- S8: TAKEAWAY - moss -->
 <div class="room moss" id="s8">
   <div class="wm-m">10</div>
   <div class="centered" style="gap:0">
@@ -279,6 +286,13 @@ body{background:var(--moss);color:var(--egg);font-family:"DM Sans",sans-serif;he
     <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3.2vw,2.8rem);font-weight:300;color:var(--egg);line-height:1.45;font-style:italic;max-width:680px;text-align:center" class="fi d2">You already know how to think well.<br><strong style="font-style:normal">You just do not always choose to.</strong></p>
     <div class="rule-c fi d3"></div>
     <p class="m-body fi d4" style="max-width:480px;text-align:center">The four tools are not new knowledge. They are a discipline. They require a deliberate choice to use them, every time, even when you are pressed for time, even when the answer feels obvious.<br><br>Next session: you apply the same tools to your students.</p>
+    <div class="dl-block fi d5">
+      <button class="dl-btn" onclick="downloadReflection()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+        Take your reflection with you
+      </button>
+      <p class="dl-note">Saved to your device only &nbsp;&middot;&nbsp; Nothing leaves your browser</p>
+    </div>
   </div>
   <div class="gf" style="color:var(--egg-35)">Session 10 &nbsp;&middot;&nbsp; Day 2 &nbsp;&middot;&nbsp; XIME FDP Kochi 2026</div>
   <div class="rc">09 / 09</div>
@@ -296,6 +310,52 @@ document.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='PageDow
 const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>0.5){const i=Array.from(rooms).indexOf(e.target);upd(i);fades(i)}})},{threshold:0.5});
 rooms.forEach(r=>obs.observe(r));
 fades(0);
+
+function downloadReflection() {
+  const today = new Date();
+  const human = today.toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  const stamp = today.toISOString().slice(0,10);
+  const areas = document.querySelectorAll('.write-area');
+
+  const sections = [
+    { label: 'STEP 1  -  NAME THE DECISION', tool: '' },
+    { label: 'STEP 2  -  HOW CONFIDENT ARE YOU, REALLY?', tool: 'Tool 01  ·  evaluate + test' },
+    { label: 'STEP 3  -  THE CASE AGAINST YOUR DECISION', tool: 'Tool 02  ·  seek + question' },
+    { label: 'STEP 4  -  ASSUMPTIONS YOU DID NOT EXAMINE', tool: 'Tool 03  ·  generate + examine' },
+    { label: 'STEP 5  -  WHAT YOU WOULD CHANGE ABOUT THE PROCESS', tool: 'Tool 04  ·  commit + account for it' }
+  ];
+
+  let txt = '';
+  txt += 'SESSION 10  -  APPLY IT TO YOURSELF\n';
+  txt += 'XIME Faculty Development Programme\n';
+  txt += 'Date: ' + human + '\n\n';
+  txt += 'This is your private reflection. It was never shared with XIME or with anyone else.\n';
+  txt += 'You wrote it for yourself. Keep it for yourself.\n\n';
+  txt += '=========================================\n\n';
+
+  sections.forEach(function(s, i){
+    txt += s.label + '\n';
+    if (s.tool) txt += s.tool + '\n';
+    txt += '\n';
+    const v = (areas[i] && areas[i].value || '').trim();
+    txt += (v || '(left blank)') + '\n\n';
+    txt += '-----------------------------------------\n\n';
+  });
+
+  txt += '\nTHE TAKEAWAY\n\n';
+  txt += 'You already know how to think well.\n';
+  txt += 'You just do not always choose to.\n';
+
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Session-10-Reflection-' + stamp + '.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 100);
+}
 </script>
 </body>
 </html>
