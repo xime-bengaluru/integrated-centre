@@ -1870,7 +1870,7 @@ function renderPubRow(p){
     <td>${positionCell}</td>
     <td>
       <div class="pub-row-actions">
-        ${IS_PREVIEW||g1Locked()?'':`<button class="pub-row-action" onclick="editPublication('${p.id}')" title="Edit">&#9998;</button>
+        ${IS_PREVIEW||g1EditBlocked()?'':`<button class="pub-row-action" onclick="editPublication('${p.id}')" title="Edit">&#9998;</button>
         <button class="pub-row-action delete" onclick="deletePublication('${p.id}')" title="Delete">&times;</button>`}
       </div>
     </td>
@@ -1909,7 +1909,7 @@ function filterPubs(type,btn){
 
 function openPubForm(){
   if(IS_PREVIEW){toast('Preview mode. Cannot add publications.',false);return;}
-  if(g1Locked()){toast('Gate 1 locked. Cannot add publications.',false);return;}
+  if(g1EditBlocked()){toast('Gate 1 locked. Cannot add publications.',false);return;}
   PUB_EDIT_ID=null;
   document.getElementById('pub-form-title').textContent='Add Publication';
   resetPubForm();
@@ -2865,9 +2865,15 @@ function upProg(){
   document.getElementById('pp').textContent=pct+'%';
 }
 
-/* ---------- Locks ---------- */
+/* ---------- Locks ----------
+   g1Locked / g2Locked reflect DB submission state and drive visual rendering.
+   g1EditBlocked / g2EditBlocked gate editing actions and honor TEST_PHASE_LOCKS_OPEN.
+   To enforce hard locks in production, set TEST_PHASE_LOCKS_OPEN to false. */
+const TEST_PHASE_LOCKS_OPEN = true;
 function g1Locked(){return erec?.gate1_locked===true;}
 function g2Locked(){return erec?.gate2_locked===true;}
+function g1EditBlocked(){return g1Locked() && !TEST_PHASE_LOCKS_OPEN;}
+function g2EditBlocked(){return g2Locked() && !TEST_PHASE_LOCKS_OPEN;}
 
 function applyLocks(){
   const s=erec?.workflow_status||'draft';
@@ -3087,12 +3093,12 @@ function renderInstEntries(){
         <div class="inst-entry-desc">${(e.description||'').replace(/</g,'&lt;')}</div>
         <div class="inst-entry-date">${e.date||'No date'}</div>
       </div>
-      ${g1Locked()?'':`<button class="inst-entry-remove" onclick="removeInstitutionEntry('${e.id}')">x</button>`}
+      ${g1EditBlocked()?'':`<button class="inst-entry-remove" onclick="removeInstitutionEntry('${e.id}')">x</button>`}
     </div>`).join('');
 }
 
 function addInstitutionEntry(){
-  if(g1Locked()){toast('Gate 1 locked. Cannot add entries.',false);return;}
+  if(g1EditBlocked()){toast('Gate 1 locked. Cannot add entries.',false);return;}
   const cat=document.getElementById('inst-cat').value;
   const desc=document.getElementById('inst-desc').value.trim();
   const date=document.getElementById('inst-date').value;
@@ -3160,7 +3166,7 @@ function renderCourseChips(which){
 }
 
 function toggleCourse(which,name){
-  if(IS_PREVIEW||g2Locked())return;
+  if(IS_PREVIEW||g2EditBlocked())return;
   const state=courseState[which];
   if(state.selected.has(name))state.selected.delete(name);
   else state.selected.add(name);
