@@ -386,11 +386,16 @@ async function initAuth() {
 
   const { data: profile } = await db
     .from('user_profiles')
-    .select('full_name, email, role, campus')
+    .select('full_name, email, role, campus, must_change_password')
     .eq('id', session.user.id)
     .single();
 
   if (!profile) { window.location.href = '/login.html'; return; }
+
+  if (profile.must_change_password) {
+    window.location.href = '/login.html?action=change-password';
+    return;
+  }
 
   document.getElementById('avatar-initials').textContent = makeInitials(profile.full_name);
   document.getElementById('menu-name').textContent = profile.full_name || profile.email;
@@ -399,8 +404,12 @@ async function initAuth() {
   const greeting = timeOfDayGreeting();
   document.getElementById('hero-greeting').textContent = greeting;
 
-  document.getElementById('hero-name').innerHTML =
-    `Welcome back,<br><em>${profile.full_name || profile.email}</em>`;
+  const heroName = document.getElementById('hero-name');
+  heroName.textContent = 'Welcome back,';
+  heroName.appendChild(document.createElement('br'));
+  const heroEm = document.createElement('em');
+  heroEm.textContent = profile.full_name || profile.email;
+  heroName.appendChild(heroEm);
 }
 
 function toggleMenu() { document.getElementById('avatar-menu').classList.toggle('open'); }
