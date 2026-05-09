@@ -2674,6 +2674,8 @@ async function resolveAccess(){
     .select('*').eq('id',session.user.id).maybeSingle();
   if(!profile){window.location.href='login.html';return null;}
 
+  if(profile.must_change_password){window.location.href='login.html?action=change-password';return null;}
+
   CURRENT_USER=profile;
   USER_ROLE=profile.role;
 
