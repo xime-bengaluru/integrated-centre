@@ -116,7 +116,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .gst-open{background:rgba(29,158,117,.2);color:#9FE1CB;border:1px solid rgba(29,158,117,.3)}
 .gst-locked{background:rgba(239,159,39,.2);color:#FAC775;border:1px solid rgba(239,159,39,.3)}
 
-/* Gate 1 Director remarks */
+/* Mid-Year Director remarks */
 .g1rmbox{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--r);padding:16px 20px;margin-bottom:22px}
 .g1rml{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);margin-bottom:6px;display:flex;align-items:center;gap:8px}
 .g1rml-dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
@@ -187,121 +187,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .inst-form-btn{background:var(--navy);color:#fff;border:none;padding:8px 18px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;font-weight:500}
 .inst-form-btn:hover{background:var(--navy-2)}
 .inst-empty{font-size:12px;color:var(--faint);font-style:italic;padding:8px 0}
-
-/* IKIGAI */
-.ikigai-intro{text-align:center;margin-bottom:36px;padding-bottom:30px;border-bottom:1px solid var(--line)}
-.eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-2);font-weight:700;margin-bottom:12px}
-.ikigai-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--navy);margin:0 0 12px;letter-spacing:-0.5px}
-.ikigai-sub{font-size:14px;color:var(--mute);max-width:620px;margin:0 auto;line-height:1.75}
-.intent-note{display:inline-block;margin-top:20px;padding:11px 18px;background:var(--cream);border-left:3px solid var(--gold);font-size:13px;color:var(--charcoal);font-style:italic;text-align:left;max-width:620px;border-radius:0 var(--rs) var(--rs) 0}
-
-.prompt-block{background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px 18px;margin-bottom:14px;transition:border-color .2s}
-.prompt-block:focus-within{border-color:var(--gold)}
-.prompt-marker{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
-.prompt-chev{color:var(--gold-2);font-size:14px;font-weight:600;flex-shrink:0;margin-top:2px}
-.prompt-text{font-size:14px;color:var(--charcoal);font-weight:500;line-height:1.5}
-.prompt-hint{font-size:12px;color:var(--mute);font-weight:400;font-style:italic;display:block;margin-top:3px}
-.prompt-block textarea{width:100%;min-height:72px;border:1px solid var(--line);border-radius:3px;padding:10px 12px;font-size:13.5px;font-family:inherit;color:var(--ink);resize:vertical;background:var(--paper)}
-.prompt-block textarea:focus{outline:none;border-color:var(--gold);background:#fff}
-
-/* Strength sliders */
-.strength-row{display:grid;grid-template-columns:200px 1fr 48px;gap:16px;align-items:center;padding:10px 0;border-bottom:.5px solid var(--line)}
-.strength-row:last-of-type{border-bottom:none}
-.strength-label{font-size:13px;color:var(--charcoal);font-weight:500}
-.strength-slider{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:var(--line-strong);border-radius:2px;outline:none}
-.strength-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.strength-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.strength-value{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--navy);text-align:center}
-.strength-legend{display:flex;justify-content:space-between;font-size:10px;color:var(--faint);margin-top:12px;padding-top:10px;border-top:.5px dashed var(--line);letter-spacing:.03em}
-
-/* Sublabels */
-.sublabel{font-size:13px;font-weight:500;color:var(--navy);margin:22px 0 4px;display:flex;align-items:center;gap:6px}
-.sublabel:first-child{margin-top:0}
-.sublabel-hint{font-size:12px;color:var(--mute);font-style:italic;margin-bottom:8px}
-
-/* List rows */
-.list-row{display:grid;grid-template-columns:28px 1fr 36px;gap:8px;align-items:center;margin-bottom:8px}
-.list-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d);font-weight:500}
-.list-row input[type="text"]{font-family:inherit;font-size:13.5px;padding:9px 11px;border:1px solid var(--line);border-radius:3px;background:#fff;width:100%}
-.list-row input[type="text"]:focus{outline:none;border-color:var(--gold)}
-.remove-row{background:transparent;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;line-height:1}
-.remove-row:hover{background:rgba(226,75,74,.08);color:#A32D2D}
-.add-row{background:transparent;border:1px dashed var(--line-strong);color:var(--mute);padding:8px 14px;font-size:12px;border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px}
-.add-row:hover{border-color:var(--gold);color:var(--gold-d)}
-.min-note{font-size:11px;color:var(--faint);font-style:italic;margin-top:8px}
-.min-note.required{color:#A32D2D;font-weight:500}
-.min-note.met{color:var(--teal-d)}
-
-/* Develop panel */
-.develop-panel{background:linear-gradient(135deg,var(--cream) 0%,#fff 100%);border:1px solid var(--border-g);border-left:3px solid var(--navy);padding:18px;border-radius:var(--rs)}
-
-/* Focus question box */
-.focus-q{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--navy);font-weight:500;line-height:1.55;margin-bottom:14px;padding:16px 20px;background:var(--cream);border-left:3px solid var(--gold);border-radius:0 var(--rs) var(--rs) 0}
-.focus-q.italic{font-style:italic}
-.big-box{width:100%;min-height:110px;border:1px solid var(--line);border-radius:var(--rs);padding:12px 14px;font-family:inherit;font-size:14px;color:var(--ink);resize:vertical;background:#fff}
-.big-box:focus{outline:none;border-color:var(--gold)}
-
-/* Statement frame */
-.statement-frame{background:var(--navy-dark);border-radius:var(--r);padding:24px 28px;position:relative;overflow:hidden}
-.statement-frame::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(201,168,76,.06)}
-.statement-frame textarea{background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,.3);padding:10px 0;font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:#fff;font-weight:300;line-height:1.65;width:100%;min-height:110px;resize:vertical}
-.statement-frame textarea:focus{outline:none;border-bottom-color:var(--gold)}
-.statement-frame textarea::placeholder{color:rgba(255,255,255,.2)}
-.statement-note{font-size:12px;color:var(--mute);margin-top:8px;font-style:italic}
-
-/* Course selector */
-.course-selector{background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:14px;margin-bottom:12px}
-.course-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding-bottom:10px;border-bottom:.5px solid var(--line);margin-bottom:10px}
-.course-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:var(--cream);color:var(--navy);border:.5px solid var(--border-g);border-radius:14px;font-size:11.5px;font-weight:500}
-.course-chip button{background:transparent;border:none;color:var(--navy);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
-.course-chip button:hover{color:#A32D2D}
-.empty-chips{color:var(--faint);font-size:11.5px;font-style:italic;padding:4px 0}
-.course-search{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:var(--rs);font-size:12.5px;margin-bottom:8px;font-family:inherit}
-.course-search:focus{outline:none;border-color:var(--gold)}
-.course-filter-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.filter-pill{padding:4px 10px;font-size:10.5px;border:.5px solid var(--line);border-radius:14px;background:#fff;color:var(--mute);cursor:pointer}
-.filter-pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
-.course-list{max-height:200px;overflow-y:auto;border:.5px solid var(--line);border-radius:var(--rs);padding:4px}
-.course-option{padding:6px 10px;font-size:12.5px;color:var(--ink);cursor:pointer;border-radius:3px;display:flex;justify-content:space-between;align-items:center}
-.course-option:hover{background:var(--cream)}
-.course-option.selected{background:var(--cream);color:var(--gold-d);font-weight:500}
-.course-option .cat-tag{font-size:9.5px;color:var(--faint);letter-spacing:.05em;text-transform:uppercase}
-
-/* Allocation */
-.alloc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:14px}
-.alloc-col h4{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--navy);margin-bottom:10px}
-.alloc-row{display:grid;grid-template-columns:1fr 70px 20px;gap:8px;align-items:center;margin-bottom:6px}
-.alloc-label{font-size:12.5px;color:var(--charcoal)}
-.alloc-label sup{color:var(--gold-d);font-weight:700;margin-left:2px}
-.alloc-input{padding:6px 8px;border:1px solid var(--line);border-radius:3px;font-size:14px;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:500;color:var(--navy);width:70px}
-.alloc-input:focus{outline:none;border-color:var(--gold)}
-.alloc-pct{font-size:11px;color:var(--mute)}
-.alloc-total{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);font-size:12px;margin-top:8px}
-.alloc-total strong{font-family:'DM Mono',monospace;font-size:14px}
-.alloc-total.ok{background:var(--teal-l);border-color:rgba(29,158,117,.25);color:var(--teal-d)}
-.alloc-total.warn{background:var(--amber-l);border-color:rgba(239,159,39,.3);color:var(--amber-d)}
-.footnote-alloc{font-size:11px;color:var(--mute);font-style:italic;margin-top:12px;padding:10px 14px;background:var(--parchment);border-left:2px solid var(--gold);border-radius:0 var(--rs) var(--rs) 0}
-
-/* 4c reveal */
-.change-reveal{margin-top:20px;padding:18px 20px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.3);border-radius:var(--r);display:none}
-.change-reveal.active{display:block}
-.change-reveal-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.change-badge{background:var(--gold);color:var(--navy-dark);padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.change-title{font-size:13px;font-weight:500;color:var(--navy)}
-.change-q{margin-bottom:14px}
-.change-q:last-child{margin-bottom:0}
-.change-q label{display:block;font-size:12px;color:var(--charcoal);font-weight:500;margin-bottom:5px}
-.change-q textarea{width:100%;min-height:58px;padding:9px 11px;border:1px solid var(--line);border-radius:3px;font-family:inherit;font-size:13px;resize:vertical;background:#fff}
-.change-q textarea:focus{outline:none;border-color:var(--gold)}
-
-/* Action cards */
-.action-card{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:var(--rs);padding:16px 18px;margin-bottom:12px}
-.action-card.key{border-left-color:var(--navy);background:var(--cream)}
-.action-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);margin-bottom:4px}
-.action-card.key .action-label{color:var(--navy)}
-.action-hint{font-size:12px;color:var(--mute);font-style:italic;margin-bottom:10px}
-.action-input{width:100%;min-height:64px;border:1px solid var(--line);border-radius:3px;padding:10px 12px;font-size:13.5px;font-family:inherit;color:var(--ink);resize:vertical;background:var(--paper)}
-.action-input:focus{outline:none;border-color:var(--gold);background:#fff}
 
 /* Submit boxes */
 .subbox{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px 26px;margin-top:28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -576,116 +461,6 @@ select.pub-input{cursor:pointer}
   .ep-table{min-width:780px}
 }
 
-/* ===================================================
-   TAB 3: TEACHING EFFECTIVENESS FEEDBACK
-   =================================================== */
-
-/* Tab 3 intro banner */
-.tab3-intro{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy-2) 100%);border-radius:var(--r);padding:22px 28px;margin-bottom:28px;position:relative;overflow:hidden}
-.tab3-intro::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(201,168,76,.06);pointer-events:none}
-.tab3-intro::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none}
-.tab3-label{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-.tab3-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#fff;margin-bottom:6px;letter-spacing:-.3px}
-.tab3-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.7;max-width:560px}
-.tab3-note{display:flex;align-items:flex-start;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.35)}
-.tab3-note-icon{flex-shrink:0;font-size:14px;margin-top:-1px}
-
-/* Feedback entry cards */
-.fb-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.fb-card-header{background:var(--navy-dark);padding:18px 22px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;position:relative}
-.fb-card-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold) 0%,transparent 60%)}
-.fb-course-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff;line-height:1.2}
-.fb-course-meta{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);margin-top:5px;letter-spacing:.05em;line-height:1.6}
-.fb-score-block{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
-.fb-pct{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:var(--gold);line-height:1}
-.fb-pct-label{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;text-align:right;margin-top:2px}
-.fb-mean-line{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);text-align:right}
-.fb-students-line{font-size:10px;color:rgba(255,255,255,.3);text-align:right;margin-top:2px}
-
-/* Questions section */
-.fb-questions{padding:20px 22px;border-bottom:1px solid var(--line)}
-.fb-qs-label{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.fb-qs-label::after{content:'';flex:1;height:.5px;background:var(--line)}
-.fb-q-row{padding:12px 0;border-bottom:.5px solid var(--line)}
-.fb-q-row:last-child{border-bottom:none;padding-bottom:0}
-.fb-q-text{font-size:12px;color:var(--charcoal);margin-bottom:10px;line-height:1.5;max-width:580px}
-.fb-q-bottom{display:flex;align-items:center;gap:16px}
-.fb-dist-wrap{flex:1}
-.fb-dist-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:1px}
-.fb-seg-e{background:var(--teal-d)}
-.fb-seg-vg{background:var(--teal)}
-.fb-seg-g{background:var(--gold)}
-.fb-seg-s{background:var(--amber)}
-.fb-seg-p{background:var(--red)}
-.fb-dist-counts{display:flex;margin-top:5px;gap:1px}
-.fb-dist-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);text-align:center}
-.fb-q-mean{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--navy);flex-shrink:0;min-width:44px;text-align:right}
-.fb-dist-legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:.5px dashed var(--line)}
-.fb-legend-item{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--faint)}
-.fb-legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-
-/* Subjective responses */
-.fb-subjective{padding:20px 22px}
-.fb-sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-.fb-sub-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
-.fb-responses{display:flex;flex-direction:column;gap:5px;max-height:240px;overflow-y:auto;padding-right:4px}
-.fb-responses::-webkit-scrollbar{width:3px}
-.fb-responses::-webkit-scrollbar-track{background:transparent}
-.fb-responses::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:2px}
-.fb-resp{font-size:12px;color:var(--charcoal);padding:7px 10px;background:var(--parchment);border-left:2px solid var(--gold);border-radius:0 4px 4px 0;line-height:1.5}
-.fb-resp.feature{border-left-color:var(--teal);background:var(--teal-l);color:var(--teal-d);font-style:italic}
-.fb-card-footer{padding:12px 22px;background:var(--cream);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
-.fb-source-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint)}
-.fb-remove{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--faint);background:transparent;border:1px solid var(--line);padding:5px 12px;border-radius:var(--rs);cursor:pointer;transition:all .15s}
-.fb-remove:hover{background:rgba(200,16,46,.06);border-color:rgba(200,16,46,.25);color:#A32D2D}
-
-/* Add entry form */
-.fb-empty-state{text-align:center;padding:36px 24px;background:var(--cream);border:1.5px dashed var(--border-g);border-radius:var(--r);margin-bottom:20px}
-.fb-empty-icon{font-size:28px;margin-bottom:10px;opacity:.4}
-.fb-empty-text{font-size:13px;color:var(--faint);margin-bottom:16px;line-height:1.6}
-.fb-add-trigger{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
-.fb-add-trigger:hover{background:var(--navy-2)}
-
-.fb-form-wrap{background:#fff;border:1.5px dashed var(--border-g);border-radius:var(--r);padding:24px 28px;margin-top:20px;display:none}
-.fb-form-wrap.open{display:block}
-.fb-form-head{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy);margin-bottom:6px}
-.fb-form-sub{font-size:12px;color:var(--mute);margin-bottom:20px;line-height:1.6}
-.fb-form-sec{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-.fb-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.fb-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.fb-field{display:flex;flex-direction:column;gap:5px}
-.fb-label{font-size:11px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
-.fb-input{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);border:1px solid var(--line);border-radius:var(--rs);padding:9px 11px;background:#fff;outline:none;transition:border-color .15s}
-.fb-input:focus{border-color:var(--gold)}
-.fb-input[readonly]{background:var(--parchment);color:var(--gold-d);font-family:'DM Mono',monospace;font-weight:500;border-color:var(--border-g)}
-
-/* Question input blocks */
-.fb-q-input{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:13px 15px;margin-bottom:10px}
-.fb-q-input-label{font-size:12px;color:var(--charcoal);font-weight:500;margin-bottom:10px;line-height:1.45}
-.fb-q-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold-d);font-weight:600;margin-right:6px}
-.fb-counts-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
-.fb-count-col{display:flex;flex-direction:column;align-items:center;gap:5px}
-.fb-count-lbl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:10px}
-.lbl-e{background:var(--teal-l);color:var(--teal-d)}
-.lbl-vg{background:#e0f7ef;color:#0a6640}
-.lbl-g{background:rgba(201,168,76,.15);color:var(--gold-d)}
-.lbl-s{background:var(--amber-l);color:var(--amber-d)}
-.lbl-p{background:rgba(200,16,46,.08);color:#A32D2D}
-.fb-count-n{width:52px;height:40px;border:1px solid var(--line);border-radius:var(--rs);text-align:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--navy);background:#fff;outline:none}
-.fb-count-n:focus{border-color:var(--gold)}
-.fb-q-mean-display{display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:11px;color:var(--mute)}
-.fb-q-mean-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d);font-weight:500}
-
-/* Form actions */
-.fb-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
-.fb-cancel{background:transparent;border:1px solid var(--line);color:var(--mute);padding:9px 20px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
-.fb-cancel:hover{border-color:var(--navy);color:var(--navy)}
-.fb-save-entry{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
-.fb-save-entry:hover{background:var(--gold);color:var(--navy-dark)}
-
-/* Add course button (when entries exist) */
-.fb-add-more{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);background:transparent;border:1.5px dashed var(--border-g);padding:11px 18px;border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;justify-content:center;margin-top:8px;transition:all .15s}
-.fb-add-more:hover{border-color:var(--gold);color:var(--gold-d)}
 
 @media(max-width:900px){
   .layout{grid-template-columns:1fr}
@@ -699,9 +474,6 @@ select.pub-input{cursor:pointer}
   .strength-row{grid-template-columns:140px 1fr 42px;gap:10px}
   .tb-m{display:none}
   .tb-mobile-tabs{display:flex}
-  .fb-sub-grid{grid-template-columns:1fr}
-  .fb-grid2{grid-template-columns:1fr}
-  .fb-grid3{grid-template-columns:1fr 1fr}
 }
 .tb-mobile-tabs{display:none}
 </style>
@@ -715,15 +487,17 @@ select.pub-input{cursor:pointer}
     <div class="ttl">X-Hub · <strong>3X</strong></div>
   </div>
   <div class="tb-m">
-    <button class="tab-btn active" data-tab="performance" onclick="switchTab('performance')">
+  <div class="tb-m">
+    <button class="tab-btn active" data-tab="performance">
       <span class="tab-num">01</span><span class="tab-x">X-Drive</span><span class="tab-sub">Performance Record</span>
     </button>
-    <button class="tab-btn" data-tab="growth" onclick="switchTab('growth')">
+    <a class="tab-btn" href="x-purpose.html" style="text-decoration:none">
       <span class="tab-num">02</span><span class="tab-x">X-Purpose</span><span class="tab-sub">Growth &amp; Purpose</span>
-    </button>
-    <button class="tab-btn" data-tab="feedback" onclick="switchTab('feedback')">
+    </a>
+    <a class="tab-btn" href="x-impact.html" style="text-decoration:none">
       <span class="tab-num">03</span><span class="tab-x">X-Impact</span><span class="tab-sub">Teaching Effectiveness</span>
-    </button>
+    </a>
+  </div>
   </div>
   <div class="tb-r">
     <div class="spill sp-draft" id="spill">Loading</div>
@@ -746,7 +520,7 @@ select.pub-input{cursor:pointer}
   <div class="sbh">
     <div class="sbn" id="sb-name">Loading...</div>
     <div class="sbr" id="sb-role"></div>
-    <div class="sby">AY 2025-26</div>
+    <div class="sby">AY 2026-27</div>
   </div>
   <div class="pw">
     <div class="pw-lbl">Completion</div>
@@ -754,14 +528,9 @@ select.pub-input{cursor:pointer}
     <div class="pp" id="pp">0%</div>
   </div>
   <div class="gi gi-open" id="g1i">
-    <div class="gil gi-open">Gate 1 · Mid-Year</div>
+    <div class="gil gi-open">Mid-Year Submission</div>
     <div class="gis gi-open" id="g1s">Open</div>
-    <div class="gid">Due 16 December 2025</div>
-  </div>
-  <div class="gi gi-open" id="g2i">
-    <div class="gil gi-open">Gate 2 · Annual</div>
-    <div class="gis gi-open" id="g2s">Open</div>
-    <div class="gid">Due 15 June 2026</div>
+    <div class="gid">Due 16 December 2026</div>
   </div>
 
   <!-- Performance tab sidebar -->
@@ -773,27 +542,6 @@ select.pub-input{cursor:pointer}
     <div class="ni" onclick="goTo('s-industry')" id="n-s-industry"><div class="ndot"></div><div class="nt">Industry &amp; EP</div></div>
     <div class="ni" onclick="goTo('s-institution')" id="n-s-institution"><div class="ndot"></div><div class="nt">Institution Building</div></div>
   </div>
-
-  <!-- Growth tab sidebar -->
-  <div class="sidebar-group" id="sg-growth">
-    <div class="ngl">IKIGAI · Reflection</div>
-    <div class="ni" onclick="goTo('s-passion')" id="n-s-passion"><div class="ndot"></div><div class="nt">2.1 Passion</div></div>
-    <div class="ni" onclick="goTo('s-strengths')" id="n-s-strengths"><div class="ndot"></div><div class="nt">2.2 Strengths</div></div>
-    <div class="ni" onclick="goTo('s-develop')" id="n-s-develop"><div class="ndot"></div><div class="nt">2.2b Develop</div></div>
-    <div class="ni" onclick="goTo('s-impact')" id="n-s-impact"><div class="ndot"></div><div class="nt">2.3 Impact</div></div>
-    <div class="ni" onclick="goTo('s-contribution')" id="n-s-contribution"><div class="ndot"></div><div class="nt">2.4 Contribution</div></div>
-    <div class="ni" onclick="goTo('s-statement')" id="n-s-statement"><div class="ndot"></div><div class="nt">3 Statement</div></div>
-    <div class="ngl">Plan</div>
-    <div class="ni" onclick="goTo('s-allocation')" id="n-s-allocation"><div class="ndot"></div><div class="nt">4 Role Allocation</div></div>
-    <div class="ni" onclick="goTo('s-action')" id="n-s-action"><div class="ndot"></div><div class="nt">5 Action Plan</div></div>
-  </div>
-
-  <!-- Feedback tab sidebar -->
-  <div class="sidebar-group" id="sg-feedback">
-    <div class="ngl">Teaching Effectiveness</div>
-    <div class="ni" onclick="goTo('s-fb-entries')" id="n-s-fb-entries"><div class="ndot"></div><div class="nt">Course Feedback</div></div>
-    <div class="ni" onclick="goTo('s-fb-add')" id="n-s-fb-add"><div class="ndot"></div><div class="nt">Add Entry</div></div>
-  </div>
 </aside>
 
 <main class="main">
@@ -801,22 +549,22 @@ select.pub-input{cursor:pointer}
 <div class="dual-role-note" id="dual-role-note"></div>
 
 <!-- ========================================================= -->
-<!-- TAB 1: PERFORMANCE RECORD                                 -->
+<!-- X-DRIVE: PERFORMANCE RECORD                               -->
 <!-- ========================================================= -->
 <div class="tab-content active" id="tab-performance">
 
   <div class="ledger" id="points-ledger">
     <div class="ledger-l">
-      <div class="ledger-label">Points Ledger · AY 2025-26</div>
+      <div class="ledger-label">Points Ledger · AY 2026-27</div>
     </div>
     <div class="ledger-items">
       <div class="ledger-item">
         <div class="ledger-val" id="ledger-g1">165</div>
-        <div class="ledger-sub">Gate 1 achievable</div>
+        <div class="ledger-sub">Mid-Year achievable</div>
       </div>
       <div class="ledger-item">
         <div class="ledger-val" id="ledger-g2">135</div>
-        <div class="ledger-sub">Gate 2 adds</div>
+        <div class="ledger-sub">Annual adds</div>
       </div>
       <div class="ledger-item">
         <div class="ledger-total" id="ledger-total">300</div>
@@ -826,7 +574,7 @@ select.pub-input{cursor:pointer}
 
   <div id="g1-remarks-box" style="display:none">
     <div class="g1rmbox">
-      <div class="g1rml"><span class="g1rml-dot"></span>Director's Gate 1 Feedback</div>
+      <div class="g1rml"><span class="g1rml-dot"></span>Director's Mid-Year Feedback</div>
       <div class="g1rmt" id="g1-remarks-text"></div>
       <div class="g1rmmeta" id="g1-remarks-meta"></div>
     </div>
@@ -834,14 +582,12 @@ select.pub-input{cursor:pointer}
 
   <div class="gb gb1">
     <div>
-      <div class="gbl">Gate 1 · Mid-Year Performance Record</div>
-      <div class="gbt">What you did · June to December</div>
+      <div class="gbl">Mid-Year · Performance Record</div>
+      <div class="gbt">What you did · April to December</div>
       <div class="gbs">Locks on submission. Scored by Deans, endorsed by Director.</div>
     </div>
     <div class="gbst gst-open" id="g1bs">Open</div>
   </div>
-
-  <!-- Section: Profile -->
   <section class="sec" id="s-profile">
     <div class="sh">
       <div class="sn">01</div>
@@ -1420,7 +1166,7 @@ select.pub-input{cursor:pointer}
       <div class="f"><div class="fl">Administrative Role <span class="ab">HR Records</span></div><input class="fi lk" id="f-admin" readonly></div>
       <div class="f">
         <div class="fl">Your Institution Building Contributions</div>
-        <div class="fh" style="margin-bottom:12px">Add individual entries across categories. Each entry is dated and can be edited before Gate 1 submission.</div>
+        <div class="fh" style="margin-bottom:12px">Add individual entries across categories. Each entry is dated and can be edited before Mid-Year submission.</div>
         <div class="inst-entry-list" id="inst-entries"><div class="inst-empty">No entries yet. Add your first contribution below.</div></div>
         <div class="inst-form" id="inst-form">
           <div class="inst-form-row">
@@ -1456,316 +1202,39 @@ select.pub-input{cursor:pointer}
 
   <div class="subbox" id="g1box">
     <div>
-      <div class="sbt">Submit Gate 1 · Mid-Year Record</div>
+      <div class="sbt">Submit Mid-Year Record</div>
       <div class="sbn2">Sections 01 to 05 will be sent to your Deans for validation. During the test phase you can continue to edit and re-submit.</div>
     </div>
-    <button class="subbtn" onclick="submitGate1()" id="g1btn">Submit Gate 1 →</button>
+    <button class="subbtn" onclick="submitMidYear()" id="g1btn">Submit Mid-Year →</button>
   </div>
 
 </div>
-<!-- END TAB 1 -->
-
-<!-- ========================================================= -->
-<!-- TAB 2: GROWTH & PURPOSE                                   -->
-<!-- ========================================================= -->
-<div class="tab-content" id="tab-growth">
-
-  <div class="ikigai-intro">
-    <div class="eyebrow">Part B · Reflective Development</div>
-    <h1 class="ikigai-title">Growth &amp; Purpose</h1>
-    <p class="ikigai-sub">A reflective framework for purpose-led faculty development. Reflect on what drives you as an educator, a scholar, and a professional, and articulate how your unique strengths align with the needs of your students, your institution, and the world.</p>
-    <div class="intent-note">Please spend time to reflect. Use AI only to refine your articulation. This reflection is not scored. It is visible only to your Director and the President as context for the development conversation.</div>
-  </div>
-
-  <div class="gb gb2">
-    <div>
-      <div class="gbl">Gate 2 · 3X Annual Submission</div>
-      <div class="gbt">Purpose, direction, year ahead</div>
-      <div class="gbs">IKIGAI reflection · time allocation · action plan · due 15 June 2026</div>
-    </div>
-    <div class="gbst gst-open" id="g2bs">Open</div>
-  </div>
-
-  <!-- SECTION 2.1 PASSION -->
-  <section class="sec" id="s-passion">
-    <div class="sh"><div class="sn-mini">2.1</div><div><div class="si-t">What You Love <span class="si-tag">Passion</span></div><div class="si-s">Reflect on your full professional identity, not just teaching</div></div></div>
-    <div class="srl"></div>
-    <div style="margin-top:20px">
-      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Teaching activities that energise you<span class="prompt-hint">e.g. classroom delivery, case discussions, mentoring</span></span></div><textarea id="f-pt" placeholder="What makes time disappear in the classroom or in preparation..."></textarea></div>
-      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Research areas or topics you are deeply curious about</span></div><textarea id="f-pr" placeholder="The question you keep circling back to..."></textarea></div>
-      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Industry or consulting engagements you find genuinely fulfilling</span></div><textarea id="f-pi" placeholder="The kind of practitioner interaction that energises you..."></textarea></div>
-      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">Institutional roles that excite you<span class="prompt-hint">e.g. programme building, student development, leadership</span></span></div><textarea id="f-ps" placeholder="The institutional work you say yes to without hesitation..."></textarea></div>
-      <div class="prompt-block"><div class="prompt-marker"><span class="prompt-chev">▸</span><span class="prompt-text">The kind of impact that matters most to you<span class="prompt-hint">on students, industry, or society</span></span></div><textarea id="f-pimp" placeholder="What you hope your work contributes to beyond yourself..."></textarea></div>
-    </div>
-  </section>
-
-  <!-- SECTION 2.2 STRENGTHS -->
-  <section class="sec" id="s-strengths">
-    <div class="sh"><div class="sn-mini">2.2</div><div><div class="si-t">Your Strengths <span class="si-tag">What you are good at</span></div><div class="si-s">1 Developing · 5 Exemplary. Be honest.</div></div></div>
-    <div class="srl"></div>
-    <div class="sec-intro" style="margin-top:20px">This is a reflective instrument, not a performance evaluation. Inflated scores make the exercise less useful to you.</div>
-    <div style="background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:16px 20px">
-      <div class="strength-row"><div class="strength-label">Teaching Effectiveness</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-t" oninput="updateStrength('t')"><div class="strength-value" id="sv-t">3</div></div>
-      <div class="strength-row"><div class="strength-label">Research Capability</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-r" oninput="updateStrength('r')"><div class="strength-value" id="sv-r">3</div></div>
-      <div class="strength-row"><div class="strength-label">Industry Engagement &amp; Consulting</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-i" oninput="updateStrength('i')"><div class="strength-value" id="sv-i">3</div></div>
-      <div class="strength-row"><div class="strength-label">Institutional Leadership</div><input type="range" min="1" max="5" value="3" class="strength-slider" id="sl-s" oninput="updateStrength('s')"><div class="strength-value" id="sv-s">3</div></div>
-      <div class="strength-legend"><span>1 Developing</span><span>2 Competent</span><span>3 Accomplished</span><span>4 Distinctive</span><span>5 Exemplary</span></div>
-    </div>
-    <div class="sublabel" style="margin-top:24px">Your Key Strengths</div>
-    <div class="sublabel-hint">What are the things you do better than most? List up to five.</div>
-    <div id="strengths-list">
-      <div class="list-row"><div class="list-num">1.</div><input type="text" placeholder="A capability you are known for..."><button class="remove-row" onclick="removeStrengthRow(this)">×</button></div>
-      <div class="list-row"><div class="list-num">2.</div><input type="text" placeholder="Another capability..."><button class="remove-row" onclick="removeStrengthRow(this)">×</button></div>
-      <div class="list-row"><div class="list-num">3.</div><input type="text" placeholder="Another capability..."><button class="remove-row" onclick="removeStrengthRow(this)">×</button></div>
-    </div>
-    <button class="add-row" onclick="addStrengthRow()">+ Add another</button>
-    <div class="min-note">Up to five. You can leave rows blank if you have fewer.</div>
-  </section>
-
-  <!-- SECTION 2.2b DEVELOP -->
-  <section class="sec" id="s-develop">
-    <div class="sh"><div class="sn-mini">2.2b</div><div><div class="si-t">Areas You Want to Develop <span class="si-tag">Minimum three</span></div><div class="si-s">These flow into your Faculty Development Plan</div></div></div>
-    <div class="srl"></div>
-    <div class="sec-intro" style="margin-top:20px">Specify at least three areas where you want to grow in the coming year. Be specific.</div>
-    <div class="develop-panel">
-      <div id="develop-list">
-        <div class="list-row"><div class="list-num">1.</div><input type="text" placeholder="e.g. Case writing and teaching methodology for executive audiences"><button class="remove-row" onclick="removeDevelopRow(this)">×</button></div>
-        <div class="list-row"><div class="list-num">2.</div><input type="text" placeholder="e.g. Quantitative research methods and advanced statistical techniques"><button class="remove-row" onclick="removeDevelopRow(this)">×</button></div>
-        <div class="list-row"><div class="list-num">3.</div><input type="text" placeholder="e.g. Building an industry consulting practice in my domain"><button class="remove-row" onclick="removeDevelopRow(this)">×</button></div>
-      </div>
-      <button class="add-row" onclick="addDevelopRow()">+ Add another area</button>
-      <div class="min-note" id="develop-min-note">Minimum three areas required.</div>
-    </div>
-  </section>
-
-  <!-- SECTION 2.3 IMPACT -->
-  <section class="sec" id="s-impact">
-    <div class="sh"><div class="sn-mini">2.3</div><div><div class="si-t">What the World Needs <span class="si-tag">Impact</span></div><div class="si-s">One focused question. A concrete commitment.</div></div></div>
-    <div class="srl"></div>
-    <div style="margin-top:20px">
-      <div class="focus-q italic">What is the specific gap in XIME's management education you most want to help close, and why?</div>
-      <textarea class="big-box" id="f-impact" placeholder="Name the gap. Explain why it matters. Be concrete about what closing it would look like..."></textarea>
-    </div>
-  </section>
-
-  <!-- SECTION 2.4 CONTRIBUTION -->
-  <section class="sec" id="s-contribution">
-    <div class="sh"><div class="sn-mini">2.4</div><div><div class="si-t">What You Can Be Valued For <span class="si-tag">Contribution</span></div><div class="si-s">The concrete offer. Courses, capabilities, research pathway.</div></div></div>
-    <div class="srl"></div>
-    <div class="sec-intro" style="margin-top:20px">The concrete offer. Courses you deliver or would like to deliver, consulting or executive education capabilities, and research areas with publication or funding potential.</div>
-    <div class="sublabel">▸ Courses you are currently delivering</div>
-    <div class="sublabel-hint">Select from the XIME course catalog.</div>
-    <div class="course-selector"><div class="course-chips" id="chips-current"><div class="empty-chips">No courses selected yet</div></div><input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'current')"><div class="course-filter-pills" id="filters-current"></div><div class="course-list" id="list-current"></div></div>
-    <div class="sublabel">▸ Other XIME courses you would like to deliver</div>
-    <div class="course-selector"><div class="course-chips" id="chips-aspire"><div class="empty-chips">No courses selected yet</div></div><input type="text" class="course-search" placeholder="Search courses..." oninput="filterCourseList(this,'aspire')"><div class="course-filter-pills" id="filters-aspire"></div><div class="course-list" id="list-aspire"></div></div>
-    <div class="sublabel">▸ Gaps in the XIME course offering in your domain</div>
-    <textarea class="fi" id="f-gaps" rows="3" placeholder="Where the current offering falls short..."></textarea>
-    <div class="sublabel">▸ New courses you would like to design and deliver</div>
-    <textarea class="fi" id="f-newcourses" rows="3" placeholder="Course titles, brief description, target audience..."></textarea>
-    <div class="sublabel">▸ Courses you would like to stop delivering, and why</div>
-    <textarea class="fi" id="f-stopcourses" rows="2" placeholder="Course name and the reason..."></textarea>
-    <div class="fdiv"></div>
-    <div class="sublabel">▸ Consulting, training, or executive education capabilities you can offer</div>
-    <textarea class="fi" id="f-caps" rows="3" placeholder="Domains where you can deliver MDPs, consulting, or executive programmes..."></textarea>
-    <div class="sublabel">▸ Are you currently delivering, or have you delivered, any Consulting / Training / Executive Education Programmes?</div>
-    <textarea class="fi" id="f-delivered" rows="2" placeholder="Programmes, clients, dates. NA is an acceptable answer."></textarea>
-    <div class="sublabel">▸ New programmes you would like to design and deliver</div>
-    <textarea class="fi" id="f-newprogs" rows="2" placeholder="MDP or executive programme concepts you believe XIME should offer..."></textarea>
-    <div class="fdiv"></div>
-    <div class="sublabel">▸ Research areas with strong publication or external funding potential</div>
-    <textarea class="fi" id="f-respotential" rows="3" placeholder="List five or so areas with the clearest publication or funding opportunity..."></textarea>
-  </section>
-
-  <!-- SECTION 3 STATEMENT -->
-  <section class="sec" id="s-statement">
-    <div class="sh"><div class="sn-mini">3</div><div><div class="si-t">Your IKIGAI Statement</div><div class="si-s">Distil your reflections into a single statement of purpose</div></div></div>
-    <div class="srl"></div>
-    <div class="sec-intro" style="margin-top:20px">Write in your own voice. This is personal, not institutional. Visible only to your Director and the President.</div>
-    <div class="focus-q italic">Why do you do what you do, not for your CV, but for yourself?</div>
-    <div class="statement-frame"><textarea id="f-iki" placeholder="I do this work because..."></textarea></div>
-    <div class="statement-note">Not visible to Deans. Visible only to your Director and the President after submission.</div>
-  </section>
-
-  <!-- SECTION 4 ALLOCATION -->
-  <section class="sec" id="s-allocation">
-    <div class="sh"><div class="sn-mini">4</div><div><div class="si-t">Role Preference Allocation</div><div class="si-s">Current vs ideal · must total 100%</div></div></div>
-    <div class="srl"></div>
-    <div class="sec-intro" style="margin-top:20px"><strong>4a.</strong> Indicate the percentage of your professional time you are spending in each role today. The total must add up to 100%.</div>
-    <div class="alloc-grid">
-      <div class="alloc-col">
-        <h4>4a. Current Allocation</h4>
-        <div class="alloc-row"><span class="alloc-label">Teaching</span><input type="number" class="alloc-input" id="al-t" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-row"><span class="alloc-label">Research</span><input type="number" class="alloc-input" id="al-r" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-row"><span class="alloc-label">Industry &amp; EP<sup>*</sup></span><input type="number" class="alloc-input" id="al-ind" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-row"><span class="alloc-label">Institutional Leadership<sup>*</sup></span><input type="number" class="alloc-input" id="al-s" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-total warn" id="total-current"><span>Total</span><span><strong>0%</strong></span></div>
-      </div>
-      <div class="alloc-col">
-        <h4>4b. Ideal Allocation</h4>
-        <div class="alloc-row"><span class="alloc-label">Teaching</span><input type="number" class="alloc-input" id="ali-t" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-row"><span class="alloc-label">Research</span><input type="number" class="alloc-input" id="ali-r" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-row"><span class="alloc-label">Industry &amp; EP<sup>*</sup></span><input type="number" class="alloc-input" id="ali-ind" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-row"><span class="alloc-label">Institutional Leadership<sup>*</sup></span><input type="number" class="alloc-input" id="ali-s" min="0" max="100" oninput="updateAlloc()"><span class="alloc-pct">%</span></div>
-        <div class="alloc-total warn" id="total-ideal"><span>Total</span><span><strong>0%</strong></span></div>
-      </div>
-    </div>
-    <div class="footnote-alloc"><sup>*</sup> Industry minimum is 10%. Institutional includes committees, accreditation work, and coordinator responsibilities.</div>
-    <div class="change-reveal" id="change-reveal">
-      <div class="change-reveal-header"><span class="change-badge">4c · Significant Change</span><span class="change-title">You have indicated a meaningful shift between current and ideal allocation.</span></div>
-      <div class="change-q"><label>Why is this shift important to you?</label><textarea id="f-changewhy" placeholder="What is driving the change you want to see..."></textarea></div>
-      <div class="change-q"><label>What will you do to drive this change?</label><textarea id="f-changeact" placeholder="Your own commitment. Concrete actions, not aspirations..."></textarea></div>
-      <div class="change-q"><label>What can XIME help you with?</label><textarea id="f-changesupp" placeholder="Institutional support, resources, time, mentorship..."></textarea></div>
-    </div>
-  </section>
-
-  <!-- SECTION 5 ACTION -->
-  <section class="sec" id="s-action">
-    <div class="sh"><div class="sn-mini">5</div><div><div class="si-t">Action Plan · The Year Ahead</div><div class="si-s">Translate your reflections into concrete commitments for the next twelve months</div></div></div>
-    <div class="srl"></div>
-    <div class="sec-intro" style="margin-top:20px">Be honest and specific. This plan is yours.</div>
-    <div class="action-card"><div class="action-label">Start</div><div class="action-hint">What new practice, activity, or commitment will you begin this year?</div><textarea class="action-input" id="f-sta" placeholder="Start..."></textarea></div>
-    <div class="action-card"><div class="action-label">Stop</div><div class="action-hint">What are you currently doing that no longer serves your growth or your students?</div><textarea class="action-input" id="f-stp" placeholder="Stop..."></textarea></div>
-    <div class="action-card"><div class="action-label">Continue</div><div class="action-hint">What are you doing well that you wish to sustain and deepen?</div><textarea class="action-input" id="f-cnt" placeholder="Continue..."></textarea></div>
-    <div class="action-card key"><div class="action-label">Key Goal</div><div class="action-hint">The single most important outcome you want to achieve this year.</div><textarea class="action-input" id="f-kg" placeholder="My key goal this year is..."></textarea></div>
-    <div class="action-card"><div class="action-label">Support Needed</div><div class="action-hint">What resources, mentoring, or institutional backing would help you succeed?</div><textarea class="action-input" id="f-sup" placeholder="To succeed, I need..."></textarea></div>
-  </section>
-
-  <div id="rmbox" style="display:none">
-    <div class="rmbox"><div class="rml">Director's Remarks</div><div class="rmt" id="rmtxt"></div></div>
-  </div>
-
-  <div class="subbox" id="g2box">
-    <div>
-      <div class="sbt">Submit Your 3X Annual Review</div>
-      <div class="sbn2">Sent to your Deans, Director, then President for endorsement. During the test phase you can continue to edit and re-submit.</div>
-    </div>
-    <button class="subbtn" onclick="submitGate2()" id="g2btn">Submit 3X Review →</button>
-  </div>
-
-</div>
-<!-- END TAB 2 -->
-
-<!-- ========================================================= -->
-<!-- TAB 3: TEACHING EFFECTIVENESS FEEDBACK                    -->
-<!-- ========================================================= -->
-<div class="tab-content" id="tab-feedback">
-
-  <div class="tab3-intro">
-    <div class="tab3-label">Part C · Student Voice</div>
-    <div class="tab3-title">Teaching Effectiveness Feedback</div>
-    <div class="tab3-sub">A record of end-term student feedback across courses you have taught this academic year. Each entry captures score distributions, question-level means, and student responses verbatim from the XIME BA-05 feedback instrument.</div>
-    <div class="tab3-note">
-      <span class="tab3-note-icon">&#9432;</span>
-      <span>Faculty self-enter scores from the official PDF report. Source document upload available for verification. Data integrity validation will be introduced in a future release.</span>
-    </div>
-  </div>
-
-  <!-- Entries section -->
-  <section class="sec" id="s-fb-entries">
-    <div class="sh">
-      <div class="sn-mini">3.1</div>
-      <div>
-        <div class="si-t">Course Feedback Entries</div>
-        <div class="si-s">One entry per course per term. Add all courses taught in AY 2025-26.</div>
-      </div>
-    </div>
-    <div class="srl"></div>
-    <div style="margin-top:22px" id="fb-cards-container">
-      <!-- Cards rendered by JS -->
-    </div>
-  </section>
-
-  <!-- Add entry section -->
-  <section class="sec" id="s-fb-add">
-    <div class="sh">
-      <div class="sn-mini">3.2</div>
-      <div>
-        <div class="si-t">Add Course Entry</div>
-        <div class="si-s">Enter data from your BA-05 End Term Faculty Feedback PDF</div>
-      </div>
-    </div>
-    <div class="srl"></div>
-
-    <div style="margin-top:18px">
-      <button class="fb-add-more" id="fb-toggle-form" onclick="toggleFbForm()">
-        <span style="font-size:18px;line-height:1">+</span>
-        <span>Add a course feedback entry</span>
-      </button>
-
-      <div class="fb-form-wrap" id="fb-form-wrap">
-        <div class="fb-form-head">Course Details</div>
-        <div class="fb-form-sub">Fill in exactly as shown on your feedback PDF. All fields from the header section.</div>
-
-        <div class="fb-form-sec">Course Information</div>
-        <div class="fb-grid2">
-          <div class="fb-field"><div class="fb-label">Course Name</div><input class="fb-input" id="fb-course-name" placeholder="e.g. Project Management"></div>
-          <div class="fb-field"><div class="fb-label">Course Code</div><input class="fb-input" id="fb-course-code" placeholder="e.g. XB-2527-BA-T3-C04"></div>
-          <div class="fb-field">
-            <div class="fb-label">Term</div>
-            <select class="fb-input" id="fb-term">
-              <option value="">Select term...</option>
-              <option>1</option><option>2</option><option>3</option>
-              <option>4</option><option>5</option><option>6</option>
-            </select>
-          </div>
-          <div class="fb-field"><div class="fb-label">Academic Year</div><input class="fb-input" id="fb-ay" value="2025-26" readonly></div>
-        </div>
-
-        <div class="fb-form-sec">Scores</div>
-        <div class="fb-grid3">
-          <div class="fb-field"><div class="fb-label">Students Who Submitted</div><input class="fb-input" id="fb-students" type="number" min="1" placeholder="e.g. 46" oninput="recalcOverall()"></div>
-          <div class="fb-field"><div class="fb-label">Overall Percentage Score</div><input class="fb-input" id="fb-overall-pct" readonly placeholder="Auto-calculated"></div>
-          <div class="fb-field"><div class="fb-label">Overall Mean Score</div><input class="fb-input" id="fb-overall-mean" readonly placeholder="Auto-calculated"></div>
-        </div>
-
-        <div class="fb-form-sec">Objective Questions · Response Distribution</div>
-        <div class="fh" style="margin-bottom:14px">Enter the count of students who selected each option for each question. Mean auto-calculates.</div>
-
-        <div id="fb-q-inputs"></div>
-
-        <div class="fb-form-sec">Subjective Responses</div>
-        <div class="fb-grid2" style="margin-bottom:14px">
-          <div class="fb-field">
-            <div class="fb-label">What did this faculty do best?</div>
-            <div class="fh" style="margin-bottom:6px">Paste all student responses, one per line</div>
-            <textarea class="fi" id="fb-did-best" rows="8" placeholder="Easy explanations&#10;Real world learning&#10;...one response per line"></textarea>
-          </div>
-          <div class="fb-field">
-            <div class="fb-label">What one change would have made this course more effective?</div>
-            <div class="fh" style="margin-bottom:6px">Paste all student responses, one per line</div>
-            <textarea class="fi" id="fb-one-change" rows="8" placeholder="More workshops&#10;More case studies&#10;...one response per line"></textarea>
-          </div>
-        </div>
-
-        <div class="fb-form-sec">Source Document</div>
-        <div class="fb-grid2">
-          <div class="fb-field"><div class="fb-label">Source Note</div><input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2025-26"></div>
-          <div class="fb-field">
-            <div class="fb-label">Upload PDF <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional, for reference)</span></div>
-            <input type="file" accept=".pdf" class="fb-input" id="fb-pdf" style="padding:7px">
-          </div>
-        </div>
-
-        <div class="fb-form-actions">
-          <button class="fb-cancel" onclick="toggleFbForm()">Cancel</button>
-          <button class="fb-save-entry" onclick="saveFbEntry()">Add Course Entry +</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</div>
-<!-- END TAB 3 -->
+<!-- END X-DRIVE -->
 
 </main>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
+
+/* ===== Test phase flag =====
+   When true, Mid-Year submission does NOT block edit/add/remove actions.
+   Submit button stays visible and lets faculty re-submit. Set to false
+   to enforce hard locks after Mid-Year submission. */
+const TEST_PHASE_LOCKS_OPEN=true;
+
+/* ===== Debug flag =====
+   Wraps console.error so production doesn't leak internals. Toggle to
+   true when debugging. */
+const DEBUG=false;
+function dlog(...args){if(DEBUG)console.error(...args);}
+
+const ACADEMIC_YEAR='2026-27';
 
 let CURRENT_USER=null;
 let USER_ROLE='';
@@ -1774,20 +1243,16 @@ let DEANS=[];
 let DIRECTOR=null;
 
 let fac=null,eid=null,erec=null;
-const R={t:3,r:3,i:3,s:3};
-
-let COURSE_CATALOG=[];
-const courseState={
-  current:{selected:new Set(),filter:'all',search:''},
-  aspire:{selected:new Set(),filter:'all',search:''}
-};
 
 let INST_ENTRIES=[];
-let FEEDBACK_ENTRIES=[];
 let PUBLICATIONS=[];
 let PUB_FILTER='all';
 let PUB_EDIT_ID=null;
 let PUB_CURRENT_TYPE='journal';
+let EP_PROGRAMMES=[];
+let EP_FILTER='all';
+let EP_EDIT_ID=null;
+let EP_CURRENT_TYPE='MDP';
 
 /* ======================================================
    PUBLICATIONS CRUD
@@ -1807,23 +1272,24 @@ const PUB_AUTHOR_LABELS={
   co_author:'Co'
 };
 
+function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 async function loadPublications(){
   if(!fac)return;
   const{data,error}=await sb.from('faculty_publications')
-    .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26')
-    .order('year',{ascending:false}).order('month',{ascending:false});
-  if(error){console.error('Pub load:',error);PUBLICATIONS=[];return;}
+    .select('*').eq('faculty_master_id',fac.id).eq('academic_year',ACADEMIC_YEAR)
+    .order('year',{ascending:false}).order('created_at',{ascending:false});
+  if(error){dlog('PUB LOAD',error);return;}
   PUBLICATIONS=data||[];
 }
 
 function pubStats(){
-  const stats={total:0,journal:0,book_chapter:0,book:0,case:0,conference:0,astar_q1:0};
+  const s={total:PUBLICATIONS.length,journal:0,book_chapter:0,book:0,case:0,conference:0,astar:0};
   PUBLICATIONS.forEach(p=>{
-    stats.total++;
-    stats[p.publication_type]=(stats[p.publication_type]||0)+1;
-    if(p.abdc_category==='A*'||p.sjr_quartile==='Q1')stats.astar_q1++;
+    if(p.publication_type){const k=p.publication_type;if(s[k]!==undefined)s[k]++;}
+    if(p.abdc_category==='A*'||p.sjr_quartile==='Q1')s.astar++;
   });
-  return stats;
+  return s;
 }
 
 function renderPubSummary(){
@@ -1834,71 +1300,81 @@ function renderPubSummary(){
   document.getElementById('ps-book').textContent=s.book;
   document.getElementById('ps-case').textContent=s.case;
   document.getElementById('ps-conf').textContent=s.conference;
-  document.getElementById('ps-astar').textContent=s.astar_q1;
+  document.getElementById('ps-astar').textContent=s.astar;
 }
 
 function renderPubTable(){
   const tbody=document.getElementById('pub-table-body');
-  if(!tbody)return;
   const filtered=PUB_FILTER==='all'?PUBLICATIONS:PUBLICATIONS.filter(p=>p.publication_type===PUB_FILTER);
   if(filtered.length===0){
-    tbody.innerHTML='<tr><td colspan="8" class="pub-empty-row">No publications recorded yet. Click + Add Publication to get started.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="8" class="pub-empty-row">No publications recorded yet. Click + Add Publication to add the first.</td></tr>';
     return;
   }
-  tbody.innerHTML=filtered.map(p=>renderPubRow(p)).join('');
+  tbody.innerHTML='';
+  filtered.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=renderPubRow(p);
+    tbody.appendChild(tr);
+  });
 }
 
 function renderPubRow(p){
+  const t=p.publication_type||'journal';
+  const tagCls='pub-tag-'+t;
+  const tagLbl=PUB_TYPE_LABELS[t]||t;
   const sourceLine=getPubSourceLine(p);
   const sourceMeta=getPubSourceMeta(p);
-  const abdcCell=p.abdc_category?`<span class="pub-tag-abdc pub-tag-abdc-${(p.abdc_category||'').toLowerCase().replace('*','star')}">${p.abdc_category}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
-  const quartileCell=p.sjr_quartile?`<span class="pub-tag-quartile pub-tag-quartile-${p.sjr_quartile.toLowerCase()}">${p.sjr_quartile}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
-  const indexedCell=p.indexed_in&&p.indexed_in!=='None'?`<span class="pub-tag-indexed">${p.indexed_in.replace(/_/g,' + ')}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
-  const positionCell=p.author_position?`<span class="pub-author-pos">${PUB_AUTHOR_LABELS[p.author_position]||p.author_position}${p.author_position==='co_author'&&p.author_position_number?`<span class="pub-author-pos-num">#${p.author_position_number}</span>`:''}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
-  const yearCell=p.year?`<span class="pub-row-year">${p.month?p.month.substr(0,3)+' ':''}${p.year}</span>`:'<span style="color:var(--faint);font-size:10px">-</span>';
-  return`<tr>
+  let abdc='';
+  if(p.abdc_category==='A*')abdc='<span class="pub-tag pub-tag-abdc pub-tag-abdc-astar">A*</span>';
+  else if(p.abdc_category==='A')abdc='<span class="pub-tag pub-tag-abdc pub-tag-abdc-a">A</span>';
+  else if(p.abdc_category==='B')abdc='<span class="pub-tag pub-tag-abdc pub-tag-abdc-b">B</span>';
+  else if(p.abdc_category==='C')abdc='<span class="pub-tag pub-tag-abdc pub-tag-abdc-c">C</span>';
+  let q='';
+  if(p.sjr_quartile){const ql=p.sjr_quartile.toLowerCase();q=`<span class="pub-tag pub-tag-quartile pub-tag-quartile-${ql}">${escapeHtml(p.sjr_quartile)}</span>`;}
+  const idx=p.indexed_in?`<span class="pub-tag-indexed">${escapeHtml(p.indexed_in.replace(/_/g,'+'))}</span>`:'';
+  let auth='';
+  if(p.author_position){
+    const lbl=PUB_AUTHOR_LABELS[p.author_position]||p.author_position;
+    auth=`<span class="pub-author-pos">${escapeHtml(lbl)}${p.position_number?'<span class="pub-author-pos-num">#'+p.position_number+'</span>':''}</span>`;
+  }
+  const safeId=escapeHtml(String(p.id));
+  return `
     <td>
-      <div class="pub-row-title">${escapeHtml(p.title||'')}</div>
-      ${sourceLine?`<div class="pub-row-source">${escapeHtml(sourceLine)}</div>`:''}
+      <div class="pub-row-title">${escapeHtml(p.title||'(no title)')}</div>
+      <div class="pub-row-source">${sourceLine}</div>
       ${sourceMeta?`<div class="pub-row-source-meta">${sourceMeta}</div>`:''}
     </td>
-    <td>${yearCell}</td>
-    <td><span class="pub-tag pub-tag-${p.publication_type}">${PUB_TYPE_LABELS[p.publication_type]}</span></td>
-    <td>${abdcCell}</td>
-    <td>${quartileCell}</td>
-    <td>${indexedCell}</td>
-    <td>${positionCell}</td>
+    <td><span class="pub-row-year">${escapeHtml(String(p.year||''))}</span></td>
+    <td><span class="pub-tag ${tagCls}">${escapeHtml(tagLbl)}</span></td>
+    <td>${abdc}</td>
+    <td>${q}</td>
+    <td>${idx}</td>
+    <td>${auth}</td>
     <td>
       <div class="pub-row-actions">
-        ${IS_PREVIEW||g1EditBlocked()?'':`<button class="pub-row-action" onclick="editPublication('${p.id}')" title="Edit">&#9998;</button>
-        <button class="pub-row-action delete" onclick="deletePublication('${p.id}')" title="Delete">&times;</button>`}
+        <button class="pub-row-action" onclick="editPublication('${safeId}')" title="Edit">&#9998;</button>
+        <button class="pub-row-action delete" onclick="deletePublication('${safeId}')" title="Delete">&times;</button>
       </div>
-    </td>
-  </tr>`;
+    </td>`;
 }
 
 function getPubSourceLine(p){
-  switch(p.publication_type){
-    case 'journal':return p.journal_name||'';
-    case 'book_chapter':return p.publisher?'In: '+p.publisher:'';
-    case 'book':return p.publisher?'Published by '+p.publisher:'';
-    case 'case':return p.case_publisher?p.case_publisher+' Publishing':'';
-    case 'conference':return p.conference_name||'';
-    default:return '';
-  }
+  const t=p.publication_type;
+  if(t==='journal')return escapeHtml(p.journal_name||'');
+  if(t==='book_chapter')return escapeHtml(p.chapter_publisher||p.chapter_other_publisher||'');
+  if(t==='book')return escapeHtml(p.book_publisher||'');
+  if(t==='case')return escapeHtml(p.case_publisher||'');
+  if(t==='conference')return escapeHtml(p.conference_name||'');
+  return '';
 }
 
 function getPubSourceMeta(p){
   const parts=[];
-  if(p.co_authors&&p.co_authors.toLowerCase()!=='solo')parts.push('with '+p.co_authors);
-  if(p.doi)parts.push(`<a href="https://doi.org/${p.doi}" target="_blank" class="pub-row-doi">doi:${p.doi}</a>`);
-  if(p.isbn)parts.push('ISBN '+p.isbn);
-  if(p.conference_type)parts.push(p.conference_type);
-  if(p.research_category)parts.push(p.research_category.replace(/_/g,' '));
-  return parts.join(' · ');
+  if(p.doi)parts.push(`<a class="pub-row-doi" href="https://doi.org/${escapeHtml(p.doi)}" target="_blank" rel="noopener">${escapeHtml(p.doi)}</a>`);
+  if(p.isbn)parts.push('ISBN '+escapeHtml(p.isbn));
+  if(p.conference_type)parts.push(escapeHtml(p.conference_type));
+  return parts.join(' &middot; ');
 }
-
-function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function filterPubs(type,btn){
   PUB_FILTER=type;
@@ -1908,31 +1384,29 @@ function filterPubs(type,btn){
 }
 
 function openPubForm(){
-  if(IS_PREVIEW){toast('Preview mode. Cannot add publications.',false);return;}
-  if(g1EditBlocked()){toast('Gate 1 locked. Cannot add publications.',false);return;}
   PUB_EDIT_ID=null;
-  document.getElementById('pub-form-title').textContent='Add Publication';
   resetPubForm();
-  selectPubType('journal',document.querySelector('[data-pubtype="journal"]'));
+  document.getElementById('pub-form-title').textContent='Add Publication';
   document.getElementById('pub-form-wrap').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function editPublication(id){
-  const p=PUBLICATIONS.find(x=>x.id===id);
+  const p=PUBLICATIONS.find(x=>String(x.id)===String(id));
   if(!p)return;
-  PUB_EDIT_ID=id;
-  document.getElementById('pub-form-title').textContent='Edit Publication';
+  PUB_EDIT_ID=p.id;
   resetPubForm();
-  selectPubType(p.publication_type,document.querySelector(`[data-pubtype="${p.publication_type}"]`));
-
+  document.getElementById('pub-form-title').textContent='Edit Publication';
+  selectPubType(p.publication_type||'journal',document.querySelector(`.pub-type-tab[data-pubtype="${p.publication_type||'journal'}"]`));
   document.getElementById('pub-title').value=p.title||'';
   document.getElementById('pub-year').value=p.year||'';
   document.getElementById('pub-month').value=p.month||'';
-  document.getElementById('pub-coauthors').value=p.co_authors||'';
-  document.getElementById('pub-position').value=p.author_position||'';
-  document.getElementById('pub-position-num').value=p.author_position_number||'';
-  togglePositionNum();
-
+  document.getElementById('pub-coauthors').value=p.coauthors||'';
+  if(p.author_position){
+    document.getElementById('pub-position').value=p.author_position;
+    if(p.position_number){document.getElementById('pub-position-num').value=p.position_number;}
+    togglePositionNum();
+  }
   if(p.publication_type==='journal'){
     document.getElementById('pub-journal-name').value=p.journal_name||'';
     document.getElementById('pub-doi').value=p.doi||'';
@@ -1940,32 +1414,31 @@ function editPublication(id){
     document.getElementById('pub-indexed').value=p.indexed_in||'';
     document.getElementById('pub-quartile').value=p.sjr_quartile||'';
     document.getElementById('pub-research-category').value=p.research_category||'';
-  }
-  if(p.publication_type==='book_chapter'){
-    if(['IGI Global','Wiley','Springer','Taylor and Francis'].includes(p.publisher)){
-      document.getElementById('pub-chapter-publisher').value=p.publisher;
-    }else if(p.publisher){
-      document.getElementById('pub-chapter-publisher').value='Other';
-      document.getElementById('pub-chapter-other').value=p.publisher;
+  }else if(p.publication_type==='book_chapter'){
+    document.getElementById('pub-chapter-publisher').value=p.chapter_publisher||'';
+    if(p.chapter_publisher==='Other'){
       document.getElementById('pub-chapter-other-wrap').style.display='block';
+      document.getElementById('pub-chapter-other').value=p.chapter_other_publisher||'';
+    }
+  }else if(p.publication_type==='book'){
+    document.getElementById('pub-book-publisher').value=p.book_publisher||'';
+    document.getElementById('pub-isbn').value=p.isbn||'';
+  }else if(p.publication_type==='case'){
+    document.getElementById('pub-case-publisher').value=p.case_publisher||'';
+  }else if(p.publication_type==='conference'){
+    document.getElementById('pub-conf-name').value=p.conference_name||'';
+    if(p.conference_type){
+      const radio=document.querySelector(`input[name="pub-conf-type"][value="${p.conference_type}"]`);
+      if(radio)radio.checked=true;
     }
   }
-  if(p.publication_type==='book'){
-    document.getElementById('pub-book-publisher').value=p.publisher||'';
-    document.getElementById('pub-isbn').value=p.isbn||'';
-  }
-  if(p.publication_type==='case'){
-    document.getElementById('pub-case-publisher').value=p.case_publisher||'';
-  }
-  if(p.publication_type==='conference'){
-    document.getElementById('pub-conf-name').value=p.conference_name||'';
-    document.querySelectorAll('input[name="pub-conf-type"]').forEach(r=>{r.checked=(r.value===p.conference_type);});
-  }
   document.getElementById('pub-form-wrap').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function closePubForm(){
   document.getElementById('pub-form-wrap').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 function resetPubForm(){
@@ -1973,34 +1446,28 @@ function resetPubForm(){
    'pub-journal-name','pub-doi','pub-abdc','pub-indexed','pub-quartile','pub-research-category',
    'pub-chapter-publisher','pub-chapter-other','pub-book-publisher','pub-isbn',
    'pub-case-publisher','pub-conf-name'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.value='';
+    const el=document.getElementById(id);if(el)el.value='';
   });
+  document.getElementById('pub-section-position-num').style.display='none';
   document.getElementById('pub-chapter-other-wrap').style.display='none';
-  document.querySelectorAll('input[name="pub-conf-type"]').forEach((r,i)=>{r.checked=(i===1);});
 }
 
 function selectPubType(type,btn){
   PUB_CURRENT_TYPE=type;
   document.querySelectorAll('.pub-type-tab').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
-
   ['journal','chapter','book','case','conference'].forEach(t=>{
     const sec=document.getElementById('pub-section-'+t);
-    if(sec)sec.style.display='none';
+    if(sec)sec.style.display=(t===type||(t==='chapter'&&type==='book_chapter'))?'block':'none';
   });
-
-  const positionSec=document.getElementById('pub-section-position');
-  positionSec.style.display=(type==='conference')?'none':'block';
-
-  const map={journal:'journal',book_chapter:'chapter',book:'book',case:'case',conference:'conference'};
-  const sec=document.getElementById('pub-section-'+map[type]);
-  if(sec)sec.style.display='block';
+  document.getElementById('pub-section-position').style.display=type==='conference'?'none':'block';
+  document.getElementById('pub-section-journal').style.display=type==='journal'?'block':'none';
+  document.getElementById('pub-section-chapter').style.display=type==='book_chapter'?'block':'none';
+  document.getElementById('pub-section-book').style.display=type==='book'?'block':'none';
+  document.getElementById('pub-section-case').style.display=type==='case'?'block':'none';
+  document.getElementById('pub-section-conference').style.display=type==='conference'?'block':'none';
+  document.getElementById('pub-position').onchange=togglePositionNum;
 }
-
-document.addEventListener('change',function(e){
-  if(e.target&&e.target.id==='pub-position')togglePositionNum();
-});
 
 function togglePositionNum(){
   const pos=document.getElementById('pub-position').value;
@@ -2009,35 +1476,30 @@ function togglePositionNum(){
 
 function checkScopusPublisher(){
   const v=document.getElementById('pub-chapter-publisher').value;
-  document.getElementById('pub-chapter-other-wrap').style.display=(v==='Other')?'block':'none';
+  document.getElementById('pub-chapter-other-wrap').style.display=v==='Other'?'block':'none';
 }
 
 async function savePublication(){
-  if(IS_PREVIEW){toast('Preview mode. Cannot save.',false);return;}
+  if(IS_PREVIEW){toast('Preview mode. Changes are not saved.',false);return;}
+  if(!fac){toast('No faculty loaded',false);return;}
   const title=document.getElementById('pub-title').value.trim();
-  if(!title){toast('Please enter the title',false);return;}
-  const year=parseInt(document.getElementById('pub-year').value)||null;
-  if(!year){toast('Please enter the year',false);return;}
-
+  const year=document.getElementById('pub-year').value;
+  if(!title){toast('Please enter a title',false);return;}
+  if(!year){toast('Please enter a year',false);return;}
   const data={
-    faculty_master_id:fac.id,
-    academic_year:'2025-26',
+    faculty_master_id:fac.id,academic_year:ACADEMIC_YEAR,
     publication_type:PUB_CURRENT_TYPE,
-    title:title,
-    year:year,
+    title,year:parseInt(year),
     month:document.getElementById('pub-month').value||null,
-    co_authors:document.getElementById('pub-coauthors').value.trim()||null,
-    evaluation_id:eid||null
+    coauthors:document.getElementById('pub-coauthors').value.trim()||null,
+    author_position:document.getElementById('pub-position').value||null,
+    position_number:document.getElementById('pub-position-num').value?parseInt(document.getElementById('pub-position-num').value):null,
+    journal_name:null,doi:null,abdc_category:null,indexed_in:null,sjr_quartile:null,research_category:null,
+    chapter_publisher:null,chapter_other_publisher:null,
+    book_publisher:null,isbn:null,
+    case_publisher:null,
+    conference_name:null,conference_type:null
   };
-
-  if(PUB_CURRENT_TYPE!=='conference'){
-    const pos=document.getElementById('pub-position').value;
-    data.author_position=pos||null;
-    if(pos==='co_author'){
-      data.author_position_number=parseInt(document.getElementById('pub-position-num').value)||null;
-    }
-  }
-
   if(PUB_CURRENT_TYPE==='journal'){
     data.journal_name=document.getElementById('pub-journal-name').value.trim()||null;
     data.doi=document.getElementById('pub-doi').value.trim()||null;
@@ -2045,33 +1507,22 @@ async function savePublication(){
     data.indexed_in=document.getElementById('pub-indexed').value||null;
     data.sjr_quartile=document.getElementById('pub-quartile').value||null;
     data.research_category=document.getElementById('pub-research-category').value||null;
-  }
-  if(PUB_CURRENT_TYPE==='book_chapter'){
-    const sel=document.getElementById('pub-chapter-publisher').value;
-    if(sel==='Other'){
-      data.publisher=document.getElementById('pub-chapter-other').value.trim()||null;
-      data.is_scopus_indexed_publisher=false;
-    }else{
-      data.publisher=sel||null;
-      data.is_scopus_indexed_publisher=['IGI Global','Wiley','Springer','Taylor and Francis'].includes(sel);
-    }
-    data.publisher_category=sel||null;
-  }
-  if(PUB_CURRENT_TYPE==='book'){
-    data.publisher=document.getElementById('pub-book-publisher').value.trim()||null;
+  }else if(PUB_CURRENT_TYPE==='book_chapter'){
+    data.chapter_publisher=document.getElementById('pub-chapter-publisher').value||null;
+    if(data.chapter_publisher==='Other'){data.chapter_other_publisher=document.getElementById('pub-chapter-other').value.trim()||null;}
+  }else if(PUB_CURRENT_TYPE==='book'){
+    data.book_publisher=document.getElementById('pub-book-publisher').value.trim()||null;
     data.isbn=document.getElementById('pub-isbn').value.trim()||null;
-  }
-  if(PUB_CURRENT_TYPE==='case'){
+  }else if(PUB_CURRENT_TYPE==='case'){
     data.case_publisher=document.getElementById('pub-case-publisher').value||null;
-  }
-  if(PUB_CURRENT_TYPE==='conference'){
+  }else if(PUB_CURRENT_TYPE==='conference'){
     data.conference_name=document.getElementById('pub-conf-name').value.trim()||null;
-    const radios=document.querySelectorAll('input[name="pub-conf-type"]');
-    let confType='International';
-    radios.forEach(r=>{if(r.checked)confType=r.value;});
-    data.conference_type=confType;
+    const r=document.querySelector('input[name="pub-conf-type"]:checked');
+    data.conference_type=r?r.value:'International';
   }
-
+  const btn=document.getElementById('pub-save-btn');
+  const orig=btn.textContent;
+  btn.textContent='Saving...';btn.disabled=true;
   try{
     if(PUB_EDIT_ID){
       const{error}=await sb.from('faculty_publications').update(data).eq('id',PUB_EDIT_ID);
@@ -2084,83 +1535,61 @@ async function savePublication(){
     }
     closePubForm();
     await loadPublications();
-    renderPubSummary();
-    renderPubTable();
-    upProg();
+    renderPubSummary();renderPubTable();upProg();
   }catch(e){
-    console.error(e);
-    toast('Save failed: '+(e.message||'unknown error'),false);
+    dlog('PUB SAVE',e);
+    const code=e.code?` [${e.code}]`:'';
+    toast('Save failed'+code+': '+(e.message||'unknown error')+'. Please tell Girish.',false);
+  }finally{
+    btn.textContent=orig;btn.disabled=false;
   }
 }
 
 async function deletePublication(id){
-  if(!confirm('Remove this publication?'))return;
+  if(IS_PREVIEW){toast('Preview mode. Changes are not saved.',false);return;}
+  if(!confirm('Delete this publication? This cannot be undone.'))return;
   try{
     const{error}=await sb.from('faculty_publications').delete().eq('id',id);
     if(error)throw error;
     await loadPublications();
-    renderPubSummary();
-    renderPubTable();
-    upProg();
-    toast('Publication removed');
+    renderPubSummary();renderPubTable();upProg();
+    toast('Publication deleted');
   }catch(e){
-    console.error(e);
-    toast('Delete failed',false);
+    dlog('PUB DELETE',e);
+    const code=e.code?` [${e.code}]`:'';
+    toast('Delete failed'+code+': '+(e.message||'unknown error')+'. Please tell Girish.',false);
   }
 }
 
 /* ======================================================
-   INDUSTRY & EP CRUD
+   EP PROGRAMMES CRUD
    ====================================================== */
-
-let EP_PROGRAMMES=[];
-let EP_FILTER='all';
-let EP_EDIT_ID=null;
-let EP_CURRENT_TYPE='MDP';
-
-const EP_TYPE_LABELS={
-  MDP:'MDP',
-  OBP:'OBP',
-  Consulting:'Consulting',
-  Conference_Sponsored:'Conf'
-};
-
-const EP_ROLE_LABELS={
-  Organiser:'Organiser',
-  Coordinator:'Coordinator',
-  Facilitator:'Facilitator',
-  Resource_Person:'Resource'
-};
 
 async function loadEpProgrammes(){
   if(!fac)return;
   const{data,error}=await sb.from('ep_programmes')
-    .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26')
-    .order('date_conducted',{ascending:false,nullsFirst:false});
-  if(error){console.error('EP load:',error);EP_PROGRAMMES=[];return;}
+    .select('*').eq('faculty_master_id',fac.id).eq('academic_year',ACADEMIC_YEAR)
+    .order('date_conducted',{ascending:false}).order('created_at',{ascending:false});
+  if(error){dlog('EP LOAD',error);return;}
   EP_PROGRAMMES=data||[];
 }
 
 function epStats(){
-  const stats={total:0,sessions:0,participants:0,revenue:0,referrals:0};
+  const s={total:EP_PROGRAMMES.length,sessions:0,participants:0,revenue:0,referrals:0};
   EP_PROGRAMMES.forEach(p=>{
-    stats.total++;
-    stats.sessions+=(p.sessions_count||0);
-    stats.participants+=(p.participants_count||0);
-    stats.revenue+=(p.revenue||0);
+    s.sessions+=p.sessions||0;
+    s.participants+=p.participants||0;
+    s.revenue+=Number(p.revenue||0);
   });
-  const sent=parseInt(document.getElementById('f-referrals-sent')?.value)||0;
-  const conv=parseInt(document.getElementById('f-referrals-converted')?.value)||0;
-  stats.referrals=sent+conv;
-  return stats;
+  return s;
 }
 
 function formatINR(n){
   if(!n)return '0';
-  if(n>=10000000)return (n/10000000).toFixed(1)+' Cr';
-  if(n>=100000)return (n/100000).toFixed(1)+' L';
+  if(n>=10000000)return (n/10000000).toFixed(1)+'Cr';
+  if(n>=100000)return (n/100000).toFixed(1)+'L';
   if(n>=1000)return (n/1000).toFixed(0)+'K';
-  return ''+n;
+  return String(n);
 }
 
 function renderEpSummary(){
@@ -2169,44 +1598,46 @@ function renderEpSummary(){
   document.getElementById('es-sessions').textContent=s.sessions;
   document.getElementById('es-participants').textContent=s.participants;
   document.getElementById('es-revenue').textContent=formatINR(s.revenue);
-  document.getElementById('es-referrals').textContent=s.referrals;
+  const refSent=parseInt(document.getElementById('f-referrals-sent').value||'0')||0;
+  document.getElementById('es-referrals').textContent=refSent;
 }
 
 function renderEpTable(){
   const tbody=document.getElementById('ep-table-body');
-  if(!tbody)return;
   const filtered=EP_FILTER==='all'?EP_PROGRAMMES:EP_PROGRAMMES.filter(p=>p.programme_type===EP_FILTER);
   if(filtered.length===0){
-    tbody.innerHTML='<tr><td colspan="8" class="ep-empty-row">No programmes recorded yet. Click + Add Programme to get started.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="8" class="ep-empty-row">No programmes recorded yet. Click + Add Programme to add the first.</td></tr>';
     return;
   }
-  tbody.innerHTML=filtered.map(p=>renderEpRow(p)).join('');
+  tbody.innerHTML='';
+  filtered.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=renderEpRow(p);
+    tbody.appendChild(tr);
+  });
 }
 
 function renderEpRow(p){
-  const dateDisplay=p.date_conducted?new Date(p.date_conducted).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}):'-';
-  const revPerHead=p.participants_count&&p.revenue?Math.round(p.revenue/p.participants_count):0;
-  return`<tr>
+  const t=p.programme_type||'MDP';
+  const dateStr=p.date_conducted?new Date(p.date_conducted).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+  const safeId=escapeHtml(String(p.id));
+  return `
     <td>
-      <div class="ep-row-title">${escapeHtml(p.title||'')}</div>
-      <div class="ep-row-client">${escapeHtml(p.client||'No client specified')}</div>
+      <div class="pub-row-title">${escapeHtml(p.title||'(no title)')}</div>
+      <div class="pub-row-source">${escapeHtml(p.client||'')}</div>
     </td>
-    <td><span class="ep-tag ep-tag-${p.programme_type}">${EP_TYPE_LABELS[p.programme_type]||p.programme_type}</span></td>
-    <td><span class="ep-row-meta">${dateDisplay}</span></td>
-    <td><span class="ep-row-meta">${p.sessions_count||'-'}</span></td>
-    <td><span class="ep-row-meta">${p.participants_count||'-'}</span></td>
+    <td><span class="pub-tag pub-tag-journal">${escapeHtml(t)}</span></td>
+    <td><span class="pub-row-year">${escapeHtml(dateStr)}</span></td>
+    <td><span class="pub-row-year">${p.sessions||0}</span></td>
+    <td><span class="pub-row-year">${p.participants||0}</span></td>
+    <td><span class="pub-row-year">${formatINR(p.revenue||0)}</span></td>
+    <td><span class="pub-author-pos">${escapeHtml((p.role||'').replace(/_/g,' '))}</span></td>
     <td>
-      <span class="ep-row-revenue">${p.revenue?'Rs '+formatINR(p.revenue):'-'}</span>
-      ${revPerHead?`<div style="font-size:9.5px;color:var(--mute);margin-top:2px">Rs ${formatINR(revPerHead)}/head</div>`:''}
-    </td>
-    <td><span class="ep-tag-role ep-tag-role-${p.role}">${EP_ROLE_LABELS[p.role]||p.role||'-'}</span></td>
-    <td>
-      <div class="ep-row-actions">
-        ${IS_PREVIEW?'':`<button class="ep-row-action" onclick="editEp('${p.id}')" title="Edit">&#9998;</button>
-        <button class="ep-row-action delete" onclick="deleteEp('${p.id}')" title="Delete">&times;</button>`}
+      <div class="pub-row-actions">
+        <button class="pub-row-action" onclick="editEp('${safeId}')" title="Edit">&#9998;</button>
+        <button class="pub-row-action delete" onclick="deleteEp('${safeId}')" title="Delete">&times;</button>
       </div>
-    </td>
-  </tr>`;
+    </td>`;
 }
 
 function filterEps(type,btn){
@@ -2217,45 +1648,48 @@ function filterEps(type,btn){
 }
 
 function openEpForm(){
-  if(IS_PREVIEW){toast('Preview mode. Cannot add programmes.',false);return;}
   EP_EDIT_ID=null;
-  document.getElementById('ep-form-title').textContent='Add Programme';
   resetEpForm();
-  selectEpType('MDP',document.querySelector('[data-eptype="MDP"]'));
+  document.getElementById('ep-form-title').textContent='Add Programme';
   document.getElementById('ep-form-wrap').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function editEp(id){
-  const p=EP_PROGRAMMES.find(x=>x.id===id);
+  const p=EP_PROGRAMMES.find(x=>String(x.id)===String(id));
   if(!p)return;
-  EP_EDIT_ID=id;
-  document.getElementById('ep-form-title').textContent='Edit Programme';
+  EP_EDIT_ID=p.id;
   resetEpForm();
-  selectEpType(p.programme_type,document.querySelector(`[data-eptype="${p.programme_type}"]`));
+  document.getElementById('ep-form-title').textContent='Edit Programme';
+  selectEpType(p.programme_type||'MDP',document.querySelector(`.ep-type-tab[data-eptype="${p.programme_type||'MDP'}"]`));
   document.getElementById('ep-title').value=p.title||'';
   document.getElementById('ep-client').value=p.client||'';
   document.getElementById('ep-date').value=p.date_conducted||'';
-  document.getElementById('ep-sessions').value=p.sessions_count||'';
-  document.getElementById('ep-participants').value=p.participants_count||'';
+  document.getElementById('ep-sessions').value=p.sessions||'';
+  document.getElementById('ep-participants').value=p.participants||'';
   document.getElementById('ep-duration').value=p.duration||'';
   document.getElementById('ep-revenue').value=p.revenue||'';
-  document.getElementById('ep-notes').value=p.notes||'';
   if(p.role){
-    document.querySelectorAll('input[name="ep-role"]').forEach(r=>{r.checked=(r.value===p.role);});
+    const r=document.querySelector(`input[name="ep-role"][value="${p.role}"]`);
+    if(r)r.checked=true;
   }
+  document.getElementById('ep-notes').value=p.notes||'';
   calcRevenuePerHead();
   document.getElementById('ep-form-wrap').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function closeEpForm(){
   document.getElementById('ep-form-wrap').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 function resetEpForm(){
   ['ep-title','ep-client','ep-date','ep-sessions','ep-participants','ep-duration','ep-revenue','ep-revenue-per','ep-notes'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value='';
   });
-  document.querySelectorAll('input[name="ep-role"]').forEach((r,i)=>{r.checked=(i===1);});
+  const def=document.querySelector('input[name="ep-role"][value="Coordinator"]');
+  if(def)def.checked=true;
 }
 
 function selectEpType(type,btn){
@@ -2265,42 +1699,34 @@ function selectEpType(type,btn){
 }
 
 function calcRevenuePerHead(){
-  const rev=parseInt(document.getElementById('ep-revenue').value)||0;
-  const part=parseInt(document.getElementById('ep-participants').value)||0;
-  const out=document.getElementById('ep-revenue-per');
-  if(rev>0&&part>0){
-    out.value='Rs '+Math.round(rev/part).toLocaleString('en-IN')+' per participant';
-  }else{
-    out.value='';
-  }
+  const r=parseFloat(document.getElementById('ep-revenue').value)||0;
+  const p=parseInt(document.getElementById('ep-participants').value)||0;
+  const per=p>0?Math.round(r/p):0;
+  document.getElementById('ep-revenue-per').value=per?'Rs '+per.toLocaleString('en-IN'):'';
 }
 
 async function saveEp(){
-  if(IS_PREVIEW){toast('Preview mode.',false);return;}
+  if(IS_PREVIEW){toast('Preview mode. Changes are not saved.',false);return;}
+  if(!fac){toast('No faculty loaded',false);return;}
   const title=document.getElementById('ep-title').value.trim();
-  if(!title){toast('Please enter the programme title',false);return;}
-  const date=document.getElementById('ep-date').value;
-  if(!date){toast('Please select the date',false);return;}
-
-  let role='Coordinator';
-  document.querySelectorAll('input[name="ep-role"]').forEach(r=>{if(r.checked)role=r.value;});
-
+  if(!title){toast('Please enter a programme title',false);return;}
+  const r=document.querySelector('input[name="ep-role"]:checked');
   const data={
-    faculty_master_id:fac.id,
-    academic_year:'2025-26',
+    faculty_master_id:fac.id,academic_year:ACADEMIC_YEAR,
     programme_type:EP_CURRENT_TYPE,
-    title:title,
+    title,
     client:document.getElementById('ep-client').value.trim()||null,
-    date_conducted:date,
-    sessions_count:parseInt(document.getElementById('ep-sessions').value)||0,
-    participants_count:parseInt(document.getElementById('ep-participants').value)||0,
+    date_conducted:document.getElementById('ep-date').value||null,
+    sessions:parseInt(document.getElementById('ep-sessions').value)||null,
+    participants:parseInt(document.getElementById('ep-participants').value)||null,
     duration:document.getElementById('ep-duration').value.trim()||null,
-    revenue:parseInt(document.getElementById('ep-revenue').value)||0,
-    role:role,
-    notes:document.getElementById('ep-notes').value.trim()||null,
-    evaluation_id:eid||null
+    revenue:parseFloat(document.getElementById('ep-revenue').value)||null,
+    role:r?r.value:'Coordinator',
+    notes:document.getElementById('ep-notes').value.trim()||null
   };
-
+  const btn=document.getElementById('ep-save-btn');
+  const orig=btn.textContent;
+  btn.textContent='Saving...';btn.disabled=true;
   try{
     if(EP_EDIT_ID){
       const{error}=await sb.from('ep_programmes').update(data).eq('id',EP_EDIT_ID);
@@ -2313,339 +1739,47 @@ async function saveEp(){
     }
     closeEpForm();
     await loadEpProgrammes();
-    renderEpSummary();
-    renderEpTable();
-    upProg();
+    renderEpSummary();renderEpTable();upProg();
   }catch(e){
-    console.error(e);
-    toast('Save failed: '+(e.message||'unknown error'),false);
+    dlog('EP SAVE',e);
+    const code=e.code?` [${e.code}]`:'';
+    toast('Save failed'+code+': '+(e.message||'unknown error')+'. Please tell Girish.',false);
+  }finally{
+    btn.textContent=orig;btn.disabled=false;
   }
 }
 
 async function deleteEp(id){
-  if(!confirm('Remove this programme?'))return;
+  if(IS_PREVIEW){toast('Preview mode. Changes are not saved.',false);return;}
+  if(!confirm('Delete this programme? This cannot be undone.'))return;
   try{
     const{error}=await sb.from('ep_programmes').delete().eq('id',id);
     if(error)throw error;
     await loadEpProgrammes();
-    renderEpSummary();
-    renderEpTable();
-    upProg();
-    toast('Programme removed');
+    renderEpSummary();renderEpTable();upProg();
+    toast('Programme deleted');
   }catch(e){
-    console.error(e);
-    toast('Delete failed',false);
+    dlog('EP DELETE',e);
+    const code=e.code?` [${e.code}]`:'';
+    toast('Delete failed'+code+': '+(e.message||'unknown error')+'. Please tell Girish.',false);
   }
 }
 
 /* ======================================================
-   FEEDBACK QUESTIONS
+   COMMON HELPERS
    ====================================================== */
-const FB_QUESTIONS=[
-  'This faculty is genuinely interested in my progress and is accessible when I need guidance or support.',
-  'This faculty uses relevant real-world examples and business cases that make concepts meaningful and relatable.',
-  'The course is designed to be application-oriented, enabling students to apply concepts in practice.',
-  'This faculty creates a classroom environment that is engaging, participative, and energizing.',
-  'This faculty maintains an orderly and focused classroom, creating an environment that is conducive to effective learning.'
-];
 
-/* Madhu Kumar demo seed data */
-const MADHU_SEED={
-  id:'fb-madhu-pm-2526',
-  course_name:'Project Management',
-  course_code:'XB-2527-BA-T3-C04',
-  term:'3',
-  academic_year:'2025-26',
-  students:46,
-  overall_pct:90.54,
-  overall_mean:3.62,
-  questions:[
-    {excellent:34,very_good:8,good:3,satisfactory:1,poor:0,mean:3.63},
-    {excellent:36,very_good:6,good:3,satisfactory:1,poor:0,mean:3.67},
-    {excellent:33,very_good:9,good:3,satisfactory:1,poor:0,mean:3.61},
-    {excellent:34,very_good:7,good:4,satisfactory:1,poor:0,mean:3.61},
-    {excellent:33,very_good:8,good:4,satisfactory:1,poor:0,mean:3.59}
-  ],
-  did_best:[
-    'Easy explanations that made complex concepts approachable',
-    'Uses relevant real-world examples and business cases',
-    'Helped to relate the concepts with real world case problems',
-    'Way of teaching feels more like a dialogue than a monologue',
-    'He genuinely wanted all the students to understand the concepts and become a good PM',
-    'Making sure everyone understood concepts and teaching from a placement perspective. Really helpful.',
-    'Bringing industry experience examples to every concept to show the relevance',
-    'Madhu Sir is the course. Without him I would not have learnt half of what I did. As long as he is teaching, there is no need to make any changes.',
-    'Excellent conceptual clarity with strong industry connect'
-  ],
-  one_change:[
-    'More workshops around the subject',
-    'More case studies on real life practical implication beyond course curriculum',
-    'More practice questions',
-    'Could have briefed about current PM tools used in the market',
-    'More classes',
-    'Reduce portion a bit but overall satisfied'
-  ],
-  source_note:'XIME BA-05 End Term Faculty Feedback, Term 3, AY 2025-26',
-  source_doc:'MadhuKumarPS_ProjectManagement_XB2527BAT3C04.pdf'
-};
-
-/* ======================================================
-   FEEDBACK RENDERING
-   ====================================================== */
-function renderFeedbackEntries(){
-  const container=document.getElementById('fb-cards-container');
-  if(FEEDBACK_ENTRIES.length===0){
-    container.innerHTML=`<div class="fb-empty-state">
-      <div class="fb-empty-icon">&#128203;</div>
-      <div class="fb-empty-text">No course feedback entries yet.<br>Add your first entry using the form below.</div>
-    </div>`;
-    return;
-  }
-  container.innerHTML=FEEDBACK_ENTRIES.map(e=>renderFbCard(e)).join('');
-}
-
-function renderFbCard(e){
-  const total=e.students||46;
-  const isMadhu=e.id===MADHU_SEED.id;
-  const featuredBest=isMadhu?[e.did_best[7]]:(e.did_best||[]).filter(r=>r.length>60).slice(0,1);
-  const regularBest=(e.did_best||[]).filter(r=>!featuredBest.includes(r));
-
-  const questionsHtml=FB_QUESTIONS.map((q,i)=>{
-    const qd=e.questions&&e.questions[i]?e.questions[i]:{excellent:0,very_good:0,good:0,satisfactory:0,poor:0,mean:0};
-    const E=qd.excellent||0,VG=qd.very_good||0,G=qd.good||0,S=qd.satisfactory||0,P=qd.poor||0;
-    const ep=((E/total)*100).toFixed(1);
-    const vgp=((VG/total)*100).toFixed(1);
-    const gp=((G/total)*100).toFixed(1);
-    const sp=((S/total)*100).toFixed(1);
-    const pp=((P/total)*100).toFixed(1);
-    const segW=n=>Math.round((n/total)*100);
-    return`<div class="fb-q-row">
-      <div class="fb-q-text">${q}</div>
-      <div class="fb-q-bottom">
-        <div class="fb-dist-wrap">
-          <div class="fb-dist-bar">
-            ${E>0?`<div class="fb-seg-e" style="flex:${segW(E)}" title="Excellent: ${E}"></div>`:''}
-            ${VG>0?`<div class="fb-seg-vg" style="flex:${segW(VG)}" title="Very Good: ${VG}"></div>`:''}
-            ${G>0?`<div class="fb-seg-g" style="flex:${segW(G)}" title="Good: ${G}"></div>`:''}
-            ${S>0?`<div class="fb-seg-s" style="flex:${segW(S)}" title="Satisfactory: ${S}"></div>`:''}
-            ${P>0?`<div class="fb-seg-p" style="flex:${segW(P)}" title="Poor: ${P}"></div>`:''}
-          </div>
-          <div class="fb-dist-counts">
-            <div class="fb-dist-count" style="flex:${segW(E)};min-width:24px">${E}</div>
-            <div class="fb-dist-count" style="flex:${segW(VG)};min-width:20px">${VG}</div>
-            <div class="fb-dist-count" style="flex:${segW(G)};min-width:18px">${G}</div>
-            <div class="fb-dist-count" style="flex:${segW(S)};min-width:16px">${S}</div>
-            <div class="fb-dist-count" style="flex:${segW(P)};min-width:12px">${P||''}</div>
-          </div>
-        </div>
-        <div class="fb-q-mean">${(qd.mean||0).toFixed(2)}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const didBestHtml=[
-    ...featuredBest.map(r=>`<div class="fb-resp feature">${r}</div>`),
-    ...regularBest.map(r=>`<div class="fb-resp">${r}</div>`)
-  ].join('');
-
-  const oneChangeHtml=(e.one_change||[]).filter(r=>r&&r.length>2&&!['na','nil','n/a','none','nothing','no','good','-','..'].includes(r.toLowerCase().trim())).map(r=>`<div class="fb-resp">${r}</div>`).join('');
-
-  return`<div class="fb-card">
-    <div class="fb-card-header">
-      <div>
-        <div class="fb-course-name">${e.course_name}</div>
-        <div class="fb-course-meta">
-          ${e.course_code} &nbsp;·&nbsp; Term ${e.term} &nbsp;·&nbsp; AY ${e.academic_year}
-        </div>
-      </div>
-      <div class="fb-score-block">
-        <div class="fb-pct">${(e.overall_pct||0).toFixed(2)}<span style="font-size:18px;color:rgba(201,168,76,.6)">%</span></div>
-        <div class="fb-pct-label">Overall Score</div>
-        <div class="fb-mean-line">Mean ${(e.overall_mean||0).toFixed(2)} / 4.00</div>
-        <div class="fb-students-line">${e.students} students</div>
-      </div>
-    </div>
-
-    <div class="fb-questions">
-      <div class="fb-qs-label">
-        Objective Questions
-        <span style="font-size:9px;color:var(--faint);font-weight:400;text-transform:none;letter-spacing:0">
-          &nbsp; E = Excellent &nbsp; VG = Very Good &nbsp; G = Good &nbsp; S = Satisfactory &nbsp; P = Poor
-        </span>
-      </div>
-      ${questionsHtml}
-    </div>
-
-    <div class="fb-subjective">
-      <div class="fb-sub-grid">
-        <div>
-          <div class="fb-sub-title">What this faculty did best</div>
-          <div class="fb-responses">${didBestHtml||'<span style="font-size:12px;color:var(--faint);font-style:italic">No responses recorded</span>'}</div>
-        </div>
-        <div>
-          <div class="fb-sub-title">What one change would have helped</div>
-          <div class="fb-responses">${oneChangeHtml||'<span style="font-size:12px;color:var(--faint);font-style:italic">No substantive suggestions recorded</span>'}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="fb-card-footer">
-      <div class="fb-source-note">${e.source_note||''} ${e.source_doc?'· '+e.source_doc:''}</div>
-      ${IS_PREVIEW?'':`<button class="fb-remove" onclick="removeFbEntry('${e.id}')">Remove</button>`}
-    </div>
-  </div>`;
-}
-
-function removeFbEntry(id){
-  if(!confirm('Remove this course feedback entry?'))return;
-  FEEDBACK_ENTRIES=FEEDBACK_ENTRIES.filter(e=>e.id!==id);
-  renderFeedbackEntries();
-  upProg();
-  toast('Entry removed');
-}
-
-function toggleFbForm(){
-  const wrap=document.getElementById('fb-form-wrap');
-  wrap.classList.toggle('open');
-  if(wrap.classList.contains('open')){
-    buildFbQInputs();
-    wrap.scrollIntoView({behavior:'smooth',block:'start'});
-  }
-}
-
-function buildFbQInputs(){
-  const container=document.getElementById('fb-q-inputs');
-  container.innerHTML=FB_QUESTIONS.map((q,i)=>`
-    <div class="fb-q-input">
-      <div class="fb-q-input-label"><span class="fb-q-num">Q${i+1}</span>${q}</div>
-      <div class="fb-counts-row">
-        <div class="fb-count-col"><div class="fb-count-lbl lbl-e">E</div><input class="fb-count-n" id="fb-q${i}-e" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
-        <div class="fb-count-col"><div class="fb-count-lbl lbl-vg">VG</div><input class="fb-count-n" id="fb-q${i}-vg" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
-        <div class="fb-count-col"><div class="fb-count-lbl lbl-g">G</div><input class="fb-count-n" id="fb-q${i}-g" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
-        <div class="fb-count-col"><div class="fb-count-lbl lbl-s">S</div><input class="fb-count-n" id="fb-q${i}-s" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
-        <div class="fb-count-col"><div class="fb-count-lbl lbl-p">P</div><input class="fb-count-n" id="fb-q${i}-p" type="number" min="0" value="0" oninput="calcQMean(${i})"></div>
-      </div>
-      <div class="fb-q-mean-display">Mean: <span class="fb-q-mean-val" id="fb-q${i}-mean">0.00</span></div>
-    </div>`).join('');
-}
-
-function calcQMean(qi){
-  const E=parseInt(document.getElementById('fb-q'+qi+'-e').value)||0;
-  const VG=parseInt(document.getElementById('fb-q'+qi+'-vg').value)||0;
-  const G=parseInt(document.getElementById('fb-q'+qi+'-g').value)||0;
-  const S=parseInt(document.getElementById('fb-q'+qi+'-s').value)||0;
-  const P=parseInt(document.getElementById('fb-q'+qi+'-p').value)||0;
-  const total=E+VG+G+S+P;
-  const mean=total>0?((4*E+3*VG+2*G+1*S+0*P)/total):0;
-  document.getElementById('fb-q'+qi+'-mean').textContent=mean.toFixed(2);
-  recalcOverall();
-}
-
-function recalcOverall(){
-  const students=parseInt(document.getElementById('fb-students').value)||0;
-  if(students===0)return;
-  let totalMean=0;let validQ=0;
-  FB_QUESTIONS.forEach((_,i)=>{
-    const E=parseInt(document.getElementById('fb-q'+i+'-e')?.value)||0;
-    const VG=parseInt(document.getElementById('fb-q'+i+'-vg')?.value)||0;
-    const G=parseInt(document.getElementById('fb-q'+i+'-g')?.value)||0;
-    const S=parseInt(document.getElementById('fb-q'+i+'-s')?.value)||0;
-    const P=parseInt(document.getElementById('fb-q'+i+'-p')?.value)||0;
-    const t=E+VG+G+S+P;
-    if(t>0){
-      const m=(4*E+3*VG+2*G+1*S+0*P)/t;
-      totalMean+=m;validQ++;
-    }
-  });
-  if(validQ>0){
-    const overallMean=totalMean/validQ;
-    const overallPct=(overallMean/4)*100;
-    document.getElementById('fb-overall-mean').value=overallMean.toFixed(2);
-    document.getElementById('fb-overall-pct').value=overallPct.toFixed(2);
-  }
-}
-
-function saveFbEntry(){
-  const courseName=document.getElementById('fb-course-name').value.trim();
-  const courseCode=document.getElementById('fb-course-code').value.trim();
-  const term=document.getElementById('fb-term').value;
-  const students=parseInt(document.getElementById('fb-students').value)||0;
-
-  if(!courseName){toast('Please enter the course name',false);return;}
-  if(!term){toast('Please select the term',false);return;}
-  if(students<1){toast('Please enter the number of students who submitted',false);return;}
-
-  const questions=FB_QUESTIONS.map((_,i)=>({
-    excellent:parseInt(document.getElementById('fb-q'+i+'-e').value)||0,
-    very_good:parseInt(document.getElementById('fb-q'+i+'-vg').value)||0,
-    good:parseInt(document.getElementById('fb-q'+i+'-g').value)||0,
-    satisfactory:parseInt(document.getElementById('fb-q'+i+'-s').value)||0,
-    poor:parseInt(document.getElementById('fb-q'+i+'-p').value)||0,
-    mean:parseFloat(document.getElementById('fb-q'+i+'-mean').textContent)||0
-  }));
-
-  const didBestRaw=document.getElementById('fb-did-best').value;
-  const oneChangeRaw=document.getElementById('fb-one-change').value;
-  const didBest=didBestRaw.split('\n').map(s=>s.trim()).filter(Boolean);
-  const oneChange=oneChangeRaw.split('\n').map(s=>s.trim()).filter(Boolean);
-
-  const entry={
-    id:'fb-'+Date.now(),
-    course_name:courseName,
-    course_code:courseCode,
-    term:term,
-    academic_year:document.getElementById('fb-ay').value||'2025-26',
-    students:students,
-    overall_pct:parseFloat(document.getElementById('fb-overall-pct').value)||0,
-    overall_mean:parseFloat(document.getElementById('fb-overall-mean').value)||0,
-    questions:questions,
-    did_best:didBest,
-    one_change:oneChange,
-    source_note:document.getElementById('fb-source-note').value.trim(),
-    source_doc:document.getElementById('fb-pdf').files[0]?.name||''
-  };
-
-  FEEDBACK_ENTRIES.push(entry);
-  renderFeedbackEntries();
-  toggleFbForm();
-  upProg();
-  toast('Course feedback entry added');
-
-  document.getElementById('fb-course-name').value='';
-  document.getElementById('fb-course-code').value='';
-  document.getElementById('fb-term').value='';
-  document.getElementById('fb-students').value='';
-  document.getElementById('fb-overall-pct').value='';
-  document.getElementById('fb-overall-mean').value='';
-  document.getElementById('fb-did-best').value='';
-  document.getElementById('fb-one-change').value='';
-  document.getElementById('fb-source-note').value='';
-  buildFbQInputs();
-}
-
-/* ======================================================
-   UTILITY FUNCTIONS
-   ====================================================== */
 function toast(m,ok=true){
   const t=document.getElementById('toast');
   t.textContent=m;
   t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';
   t.style.background=ok?'var(--navy-dark)':'#7A1A1A';
   t.classList.add('show');
-  /* Errors stay visible 12 seconds. Success disappears in 3. */
   const dwell=ok?3000:12000;
   if(t._timer)clearTimeout(t._timer);
   t._timer=setTimeout(()=>{t.classList.remove('show');t.style.background='';},dwell);
-  /* Click to dismiss */
   t.style.cursor='pointer';
   t.onclick=()=>{t.classList.remove('show');t.style.background='';};
-}
-
-function switchTab(which){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===which));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+which));
-  document.querySelectorAll('.sidebar-group').forEach(g=>g.classList.toggle('active',g.id==='sg-'+which));
-  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function goTo(id){
@@ -2665,16 +1799,21 @@ function exitPreview(){
   window.location.href='index.html';
 }
 
-/* ---------- Access resolution ---------- */
+/* ---------- Access resolution (H8 must_change_password gate retained) ---------- */
 async function resolveAccess(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='login.html';return null;}
 
+  /* H8: Force password change before any access */
+  const um=session.user.user_metadata||{};
+  if(um.must_change_password===true){
+    window.location.href='login.html?force_change=1';
+    return null;
+  }
+
   const{data:profile}=await sb.from('user_profiles')
     .select('*').eq('id',session.user.id).maybeSingle();
   if(!profile){window.location.href='login.html';return null;}
-
-  if(profile.must_change_password){window.location.href='login.html?action=change-password';return null;}
 
   CURRENT_USER=profile;
   USER_ROLE=profile.role;
@@ -2726,8 +1865,7 @@ function enterPreviewMode(faculty){
   });
   document.querySelectorAll('.tier-cell').forEach(el=>el.classList.add('lk'));
   document.getElementById('g1box').style.display='none';
-  document.getElementById('g2box').style.display='none';
-  document.querySelectorAll('.add-row,.remove-row,.inst-form-btn,.fb-save-entry,.fb-add-more,.fb-toggle-form').forEach(b=>{if(b)b.disabled=true});
+  document.querySelectorAll('.add-row,.remove-row,.inst-form-btn,.pub-add-btn,.ep-add-btn').forEach(b=>{if(b)b.disabled=true});
 }
 
 function showDualRoleNote(faculty){
@@ -2735,174 +1873,57 @@ function showDualRoleNote(faculty){
   const note=document.getElementById('dual-role-note');
   const roleLabel=USER_ROLE==='director'?'Director':'Dean';
   note.classList.add('visible');
-  note.innerHTML=`<strong>Note:</strong> You are completing this review as faculty. In your role as ${roleLabel} you will receive and validate reviews from other faculty in the usual way.`;
-}
-
-/* ---------- Strength sliders ---------- */
-function updateStrength(k){
-  const v=parseInt(document.getElementById('sl-'+k).value);
-  R[k]=v;
-  document.getElementById('sv-'+k).textContent=v;
-  upProg();
-}
-
-/* ---------- Strengths list ---------- */
-function addStrengthRow(){
-  const list=document.getElementById('strengths-list');
-  if(list.children.length>=5)return;
-  const n=list.children.length+1;
-  const row=document.createElement('div');
-  row.className='list-row';
-  row.innerHTML=`<div class="list-num">${n}.</div><input type="text" placeholder="Another capability..."><button class="remove-row" onclick="removeStrengthRow(this)">x</button>`;
-  list.appendChild(row);
-}
-function removeStrengthRow(btn){
-  const list=document.getElementById('strengths-list');
-  if(list.children.length<=1)return;
-  btn.parentElement.remove();
-  renumber('strengths-list');
-}
-
-/* ---------- Develop list ---------- */
-function addDevelopRow(){
-  const list=document.getElementById('develop-list');
-  const n=list.children.length+1;
-  const row=document.createElement('div');
-  row.className='list-row';
-  row.innerHTML=`<div class="list-num">${n}.</div><input type="text" placeholder="Another development area..."><button class="remove-row" onclick="removeDevelopRow(this)">x</button>`;
-  list.appendChild(row);
-  checkDevelopMin();
-}
-function removeDevelopRow(btn){
-  btn.parentElement.remove();
-  renumber('develop-list');
-  checkDevelopMin();
-}
-function checkDevelopMin(){
-  const list=document.getElementById('develop-list');
-  const note=document.getElementById('develop-min-note');
-  const filled=[...list.querySelectorAll('input[type="text"]')].filter(i=>i.value.trim()).length;
-  if(filled<3){note.className='min-note required';note.textContent=`${filled} of 3 minimum entered. At least ${3-filled} more required.`;}
-  else{note.className='min-note met';note.textContent=`${filled} areas entered. Good.`;}
-}
-
-function renumber(listId){
-  const list=document.getElementById(listId);
-  [...list.children].forEach((row,i)=>{
-    const numEl=row.querySelector('.list-num');
-    if(numEl)numEl.textContent=(i+1)+'.';
-  });
-}
-
-function getListValues(listId){
-  const list=document.getElementById(listId);
-  return [...list.querySelectorAll('input[type="text"]')].map(i=>i.value.trim()).filter(Boolean);
-}
-function setListValues(listId,values){
-  const list=document.getElementById(listId);
-  list.innerHTML='';
-  const clean=(values||[]).filter(Boolean);
-  const min=listId==='develop-list'?3:1;
-  const needed=Math.max(clean.length,min);
-  for(let i=0;i<needed;i++){
-    const row=document.createElement('div');
-    row.className='list-row';
-    const removeFn=listId==='develop-list'?'removeDevelopRow':'removeStrengthRow';
-    row.innerHTML=`<div class="list-num">${i+1}.</div><input type="text" value="${(clean[i]||'').replace(/"/g,'&quot;')}" placeholder="..."><button class="remove-row" onclick="${removeFn}(this)">x</button>`;
-    list.appendChild(row);
-  }
-  if(listId==='develop-list')checkDevelopMin();
-}
-
-/* ---------- Allocation ---------- */
-function updateAlloc(){
-  const cur=['al-t','al-r','al-ind','al-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id)?.value)||0),0);
-  const ide=['ali-t','ali-r','ali-ind','ali-s'].reduce((s,id)=>s+(parseInt(document.getElementById(id)?.value)||0),0);
-
-  const cEl=document.getElementById('total-current');
-  cEl.querySelector('strong').textContent=cur+'%';
-  cEl.className='alloc-total '+(cur===100?'ok':'warn');
-
-  const iEl=document.getElementById('total-ideal');
-  iEl.querySelector('strong').textContent=ide+'%';
-  iEl.className='alloc-total '+(ide===100?'ok':'warn');
-
-  let maxDelta=0;
-  ['t','r','s'].forEach(k=>{
-    const c=parseInt(document.getElementById('al-'+k)?.value)||0;
-    const ii=parseInt(document.getElementById('ali-'+k)?.value)||0;
-    maxDelta=Math.max(maxDelta,Math.abs(c-ii));
-  });
-  document.getElementById('change-reveal').classList.toggle('active',maxDelta>15);
-  upProg();
+  note.textContent=`Note: You are completing this review as faculty. In your role as ${roleLabel} you will receive and validate reviews from other faculty in the usual way.`;
 }
 
 /* ---------- Progress ---------- */
 function upProg(){
-  const fids=['f-tnotes','f-terms',
-    'f-ugc-care','f-hi','f-gscholar-cites','f-ind',
-    'f-external-resources',
-    'f-referrals-sent','f-referrals-converted','f-referrals-detail',
-    'f-pt','f-pr','f-pi','f-ps','f-pimp','f-impact','f-iki',
-    'al-t','al-r','al-s','ali-t','ali-r','ali-s',
-    'f-gaps','f-newcourses','f-stopcourses','f-caps','f-delivered','f-newprogs','f-respotential',
-    'f-sta','f-stp','f-cnt','f-kg','f-sup'];
+  const fids=['f-scholar','f-orcid','f-terms','f-tnotes','f-hi','f-gscholar-cites','f-ugc-care','f-wip','f-external-resources','f-referrals-sent','f-referrals-converted','f-referrals-detail','f-ind'];
   let filled=0;
-  fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&el.value.trim()&&el.value!=='0')filled++;});
-  if(R.t!==3||R.r!==3||R.i!==3||R.s!==3)filled+=2;
-  if(INST_ENTRIES.length>0)filled++;
-  if(FEEDBACK_ENTRIES.length>0)filled+=2;
+  fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&String(el.value).trim())filled++;});
   if(PUBLICATIONS.length>0)filled+=2;
   if(EP_PROGRAMMES.length>0)filled+=2;
-  if(courseState.current.selected.size>0)filled++;
-  if(getListValues('strengths-list').length>0)filled++;
-  if(getListValues('develop-list').length>=3)filled++;
-  const dsChecked=['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].some(k=>{
-    const el=document.getElementById('ds-'+k);return el&&el.checked;
+  if(INST_ENTRIES.length>0)filled+=2;
+  let dsChecked=false;
+  ['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].forEach(k=>{
+    const el=document.getElementById('ds-'+k);
+    if(el&&el.checked)dsChecked=true;
   });
   if(dsChecked)filled++;
-  const totalFields=fids.length+12;
+  const totalFields=fids.length+7;
   const pct=Math.min(100,Math.round((filled/totalFields)*100));
   document.getElementById('pf').style.width=pct+'%';
   document.getElementById('pp').textContent=pct+'%';
+  /* Update referrals counter in EP summary on every input */
+  const esRef=document.getElementById('es-referrals');
+  if(esRef){
+    const refSent=parseInt(document.getElementById('f-referrals-sent').value||'0')||0;
+    esRef.textContent=refSent;
+  }
 }
 
 /* ---------- Locks ----------
-   g1Locked / g2Locked reflect DB submission state and drive visual rendering.
-   g1EditBlocked / g2EditBlocked gate editing actions and honor TEST_PHASE_LOCKS_OPEN.
-   To enforce hard locks in production, set TEST_PHASE_LOCKS_OPEN to false. */
-const TEST_PHASE_LOCKS_OPEN = true;
+   Distinction: g1Locked() reflects DB state for status pill display.
+   g1EditBlocked() controls whether action buttons are disabled.
+   During TEST_PHASE_LOCKS_OPEN, edit is never blocked so faculty can
+   re-submit after the first Mid-Year submission. */
 function g1Locked(){return erec?.gate1_locked===true;}
-function g2Locked(){return erec?.gate2_locked===true;}
-function g1EditBlocked(){return g1Locked() && !TEST_PHASE_LOCKS_OPEN;}
-function g2EditBlocked(){return g2Locked() && !TEST_PHASE_LOCKS_OPEN;}
+function g1EditBlocked(){return TEST_PHASE_LOCKS_OPEN?false:g1Locked();}
 
 function applyLocks(){
   const s=erec?.workflow_status||'draft';
-  /* TEST PHASE: locks open. Faculty can re-edit after submission.
-     Submit buttons stay visible. No fields are read-only. */
-  /* Status pill still reflects workflow state for visibility */
   const pm={draft:'sp-draft',mid_year_locked:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked'};
-  const pl={draft:'Draft',mid_year_locked:'Gate 1 Submitted',mid_year_validated:'Mid-Year Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
+  const pl={draft:'Draft',mid_year_locked:'Mid-Year Submitted',mid_year_validated:'Mid-Year Validated',annual_submitted:'Annual Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
   const pill=document.getElementById('spill');
   pill.className='spill '+(pm[s]||'sp-draft');
   pill.textContent=pl[s]||s;
 
-  /* Update Gate 1 label to indicate submission status */
   if(g1Locked()){
-    document.getElementById('g1s').textContent='Submitted (re-editable)';
+    document.getElementById('g1s').textContent=TEST_PHASE_LOCKS_OPEN?'Submitted (re-editable)':'Locked';
     document.getElementById('g1bs').textContent='Submitted';
     document.getElementById('g1bs').className='gbst gst-locked';
-    /* Keep submit button text indicating re-submission */
     const g1btn=document.getElementById('g1btn');
-    if(g1btn)g1btn.textContent='Re-submit Gate 1 →';
-  }
-  if(g2Locked()){
-    document.getElementById('g2s').textContent='Submitted (re-editable)';
-    document.getElementById('g2bs').textContent='Submitted';
-    document.getElementById('g2bs').className='gbst gst-locked';
-    const g2btn=document.getElementById('g2btn');
-    if(g2btn)g2btn.textContent='Re-submit Annual Review →';
+    if(g1btn)g1btn.textContent='Re-submit Mid-Year →';
   }
 
   if(s==='endorsed')loadRemarks();
@@ -2912,7 +1933,24 @@ function applyLocks(){
 async function loadRemarks(){
   if(!eid)return;
   const{data}=await sb.from('evaluation_director_reviews').select('faculty_remarks').eq('evaluation_id',eid).maybeSingle();
-  if(data?.faculty_remarks){document.getElementById('rmbox').style.display='block';document.getElementById('rmtxt').textContent=data.faculty_remarks;}
+  if(data?.faculty_remarks){
+    /* Endorsed remarks rendered safely as text */
+    const box=document.createElement('div');
+    box.className='rmbox';
+    const lbl=document.createElement('div');
+    lbl.className='rml';
+    lbl.textContent="Director's closing remarks";
+    const txt=document.createElement('div');
+    txt.className='rmt';
+    txt.textContent=data.faculty_remarks;
+    box.appendChild(lbl);box.appendChild(txt);
+    /* Append after submit box */
+    const main=document.querySelector('.main');
+    if(main&&!document.getElementById('rmbox-rendered')){
+      box.id='rmbox-rendered';
+      main.appendChild(box);
+    }
+  }
 }
 
 async function loadGate1Remarks(){
@@ -2929,10 +1967,10 @@ async function loadGate1Remarks(){
 }
 
 /* ---------- Data helpers ---------- */
-function val(id){const el=document.getElementById(id);return el&&el.value&&el.value.trim()?el.value.trim():null;}
+function val(id){const el=document.getElementById(id);return el&&el.value&&String(el.value).trim()?String(el.value).trim():null;}
 function numVal(id){const v=val(id);return v!==null?parseInt(v):null;}
 
-function g1Data(){
+function midYearData(){
   const dataSources=[];
   ['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].forEach(k=>{
     const el=document.getElementById('ds-'+k);
@@ -2957,39 +1995,17 @@ function g1Data(){
   };
 }
 
-function g2Data(){
-  return{
-    ikigai_passion:[val('f-pt'),val('f-pr'),val('f-pi'),val('f-ps'),val('f-pimp')].filter(Boolean).join('\n\n')||null,
-    ikigai_strength_teaching:R.t,ikigai_strength_research:R.r,ikigai_strength_industry:R.i,ikigai_strength_institution:R.s,
-    ikigai_strengths_text:getListValues('strengths-list').join('\n')||null,
-    ikigai_develop_areas:getListValues('develop-list').join('\n')||null,
-    ikigai_growth_areas:getListValues('develop-list').join('\n')||null,
-    ikigai_impact_focus:val('f-impact'),
-    ikigai_contribution:val('f-gaps'),
-    ikigai_statement:val('f-iki'),
-    courses_current:Array.from(courseState.current.selected),
-    courses_aspire:Array.from(courseState.aspire.selected),
-    domain_course_gaps:val('f-gaps'),new_courses_to_design:val('f-newcourses'),courses_to_stop:val('f-stopcourses'),
-    consulting_capabilities:val('f-caps'),consulting_delivered:val('f-delivered'),new_programmes_to_design:val('f-newprogs'),
-    research_publication_potential:val('f-respotential'),
-    alloc_teaching:numVal('al-t'),alloc_research:numVal('al-r'),alloc_institution:numVal('al-s'),
-    alloc_industry:numVal('al-ind'),
-    alloc_teaching_ideal:numVal('ali-t'),alloc_research_ideal:numVal('ali-r'),alloc_institution_ideal:numVal('ali-s'),
-    alloc_industry_ideal:numVal('ali-ind'),
-    alloc_change_reason:val('f-changewhy'),alloc_change_actions:val('f-changeact'),alloc_change_support:val('f-changesupp'),
-    action_start:val('f-sta'),action_stop:val('f-stp'),action_continue:val('f-cnt'),action_key_goal:val('f-kg'),action_support:val('f-sup'),
-    teaching_feedback_entries:FEEDBACK_ENTRIES,
-    updated_at:new Date().toISOString()
-  };
-}
-
+/* ---------- H10: Stub-creation upsert pattern ----------
+   When eid does not exist yet, we create a stub row first. This
+   ensures we have a canonical evaluation_id before any submit cycle
+   so that downstream review tables can FK to it. */
 async function upsert(data){
   if(eid){
     const{error}=await sb.from('faculty_evaluations').update(data).eq('id',eid);
     if(error)throw error;
   }else{
     const{data:d,error}=await sb.from('faculty_evaluations')
-      .insert({...data,faculty_master_id:fac.id,academic_year:'2025-26',cycle:'annual'})
+      .insert({...data,faculty_master_id:fac.id,academic_year:ACADEMIC_YEAR,cycle:'annual'})
       .select().single();
     if(error)throw error;
     eid=d.id;erec=d;
@@ -3003,13 +2019,11 @@ async function saveDraft(){
   const orig=btn?.textContent;
   if(btn){btn.textContent='Saving...';btn.disabled=true;}
   try{
-    await upsert({...g1Data(),...g2Data(),status:'draft',workflow_status:'draft'});
+    await upsert({...midYearData(),status:'draft',workflow_status:erec?.workflow_status||'draft'});
     toast('Draft saved successfully');
     upProg();
   }catch(e){
-    console.error('SAVE FAILED:',e);
-    console.dir(e);
-    /* Surface a clear, actionable message. Show the actual DB error code if we have one. */
+    dlog('SAVE',e);
     const code=e.code?` [${e.code}]`:'';
     const detail=e.message||e.hint||'unknown error';
     toast('Save failed'+code+': '+detail+'. Please tell Girish.',false);
@@ -3018,16 +2032,17 @@ async function saveDraft(){
   }
 }
 
-async function submitGate1(){
+async function submitMidYear(){
   if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
   if(!fac){toast('No faculty loaded',false);return;}
   const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
-  /* TEST PHASE: dean check relaxed - submission proceeds even without configured deans */
   const isResubmit=g1Locked();
-  const msg=isResubmit?'Re-submit Gate 1 with the latest edits? Your previous submission will be updated.':'Submit Gate 1 Performance Record? You can continue to edit and re-submit during the test phase.';
+  const msg=isResubmit
+    ?'Re-submit Mid-Year with the latest edits? Your previous submission will be updated.'
+    :'Submit Mid-Year Performance Record? You can continue to edit and re-submit during the test phase.';
   if(!confirm(msg))return;
   try{
-    await upsert({...g1Data(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
+    await upsert({...midYearData(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
     erec={...erec,gate1_locked:true,workflow_status:'mid_year_locked'};
     if(reviewingDeans.length>0){
       for(const d of reviewingDeans){
@@ -3038,69 +2053,49 @@ async function submitGate1(){
       }
     }
     applyLocks();
-    toast(isResubmit?'Gate 1 re-submitted with latest edits.':'Gate 1 submitted. You can still edit and re-submit.');
+    toast(isResubmit?'Mid-Year re-submitted with latest edits.':'Mid-Year submitted. You can still edit and re-submit.');
   }catch(e){
-    console.error('GATE 1 SUBMIT FAILED:',e);
-    console.dir(e);
+    dlog('MID-YEAR SUBMIT',e);
     const code=e.code?` [${e.code}]`:'';
     const detail=e.message||e.hint||'unknown error';
-    toast('Gate 1 submission failed'+code+': '+detail+'. Please tell Girish.',false);
+    toast('Mid-Year submission failed'+code+': '+detail+'. Please tell Girish.',false);
   }
 }
 
-async function submitGate2(){
-  if(IS_PREVIEW){toast('Preview mode. Submissions disabled.',false);return;}
-  if(!fac){toast('No faculty loaded',false);return;}
-  /* TEST PHASE: Gate 1 dependency removed. Both gates can be submitted independently. */
-  if(!val('f-iki')){toast('Please complete your IKIGAI Statement (Section 3) first.',false);return;}
-  if(getListValues('develop-list').length<3){toast('Please enter at least 3 Areas to Develop (Section 2.2b).',false);return;}
-  if(!DIRECTOR){toast('No director configured for your campus. Contact admin.',false);return;}
-  const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
-  const isResubmit=g2Locked();
-  const msg=isResubmit?'Re-submit your 3X Annual Review with the latest edits?':'Submit your complete 3X Annual Review?';
-  if(!confirm(msg))return;
-  try{
-    await upsert({...g2Data(),gate2_locked:true,gate2_submitted_at:new Date().toISOString(),workflow_status:'annual_submitted',status:'submitted'});
-    erec={...erec,gate2_locked:true,workflow_status:'annual_submitted'};
-    for(const d of reviewingDeans){
-      await sb.from('evaluation_dean_reviews').upsert({
-        evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
-        campus:fac.campus,gate:'annual',validated:false
-      },{onConflict:'evaluation_id,dean_email,gate'});
-    }
-    const skipDirector=DIRECTOR.email===fac.email;
-    await sb.from('evaluation_director_reviews').upsert({
-      evaluation_id:eid,director_email:DIRECTOR.email,director_name:DIRECTOR.name,
-      campus:fac.campus,status:skipDirector?'forwarded_to_president':'pending'
-    },{onConflict:'evaluation_id'});
-    applyLocks();
-    toast('3X Annual Review submitted.');
-  }catch(e){
-    console.error('GATE 2 SUBMIT FAILED:',e);
-    console.dir(e);
-    const code=e.code?` [${e.code}]`:'';
-    const detail=e.message||e.hint||'unknown error';
-    toast('Annual submission failed'+code+': '+detail+'. Please tell Girish.',false);
-  }
-}
-
-/* ---------- Institution Building ---------- */
+/* ---------- Institution Building ----------
+   Uses g1EditBlocked() not g1Locked() for action gating. */
 function renderInstEntries(){
   const el=document.getElementById('inst-entries');
-  if(INST_ENTRIES.length===0){el.innerHTML='<div class="inst-empty">No entries yet. Add your first contribution below.</div>';return;}
-  el.innerHTML=INST_ENTRIES.map(e=>`
-    <div class="inst-entry">
-      <div>
-        <div class="inst-entry-cat">${e.category}</div>
-        <div class="inst-entry-desc">${(e.description||'').replace(/</g,'&lt;')}</div>
-        <div class="inst-entry-date">${e.date||'No date'}</div>
-      </div>
-      ${g1EditBlocked()?'':`<button class="inst-entry-remove" onclick="removeInstitutionEntry('${e.id}')">x</button>`}
-    </div>`).join('');
+  el.innerHTML='';
+  if(INST_ENTRIES.length===0){
+    const empty=document.createElement('div');
+    empty.className='inst-empty';
+    empty.textContent='No entries yet. Add your first contribution below.';
+    el.appendChild(empty);
+    return;
+  }
+  INST_ENTRIES.forEach(e=>{
+    const wrap=document.createElement('div');
+    wrap.className='inst-entry';
+    const inner=document.createElement('div');
+    const cat=document.createElement('div');cat.className='inst-entry-cat';cat.textContent=e.category||'';
+    const desc=document.createElement('div');desc.className='inst-entry-desc';desc.textContent=e.description||'';
+    const date=document.createElement('div');date.className='inst-entry-date';date.textContent=e.date||'No date';
+    inner.appendChild(cat);inner.appendChild(desc);inner.appendChild(date);
+    wrap.appendChild(inner);
+    if(!g1EditBlocked()){
+      const btn=document.createElement('button');
+      btn.className='inst-entry-remove';
+      btn.textContent='x';
+      btn.onclick=()=>removeInstitutionEntry(e.id);
+      wrap.appendChild(btn);
+    }
+    el.appendChild(wrap);
+  });
 }
 
 function addInstitutionEntry(){
-  if(g1EditBlocked()){toast('Gate 1 locked. Cannot add entries.',false);return;}
+  if(g1EditBlocked()){toast('Mid-Year locked. Cannot add entries.',false);return;}
   const cat=document.getElementById('inst-cat').value;
   const desc=document.getElementById('inst-desc').value.trim();
   const date=document.getElementById('inst-date').value;
@@ -3121,77 +2116,9 @@ function removeInstitutionEntry(id){
   upProg();
 }
 
-/* ---------- Course catalog ---------- */
-async function loadCourseCatalog(){
-  const{data,error}=await sb.from('course_catalog').select('*').eq('active',true).order('domain').order('name');
-  if(error||!data){COURSE_CATALOG=[];return;}
-  COURSE_CATALOG=data;
-}
-
-function buildCourseFilters(which){
-  const el=document.getElementById('filters-'+which);
-  const domains=[...new Set(COURSE_CATALOG.filter(c=>c.domain).map(c=>c.domain))].sort();
-  el.innerHTML=`
-    <div class="filter-pill active" onclick="setCourseFilter('${which}','all',this)">All</div>
-    <div class="filter-pill" onclick="setCourseFilter('${which}','pgdm_core',this)">PGDM Core</div>
-    <div class="filter-pill" onclick="setCourseFilter('${which}','pgdm_ba_core',this)">PGDM-BA Core</div>
-    ${domains.map(d=>`<div class="filter-pill" onclick="setCourseFilter('${which}','${d}',this)">${d}</div>`).join('')}
-  `;
-}
-
-function renderCourseList(which){
-  const state=courseState[which];
-  const container=document.getElementById('list-'+which);
-  const filtered=COURSE_CATALOG.filter(c=>{
-    if(state.filter!=='all'){
-      if(['pgdm_core','pgdm_ba_core','elective','non_credit'].includes(state.filter)){if(c.course_type!==state.filter)return false;}
-      else{if(c.domain!==state.filter)return false;}
-    }
-    if(state.search&&!c.name.toLowerCase().includes(state.search.toLowerCase()))return false;
-    return true;
-  });
-  if(filtered.length===0){container.innerHTML='<div style="padding:12px;color:var(--faint);font-size:12px;text-align:center;font-style:italic">No courses match</div>';return;}
-  container.innerHTML=filtered.map(c=>{
-    const tag=c.course_type==='elective'?(c.domain||'Elective'):(c.course_type==='pgdm_core'?'PGDM':c.course_type==='pgdm_ba_core'?'PGDM-BA':'Non-credit');
-    return`<div class="course-option ${state.selected.has(c.name)?'selected':''}" onclick="toggleCourse('${which}','${c.name.replace(/'/g,"\\'")}')">
-      <span>${c.name}</span><span class="cat-tag">${tag}</span>
-    </div>`;
-  }).join('');
-}
-
-function renderCourseChips(which){
-  const state=courseState[which];
-  const container=document.getElementById('chips-'+which);
-  if(state.selected.size===0){container.innerHTML='<div class="empty-chips">No courses selected yet</div>';return;}
-  container.innerHTML=Array.from(state.selected).map(name=>`
-    <div class="course-chip"><span>${name}</span><button onclick="toggleCourse('${which}','${name.replace(/'/g,"\\'")}')">x</button></div>`).join('');
-}
-
-function toggleCourse(which,name){
-  if(IS_PREVIEW||g2EditBlocked())return;
-  const state=courseState[which];
-  if(state.selected.has(name))state.selected.delete(name);
-  else state.selected.add(name);
-  renderCourseChips(which);
-  renderCourseList(which);
-  upProg();
-}
-
-function setCourseFilter(which,filter,pill){
-  courseState[which].filter=filter;
-  document.querySelectorAll(`#filters-${which} .filter-pill`).forEach(p=>p.classList.remove('active'));
-  pill.classList.add('active');
-  renderCourseList(which);
-}
-
-function filterCourseList(input,which){
-  courseState[which].search=input.value;
-  renderCourseList(which);
-}
-
 /* ---------- Points ledger ---------- */
 async function loadPointsLedger(){
-  const{data,error}=await sb.from('evaluation_gate_config').select('*').eq('academic_year','2025-26');
+  const{data,error}=await sb.from('evaluation_gate_config').select('*').eq('academic_year',ACADEMIC_YEAR);
   if(error||!data||data.length===0)return;
   const g1=data.filter(r=>r.gate==='mid_year').reduce((s,r)=>s+(r.achievable_points||0),0);
   const g2=data.filter(r=>r.gate==='annual').reduce((s,r)=>s+(r.achievable_points||0),0);
@@ -3208,28 +2135,14 @@ function restore(d){
     'f-gscholar-cites':d.gscholar_citations,
     'f-wip':d.wip_details,
     'f-external-resources':d.external_resources_needed,
-    'f-mdpc':null,'f-mdpd':null,
     'f-referrals-sent':d.referrals_sent,
     'f-referrals-converted':d.referrals_converted,
     'f-referrals-detail':d.referrals_detail,
-    'f-ind':d.industry_summary,
-    'f-pt':d.ikigai_passion?.split('\n\n')[0],'f-pr':d.ikigai_passion?.split('\n\n')[1],
-    'f-pi':d.ikigai_passion?.split('\n\n')[2],'f-ps':d.ikigai_passion?.split('\n\n')[3],
-    'f-pimp':d.ikigai_passion?.split('\n\n')[4],
-    'f-impact':d.ikigai_impact_focus,'f-iki':d.ikigai_statement,
-    'f-gaps':d.domain_course_gaps||d.ikigai_contribution,'f-newcourses':d.new_courses_to_design,
-    'f-stopcourses':d.courses_to_stop,'f-caps':d.consulting_capabilities,'f-delivered':d.consulting_delivered,
-    'f-newprogs':d.new_programmes_to_design,'f-respotential':d.research_publication_potential,
-    'al-t':d.alloc_teaching,'al-r':d.alloc_research,'al-s':d.alloc_institution,'al-ind':d.alloc_industry,
-    'ali-t':d.alloc_teaching_ideal,'ali-r':d.alloc_research_ideal,'ali-s':d.alloc_institution_ideal,'ali-ind':d.alloc_industry_ideal,
-    'f-changewhy':d.alloc_change_reason,'f-changeact':d.alloc_change_actions,'f-changesupp':d.alloc_change_support,
-    'f-sta':d.action_start,'f-stp':d.action_stop,'f-cnt':d.action_continue,'f-kg':d.action_key_goal,'f-sup':d.action_support
+    'f-ind':d.industry_summary
   };
   Object.entries(m).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;});
   if(d.teaching_effectiveness){document.getElementById('f-te').value=d.teaching_effectiveness+' / 5.0';}
-  if(d.mdp_revenue){document.getElementById('f-mdpr').value='Rs '+Number(d.mdp_revenue).toLocaleString('en-IN');}
 
-  /* Restore data sources checkboxes */
   if(Array.isArray(d.data_sources_used)){
     d.data_sources_used.forEach(k=>{
       const el=document.getElementById('ds-'+k);
@@ -3237,27 +2150,9 @@ function restore(d){
     });
   }
 
-  ['t','r','i','s'].forEach(k=>{
-    const dbKey='ikigai_strength_'+(k==='t'?'teaching':k==='r'?'research':k==='i'?'industry':'institution');
-    if(d[dbKey]){R[k]=d[dbKey];document.getElementById('sl-'+k).value=d[dbKey];document.getElementById('sv-'+k).textContent=d[dbKey];}
-  });
-  if(d.ikigai_strengths_text){setListValues('strengths-list',d.ikigai_strengths_text.split('\n'));}
-  const devSource=d.ikigai_develop_areas||d.ikigai_growth_areas;
-  if(devSource){setListValues('develop-list',devSource.split('\n'));}
-  if(Array.isArray(d.courses_current)){d.courses_current.forEach(n=>courseState.current.selected.add(n));}
-  if(Array.isArray(d.courses_aspire)){d.courses_aspire.forEach(n=>courseState.aspire.selected.add(n));}
   if(Array.isArray(d.institution_entries)){INST_ENTRIES=d.institution_entries;}
 
-  /* Restore feedback entries */
-  if(Array.isArray(d.teaching_feedback_entries)&&d.teaching_feedback_entries.length>0){
-    FEEDBACK_ENTRIES=d.teaching_feedback_entries;
-  }
-
   renderInstEntries();
-  renderFeedbackEntries();
-  renderCourseChips('current');renderCourseChips('aspire');
-  renderCourseList('current');renderCourseList('aspire');
-  updateAlloc();
   upProg();
 }
 
@@ -3274,7 +2169,6 @@ async function init(){
   document.getElementById('layout').style.display='grid';
 
   document.querySelectorAll('input,textarea,select').forEach(el=>el.addEventListener('input',upProg));
-  document.querySelectorAll('#develop-list input,#strengths-list input').forEach(el=>el.addEventListener('input',()=>{upProg();if(el.closest('#develop-list'))checkDevelopMin();}));
 
   const{data:deans}=await sb.from('dean_registry').select('*').eq('campus',fac.campus);
   if(deans)DEANS=deans.map(d=>({email:d.email,name:d.name,role:d.role}));
@@ -3285,49 +2179,53 @@ async function init(){
   document.getElementById('sb-name').textContent=fac.name;
   document.getElementById('sb-role').textContent=`${fac.designation} · ${fac.campus}`;
   document.getElementById('f-admin').value=fac.admin_role||'None recorded';
-  document.getElementById('cpills').innerHTML=fac.courses_taught
-    ?fac.courses_taught.split(' · ').map(c=>`<div class="cpill">${c}</div>`).join('')
-    :'<span style="font-size:12px;color:var(--faint);font-style:italic">No Digii data yet</span>';
+
+  const cpills=document.getElementById('cpills');
+  cpills.innerHTML='';
+  if(fac.courses_taught){
+    fac.courses_taught.split(' · ').forEach(c=>{
+      const pill=document.createElement('div');
+      pill.className='cpill';
+      pill.textContent=c;
+      cpills.appendChild(pill);
+    });
+  }else{
+    cpills.innerHTML='<span style="font-size:12px;color:var(--faint);font-style:italic">No Digii data yet</span>';
+  }
+
   const rows=[
     ['Name',fac.name],['Designation',fac.designation],['Campus',fac.campus],
     ['Joined',fac.joined||'Not recorded'],
     ['PhD',fac.phd==='yes'?`PhD ${fac.phd_year||''}`:fac.phd==='pursuing'?'Pursuing':'Not recorded'],
     ['Subject',fac.subject_area||'Not recorded']
   ];
-  document.getElementById('prof-rows').innerHTML=rows.map(([k,v])=>`<div class="ar"><span class="ark">${k}</span><span class="arv">${v}</span></div>`).join('');
+  const profRows=document.getElementById('prof-rows');
+  profRows.innerHTML='';
+  rows.forEach(([k,v])=>{
+    const row=document.createElement('div');
+    row.className='ar';
+    const sk=document.createElement('span');sk.className='ark';sk.textContent=k;
+    const sv=document.createElement('span');sv.className='arv';sv.textContent=v;
+    row.appendChild(sk);row.appendChild(sv);
+    profRows.appendChild(row);
+  });
 
   showDualRoleNote(fac);
-
-  await loadCourseCatalog();
-  buildCourseFilters('current');buildCourseFilters('aspire');
-  renderCourseList('current');renderCourseList('aspire');
-  renderCourseChips('current');renderCourseChips('aspire');
 
   await loadPointsLedger();
 
   const{data:ev}=await sb.from('faculty_evaluations')
-    .select('*').eq('faculty_master_id',fac.id).eq('academic_year','2025-26').maybeSingle();
+    .select('*').eq('faculty_master_id',fac.id).eq('academic_year',ACADEMIC_YEAR).maybeSingle();
   if(ev){eid=ev.id;erec=ev;restore(ev);}
-  else erec={gate1_locked:false,gate2_locked:false,workflow_status:'draft'};
+  else erec={gate1_locked:false,workflow_status:'draft'};
 
-  /* Load publications from faculty_publications table */
   await loadPublications();
-  renderPubSummary();
-  renderPubTable();
+  renderPubSummary();renderPubTable();
 
-  /* Load EP programmes from ep_programmes table */
   await loadEpProgrammes();
-  renderEpSummary();
-  renderEpTable();
-
-  /* Seed feedback demo data if no entries (universal demo placeholder) */
-  if(FEEDBACK_ENTRIES.length===0){
-    FEEDBACK_ENTRIES=[MADHU_SEED];
-    renderFeedbackEntries();
-  }
+  renderEpSummary();renderEpTable();
 
   renderInstEntries();
-  checkDevelopMin();
   applyLocks();
 
   if(access.isPreview){enterPreviewMode(fac);}
