@@ -100,7 +100,16 @@
     min-width: 150px;
     flex: 1 1 150px;
     max-width: 200px;
-    transition: border-color 0.15s, background 0.15s;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+  }
+  .status-chip:hover {
+    border-color: rgba(201,168,76,0.45);
+    background: rgba(255,255,255,0.07);
+    transform: translateY(-2px);
   }
   .status-chip-name {
     font-family: 'Cormorant Garamond', serif;
@@ -300,30 +309,30 @@
 
         <!-- Live status chips -->
         <div class="status-chips" id="status-chips">
-          <div class="status-chip" id="chip-drive">
+          <a class="status-chip" id="chip-drive" href="evaluation.html" onclick="event.stopPropagation()">
             <div class="status-chip-name">X-Drive</div>
             <div class="status-chip-sub">Performance Record</div>
             <div class="status-chip-state state-loading" id="state-drive">
               <div class="status-chip-dot"></div>
               <span>Loading</span>
             </div>
-          </div>
-          <div class="status-chip" id="chip-purpose">
+          </a>
+          <a class="status-chip" id="chip-purpose" href="x-purpose.html" onclick="event.stopPropagation()">
             <div class="status-chip-name">X-Purpose</div>
             <div class="status-chip-sub">Growth &amp; Purpose</div>
             <div class="status-chip-state state-loading" id="state-purpose">
               <div class="status-chip-dot"></div>
               <span>Loading</span>
             </div>
-          </div>
-          <div class="status-chip" id="chip-impact">
+          </a>
+          <a class="status-chip" id="chip-impact" href="x-impact.html" onclick="event.stopPropagation()">
             <div class="status-chip-name">X-Impact</div>
             <div class="status-chip-sub">Teaching Effectiveness</div>
             <div class="status-chip-state state-loading" id="state-impact">
               <div class="status-chip-dot"></div>
               <span>Loading</span>
             </div>
-          </div>
+          </a>
         </div>
 
         <button class="hero-tile-cta">Open My 3X &rarr;</button>
