@@ -21,6 +21,10 @@
     --muted:      #5A6B82;
     --border:     #D8D2C5;
     --red:        #C8102E;
+    --teal:       #0D9268;
+    --teal-l:     #6FCDA8;
+    --teal-d:     #054C36;
+    --amber:      #D97706;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -62,7 +66,7 @@
   .modules-section { padding: 48px 32px 60px; max-width: 1100px; margin: 0 auto; }
   .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; font-weight: 600; }
 
-  /* HERO TILE - ADR (single, prominent) */
+  /* HERO TILE - 3X (single, prominent) */
   .hero-tile {
     background: linear-gradient(135deg, #1F1A2E 0%, #2D1F3D 100%);
     border-radius: 18px;
@@ -84,11 +88,57 @@
   .hero-tile-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
   .hero-tile-icon { font-size: 32px; margin-bottom: 16px; line-height: 1; color: var(--gold-l); }
   .hero-tile-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; color: white; line-height: 1.15; margin-bottom: 10px; }
-  .hero-tile-desc { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.65; max-width: 540px; margin-bottom: 24px; }
-  .hero-tile-features { display: flex; gap: 28px; margin-bottom: 28px; flex-wrap: wrap; }
-  .feature-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: rgba(255,255,255,0.7); }
-  .feature-num { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--gold-l); line-height: 1; letter-spacing: 0.01em; }
-  .feature-label { font-size: 11px; color: rgba(255,255,255,0.55); }
+  .hero-tile-desc { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.65; max-width: 540px; margin-bottom: 26px; }
+
+  /* Status chips (replaces feature-items) */
+  .status-chips { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+  .status-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px 16px;
+    min-width: 150px;
+    flex: 1 1 150px;
+    max-width: 200px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .status-chip-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gold-l);
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+  }
+  .status-chip-sub {
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .status-chip-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 10px;
+    letter-spacing: 0.04em;
+    font-family: 'DM Mono', monospace;
+  }
+  .status-chip-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .state-open { background: rgba(201,168,76,0.15); color: var(--gold-l); border: 0.5px solid rgba(201,168,76,0.3); }
+  .state-open .status-chip-dot { background: var(--gold); }
+  .state-submitted { background: rgba(13,146,104,0.15); color: var(--teal-l); border: 0.5px solid rgba(13,146,104,0.3); }
+  .state-submitted .status-chip-dot { background: var(--teal); }
+  .state-validated { background: rgba(13,146,104,0.25); color: #B5EBD3; border: 0.5px solid rgba(13,146,104,0.45); }
+  .state-validated .status-chip-dot { background: var(--teal-l); }
+  .state-loading { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 0.5px solid rgba(255,255,255,0.1); }
+  .state-loading .status-chip-dot { background: rgba(255,255,255,0.3); }
+
   .hero-tile-cta { padding: 14px 28px; background: var(--gold); color: var(--navy); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 10px; letter-spacing: 0.02em; }
   .hero-tile-cta:hover { background: var(--gold-l); transform: translateX(2px); }
   .hero-tile-footer { padding: 14px 38px; background: rgba(201,168,76,0.06); border-top: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: space-between; }
@@ -191,6 +241,8 @@
     .hero-tile-footer { padding: 14px 22px; flex-wrap: wrap; }
     .modules-grid { grid-template-columns: 1fr; gap: 12px; }
     .footer { padding: 14px 16px; }
+    .status-chips { gap: 8px; }
+    .status-chip { min-width: 0; max-width: none; flex: 1 1 100%; padding: 10px 14px; }
   }
 
   @media (min-width: 701px) and (max-width: 900px) {
@@ -228,7 +280,7 @@
   <div class="hero-greeting" id="hero-greeting">Welcome</div>
   <div class="hero-name" id="hero-name">Welcome back</div>
   <div class="hero-sub" id="hero-sub">3X &mdash; your annual performance, purpose and impact review.</div>
-  <div class="focus-badge"><div class="focus-dot"></div>Test Phase · 3X Pilot</div>
+  <div class="focus-badge"><div class="focus-dot"></div>Test Phase &middot; 3X Pilot</div>
 </div>
 
 <!-- MAIN -->
@@ -240,30 +292,45 @@
       <div class="hero-tile-left">
         <div class="hero-tile-tag">
           <div class="hero-tile-tag-dot"></div>
-          Active · AY 2025-26
+          Active &middot; AY 2026-27
         </div>
         <div class="hero-tile-icon">&#9670;</div>
         <div class="hero-tile-title"><strong>3X</strong></div>
         <div class="hero-tile-desc">Three windows on your year. <strong>X-Drive</strong> captures what you produced, <strong>X-Purpose</strong> reflects on why and where you are heading, and <strong>X-Impact</strong> shows how students experienced your teaching. Self-enter publications, programmes, and feedback. Re-edit as often as needed during the test phase.</div>
-        <div class="hero-tile-features">
-          <div class="feature-item">
-            <div class="feature-num">X-Drive</div>
-            <div class="feature-label">Performance Record</div>
+
+        <!-- Live status chips -->
+        <div class="status-chips" id="status-chips">
+          <div class="status-chip" id="chip-drive">
+            <div class="status-chip-name">X-Drive</div>
+            <div class="status-chip-sub">Performance Record</div>
+            <div class="status-chip-state state-loading" id="state-drive">
+              <div class="status-chip-dot"></div>
+              <span>Loading</span>
+            </div>
           </div>
-          <div class="feature-item">
-            <div class="feature-num">X-Purpose</div>
-            <div class="feature-label">Growth &amp; Purpose</div>
+          <div class="status-chip" id="chip-purpose">
+            <div class="status-chip-name">X-Purpose</div>
+            <div class="status-chip-sub">Growth &amp; Purpose</div>
+            <div class="status-chip-state state-loading" id="state-purpose">
+              <div class="status-chip-dot"></div>
+              <span>Loading</span>
+            </div>
           </div>
-          <div class="feature-item">
-            <div class="feature-num">X-Impact</div>
-            <div class="feature-label">Teaching Effectiveness</div>
+          <div class="status-chip" id="chip-impact">
+            <div class="status-chip-name">X-Impact</div>
+            <div class="status-chip-sub">Teaching Effectiveness</div>
+            <div class="status-chip-state state-loading" id="state-impact">
+              <div class="status-chip-dot"></div>
+              <span>Loading</span>
+            </div>
           </div>
         </div>
+
         <button class="hero-tile-cta">Open My 3X &rarr;</button>
       </div>
     </div>
     <div class="hero-tile-footer">
-      <div class="hero-tile-footer-left">centre.xime.org &middot; X-Hub &middot; Build v5</div>
+      <div class="hero-tile-footer-left">centre.xime.org &middot; X-Hub &middot; Build v6</div>
       <div class="hero-tile-footer-right">Live</div>
     </div>
   </div>
@@ -272,7 +339,7 @@
   <div class="test-notice">
     <div class="test-notice-icon">&#9432;</div>
     <div class="test-notice-text">
-      <strong>Test phase is open.</strong> 3X is the only module currently active. All other modules below are visible for context but will open progressively after the 3X test cycle completes. During this phase, both submission gates are open and you can edit and re-submit your review at any time.
+      <strong>Test phase is open.</strong> 3X is the only module currently active. All other modules below are visible for context but will open progressively after the 3X test cycle completes. X-Drive locks on Mid-Year submission, X-Purpose locks on Final submission, X-Impact stays open year round. During the test phase you can edit and re-submit at any time.
     </div>
   </div>
 
@@ -321,7 +388,7 @@
         <div class="card-tag">Dean Validation</div>
         <div class="card-icon">&#9678;</div>
         <div class="card-title">Dean Review</div>
-        <div class="card-desc">Validate ADR submissions in your domain and campus.</div>
+        <div class="card-desc">Validate faculty performance evaluations in your domain and campus.</div>
       </div>
     </div>
 
@@ -332,7 +399,7 @@
         <div class="card-tag">Director Queue</div>
         <div class="card-icon">&#9678;</div>
         <div class="card-title">Director Review</div>
-        <div class="card-desc">Review ADRs forwarded by Deans, add remarks, forward to President.</div>
+        <div class="card-desc">Review evaluations forwarded by Deans, add remarks, forward to President.</div>
       </div>
     </div>
 
@@ -356,7 +423,7 @@
     <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="footer-logo">
     <div class="footer-text">X-Hub &middot; Test Phase &middot; 3X Pilot</div>
   </div>
-  <div class="footer-right">centre.xime.org &middot; AY 2025-26 &middot; Build v5</div>
+  <div class="footer-right">centre.xime.org &middot; AY 2026-27 &middot; Build v6</div>
 </div>
 
 <script>
@@ -364,6 +431,10 @@ const SUPA_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
+
+const ACADEMIC_YEAR = '2026-27';
+const DEBUG = false;
+function dlog(...args){ if(DEBUG) console.error(...args); }
 
 function timeOfDayGreeting() {
   const h = new Date().getHours();
@@ -380,9 +451,87 @@ function makeInitials(fullName) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+/* -------- Status chip rendering --------
+   Three independent gates:
+   - X-Drive: gate1_locked controls Mid-Year submission state
+   - X-Purpose: gate2_locked controls Annual Final submission
+   - X-Impact: never locks; show entry count or "Open"
+   Workflow status from faculty_evaluations.workflow_status drives validated states.
+*/
+function renderStateChip(elId, label, cssClass) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.className = 'status-chip-state ' + cssClass;
+  el.innerHTML = '';
+  const dot = document.createElement('div');
+  dot.className = 'status-chip-dot';
+  const span = document.createElement('span');
+  span.textContent = label;
+  el.appendChild(dot);
+  el.appendChild(span);
+}
+
+async function loadStatusChips(facultyMasterId) {
+  if (!facultyMasterId) {
+    renderStateChip('state-drive', 'Open', 'state-open');
+    renderStateChip('state-purpose', 'Open', 'state-open');
+    renderStateChip('state-impact', 'Open', 'state-open');
+    return;
+  }
+  try {
+    const { data: ev, error } = await db
+      .from('faculty_evaluations')
+      .select('gate1_locked, gate2_locked, workflow_status, teaching_feedback_entries')
+      .eq('faculty_master_id', facultyMasterId)
+      .eq('academic_year', ACADEMIC_YEAR)
+      .maybeSingle();
+
+    if (error) { dlog('STATUS LOAD', error); }
+
+    /* X-Drive */
+    if (ev?.workflow_status === 'mid_year_validated') {
+      renderStateChip('state-drive', 'Validated', 'state-validated');
+    } else if (ev?.gate1_locked === true) {
+      renderStateChip('state-drive', 'Submitted', 'state-submitted');
+    } else {
+      renderStateChip('state-drive', 'Open', 'state-open');
+    }
+
+    /* X-Purpose */
+    if (ev?.workflow_status === 'endorsed') {
+      renderStateChip('state-purpose', 'Endorsed', 'state-validated');
+    } else if (ev?.gate2_locked === true) {
+      renderStateChip('state-purpose', 'Submitted', 'state-submitted');
+    } else {
+      renderStateChip('state-purpose', 'Open', 'state-open');
+    }
+
+    /* X-Impact: show entry count if any, otherwise "Open" */
+    const entries = Array.isArray(ev?.teaching_feedback_entries) ? ev.teaching_feedback_entries.length : 0;
+    if (entries > 0) {
+      const label = entries === 1 ? '1 entry' : entries + ' entries';
+      renderStateChip('state-impact', label, 'state-submitted');
+    } else {
+      renderStateChip('state-impact', 'Open', 'state-open');
+    }
+  } catch (e) {
+    dlog('STATUS', e);
+    renderStateChip('state-drive', 'Open', 'state-open');
+    renderStateChip('state-purpose', 'Open', 'state-open');
+    renderStateChip('state-impact', 'Open', 'state-open');
+  }
+}
+
 async function initAuth() {
   const { data: { session } } = await db.auth.getSession();
   if (!session) { window.location.href = '/login.html'; return; }
+
+  /* H8: Force password change before any access */
+  const um = session.user.user_metadata || {};
+  if (um.must_change_password === true) {
+    window.location.href = '/login.html?action=change-password';
+    return;
+  }
 
   const { data: profile } = await db
     .from('user_profiles')
@@ -410,6 +559,14 @@ async function initAuth() {
   const heroEm = document.createElement('em');
   heroEm.textContent = profile.full_name || profile.email;
   heroName.appendChild(heroEm);
+
+  /* Resolve faculty_master_id from email and load status chips */
+  const { data: facRow } = await db
+    .from('faculty_master')
+    .select('id')
+    .eq('email', profile.email)
+    .maybeSingle();
+  loadStatusChips(facRow?.id || null);
 }
 
 function toggleMenu() { document.getElementById('avatar-menu').classList.toggle('open'); }
