@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub · X-Impact · Teaching Effectiveness</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --navy:#0D1F35;--navy-dark:#0A1828;--navy-2:#1A3352;
+  --red:#C8102E;
+  --gold:#C9A84C;--gold-2:#A88828;--gold-l:#F0DFA0;--gold-d:#7A6118;
+  --paper:#FBFAF6;--cream:#F4F2EA;--parchment:#F8F6EE;
+  --charcoal:#1F1F1F;--ink:#0F0F0E;--mute:#4A5568;--faint:#6B7280;
+  --line:#D8D4C7;--line-strong:#BFB9A8;--border:rgba(0,0,0,.12);--border-g:rgba(201,168,76,.45);
+  --teal:#0D9268;--teal-l:#D4F0E5;--teal-d:#054C36;
+  --amber:#D97706;--amber-l:#FCE9C8;--amber-d:#4A2900;
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:14px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* Topbar */
+.topbar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:3px solid var(--gold)}
+.tb-l{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.tb-logo{height:28px;width:auto;display:block;flex-shrink:0}
+.sep{width:1px;height:22px;background:rgba(255,255,255,.18)}
+.ttl{font-size:11px;color:rgba(255,255,255,.55);font-weight:500;letter-spacing:.04em}
+.tb-m{display:flex;align-items:center;gap:0;flex:1;justify-content:center}
+.tab-btn{padding:7px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.65);border:none;background:transparent;cursor:pointer;letter-spacing:.02em;border-radius:6px 6px 0 0;transition:all .15s;position:relative;top:3px;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:flex-start;gap:1px;line-height:1.2;text-decoration:none}
+.tab-btn:hover{color:rgba(255,255,255,.95)}
+.tab-btn.active{background:var(--paper);color:var(--navy);font-weight:600}
+.tab-btn .tab-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:.06em;font-weight:500}
+.tab-btn.active .tab-num{color:var(--gold-2)}
+.tab-btn .tab-x{font-size:13.5px;font-weight:700;letter-spacing:.01em}
+.tab-btn .tab-sub{font-size:9.5px;font-weight:400;opacity:.65;letter-spacing:.04em;text-transform:uppercase;font-family:'DM Mono',monospace}
+.tb-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.spill{font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+.sp-draft{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15)}
+.sp-saved{background:rgba(13,146,104,.2);color:#9FE1CB;border:1px solid rgba(13,146,104,.3)}
+.tbtn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:var(--rs);cursor:pointer;transition:all .15s;text-decoration:none;display:inline-block}
+.bsave{border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.75)}
+.bsave:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* Preview banner */
+.preview-banner{background:rgba(239,159,39,.15);border-bottom:1px solid rgba(239,159,39,.4);padding:10px 24px;display:none;align-items:center;justify-content:space-between;gap:16px;font-size:12px;color:var(--amber-d);position:sticky;top:62px;z-index:150}
+.preview-banner.visible{display:flex}
+.preview-banner strong{font-weight:600}
+.preview-banner a{color:var(--amber-d);text-decoration:underline;cursor:pointer;font-weight:500}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 62px)}
+.sidebar{background:var(--cream);border-right:1px solid var(--line);padding:20px 0;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto}
+.sbh{padding:0 18px 14px;border-bottom:1px solid var(--border-g);margin-bottom:10px}
+.sbn{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--navy)}
+.sbr{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.07em;margin-top:3px}
+.sby{font-size:10px;color:var(--gold-d);font-weight:500;margin-top:6px}
+.pw{padding:0 18px 12px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.pw-lbl{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:500}
+.pw-v{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--navy);font-weight:500;line-height:1}
+.pw-vsub{font-size:10px;color:var(--faint);margin-top:2px;letter-spacing:.04em}
+.ngl{font-size:9px;font-weight:500;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;padding:10px 18px 4px}
+.ni{display:flex;align-items:center;gap:8px;padding:6px 18px;cursor:pointer;transition:all .12s;border-left:2px solid transparent}
+.ni:hover{background:rgba(0,0,0,.03)}
+.ni.active{background:rgba(201,168,76,.1);border-left-color:var(--gold)}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0}
+.ni.done .ndot{background:var(--teal)}
+.ni.active .ndot{background:var(--gold)}
+.nt{font-size:11px;color:var(--mute)}
+.ni.active .nt{color:var(--navy);font-weight:500}
+
+.main{padding:32px 40px 80px;max-width:920px;margin:0 auto;width:100%}
+
+/* Dual-role note */
+.dual-role-note{background:rgba(201,168,76,.08);border:.5px solid rgba(201,168,76,.3);border-radius:var(--rs);padding:11px 14px;margin-bottom:20px;font-size:12px;color:var(--gold-d);display:none}
+.dual-role-note.visible{display:block}
+.dual-role-note strong{color:var(--navy);font-weight:500}
+
+/* Sections */
+.sec{margin-bottom:46px;scroll-margin-top:80px}
+.sh{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.sn-mini{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--gold-2);letter-spacing:.1em;min-width:44px;flex-shrink:0;padding-top:6px}
+.si-t{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--navy);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.si-tag{font-size:12px;font-style:italic;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
+.si-s{font-size:12.5px;color:var(--mute);margin-top:3px;font-weight:400}
+.srl{height:.5px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);margin-top:10px}
+
+/* Form fields */
+.fi{width:100%;background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);transition:border-color .15s;resize:vertical}
+.fi:focus{outline:none;border-color:var(--gold)}
+.fh{font-size:11px;color:var(--faint);margin-top:4px;font-style:italic}
+
+/* Tab 3 intro banner */
+.tab3-intro{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy-2) 100%);border-radius:var(--r);padding:22px 28px;margin-bottom:28px;position:relative;overflow:hidden}
+.tab3-intro::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(201,168,76,.06);pointer-events:none}
+.tab3-intro::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none}
+.tab3-label{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.tab3-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#fff;margin-bottom:6px;letter-spacing:-.3px}
+.tab3-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.7;max-width:580px}
+.tab3-note{display:flex;align-items:flex-start;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.4)}
+.tab3-note-icon{flex-shrink:0;font-size:14px;margin-top:-1px}
+
+/* Visibility note */
+.visibility-note{background:rgba(13,146,104,.06);border:.5px solid rgba(13,146,104,.25);border-left:3px solid var(--teal);border-radius:var(--rs);padding:12px 16px;margin-bottom:24px;font-size:12.5px;color:var(--teal-d);line-height:1.6}
+.visibility-note strong{font-weight:600}
+
+/* Feedback cards */
+.fb-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.fb-card-header{background:var(--navy-dark);padding:18px 22px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;position:relative}
+.fb-card-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold) 0%,transparent 60%)}
+.fb-course-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff;line-height:1.2}
+.fb-course-meta{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);margin-top:5px;letter-spacing:.05em;line-height:1.6}
+.fb-score-block{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.fb-pct{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:var(--gold);line-height:1}
+.fb-pct-label{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;text-align:right;margin-top:2px}
+.fb-mean-line{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);text-align:right}
+.fb-students-line{font-size:10px;color:rgba(255,255,255,.3);text-align:right;margin-top:2px}
+
+.fb-questions{padding:20px 22px;border-bottom:1px solid var(--line)}
+.fb-qs-label{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.fb-qs-label::after{content:'';flex:1;height:.5px;background:var(--line)}
+.fb-q-row{padding:12px 0;border-bottom:.5px solid var(--line)}
+.fb-q-row:last-child{border-bottom:none;padding-bottom:0}
+.fb-q-text{font-size:12px;color:var(--charcoal);margin-bottom:10px;line-height:1.5;max-width:680px}
+.fb-q-bottom{display:flex;align-items:center;gap:16px}
+.fb-dist-wrap{flex:1}
+.fb-dist-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:1px}
+.fb-seg-e{background:var(--teal-d)}
+.fb-seg-vg{background:var(--teal)}
+.fb-seg-g{background:var(--gold)}
+.fb-seg-s{background:var(--amber)}
+.fb-seg-p{background:var(--red)}
+.fb-dist-counts{display:flex;margin-top:5px;gap:1px}
+.fb-dist-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--faint);text-align:center}
+.fb-q-mean{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--navy);flex-shrink:0;min-width:44px;text-align:right}
+
+.fb-subjective{padding:20px 22px}
+.fb-sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.fb-sub-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.fb-responses{display:flex;flex-direction:column;gap:5px;max-height:240px;overflow-y:auto;padding-right:4px}
+.fb-responses::-webkit-scrollbar{width:3px}
+.fb-responses::-webkit-scrollbar-track{background:transparent}
+.fb-responses::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:2px}
+.fb-resp{font-size:12px;color:var(--charcoal);padding:7px 10px;background:var(--parchment);border-left:2px solid var(--gold);border-radius:0 4px 4px 0;line-height:1.5}
+.fb-resp.feature{border-left-color:var(--teal);background:var(--teal-l);color:var(--teal-d);font-style:italic}
+.fb-card-footer{padding:12px 22px;background:var(--cream);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.fb-source-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint)}
+.fb-remove{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--faint);background:transparent;border:1px solid var(--line);padding:5px 12px;border-radius:var(--rs);cursor:pointer;transition:all .15s}
+.fb-remove:hover{background:rgba(200,16,46,.06);border-color:rgba(200,16,46,.25);color:#A32D2D}
+
+/* Empty state */
+.fb-empty-state{text-align:center;padding:48px 24px;background:var(--cream);border:1.5px dashed var(--border-g);border-radius:var(--r);margin-bottom:20px}
+.fb-empty-icon{font-size:32px;margin-bottom:12px;opacity:.4}
+.fb-empty-text{font-size:13.5px;color:var(--mute);margin-bottom:6px;line-height:1.6}
+.fb-empty-sub{font-size:12px;color:var(--faint);font-style:italic;margin-bottom:18px}
+.fb-add-trigger{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.fb-add-trigger:hover{background:var(--navy-2)}
+
+.fb-add-more{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);background:transparent;border:1.5px dashed var(--border-g);padding:11px 18px;border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;justify-content:center;margin-top:8px;transition:all .15s}
+.fb-add-more:hover{border-color:var(--gold);color:var(--gold-d)}
+
+/* Form */
+.fb-form-wrap{background:#fff;border:1.5px dashed var(--border-g);border-radius:var(--r);padding:24px 28px;margin-top:20px;display:none}
+.fb-form-wrap.open{display:block}
+.fb-form-head{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy);margin-bottom:6px}
+.fb-form-sub{font-size:12px;color:var(--mute);margin-bottom:20px;line-height:1.6}
+.fb-form-sec{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.fb-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fb-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fb-grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+.fb-field{display:flex;flex-direction:column;gap:5px}
+.fb-label{font-size:11px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.fb-input{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);border:1px solid var(--line);border-radius:var(--rs);padding:9px 11px;background:#fff;outline:none;transition:border-color .15s}
+.fb-input:focus{border-color:var(--gold)}
+.fb-input[readonly]{background:var(--parchment);color:var(--gold-d);font-family:'DM Mono',monospace;font-weight:500;border-color:var(--border-g)}
+
+.fb-q-input{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:13px 15px;margin-bottom:10px}
+.fb-q-input-label{font-size:12px;color:var(--charcoal);font-weight:500;margin-bottom:10px;line-height:1.45}
+.fb-q-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold-d);font-weight:600;margin-right:6px}
+.fb-counts-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
+.fb-count-col{display:flex;flex-direction:column;align-items:center;gap:5px}
+.fb-count-lbl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:10px}
+.lbl-e{background:var(--teal-l);color:var(--teal-d)}
+.lbl-vg{background:#e0f7ef;color:#0a6640}
+.lbl-g{background:rgba(201,168,76,.15);color:var(--gold-d)}
+.lbl-s{background:var(--amber-l);color:var(--amber-d)}
+.lbl-p{background:rgba(200,16,46,.08);color:#A32D2D}
+.fb-count-n{width:52px;height:40px;border:1px solid var(--line);border-radius:var(--rs);text-align:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--navy);background:#fff;outline:none}
+.fb-count-n:focus{border-color:var(--gold)}
+.fb-q-mean-display{display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:11px;color:var(--mute)}
+.fb-q-mean-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d);font-weight:500}
+
+.fb-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.fb-cancel{background:transparent;border:1px solid var(--line);color:var(--mute);padding:9px 20px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.fb-cancel:hover{border-color:var(--navy);color:var(--navy)}
+.fb-save-entry{background:var(--navy);color:#fff;border:none;padding:10px 24px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.fb-save-entry:hover{background:var(--gold);color:var(--navy-dark)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy-dark);color:#fff;font-size:13px;font-weight:500;padding:14px 22px;border-radius:var(--rs);border-left:4px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;pointer-events:none;max-width:520px;line-height:1.55;box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.toast.show{transform:translateY(0);opacity:1;pointer-events:auto}
+
+.blocking{padding:60px;text-align:center;color:var(--faint);font-size:13px}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:24px 18px 60px}
+  .tb-m{display:none}
+  .fb-sub-grid{grid-template-columns:1fr}
+  .fb-grid2{grid-template-columns:1fr}
+  .fb-grid3{grid-template-columns:1fr}
+  .fb-grid4{grid-template-columns:1fr 1fr}
+  .fb-counts-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="sep"></div>
+    <div class="ttl">X-Hub · <strong>3X</strong></div>
+  </div>
+  <div class="tb-m">
+    <a class="tab-btn" href="evaluation.html">
+      <span class="tab-num">01</span><span class="tab-x">X-Drive</span><span class="tab-sub">Performance Record</span>
+    </a>
+    <a class="tab-btn" href="x-purpose.html">
+      <span class="tab-num">02</span><span class="tab-x">X-Purpose</span><span class="tab-sub">Growth and Purpose</span>
+    </a>
+    <a class="tab-btn active" href="x-impact.html">
+      <span class="tab-num">03</span><span class="tab-x">X-Impact</span><span class="tab-sub">Teaching Effectiveness</span>
+    </a>
+  </div>
+  <div class="tb-r">
+    <div class="spill sp-draft" id="spill">Loading</div>
+    <a class="tbtn bsave" href="index.html" style="opacity:.6">← Home</a>
+    <button class="tbtn bsave" onclick="signOut()" style="opacity:.6">Sign out</button>
+  </div>
+</div>
+
+<div class="preview-banner" id="preview-banner">
+  <div><strong id="preview-who">Super Admin Preview</strong> · You are viewing this faculty's teaching feedback in read-only mode. Changes are not saved.</div>
+  <a onclick="exitPreview()">Exit preview →</a>
+</div>
+
+<div id="blocker" class="blocking" style="display:none">Verifying access...</div>
+
+<div class="layout" id="layout" style="display:none">
+
+<aside class="sidebar">
+  <div class="sbh">
+    <div class="sbn" id="sb-name">Loading...</div>
+    <div class="sbr" id="sb-role"></div>
+    <div class="sby">AY 2026-27</div>
+  </div>
+  <div class="pw">
+    <div class="pw-lbl">Course entries</div>
+    <div class="pw-v" id="entry-count">0</div>
+    <div class="pw-vsub">recorded so far</div>
+  </div>
+  <div class="ngl">Teaching Effectiveness</div>
+  <div class="ni active" onclick="goTo('s-fb-entries')" id="n-s-fb-entries"><div class="ndot"></div><div class="nt">Course Feedback</div></div>
+  <div class="ni" onclick="goTo('s-fb-add')" id="n-s-fb-add"><div class="ndot"></div><div class="nt">Add Entry</div></div>
+</aside>
+
+<main class="main">
+
+<div class="dual-role-note" id="dual-role-note"></div>
+
+<div class="tab3-intro">
+  <div class="tab3-label">Part C · Student Voice</div>
+  <div class="tab3-title">Teaching Effectiveness Feedback</div>
+  <div class="tab3-sub">A record of end-term student feedback across courses you have taught this academic year. Each entry captures score distributions, question-level means, and student responses verbatim from the XIME BA-05 feedback instrument.</div>
+  <div class="tab3-note">
+    <span class="tab3-note-icon">&#9432;</span>
+    <span>Faculty self-enter scores from the official PDF report. Source document upload available for verification. Data integrity validation will be introduced in a future release.</span>
+  </div>
+</div>
+
+<div class="visibility-note">
+  <strong>Visible to your reviewers.</strong> Teaching feedback entries are part of your operational performance record. Your assigned Dean Academics, Director, and President can read these entries during the evaluation cycle.
+</div>
+
+<!-- Section: Course Feedback Entries -->
+<section class="sec" id="s-fb-entries">
+  <div class="sh">
+    <div class="sn-mini">3.1</div>
+    <div>
+      <div class="si-t">Course Feedback Entries</div>
+      <div class="si-s">One entry per course per term. Add all courses taught in AY 2026-27.</div>
+    </div>
+  </div>
+  <div class="srl"></div>
+  <div style="margin-top:22px" id="fb-cards-container"></div>
+</section>
+
+<!-- Section: Add entry -->
+<section class="sec" id="s-fb-add">
+  <div class="sh">
+    <div class="sn-mini">3.2</div>
+    <div>
+      <div class="si-t">Add Course Entry</div>
+      <div class="si-s">Enter data from your BA-05 End Term Faculty Feedback PDF</div>
+    </div>
+  </div>
+  <div class="srl"></div>
+
+  <div style="margin-top:18px">
+    <button class="fb-add-more" id="fb-toggle-form" onclick="toggleFbForm()">
+      <span style="font-size:18px;line-height:1">+</span>
+      <span>Add a course feedback entry</span>
+    </button>
+
+    <div class="fb-form-wrap" id="fb-form-wrap">
+      <div class="fb-form-head">Course Details</div>
+      <div class="fb-form-sub">Fill in exactly as shown on your feedback PDF. All fields from the header section.</div>
+
+      <div class="fb-form-sec">Course Information</div>
+      <div class="fb-grid2">
+        <div class="fb-field"><div class="fb-label">Course Name</div><input class="fb-input" id="fb-course-name" placeholder="e.g. Project Management"></div>
+        <div class="fb-field"><div class="fb-label">Course Code</div><input class="fb-input" id="fb-course-code" placeholder="e.g. XB-2627-BA-T3-C04"></div>
+        <div class="fb-field">
+          <div class="fb-label">Term</div>
+          <select class="fb-input" id="fb-term">
+            <option value="">Select term...</option>
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option>
+          </select>
+        </div>
+        <div class="fb-field"><div class="fb-label">Academic Year</div><input class="fb-input" id="fb-ay" value="2026-27" readonly></div>
+      </div>
+
+      <div class="fb-form-sec">Scores</div>
+      <div class="fb-grid3">
+        <div class="fb-field"><div class="fb-label">Students Who Submitted</div><input class="fb-input" id="fb-students" type="number" min="1" placeholder="e.g. 46" oninput="recalcOverall()"></div>
+        <div class="fb-field"><div class="fb-label">Overall Percentage Score</div><input class="fb-input" id="fb-overall-pct" readonly placeholder="Auto-calculated"></div>
+        <div class="fb-field"><div class="fb-label">Overall Mean Score</div><input class="fb-input" id="fb-overall-mean" readonly placeholder="Auto-calculated"></div>
+      </div>
+
+      <div class="fb-form-sec">Objective Questions · Response Distribution</div>
+      <div class="fh" style="margin-bottom:14px">Enter the count of students who selected each option for each question. Mean auto-calculates.</div>
+      <div id="fb-q-inputs"></div>
+
+      <div class="fb-form-sec">Subjective Responses</div>
+      <div class="fb-grid2" style="margin-bottom:14px">
+        <div class="fb-field">
+          <div class="fb-label">What did this faculty do best?</div>
+          <div class="fh" style="margin-bottom:6px">Paste all student responses, one per line</div>
+          <textarea class="fi" id="fb-did-best" rows="8" placeholder="Easy explanations&#10;Real world learning&#10;...one response per line"></textarea>
+        </div>
+        <div class="fb-field">
+          <div class="fb-label">What one change would have made this course more effective?</div>
+          <div class="fh" style="margin-bottom:6px">Paste all student responses, one per line</div>
+          <textarea class="fi" id="fb-one-change" rows="8" placeholder="More workshops&#10;More case studies&#10;...one response per line"></textarea>
+        </div>
+      </div>
+
+      <div class="fb-form-sec">Source Document</div>
+      <div class="fb-grid2">
+        <div class="fb-field"><div class="fb-label">Source Note</div><input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2026-27"></div>
+        <div class="fb-field">
+          <div class="fb-label">Upload PDF <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional, for reference)</span></div>
+          <input type="file" accept=".pdf" class="fb-input" id="fb-pdf" style="padding:7px">
+        </div>
+      </div>
+
+      <div class="fb-form-actions">
+        <button class="fb-cancel" onclick="toggleFbForm()">Cancel</button>
+        <button class="fb-save-entry" onclick="saveFbEntry()">Add Course Entry +</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+
+const ACADEMIC_YEAR='2026-27';
+const TEST_PHASE_LOCKS_OPEN=true;
+const DEBUG=false;
+
+let CURRENT_USER=null;
+let USER_ROLE='';
+let IS_PREVIEW=false;
+let fac=null,eid=null,erec=null;
+let FEEDBACK_ENTRIES=[];
+
+const FB_QUESTIONS=[
+  'This faculty is genuinely interested in my progress and is accessible when I need guidance or support.',
+  'This faculty uses relevant real-world examples and business cases that make concepts meaningful and relatable.',
+  'The course is designed to be application-oriented, enabling students to apply concepts in practice.',
+  'This faculty creates a classroom environment that is engaging, participative, and energizing.',
+  'This faculty maintains an orderly and focused classroom, creating an environment that is conducive to effective learning.'
+];
+
+function logErr(label,e){if(DEBUG){console.error(label,e);console.dir(e);}}
+function escapeHtml(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function toast(m,ok=true){
+  const t=document.getElementById('toast');
+  t.textContent=m;
+  t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';
+  t.style.background=ok?'var(--navy-dark)':'#7A1A1A';
+  t.classList.add('show');
+  const dwell=ok?3000:12000;
+  if(t._timer)clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{t.classList.remove('show');t.style.background='';},dwell);
+  t.style.cursor='pointer';
+  t.onclick=()=>{t.classList.remove('show');t.style.background='';};
+}
+
+function goTo(id){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('n-'+id)?.classList.add('active');
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+
+function exitPreview(){
+  const url=new URL(window.location.href);
+  url.searchParams.delete('as');
+  window.location.href='index.html';
+}
+
+async function resolveAccess(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return null;}
+
+  const{data:profile}=await sb.from('user_profiles')
+    .select('*').eq('id',session.user.id).maybeSingle();
+  if(!profile){window.location.href='login.html';return null;}
+
+  if(profile.must_change_password){window.location.href='login.html?action=change-password';return null;}
+
+  CURRENT_USER=profile;
+  USER_ROLE=profile.role;
+
+  const urlParams=new URLSearchParams(window.location.search);
+  const asEmail=USER_ROLE==='super_admin'?urlParams.get('as'):null;
+  const targetEmail=asEmail||profile.email;
+
+  if(USER_ROLE==='fdp_user'||USER_ROLE==='dean'||USER_ROLE==='director'){
+    const{data:ownRow}=await sb.from('faculty_master')
+      .select('*').eq('email',profile.email).maybeSingle();
+    if(!ownRow){
+      document.getElementById('blocker').textContent='Your faculty profile is not linked to the review system yet. Please contact your Director.';
+      document.getElementById('blocker').style.display='block';
+      return null;
+    }
+    return{faculty:ownRow,isPreview:false};
+  }
+
+  if(USER_ROLE==='super_admin'){
+    const{data:row}=await sb.from('faculty_master')
+      .select('*').eq('email',targetEmail).maybeSingle();
+    if(!row){
+      const{data:firstPilot}=await sb.from('faculty_master')
+        .select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
+      if(!firstPilot){
+        document.getElementById('blocker').textContent='No faculty linked to the review system yet.';
+        document.getElementById('blocker').style.display='block';
+        return null;
+      }
+      return{faculty:firstPilot,isPreview:true};
+    }
+    return{faculty:row,isPreview:targetEmail!==profile.email};
+  }
+
+  window.location.href='index.html';
+  return null;
+}
+
+function enterPreviewMode(faculty){
+  IS_PREVIEW=true;
+  const banner=document.getElementById('preview-banner');
+  banner.classList.add('visible');
+  document.getElementById('preview-who').textContent='Super Admin Preview: '+faculty.name;
+  document.querySelectorAll('input,textarea,select').forEach(el=>{
+    el.setAttribute('readonly','true');
+    if(el.tagName==='SELECT')el.disabled=true;
+    if(el.type==='checkbox'||el.type==='range'||el.type==='file')el.disabled=true;
+  });
+  document.getElementById('fb-toggle-form').disabled=true;
+  document.getElementById('fb-toggle-form').style.opacity='.5';
+}
+
+function showDualRoleNote(faculty){
+  if(USER_ROLE!=='dean'&&USER_ROLE!=='director')return;
+  const note=document.getElementById('dual-role-note');
+  const roleLabel=USER_ROLE==='director'?'Director':'Dean';
+  note.classList.add('visible');
+  note.textContent='Note: You are recording teaching feedback as faculty. In your role as '+roleLabel+' you will receive and validate feedback from other faculty in the usual way.';
+}
+
+/* ---------- Feedback rendering ---------- */
+function renderFeedbackEntries(){
+  const container=document.getElementById('fb-cards-container');
+  container.innerHTML='';
+  document.getElementById('entry-count').textContent=FEEDBACK_ENTRIES.length;
+
+  if(FEEDBACK_ENTRIES.length===0){
+    const empty=document.createElement('div');
+    empty.className='fb-empty-state';
+    const icon=document.createElement('div');icon.className='fb-empty-icon';icon.textContent='\u{1F4CB}';
+    const text=document.createElement('div');text.className='fb-empty-text';text.textContent='No course feedback entries recorded yet.';
+    const sub=document.createElement('div');sub.className='fb-empty-sub';sub.textContent='Add an entry per course taught this academic year.';
+    const btn=document.createElement('button');btn.className='fb-add-trigger';btn.textContent='Add your first entry';btn.onclick=function(){toggleFbForm();};
+    empty.appendChild(icon);empty.appendChild(text);empty.appendChild(sub);empty.appendChild(btn);
+    container.appendChild(empty);
+    return;
+  }
+
+  FEEDBACK_ENTRIES.forEach(e=>{
+    container.appendChild(buildFbCard(e));
+  });
+}
+
+function buildFbCard(e){
+  const total=e.students||1;
+  const card=document.createElement('div');card.className='fb-card';
+
+  /* Header */
+  const header=document.createElement('div');header.className='fb-card-header';
+  const headerLeft=document.createElement('div');
+  const courseName=document.createElement('div');courseName.className='fb-course-name';courseName.textContent=e.course_name||'Untitled course';
+  const courseMeta=document.createElement('div');courseMeta.className='fb-course-meta';
+  courseMeta.textContent=(e.course_code||'No code')+'  \u00b7  Term '+(e.term||'?')+'  \u00b7  AY '+(e.academic_year||ACADEMIC_YEAR);
+  headerLeft.appendChild(courseName);headerLeft.appendChild(courseMeta);
+  const scoreBlock=document.createElement('div');scoreBlock.className='fb-score-block';
+  const pct=document.createElement('div');pct.className='fb-pct';
+  const pctVal=(e.overall_pct||0).toFixed(2);
+  pct.appendChild(document.createTextNode(pctVal));
+  const pctSign=document.createElement('span');pctSign.style.cssText='font-size:18px;color:rgba(201,168,76,.6)';pctSign.textContent='%';
+  pct.appendChild(pctSign);
+  const pctLabel=document.createElement('div');pctLabel.className='fb-pct-label';pctLabel.textContent='Overall Score';
+  const meanLine=document.createElement('div');meanLine.className='fb-mean-line';meanLine.textContent='Mean '+(e.overall_mean||0).toFixed(2)+' / 4.00';
+  const studLine=document.createElement('div');studLine.className='fb-students-line';studLine.textContent=(e.students||0)+' students';
+  scoreBlock.appendChild(pct);scoreBlock.appendChild(pctLabel);scoreBlock.appendChild(meanLine);scoreBlock.appendChild(studLine);
+  header.appendChild(headerLeft);header.appendChild(scoreBlock);
+  card.appendChild(header);
+
+  /* Questions */
+  const qSection=document.createElement('div');qSection.className='fb-questions';
+  const qLabel=document.createElement('div');qLabel.className='fb-qs-label';
+  qLabel.appendChild(document.createTextNode('Objective Questions'));
+  const qLegend=document.createElement('span');qLegend.style.cssText='font-size:9px;color:var(--faint);font-weight:400;text-transform:none;letter-spacing:0';
+  qLegend.textContent='   E = Excellent   VG = Very Good   G = Good   S = Satisfactory   P = Poor';
+  qLabel.appendChild(qLegend);
+  qSection.appendChild(qLabel);
+
+  FB_QUESTIONS.forEach((q,i)=>{
+    const qd=e.questions&&e.questions[i]?e.questions[i]:{excellent:0,very_good:0,good:0,satisfactory:0,poor:0,mean:0};
+    const E=qd.excellent||0,VG=qd.very_good||0,G=qd.good||0,S=qd.satisfactory||0,P=qd.poor||0;
+    const segW=n=>Math.max(1,Math.round((n/total)*100));
+
+    const qRow=document.createElement('div');qRow.className='fb-q-row';
+    const qText=document.createElement('div');qText.className='fb-q-text';qText.textContent=q;
+    qRow.appendChild(qText);
+
+    const qBottom=document.createElement('div');qBottom.className='fb-q-bottom';
+    const distWrap=document.createElement('div');distWrap.className='fb-dist-wrap';
+    const distBar=document.createElement('div');distBar.className='fb-dist-bar';
+    const segs=[['e',E],['vg',VG],['g',G],['s',S],['p',P]];
+    segs.forEach(([cls,n])=>{
+      if(n>0){
+        const seg=document.createElement('div');seg.className='fb-seg-'+cls;seg.style.flex=segW(n);seg.title=cls.toUpperCase()+': '+n;
+        distBar.appendChild(seg);
+      }
+    });
+    distWrap.appendChild(distBar);
+    const distCounts=document.createElement('div');distCounts.className='fb-dist-counts';
+    [[E,24],[VG,20],[G,18],[S,16],[P,12]].forEach(([n,minW])=>{
+      const c=document.createElement('div');c.className='fb-dist-count';c.style.flex=segW(n);c.style.minWidth=minW+'px';c.textContent=n||'';
+      distCounts.appendChild(c);
+    });
+    distWrap.appendChild(distCounts);
+    qBottom.appendChild(distWrap);
+
+    const qMean=document.createElement('div');qMean.className='fb-q-mean';qMean.textContent=(qd.mean||0).toFixed(2);
+    qBottom.appendChild(qMean);
+    qRow.appendChild(qBottom);
+    qSection.appendChild(qRow);
+  });
+  card.appendChild(qSection);
+
+  /* Subjective */
+  const subSection=document.createElement('div');subSection.className='fb-subjective';
+  const subGrid=document.createElement('div');subGrid.className='fb-sub-grid';
+
+  const bestCol=document.createElement('div');
+  const bestTitle=document.createElement('div');bestTitle.className='fb-sub-title';bestTitle.textContent='What this faculty did best';
+  bestCol.appendChild(bestTitle);
+  const bestResp=document.createElement('div');bestResp.className='fb-responses';
+  const bestList=(e.did_best||[]).filter(r=>r&&r.length>2);
+  if(bestList.length===0){
+    const placeholder=document.createElement('span');placeholder.style.cssText='font-size:12px;color:var(--faint);font-style:italic';placeholder.textContent='No responses recorded';
+    bestResp.appendChild(placeholder);
+  }else{
+    bestList.forEach(r=>{
+      const respDiv=document.createElement('div');respDiv.className='fb-resp';respDiv.textContent=r;
+      bestResp.appendChild(respDiv);
+    });
+  }
+  bestCol.appendChild(bestResp);
+
+  const changeCol=document.createElement('div');
+  const changeTitle=document.createElement('div');changeTitle.className='fb-sub-title';changeTitle.textContent='What one change would have helped';
+  changeCol.appendChild(changeTitle);
+  const changeResp=document.createElement('div');changeResp.className='fb-responses';
+  const changeList=(e.one_change||[]).filter(r=>{
+    if(!r||r.length<=2)return false;
+    const lower=r.toLowerCase().trim();
+    return !['na','nil','n/a','none','nothing','no','good','-','..'].includes(lower);
+  });
+  if(changeList.length===0){
+    const placeholder=document.createElement('span');placeholder.style.cssText='font-size:12px;color:var(--faint);font-style:italic';placeholder.textContent='No substantive suggestions recorded';
+    changeResp.appendChild(placeholder);
+  }else{
+    changeList.forEach(r=>{
+      const respDiv=document.createElement('div');respDiv.className='fb-resp';respDiv.textContent=r;
+      changeResp.appendChild(respDiv);
+    });
+  }
+  changeCol.appendChild(changeResp);
+
+  subGrid.appendChild(bestCol);subGrid.appendChild(changeCol);
+  subSection.appendChild(subGrid);
+  card.appendChild(subSection);
+
+  /* Footer */
+  const footer=document.createElement('div');footer.className='fb-card-footer';
+  const sourceNote=document.createElement('div');sourceNote.className='fb-source-note';
+  sourceNote.textContent=(e.source_note||'')+(e.source_doc?'  \u00b7  '+e.source_doc:'');
+  footer.appendChild(sourceNote);
+  if(!IS_PREVIEW){
+    const removeBtn=document.createElement('button');removeBtn.className='fb-remove';removeBtn.textContent='Remove';
+    removeBtn.onclick=function(){removeFbEntry(e.id);};
+    footer.appendChild(removeBtn);
+  }
+  card.appendChild(footer);
+
+  return card;
+}
+
+async function removeFbEntry(id){
+  if(IS_PREVIEW)return;
+  if(!confirm('Remove this course feedback entry?'))return;
+  FEEDBACK_ENTRIES=FEEDBACK_ENTRIES.filter(e=>e.id!==id);
+  renderFeedbackEntries();
+  await saveImpact();
+  toast('Entry removed');
+}
+
+function toggleFbForm(){
+  if(IS_PREVIEW){toast('Preview mode. Cannot add entries.',false);return;}
+  const wrap=document.getElementById('fb-form-wrap');
+  wrap.classList.toggle('open');
+  if(wrap.classList.contains('open')){
+    buildFbQInputs();
+    wrap.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function buildFbQInputs(){
+  const container=document.getElementById('fb-q-inputs');
+  container.innerHTML='';
+  FB_QUESTIONS.forEach((q,i)=>{
+    const wrap=document.createElement('div');wrap.className='fb-q-input';
+    const label=document.createElement('div');label.className='fb-q-input-label';
+    const num=document.createElement('span');num.className='fb-q-num';num.textContent='Q'+(i+1);
+    label.appendChild(num);label.appendChild(document.createTextNode(q));
+    wrap.appendChild(label);
+
+    const countsRow=document.createElement('div');countsRow.className='fb-counts-row';
+    [['e','E','lbl-e'],['vg','VG','lbl-vg'],['g','G','lbl-g'],['s','S','lbl-s'],['p','P','lbl-p']].forEach(([k,lbl,cls])=>{
+      const col=document.createElement('div');col.className='fb-count-col';
+      const lblEl=document.createElement('div');lblEl.className='fb-count-lbl '+cls;lblEl.textContent=lbl;
+      const inp=document.createElement('input');inp.className='fb-count-n';inp.id='fb-q'+i+'-'+k;inp.type='number';inp.min='0';inp.value='0';
+      inp.oninput=function(){calcQMean(i);};
+      col.appendChild(lblEl);col.appendChild(inp);
+      countsRow.appendChild(col);
+    });
+    wrap.appendChild(countsRow);
+
+    const meanDisp=document.createElement('div');meanDisp.className='fb-q-mean-display';
+    meanDisp.appendChild(document.createTextNode('Mean: '));
+    const meanVal=document.createElement('span');meanVal.className='fb-q-mean-val';meanVal.id='fb-q'+i+'-mean';meanVal.textContent='0.00';
+    meanDisp.appendChild(meanVal);
+    wrap.appendChild(meanDisp);
+
+    container.appendChild(wrap);
+  });
+}
+
+function calcQMean(qi){
+  const E=parseInt(document.getElementById('fb-q'+qi+'-e').value)||0;
+  const VG=parseInt(document.getElementById('fb-q'+qi+'-vg').value)||0;
+  const G=parseInt(document.getElementById('fb-q'+qi+'-g').value)||0;
+  const S=parseInt(document.getElementById('fb-q'+qi+'-s').value)||0;
+  const P=parseInt(document.getElementById('fb-q'+qi+'-p').value)||0;
+  const total=E+VG+G+S+P;
+  const mean=total>0?((4*E+3*VG+2*G+1*S+0*P)/total):0;
+  document.getElementById('fb-q'+qi+'-mean').textContent=mean.toFixed(2);
+  recalcOverall();
+}
+
+function recalcOverall(){
+  const students=parseInt(document.getElementById('fb-students').value)||0;
+  if(students===0){
+    document.getElementById('fb-overall-mean').value='';
+    document.getElementById('fb-overall-pct').value='';
+    return;
+  }
+  let totalMean=0;let validQ=0;
+  FB_QUESTIONS.forEach((_,i)=>{
+    const E=parseInt(document.getElementById('fb-q'+i+'-e')?.value)||0;
+    const VG=parseInt(document.getElementById('fb-q'+i+'-vg')?.value)||0;
+    const G=parseInt(document.getElementById('fb-q'+i+'-g')?.value)||0;
+    const S=parseInt(document.getElementById('fb-q'+i+'-s')?.value)||0;
+    const P=parseInt(document.getElementById('fb-q'+i+'-p')?.value)||0;
+    const t=E+VG+G+S+P;
+    if(t>0){
+      const m=(4*E+3*VG+2*G+1*S+0*P)/t;
+      totalMean+=m;validQ++;
+    }
+  });
+  if(validQ>0){
+    const overallMean=totalMean/validQ;
+    const overallPct=(overallMean/4)*100;
+    document.getElementById('fb-overall-mean').value=overallMean.toFixed(2);
+    document.getElementById('fb-overall-pct').value=overallPct.toFixed(2);
+  }
+}
+
+async function saveFbEntry(){
+  if(IS_PREVIEW){toast('Preview mode. Changes are not saved.',false);return;}
+  const courseName=document.getElementById('fb-course-name').value.trim();
+  const courseCode=document.getElementById('fb-course-code').value.trim();
+  const term=document.getElementById('fb-term').value;
+  const students=parseInt(document.getElementById('fb-students').value)||0;
+
+  if(!courseName){toast('Please enter the course name',false);return;}
+  if(!term){toast('Please select the term',false);return;}
+  if(students<1){toast('Please enter the number of students who submitted',false);return;}
+
+  const questions=FB_QUESTIONS.map((_,i)=>({
+    excellent:parseInt(document.getElementById('fb-q'+i+'-e').value)||0,
+    very_good:parseInt(document.getElementById('fb-q'+i+'-vg').value)||0,
+    good:parseInt(document.getElementById('fb-q'+i+'-g').value)||0,
+    satisfactory:parseInt(document.getElementById('fb-q'+i+'-s').value)||0,
+    poor:parseInt(document.getElementById('fb-q'+i+'-p').value)||0,
+    mean:parseFloat(document.getElementById('fb-q'+i+'-mean').textContent)||0
+  }));
+
+  const didBestRaw=document.getElementById('fb-did-best').value;
+  const oneChangeRaw=document.getElementById('fb-one-change').value;
+  const didBest=didBestRaw.split('\n').map(s=>s.trim()).filter(Boolean);
+  const oneChange=oneChangeRaw.split('\n').map(s=>s.trim()).filter(Boolean);
+
+  const entry={
+    id:'fb-'+Date.now(),
+    course_name:courseName,
+    course_code:courseCode,
+    term:term,
+    academic_year:document.getElementById('fb-ay').value||ACADEMIC_YEAR,
+    students:students,
+    overall_pct:parseFloat(document.getElementById('fb-overall-pct').value)||0,
+    overall_mean:parseFloat(document.getElementById('fb-overall-mean').value)||0,
+    questions:questions,
+    did_best:didBest,
+    one_change:oneChange,
+    source_note:document.getElementById('fb-source-note').value.trim(),
+    source_doc:document.getElementById('fb-pdf').files[0]?.name||''
+  };
+
+  FEEDBACK_ENTRIES.push(entry);
+  renderFeedbackEntries();
+  await saveImpact();
+  toggleFbForm();
+  toast('Course feedback entry added and saved');
+
+  /* Clear form */
+  ['fb-course-name','fb-course-code','fb-term','fb-students','fb-overall-pct','fb-overall-mean','fb-did-best','fb-one-change','fb-source-note'].forEach(id=>{
+    const el=document.getElementById(id);if(el&&el.id!=='fb-ay')el.value='';
+  });
+  document.getElementById('fb-pdf').value='';
+  buildFbQInputs();
+}
+
+/* ---------- Save (X-Impact only writes teaching_feedback_entries) ---------- */
+async function upsert(data){
+  if(eid){
+    const{error}=await sb.from('faculty_evaluations').update(data).eq('id',eid);
+    if(error)throw error;
+  }else{
+    const{data:d,error}=await sb.from('faculty_evaluations')
+      .insert({...data,faculty_master_id:fac.id,academic_year:ACADEMIC_YEAR,cycle:'annual'})
+      .select().single();
+    if(error)throw error;
+    eid=d.id;erec=d;
+  }
+}
+
+async function saveImpact(){
+  if(IS_PREVIEW)return;
+  if(!fac)return;
+  const pill=document.getElementById('spill');
+  const orig=pill.textContent;
+  pill.textContent='Saving...';
+  try{
+    await upsert({
+      teaching_feedback_entries:FEEDBACK_ENTRIES,
+      updated_at:new Date().toISOString()
+    });
+    pill.textContent='Saved';
+    pill.className='spill sp-saved';
+    setTimeout(()=>{pill.textContent='Up to date';pill.className='spill sp-saved';},1500);
+  }catch(e){
+    logErr('SAVE FAILED',e);
+    pill.textContent='Save failed';
+    pill.className='spill sp-draft';
+    const code=e.code?' ['+e.code+']':'';
+    const detail=e.message||e.hint||'unknown error';
+    toast('Save failed'+code+': '+detail+'. Please tell Girish.',false);
+  }
+}
+
+/* ---------- Init ---------- */
+async function init(){
+  document.getElementById('blocker').style.display='block';
+
+  const access=await resolveAccess();
+  if(!access)return;
+
+  fac=access.faculty;
+
+  document.getElementById('blocker').style.display='none';
+  document.getElementById('layout').style.display='grid';
+
+  document.getElementById('sb-name').textContent=fac.name;
+  document.getElementById('sb-role').textContent=fac.designation+' \u00b7 '+fac.campus;
+
+  showDualRoleNote(fac);
+
+  try{
+    const{data:ev}=await sb.from('faculty_evaluations')
+      .select('*').eq('faculty_master_id',fac.id).eq('academic_year',ACADEMIC_YEAR).maybeSingle();
+    if(ev){
+      eid=ev.id;erec=ev;
+      if(Array.isArray(ev.teaching_feedback_entries)){
+        FEEDBACK_ENTRIES=ev.teaching_feedback_entries;
+      }
+    }else{
+      erec={};
+    }
+  }catch(e){logErr('load eval',e);erec={};}
+
+  renderFeedbackEntries();
+  buildFbQInputs();
+
+  const pill=document.getElementById('spill');
+  pill.textContent=FEEDBACK_ENTRIES.length>0?'Up to date':'Draft';
+  pill.className='spill '+(FEEDBACK_ENTRIES.length>0?'sp-saved':'sp-draft');
+
+  if(access.isPreview){enterPreviewMode(fac);}
+}
+
+init();
+</script>
+</body>
+</html>
