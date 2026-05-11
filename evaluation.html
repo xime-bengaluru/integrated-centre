@@ -220,6 +220,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .pub-stat-label{font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-top:4px}
 .pub-stat-sep{width:1px;height:36px;background:var(--line-strong);flex-shrink:0}
 
+/* Glory moment: A*/Q1 cell when revealed */
+.pub-stat-tier{background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(232,201,122,.08));border:1px solid rgba(201,168,76,.45);border-radius:8px;padding:6px 14px;box-shadow:0 0 14px rgba(201,168,76,.18);min-width:auto}
+.pub-stat-tier .pub-stat-label{color:var(--gold-d);font-weight:600}
+.pub-stat-sep.pub-stat-sep-tier{background:linear-gradient(180deg,transparent,rgba(201,168,76,.6),transparent)}
+
 /* Toolbar */
 .pub-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
 .pub-filters{display:flex;gap:6px;flex-wrap:wrap}
@@ -652,8 +657,8 @@ select.pub-input{cursor:pointer}
           <div class="pub-stat"><div class="pub-stat-num" id="ps-book">0</div><div class="pub-stat-label">Book</div></div>
           <div class="pub-stat"><div class="pub-stat-num" id="ps-case">0</div><div class="pub-stat-label">Case</div></div>
           <div class="pub-stat"><div class="pub-stat-num" id="ps-conf">0</div><div class="pub-stat-label">Conference</div></div>
-          <div class="pub-stat-sep"></div>
-          <div class="pub-stat pub-stat-tier"><div class="pub-stat-num pub-stat-premier" id="ps-astar">0</div><div class="pub-stat-label">A* / Q1</div></div>
+          <div class="pub-stat-sep pub-stat-sep-tier" id="ps-tier-sep" style="display:none"></div>
+          <div class="pub-stat pub-stat-tier" id="ps-tier" style="display:none"><div class="pub-stat-num pub-stat-premier" id="ps-astar">0</div><div class="pub-stat-label">A* / Q1</div></div>
         </div>
       </div>
 
@@ -1300,6 +1305,16 @@ function renderPubSummary(){
   document.getElementById('ps-case').textContent=s.case;
   document.getElementById('ps-conf').textContent=s.conference;
   document.getElementById('ps-astar').textContent=s.astar;
+  /* Glory moment: reveal A-star and Q1 cell only when at least one entry qualifies */
+  const tierSep=document.getElementById('ps-tier-sep');
+  const tierCell=document.getElementById('ps-tier');
+  if(s.astar>0){
+    tierSep.style.display='';
+    tierCell.style.display='';
+  }else{
+    tierSep.style.display='none';
+    tierCell.style.display='none';
+  }
 }
 
 function renderPubTable(){
