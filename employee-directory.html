@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magis Centre · Employee Directory</title>
+<title>X-Hub · Employee Directory</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600&family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -161,7 +161,7 @@
 
 <!-- AUTH OVERLAY -->
 <div class="auth-overlay" id="auth-overlay">
-  <div class="auth-sub">Magis Centre</div>
+  <div class="auth-sub">X-Hub</div>
   <div class="auth-msg" id="auth-msg">Verifying access...</div>
   <div class="auth-denied-sub" id="auth-denied-sub" style="display:none"></div>
 </div>
@@ -171,7 +171,7 @@
   <div class="mt-l">
     <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="mt-logo">
     <span class="mt-sep"></span>
-    <span class="mt-crumb" onclick="window.location.href='index.html'">← Magis Centre</span>
+    <span class="mt-crumb" onclick="window.location.href='index.html'">← X-Hub</span>
     <span class="mt-sep"></span>
     <span class="mt-page">Employee Directory</span>
   </div>
@@ -259,12 +259,24 @@ async function requireAdmin() {
     window.location.href = 'login.html';
     return null;
   }
+
+  /* H8: Force password change before any access */
+  const um = session.user.user_metadata || {};
+  if (um.must_change_password === true) {
+    window.location.href = 'login.html?action=change-password';
+    return null;
+  }
+
   const { data: profile } = await sb.from('user_profiles').select('*').eq('id', session.user.id).maybeSingle();
   if (!profile) {
     document.getElementById('auth-msg').textContent = 'Profile not found';
     document.getElementById('auth-msg').classList.add('auth-denied');
     document.getElementById('auth-denied-sub').innerHTML = 'Contact admin. <span class="auth-link" onclick="signOut()">Sign out</span>';
     document.getElementById('auth-denied-sub').style.display = 'block';
+    return null;
+  }
+  if (profile.must_change_password === true) {
+    window.location.href = 'login.html?action=change-password';
     return null;
   }
   const isSuperAdmin = profile.role === 'super_admin';
@@ -274,7 +286,7 @@ async function requireAdmin() {
   if (!isSuperAdmin && !isOrgAdminWithAccess) {
     document.getElementById('auth-msg').textContent = 'Access restricted';
     document.getElementById('auth-msg').classList.add('auth-denied');
-    document.getElementById('auth-denied-sub').innerHTML = 'Employee Directory requires super admin or org admin access. <span class="auth-link" onclick="window.location.href=\'index.html\'">Return to Magis Centre</span>';
+    document.getElementById('auth-denied-sub').innerHTML = 'Employee Directory requires super admin or org admin access. <span class="auth-link" onclick="window.location.href=\'index.html\'">Return to X-Hub</span>';
     document.getElementById('auth-denied-sub').style.display = 'block';
     return null;
   }
@@ -292,7 +304,7 @@ const contacts = {
     { name:"Dr. Ravi Veeraraghavan", role:"Professor / Officiating Director", campus:"Chennai", phone:"9841265042", email:"drravi_v", note:"Chennai campus head. Reviewed LearnQuest/IBM service agreement. Key cross-campus partner for EP build.", badge:"Director" },
     { name:"Prof. Mathew Paul Vizhalil", role:"Associate Professor / Dean (Ext. Programs)", campus:"Chennai", phone:"9940662192", email:"mathew.vizhalil", note:"Chennai Dean EP. Direct counterpart for three-campus EP alignment.", badge:"Dean EP" },
     { name:"Mr. V Suresh Kumar", role:"Associate Professor / Dean (Academics)", campus:"Chennai", phone:"9790412347", email:"sureshkumarv", note:"Chennai academic lead. Curriculum focal point.", badge:"Dean Acad" },
-    { name:"Prof. Alok K.", role:"Officiating Director / Associate Professor", campus:"Kochi", phone:"9645722495", email:"alok", note:"Kochi campus head. Third campus director in the Magis Centre auth system.", badge:"Director" },
+    { name:"Prof. Alok K.", role:"Officiating Director / Associate Professor", campus:"Kochi", phone:"9645722495", email:"alok", note:"Kochi campus head. Third campus director in the X-Hub auth system.", badge:"Director" },
     { name:"Dr. Ranjana Mary Varghese", role:"Associate Professor / Dean (Ext. Programs)", campus:"Kochi", phone:"9847028797", email:"ranjana", note:"Kochi Dean EP. Direct counterpart for three-campus EP alignment.", badge:"Dean EP" },
     { name:"Dr. Joshin John", role:"Associate Professor / Dean (Research)", campus:"Kochi", phone:"8138905562", email:"joshin", note:"Kochi Dean Research. Publications pipeline for Kochi faculty.", badge:"Dean Res" },
   ],
@@ -363,7 +375,7 @@ const contacts = {
     { name:"Dr. Gopikumar V", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9495055777", email:"gopikumarv" },
     { name:"Mr. Madhavan Nampoothiri", role:"Sr. Asst. Professor", campus:"Kochi", phone:"6385561150", email:"madhavanvn" },
     { name:"Dr. Bijith George", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9946121680", email:"bijith" },
-    { name:"Ms. Lavanya Nagarajan", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9544800484", email:"lavanyan", note:"HR/L&D. Magis Centre tech build partner. HRMS and FDP module owner." },
+    { name:"Ms. Lavanya Nagarajan", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9544800484", email:"lavanyan", note:"HR/L&D. X-Hub tech build partner. HRMS and FDP module owner." },
     { name:"Dr. Dawn Jose", role:"Sr. Asst. Professor", campus:"Kochi", phone:"9895942546", email:"dawnjose" },
     { name:"Ms. Lincy P T", role:"Sr. Assistant Professor", campus:"Kochi", phone:"9946375878", email:"lincy" },
     { name:"Dr. Anjali John", role:"Assistant Professor", campus:"Kochi", phone:"8086101155", email:"anjalijohn" },
