@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magis Centre · Faculty Intelligence</title>
+<title>X-Hub · Faculty Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -219,7 +219,7 @@ tr:hover td{background:var(--cream)}
     <div style="display:flex;align-items:center">
       <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
       <div class="wm-sep"></div>
-      <div class="wm-title">Magis Centre · Faculty Intelligence</div>
+      <div class="wm-title">X-Hub · Faculty Intelligence</div>
     </div>
     <div class="topbar-r">
       <div class="badge-president" id="role-badge">Admin View</div>
@@ -464,7 +464,7 @@ tr:hover td{background:var(--cream)}
 
   <div class="footer">
     <div class="footer-l">Source: Faculty Details, XIME · All Three Units · 19 April 2026 · Reflects March 2026 roster reconciliation · Compiled by Reetha Joseph, Senior Secretary</div>
-    <div class="footer-r">Magis Centre · Restricted</div>
+    <div class="footer-r">X-Hub · Restricted</div>
   </div>
 
   <div class="modal-backdrop" id="faculty-modal" onclick="handleBackdropClick(event)">
@@ -502,10 +502,21 @@ async function init() {
     return;
   }
 
+  /* H8: Force password change before any access */
+  const um = session.user.user_metadata || {};
+  if (um.must_change_password === true) {
+    window.location.href = '/login.html?action=change-password';
+    return;
+  }
+
   // Fetch full profile for role + module_access
   const { data: profile } = await sb.from('user_profiles').select('*').eq('id', session.user.id).maybeSingle();
   if (!profile) {
     document.getElementById('gate').innerHTML = '<div class="gate-text">Profile not found. Contact admin.</div>';
+    return;
+  }
+  if (profile.must_change_password === true) {
+    window.location.href = '/login.html?action=change-password';
     return;
   }
 
