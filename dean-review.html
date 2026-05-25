@@ -377,7 +377,7 @@ async function loadFacultyList(){
   const{data:evs,error}=await sb.from('faculty_evaluations')
     .select('*,faculty_master:faculty_master_id(id,name,email,campus,designation,subject_area)')
     .eq('academic_year',ACADEMIC_YEAR)
-    .in('workflow_status',['submitted','mid_year_locked','dean_review_in_progress','all_deans_complete','with_director','returned_to_dean','finalized','complete']);
+    .in('workflow_status',['submitted','mid_year_locked','dean_review_in_progress','all_deans_complete','with_director','returned_to_dean','director_verified','complete']);
   if(error){dlog('FAC LIST',error);toast('Failed to load list: '+error.message,false);return;}
 
   /* Filter to this campus */
@@ -398,7 +398,7 @@ async function loadFacultyList(){
   FACULTY_LIST=inCampus.map(ev=>{
     const myReview=myReviewsByEval[ev.id];
     let seg='pending';
-    if(ev.workflow_status==='complete'||ev.workflow_status==='finalized')seg='finalized';
+    if(ev.workflow_status==='complete'||ev.workflow_status==='director_verified')seg='finalized';
     else if(myReview&&myReview.validated===true)seg='reviewed';
     else seg='pending';
     return{...ev,my_review:myReview,seg};
@@ -959,7 +959,7 @@ async function maybeAdvanceWorkflow(){
   let newStatus=null;
   const currentStatus=CURRENT_EVAL.workflow_status;
   if(allThree){
-    if(currentStatus!=='with_director'&&currentStatus!=='returned_to_dean'&&currentStatus!=='finalized'&&currentStatus!=='complete'){
+    if(currentStatus!=='with_director'&&currentStatus!=='returned_to_dean'&&currentStatus!=='director_verified'&&currentStatus!=='complete'){
       newStatus='all_deans_complete';
     }
   }else{
