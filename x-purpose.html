@@ -325,7 +325,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
   <div class="sbh">
     <div class="sbn" id="sb-name">Loading...</div>
     <div class="sbr" id="sb-role"></div>
-    <div class="sby">AY 2026-27</div>
+    <div class="sby">AY 2025-26</div>
   </div>
   <div class="pw">
     <div class="pw-lbl">Reflection completion</div>
@@ -333,9 +333,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
     <div class="pp" id="pp">0%</div>
   </div>
   <div class="gi gi-open" id="g2i">
-    <div class="gil gi-open">Final Submission</div>
-    <div class="gis gi-open" id="g2s">Open</div>
-    <div class="gid">Due 15 June 2027</div>
+    <div class="gil gi-open">Reflection</div>
+    <div class="gis gi-open" id="g2s">Optional</div>
+    <div class="gid">Submit lives in X-Drive</div>
   </div>
 
   <div class="ngl">IKIGAI · Reflection</div>
@@ -379,9 +379,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
 <div class="gb gb2">
   <div>
-    <div class="gbl">Final Submission · Annual</div>
+    <div class="gbl">Reflection · Optional</div>
     <div class="gbt">Purpose, direction, year ahead</div>
-    <div class="gbs">IKIGAI reflection · time allocation · action plan · due 15 June 2027</div>
+    <div class="gbs">IKIGAI reflection · time allocation · action plan · fill if you have the time</div>
   </div>
   <div class="gbst gst-open" id="g2bs">Open</div>
 </div>
@@ -534,12 +534,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
   <div class="rmbox"><div class="rml">Director's Remarks</div><div class="rmt" id="rmtxt"></div></div>
 </div>
 
-<div class="subbox" id="g2box">
+<div class="subbox" style="background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);">
   <div>
-    <div class="sbt">Submit Your Annual Performance Evaluation</div>
-    <div class="sbn2">Sent to your Deans, Director, then President for endorsement. Your X-Purpose reflection is included only if you have toggled "Share with reviewers" above. During the test phase you can continue to edit and re-submit.</div>
+    <div class="sbt">Your reflection is saved as you type</div>
+    <div class="sbn2">There is no separate submit for X-Purpose. To submit your AY 2025-26 Performance Evaluation, head to X-Drive. If you have toggled "Share with reviewers" above, your reflection will be included; otherwise it stays private.</div>
   </div>
-  <button class="subbtn" onclick="submitFinal()" id="g2btn">Submit Final →</button>
+  <a href="evaluation.html" class="subbtn" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;">Go to X-Drive →</a>
 </div>
 
 </main>
@@ -552,7 +552,7 @@ const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
 
-const ACADEMIC_YEAR='2026-27';
+const ACADEMIC_YEAR='2025-26';
 const TEST_PHASE_LOCKS_OPEN=true;
 const DEBUG=false;
 
