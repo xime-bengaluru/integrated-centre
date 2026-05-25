@@ -301,7 +301,7 @@
       <div class="hero-tile-left">
         <div class="hero-tile-tag">
           <div class="hero-tile-tag-dot"></div>
-          Active &middot; AY 2026-27
+          Active &middot; AY 2025-26
         </div>
         <div class="hero-tile-icon">&#9670;</div>
         <div class="hero-tile-title"><strong>3X</strong></div>
@@ -339,7 +339,7 @@
       </div>
     </div>
     <div class="hero-tile-footer">
-      <div class="hero-tile-footer-left">centre.xime.org &middot; X-Hub &middot; Build v6</div>
+      <div class="hero-tile-footer-left">centre.xime.org &middot; X-Hub &middot; Build v7</div>
       <div class="hero-tile-footer-right">Live</div>
     </div>
   </div>
@@ -348,7 +348,7 @@
   <div class="test-notice">
     <div class="test-notice-icon">&#9432;</div>
     <div class="test-notice-text">
-      <strong>Test phase is open.</strong> 3X is the only module currently active. All other modules below are visible for context but will open progressively after the 3X test cycle completes. X-Drive locks on Mid-Year submission, X-Purpose locks on Final submission, X-Impact stays open year round. During the test phase you can edit and re-submit at any time.
+      <strong>AY 2025-26 Performance Evaluation is open.</strong> 3X is the active module for capturing your annual performance. <strong>X-Drive</strong> holds your performance data and submission. <strong>X-Purpose</strong> is optional reflection. <strong>X-Impact</strong> stays open year round for teaching feedback. Submit your evaluation by 5 June 2026.
     </div>
   </div>
 
@@ -432,7 +432,7 @@
     <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="footer-logo">
     <div class="footer-text">X-Hub &middot; Test Phase &middot; 3X Pilot</div>
   </div>
-  <div class="footer-right">centre.xime.org &middot; AY 2026-27 &middot; Build v6</div>
+  <div class="footer-right">centre.xime.org &middot; AY 2025-26 &middot; Build v7</div>
 </div>
 
 <script>
@@ -441,7 +441,7 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);
 
-const ACADEMIC_YEAR = '2026-27';
+const ACADEMIC_YEAR = '2025-26';
 const DEBUG = false;
 function dlog(...args){ if(DEBUG) console.error(...args); }
 
@@ -461,11 +461,10 @@ function makeInitials(fullName) {
 }
 
 /* -------- Status chip rendering --------
-   Three independent gates:
-   - X-Drive: gate1_locked controls Mid-Year submission state
-   - X-Purpose: gate2_locked controls Annual Final submission
+   Single gate model for AY 2025-26:
+   - X-Drive: gate1_locked controls submission state (Draft / Submitted / Validated / Endorsed)
+   - X-Purpose: always Open (optional reflection, never locks)
    - X-Impact: never locks; show entry count or "Open"
-   Workflow status from faculty_evaluations.workflow_status drives validated states.
 */
 function renderStateChip(elId, label, cssClass) {
   const el = document.getElementById(elId);
@@ -483,14 +482,14 @@ function renderStateChip(elId, label, cssClass) {
 async function loadStatusChips(facultyMasterId) {
   if (!facultyMasterId) {
     renderStateChip('state-drive', 'Open', 'state-open');
-    renderStateChip('state-purpose', 'Open', 'state-open');
+    renderStateChip('state-purpose', 'Optional', 'state-open');
     renderStateChip('state-impact', 'Open', 'state-open');
     return;
   }
   try {
     const { data: ev, error } = await db
       .from('faculty_evaluations')
-      .select('gate1_locked, gate2_locked, workflow_status, teaching_feedback_entries')
+      .select('gate1_locked, workflow_status, teaching_feedback_entries')
       .eq('faculty_master_id', facultyMasterId)
       .eq('academic_year', ACADEMIC_YEAR)
       .maybeSingle();
@@ -498,24 +497,20 @@ async function loadStatusChips(facultyMasterId) {
     if (error) { dlog('STATUS LOAD', error); }
 
     /* X-Drive */
-    if (ev?.workflow_status === 'mid_year_validated') {
-      renderStateChip('state-drive', 'Validated', 'state-validated');
+    if (ev?.workflow_status === 'endorsed') {
+      renderStateChip('state-drive', 'Endorsed', 'state-validated');
+    } else if (ev?.workflow_status === 'dean_validated' || ev?.workflow_status === 'mid_year_validated') {
+      renderStateChip('state-drive', 'Dean Validated', 'state-validated');
     } else if (ev?.gate1_locked === true) {
       renderStateChip('state-drive', 'Submitted', 'state-submitted');
     } else {
-      renderStateChip('state-drive', 'Open', 'state-open');
+      renderStateChip('state-drive', 'Draft', 'state-open');
     }
 
-    /* X-Purpose */
-    if (ev?.workflow_status === 'endorsed') {
-      renderStateChip('state-purpose', 'Endorsed', 'state-validated');
-    } else if (ev?.gate2_locked === true) {
-      renderStateChip('state-purpose', 'Submitted', 'state-submitted');
-    } else {
-      renderStateChip('state-purpose', 'Open', 'state-open');
-    }
+    /* X-Purpose stays Optional regardless of submission state */
+    renderStateChip('state-purpose', 'Optional', 'state-open');
 
-    /* X-Impact: show entry count if any, otherwise "Open" */
+    /* X-Impact: show entry count if any, otherwise Open */
     const entries = Array.isArray(ev?.teaching_feedback_entries) ? ev.teaching_feedback_entries.length : 0;
     if (entries > 0) {
       const label = entries === 1 ? '1 entry' : entries + ' entries';
@@ -525,8 +520,8 @@ async function loadStatusChips(facultyMasterId) {
     }
   } catch (e) {
     dlog('STATUS', e);
-    renderStateChip('state-drive', 'Open', 'state-open');
-    renderStateChip('state-purpose', 'Open', 'state-open');
+    renderStateChip('state-drive', 'Draft', 'state-open');
+    renderStateChip('state-purpose', 'Optional', 'state-open');
     renderStateChip('state-impact', 'Open', 'state-open');
   }
 }
