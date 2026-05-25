@@ -544,6 +544,7 @@ select.pub-input{cursor:pointer}
     <div class="ni active" onclick="goTo('s-profile')" id="n-s-profile"><div class="ndot"></div><div class="nt">Profile</div></div>
     <div class="ni" onclick="goTo('s-teaching')" id="n-s-teaching"><div class="ndot"></div><div class="nt">Teaching</div></div>
     <div class="ni" onclick="goTo('s-research')" id="n-s-research"><div class="ndot"></div><div class="nt">Research</div></div>
+    <div class="ni" onclick="goTo('s-sponsored')" id="n-s-sponsored"><div class="ndot"></div><div class="nt">Sponsored Research</div></div>
     <div class="ni" onclick="goTo('s-industry')" id="n-s-industry"><div class="ndot"></div><div class="nt">Industry &amp; EP</div></div>
     <div class="ni" onclick="goTo('s-institution')" id="n-s-institution"><div class="ndot"></div><div class="nt">Institution Building</div></div>
   </div>
@@ -729,7 +730,7 @@ select.pub-input{cursor:pointer}
 
           <!-- Common fields -->
           <div class="pub-form-section">
-            <div class="pub-section-label">Publication Details</div>
+            <div class="pub-section-label" id="pub-section-label-details">Publication Details</div>
             <div class="pub-field"><div class="pub-label">Title</div><textarea class="pub-input" id="pub-title" rows="2" placeholder="Full title of the publication..."></textarea></div>
             <div class="pub-grid2">
               <div class="pub-field"><div class="pub-label">Year</div><input class="pub-input" id="pub-year" type="number" min="2000" max="2030" placeholder="e.g. 2025"></div>
@@ -932,10 +933,75 @@ select.pub-input{cursor:pointer}
     </div>
   </section>
 
+  <!-- Section: Sponsored Research & Grants (Ranjana feedback) -->
+  <section class="sec" id="s-sponsored">
+    <div class="sh">
+      <div class="sn">04</div>
+      <div>
+        <div class="si-t">Sponsored Research &amp; Grants</div>
+        <div class="si-s">Validated by Dean Research · Externally funded projects, consultancy research, and grants where you are PI, Co-PI, or Researcher</div>
+      </div>
+    </div>
+    <div class="srl"></div>
+
+    <div class="fh" style="margin-bottom:12px">Add each funded project as a separate entry. Include ongoing and completed work for AY 2025-26.</div>
+
+    <div id="sr-entries" style="margin-bottom:16px"></div>
+
+    <div class="inst-form" id="sr-form">
+      <div class="inst-form-row" style="grid-template-columns:1fr 1fr">
+        <div>
+          <div class="fl" style="margin-bottom:5px">Project Title</div>
+          <input class="fi" id="sr-title" placeholder="e.g. Impact of digital transformation on SMEs">
+        </div>
+        <div>
+          <div class="fl" style="margin-bottom:5px">Funding Agency / Sponsor</div>
+          <input class="fi" id="sr-agency" placeholder="e.g. ICSSR, AICTE, Industry partner">
+        </div>
+      </div>
+      <div class="inst-form-row" style="grid-template-columns:1fr 1fr 1fr">
+        <div>
+          <div class="fl" style="margin-bottom:5px">Amount (INR)</div>
+          <input type="number" min="0" class="fi" id="sr-amount" placeholder="e.g. 500000">
+        </div>
+        <div>
+          <div class="fl" style="margin-bottom:5px">Your Role</div>
+          <select class="fi" id="sr-role" style="font-family:'DM Sans',sans-serif">
+            <option value="">Select role...</option>
+            <option>Principal Investigator</option>
+            <option>Co-Principal Investigator</option>
+            <option>Co-Investigator</option>
+            <option>Researcher</option>
+          </select>
+        </div>
+        <div>
+          <div class="fl" style="margin-bottom:5px">Status</div>
+          <select class="fi" id="sr-status" style="font-family:'DM Sans',sans-serif">
+            <option value="">Select status...</option>
+            <option>Ongoing</option>
+            <option>Completed</option>
+            <option>Submitted / Under Review</option>
+          </select>
+        </div>
+      </div>
+      <div class="inst-form-row" style="grid-template-columns:1fr">
+        <div>
+          <div class="fl" style="margin-bottom:5px">Duration</div>
+          <input class="fi" id="sr-duration" placeholder="e.g. Jan 2025 to Dec 2025">
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="fl" style="margin-bottom:5px">Brief Description <span style="font-weight:400;color:var(--faint);font-style:italic">optional</span></div>
+        <textarea class="fi" id="sr-desc" rows="2" placeholder="Scope, partners, key outcomes if any."></textarea>
+      </div>
+      <button class="inst-form-btn" onclick="addSrEntry()">+ Add Sponsored Project</button>
+    </div>
+  </section>
+
   <!-- Section: Industry & EP -->
   <section class="sec" id="s-industry">
     <div class="sh">
-      <div class="sn">04</div>
+      <div class="sn">05</div>
       <div>
         <div class="si-t">Industry &amp; EP <span class="locked-badge">Locked</span></div>
         <div class="si-s">Validated by Dean EP · Each programme captured individually with role, sessions, and revenue</div>
@@ -1056,8 +1122,9 @@ select.pub-input{cursor:pointer}
             </div>
             <div class="ep-grid2">
               <div class="ep-field">
-                <div class="ep-label">Total Revenue Generated <span class="ep-label-hint">in INR</span></div>
-                <input class="ep-input" id="ep-revenue" type="number" min="0" placeholder="e.g. 350000" oninput="calcRevenuePerHead()">
+                <div class="ep-label">Total Revenue Generated <span class="ep-label-hint">in INR · optional</span></div>
+                <input class="ep-input" id="ep-revenue" type="number" min="0" placeholder="Leave blank if not known" oninput="calcRevenuePerHead()">
+                <div class="ep-label-hint" style="margin-top:4px;font-style:italic">If you were the Resource Person and revenue is unknown, leave blank.</div>
               </div>
               <div class="ep-field">
                 <div class="ep-label">Revenue per Participant</div>
@@ -1156,7 +1223,7 @@ select.pub-input{cursor:pointer}
   <!-- Section: Institution Building -->
   <section class="sec" id="s-institution">
     <div class="sh">
-      <div class="sn">05</div>
+      <div class="sn">06</div>
       <div>
         <div class="si-t">Institution Building <span class="locked-badge">Locked</span></div>
         <div class="si-s">Categorised contributions with individual entries</div>
@@ -1170,7 +1237,7 @@ select.pub-input{cursor:pointer}
         <div class="fh" style="margin-bottom:12px">Add individual entries across categories. Each entry is dated and can be edited before submission.</div>
         <div class="inst-entry-list" id="inst-entries"><div class="inst-empty">No entries yet. Add your first contribution below.</div></div>
         <div class="inst-form" id="inst-form">
-          <div class="inst-form-row">
+          <div class="inst-form-row" style="grid-template-columns:1fr">
             <div>
               <div class="fl" style="margin-bottom:5px">Category</div>
               <select class="fi" id="inst-cat" style="font-family:'DM Sans',sans-serif">
@@ -1184,11 +1251,14 @@ select.pub-input{cursor:pointer}
                 <option>Cross-campus or Cross-department Contribution</option>
                 <option>Accreditation Work</option>
                 <option>IQAC / Quality Systems Contribution</option>
+                <option>Club Faculty Coordinator</option>
+                <option>SIP Coordinator</option>
+                <option>Exams Controller</option>
+                <option>JME Editor / Reviewer</option>
+                <option>Newsletter Editor</option>
+                <option>Research Guide</option>
+                <option>Other Institutional Role</option>
               </select>
-            </div>
-            <div>
-              <div class="fl" style="margin-bottom:5px">Date</div>
-              <input type="date" class="fi" id="inst-date">
             </div>
           </div>
           <div style="margin-bottom:10px">
@@ -1245,6 +1315,7 @@ let DIRECTOR=null;
 let fac=null,eid=null,erec=null;
 
 let INST_ENTRIES=[];
+let SR_ENTRIES=[];
 let PUBLICATIONS=[];
 let PUB_FILTER='all';
 let PUB_EDIT_ID=null;
@@ -1477,6 +1548,9 @@ function selectPubType(type,btn){
   document.getElementById('pub-section-case').style.display=type==='case'?'block':'none';
   document.getElementById('pub-section-conference').style.display=type==='conference'?'block':'none';
   document.getElementById('pub-position').onchange=togglePositionNum;
+  /* Ranjana feedback: rename section heading for Conference type (presentation, not publication) */
+  const heading=document.getElementById('pub-section-label-details');
+  if(heading)heading.textContent=(type==='conference')?'Presentation Details':'Publication Details';
 }
 
 function togglePositionNum(){
@@ -1894,6 +1968,7 @@ function upProg(){
   if(PUBLICATIONS.length>0)filled+=2;
   if(EP_PROGRAMMES.length>0)filled+=2;
   if(INST_ENTRIES.length>0)filled+=2;
+  if(SR_ENTRIES.length>0)filled+=2;
   let dsChecked=false;
   ['statista','tracxn','thomson','ebsco','delnet','hbp','sage','none'].forEach(k=>{
     const el=document.getElementById('ds-'+k);
@@ -2001,6 +2076,7 @@ function midYearData(){
     referrals_detail:val('f-referrals-detail'),
     industry_summary:val('f-ind'),
     institution_entries:INST_ENTRIES,
+    sponsored_research_entries:SR_ENTRIES,
     updated_at:new Date().toISOString()
   };
 }
@@ -2090,8 +2166,12 @@ function renderInstEntries(){
     const inner=document.createElement('div');
     const cat=document.createElement('div');cat.className='inst-entry-cat';cat.textContent=e.category||'';
     const desc=document.createElement('div');desc.className='inst-entry-desc';desc.textContent=e.description||'';
-    const date=document.createElement('div');date.className='inst-entry-date';date.textContent=e.date||'No date';
-    inner.appendChild(cat);inner.appendChild(desc);inner.appendChild(date);
+    inner.appendChild(cat);inner.appendChild(desc);
+    /* Date shown only for legacy entries that already have one; new entries do not capture date (Ranjana feedback) */
+    if(e.date){
+      const date=document.createElement('div');date.className='inst-entry-date';date.textContent=e.date;
+      inner.appendChild(date);
+    }
     wrap.appendChild(inner);
     if(!g1EditBlocked()){
       const btn=document.createElement('button');
@@ -2108,13 +2188,11 @@ function addInstitutionEntry(){
   if(g1EditBlocked()){toast('Performance Evaluation locked. Cannot add entries.',false);return;}
   const cat=document.getElementById('inst-cat').value;
   const desc=document.getElementById('inst-desc').value.trim();
-  const date=document.getElementById('inst-date').value;
   if(!cat){toast('Please select a category',false);return;}
   if(!desc){toast('Please enter a description',false);return;}
-  INST_ENTRIES.push({id:'e'+Date.now(),category:cat,description:desc,date:date||null});
+  INST_ENTRIES.push({id:'e'+Date.now(),category:cat,description:desc,date:null});
   document.getElementById('inst-cat').value='';
   document.getElementById('inst-desc').value='';
-  document.getElementById('inst-date').value='';
   renderInstEntries();
   upProg();
   toast('Entry added');
@@ -2123,6 +2201,89 @@ function addInstitutionEntry(){
 function removeInstitutionEntry(id){
   INST_ENTRIES=INST_ENTRIES.filter(e=>e.id!==id);
   renderInstEntries();
+  upProg();
+}
+
+/* ---------- Sponsored Research (Ranjana feedback) ----------
+   Same UX pattern as Institution Building: inline entries-array, no modal form,
+   stored as JSONB on faculty_evaluations.sponsored_research_entries. */
+function renderSrEntries(){
+  const el=document.getElementById('sr-entries');
+  if(!el)return;
+  el.innerHTML='';
+  if(SR_ENTRIES.length===0){
+    const empty=document.createElement('div');
+    empty.className='inst-empty';
+    empty.textContent='No sponsored research recorded yet. Add your first project below.';
+    el.appendChild(empty);
+    return;
+  }
+  SR_ENTRIES.forEach(e=>{
+    const wrap=document.createElement('div');
+    wrap.className='inst-entry';
+    const inner=document.createElement('div');
+    const title=document.createElement('div');title.className='inst-entry-cat';title.textContent=e.title||'';
+    const meta=document.createElement('div');meta.className='inst-entry-desc';
+    const parts=[];
+    if(e.agency)parts.push(e.agency);
+    if(e.amount)parts.push('Rs '+Number(e.amount).toLocaleString('en-IN'));
+    if(e.role)parts.push(e.role);
+    if(e.duration)parts.push(e.duration);
+    if(e.status)parts.push(e.status);
+    meta.textContent=parts.join(' · ');
+    inner.appendChild(title);inner.appendChild(meta);
+    if(e.description){
+      const desc=document.createElement('div');desc.className='inst-entry-desc';
+      desc.style.marginTop='4px';desc.style.fontStyle='italic';
+      desc.textContent=e.description;
+      inner.appendChild(desc);
+    }
+    wrap.appendChild(inner);
+    if(!g1EditBlocked()){
+      const btn=document.createElement('button');
+      btn.className='inst-entry-remove';
+      btn.textContent='x';
+      btn.onclick=()=>removeSrEntry(e.id);
+      wrap.appendChild(btn);
+    }
+    el.appendChild(wrap);
+  });
+}
+
+function addSrEntry(){
+  if(g1EditBlocked()){toast('Performance Evaluation locked. Cannot add entries.',false);return;}
+  const title=document.getElementById('sr-title').value.trim();
+  const agency=document.getElementById('sr-agency').value.trim();
+  const amount=document.getElementById('sr-amount').value;
+  const role=document.getElementById('sr-role').value;
+  const duration=document.getElementById('sr-duration').value.trim();
+  const status=document.getElementById('sr-status').value;
+  const description=document.getElementById('sr-desc').value.trim();
+  if(!title){toast('Please enter a project title',false);return;}
+  if(!agency){toast('Please enter the funding agency',false);return;}
+  if(!role){toast('Please select your role',false);return;}
+  SR_ENTRIES.push({
+    id:'sr'+Date.now(),
+    title,agency,
+    amount:amount?parseInt(amount):null,
+    role,duration:duration||null,status:status||null,
+    description:description||null
+  });
+  document.getElementById('sr-title').value='';
+  document.getElementById('sr-agency').value='';
+  document.getElementById('sr-amount').value='';
+  document.getElementById('sr-role').value='';
+  document.getElementById('sr-duration').value='';
+  document.getElementById('sr-status').value='';
+  document.getElementById('sr-desc').value='';
+  renderSrEntries();
+  upProg();
+  toast('Sponsored project added');
+}
+
+function removeSrEntry(id){
+  SR_ENTRIES=SR_ENTRIES.filter(e=>e.id!==id);
+  renderSrEntries();
   upProg();
 }
 
@@ -2161,8 +2322,10 @@ function restore(d){
   }
 
   if(Array.isArray(d.institution_entries)){INST_ENTRIES=d.institution_entries;}
+  if(Array.isArray(d.sponsored_research_entries)){SR_ENTRIES=d.sponsored_research_entries;}
 
   renderInstEntries();
+  renderSrEntries();
   upProg();
 }
 
@@ -2236,6 +2399,7 @@ async function init(){
   renderEpSummary();renderEpTable();
 
   renderInstEntries();
+  renderSrEntries();
   applyLocks();
 
   if(access.isPreview){enterPreviewMode(fac);}
