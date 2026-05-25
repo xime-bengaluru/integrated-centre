@@ -3,183 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magis Centre · Director Review</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>X-Hub · Director Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="assets/js/supabase-js-2.105.4.umd.js"></script>
 <style>
-:root{
-  --navy:#111827;--red:#E8241C;--gold:#c9a84c;--gold-l:#f0dfa0;--gold-d:#8a6e1e;
-  --parchment:#faf8f3;--cream:#f4f0e8;--white:#fff;
-  --border:rgba(0,0,0,.09);--border-g:rgba(201,168,76,.35);
-  --text:#1a1a18;--muted:#5a5a56;--faint:#9a9a94;
-  --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#085041;
-  --amber:#EF9F27;--amber-l:#FAEEDA;--amber-d:#633806;
-  --blue:#378ADD;--blue-l:#E6F1FB;--blue-d:#0C447C;
-  --purple:#7F77DD;--purple-l:#EEEDFE;--purple-d:#3C3489;
-  --r:10px;--rs:6px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--text);font-size:14px;min-height:100vh}
+  :root{
+    --navy:#0D1F35;--navy-mid:#1A3352;--navy-l:#243D5C;--navy-dark:#0a1a2e;
+    --gold:#C9A84C;--gold-l:#E8C97A;--gold-d:#A88A2B;--gold-pale:#F7EDD0;
+    --cream:#FAF8F4;--parchment:#FBFAF6;--white:#FFFFFF;
+    --text:#0D1F35;--sub:#4A5D72;--muted:#5A6B82;--faint:#7a8699;
+    --line:#E5DFD2;--line-strong:#D8D2C5;--border:#D8D2C5;
+    --red:#C8102E;--red-l:#F4D5DA;--red-d:#7A1A1A;
+    --teal:#0D9268;--teal-l:#6FCDA8;--teal-d:#075B41;--amber:#D97706;--amber-l:#FCE3BC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
 
-.topbar{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.2)}
-.tb-l{display:flex;align-items:center;gap:12px}
-.tb-logo{height:26px;width:auto;display:block}
-.sep{width:1px;height:20px;background:rgba(255,255,255,.15)}
-.ttl{font-size:11px;color:rgba(255,255,255,.55)}
-.dbadge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;background:rgba(201,168,76,.15);color:var(--gold)}
-.back-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer}
-.back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+  .topbar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.25)}
+  .tb-l{display:flex;align-items:center;gap:14px}
+  .tb-logo{height:26px;width:auto}
+  .tb-div{width:1px;height:22px;background:rgba(255,255,255,.15)}
+  .tb-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.04em}
+  .tb-r{display:flex;align-items:center;gap:12px}
+  .tb-back{font-size:12px;color:rgba(255,255,255,.6);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .tb-back:hover{background:rgba(255,255,255,.05);color:white}
+  .tb-signout{font-size:12px;color:rgba(255,255,255,.6);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .tb-signout:hover{background:rgba(255,255,255,.05);color:white}
 
-.main{padding:28px;max-width:1000px}
+  .hero{background:var(--navy);padding:32px 32px 36px;border-bottom:2px solid var(--gold)}
+  .hero-l{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .hero-t{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:white;line-height:1.15;margin-bottom:6px}
+  .hero-t em{color:var(--gold-l);font-style:italic}
+  .hero-s{font-size:13px;color:rgba(255,255,255,.55);max-width:680px;line-height:1.55}
+  .hero-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.4);border-radius:18px;font-size:11px;color:var(--gold-l);font-weight:500;letter-spacing:.04em;margin-top:14px}
+  .hero-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
 
-.dir-banner{background:var(--navy);border-radius:var(--r);padding:16px 22px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between}
-.db-eyebrow{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
-.db-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff}
-.db-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
-.db-right{text-align:right}
-.db-num{font-family:'DM Mono',monospace;font-size:24px;color:#fff}
-.db-numl{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+  .main{max-width:1180px;margin:0 auto;padding:28px 24px 60px}
 
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
-.stat{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:12px 16px}
-.sv{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--navy);line-height:1}
-.sl{font-size:10px;color:var(--faint);margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+  .seg-tabs{display:flex;gap:0;background:white;border:1px solid var(--line-strong);border-radius:10px;padding:4px;width:fit-content;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .seg-tab{padding:9px 18px;font-size:13px;font-weight:500;color:var(--sub);background:transparent;border:none;border-radius:7px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;transition:all .15s}
+  .seg-tab.active{background:var(--navy);color:white}
+  .seg-tab:not(.active):hover{background:var(--cream)}
+  .seg-tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:18px;padding:0 6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:600;border-radius:9px;background:rgba(201,168,76,.18);color:var(--gold-d)}
+  .seg-tab.active .seg-tab-count{background:rgba(255,255,255,.18);color:white}
 
-.ql{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.ql::after{content:'';flex:1;height:.5px;background:var(--border-g)}
-.queue{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+  .fac-list{display:flex;flex-direction:column;gap:10px}
+  .fac-empty{padding:48px 32px;background:white;border:1px dashed var(--line-strong);border-radius:12px;text-align:center;color:var(--muted);font-size:13px}
+  .fac-empty-icon{font-size:32px;color:var(--faint);margin-bottom:10px;line-height:1}
+  .fac-empty-strong{display:block;color:var(--sub);font-weight:500;margin-bottom:4px;font-size:14px}
 
-.qcard{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .12s,box-shadow .12s}
-.qcard:hover{border-color:rgba(201,168,76,.4);box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.qcard.done{background:var(--parchment);border-color:rgba(29,158,117,.2)}
-.qcard.returned{border-color:rgba(226,75,74,.2);background:#FFF8F8}
-.qav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;background:var(--cream);color:var(--navy)}
-.qname{font-size:13px;font-weight:500;color:var(--navy)}
-.qmeta{font-size:11px;color:var(--muted);margin-top:2px}
-.qright{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.chip{font-size:10px;font-weight:500;padding:3px 8px;border-radius:10px}
-.chip-pending{background:var(--amber-l);color:var(--amber-d)}
-.chip-ready{background:var(--blue-l);color:var(--blue-d)}
-.chip-forwarded{background:var(--purple-l);color:var(--purple-d)}
-.chip-endorsed{background:var(--teal-l);color:var(--teal-d)}
-.chip-returned{background:#FCEBEB;color:#501313}
-.chip-sub{font-size:9px;color:var(--faint);font-family:'DM Mono',monospace}
+  .fac-row{background:white;border:1px solid var(--line);border-radius:11px;padding:18px 22px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+  .fac-row:hover{border-color:var(--gold);box-shadow:0 4px 12px rgba(0,0,0,.06);transform:translateY(-1px)}
+  .fac-row-l{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .fac-row-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--text);line-height:1.15}
+  .fac-row-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .fac-row-meta-item{display:inline-flex;align-items:center;gap:5px}
+  .fac-row-meta-sep{color:var(--line-strong)}
+  .fac-row-counts{display:flex;gap:14px;margin-top:4px;font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;letter-spacing:.02em}
+  .fac-row-count{display:inline-flex;align-items:center;gap:5px}
+  .fac-row-count-n{color:var(--navy);font-weight:600}
+  .fac-row-r{display:flex;align-items:center;gap:14px}
+  .fac-row-time{font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;text-align:right;line-height:1.4}
+  .fac-row-time-l{display:block;text-transform:uppercase;letter-spacing:.06em;font-size:9px;color:var(--faint);margin-bottom:2px}
+  .fac-row-chev{font-size:18px;color:var(--gold);line-height:1}
 
-.dean-progress{display:flex;gap:4px;margin-top:4px}
-.dp-dot{width:7px;height:7px;border-radius:50%;border:1px solid var(--border)}
-.dp-dot.done{background:var(--teal);border-color:var(--teal)}
-.dp-dot.pending{background:var(--border);border-color:var(--border)}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;font-family:'DM Mono',monospace;padding:3px 10px;border-radius:11px;letter-spacing:.03em}
+  .pill-dot{width:5px;height:5px;border-radius:50%}
+  .pill-pending{background:rgba(217,119,6,.1);color:var(--amber);border:.5px solid rgba(217,119,6,.25)}
+  .pill-pending .pill-dot{background:var(--amber)}
+  .pill-returned{background:rgba(200,16,46,.08);color:var(--red);border:.5px solid rgba(200,16,46,.25)}
+  .pill-returned .pill-dot{background:var(--red)}
+  .pill-verified{background:rgba(13,146,104,.1);color:var(--teal);border:.5px solid rgba(13,146,104,.3)}
+  .pill-verified .pill-dot{background:var(--teal)}
+  .pill-complete{background:rgba(13,31,53,.08);color:var(--navy);border:.5px solid rgba(13,31,53,.18)}
+  .pill-complete .pill-dot{background:var(--navy)}
 
-.empty-q{background:var(--white);border:.5px dashed var(--border);border-radius:var(--r);padding:32px;text-align:center;color:var(--faint);font-size:13px}
+  .detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);z-index:200;overflow-y:auto}
+  .detail.open{display:block}
+  .detail-bar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(201,168,76,.25)}
+  .detail-bar-l{display:flex;align-items:center;gap:14px;color:white}
+  .detail-back{font-size:13px;color:rgba(255,255,255,.7);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+  .detail-back:hover{background:rgba(255,255,255,.05);color:white}
+  .detail-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:white}
+  .detail-meta{font-size:11px;color:rgba(255,255,255,.55);font-family:'DM Mono',monospace}
 
-/* Detail panel */
-.panel-wrap{display:none;position:fixed;inset:0;background:rgba(17,24,39,.5);z-index:200;align-items:flex-start;justify-content:flex-end}
-.panel-wrap.open{display:flex}
-.panel{width:580px;height:100vh;background:var(--white);overflow-y:auto;box-shadow:-8px 0 32px rgba(0,0,0,.15);animation:sIn .2s ease;display:flex;flex-direction:column}
-@keyframes sIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+  .detail-layout{display:grid;grid-template-columns:1fr 400px;gap:0;min-height:calc(100vh - 62px)}
+  .detail-content{padding:32px 36px;border-right:1px solid var(--line);overflow-y:auto}
+  .detail-panel{background:white;padding:28px 26px;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;border-left:1px solid var(--line)}
 
-.p-head{background:var(--navy);padding:20px 22px;flex-shrink:0}
-.p-close{font-size:11px;color:rgba(255,255,255,.5);cursor:pointer;margin-bottom:10px;display:inline-block}
-.p-close:hover{color:#fff}
-.p-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:#fff}
-.p-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:3px}
-.p-tabs{display:flex;gap:2px;margin-top:12px}
-.p-tab{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 14px;border-radius:20px;cursor:pointer;border:.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5);transition:all .12s}
-.p-tab.on{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+  .sec-block{margin-bottom:32px;background:white;border:1px solid var(--line);border-radius:12px;padding:24px 26px}
+  .sec-h{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .sec-n{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold-d);line-height:1;font-weight:500;min-width:34px}
+  .sec-h-t{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);line-height:1.15;margin-bottom:3px}
+  .sec-h-s{font-size:12px;color:var(--muted);line-height:1.45}
 
-.p-body{padding:18px 22px;flex:1;overflow-y:auto}
-.p-section{margin-bottom:18px}
-.p-shead{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.p-shead::after{content:'';flex:1;height:.5px;background:var(--border)}
+  .data-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px;margin-bottom:14px}
+  .data-row{display:flex;flex-direction:column;gap:3px;padding:8px 0}
+  .data-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .data-value{font-size:13.5px;color:var(--text);line-height:1.5;word-wrap:break-word;min-height:18px}
+  .data-value.empty{color:var(--faint);font-style:italic;font-size:12.5px}
 
-.fblock{background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;margin-bottom:8px}
-.fbl{font-size:9px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
-.fbv{font-size:13px;color:var(--text);line-height:1.65}
-.fbe{font-size:12px;color:var(--faint);font-style:italic}
+  .narrative-block{margin-top:14px}
+  .narrative-h{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  .narrative-t{font-size:13.5px;color:var(--text);line-height:1.6;white-space:pre-wrap;background:var(--cream);padding:12px 14px;border-radius:7px;border:.5px solid var(--line)}
 
-.irow{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:12px}
-.irl{font-size:12px;color:var(--muted);flex-shrink:0}
-.irv{font-size:12px;font-weight:500;color:var(--text);text-align:right}
+  .entry-list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  .entry-card{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:13px 15px}
+  .entry-card-h{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .entry-card-t{font-size:13.5px;font-weight:500;color:var(--text);line-height:1.4;flex:1;min-width:0}
+  .entry-card-tag{font-size:9.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:9px;background:rgba(13,31,53,.08);color:var(--navy);font-family:'DM Mono',monospace}
+  .entry-card-tag.tier{background:rgba(201,168,76,.16);color:var(--gold-d);border:.5px solid rgba(201,168,76,.4)}
+  .entry-card-meta{font-size:11.5px;color:var(--muted);line-height:1.5}
+  .entry-card-desc{font-size:12.5px;color:var(--sub);line-height:1.55;font-style:italic;margin-top:5px}
 
-/* IKIGAI special display */
-.ikigai-display{background:var(--navy);border-radius:var(--rs);padding:16px 18px;margin-bottom:8px}
-.iki-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-.iki-text{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:#fff;line-height:1.65}
-.iki-private{font-size:10px;color:rgba(255,255,255,.3);margin-top:8px}
+  /* Dean Reviews Summary block (prominent, top of detail content) */
+  .deans-block{margin-bottom:32px;background:linear-gradient(180deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border:1px solid rgba(201,168,76,.35);border-radius:12px;padding:24px 26px}
+  .deans-h{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed rgba(201,168,76,.35)}
+  .deans-h-t{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);line-height:1.15;margin-bottom:3px}
+  .deans-h-s{font-size:12px;color:var(--muted);line-height:1.45}
+  .deans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media (max-width:900px){.deans-grid{grid-template-columns:1fr}}
+  .dean-card{background:white;border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-height:130px}
+  .dean-card.complete{border-color:rgba(13,146,104,.35);background:rgba(13,146,104,.03)}
+  .dean-card.pending-c{border-color:rgba(217,119,6,.3);background:rgba(217,119,6,.03)}
+  .dean-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .dean-card-role{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d)}
+  .dean-card-name{font-size:13px;font-weight:500;color:var(--text);margin-top:2px;line-height:1.3}
+  .dean-card-status{font-size:9.5px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:9px;font-family:'DM Mono',monospace;text-transform:uppercase}
+  .dean-card-status.ok{background:rgba(13,146,104,.12);color:var(--teal-d)}
+  .dean-card-status.wait{background:rgba(217,119,6,.12);color:var(--amber)}
+  .dean-card-notes{font-size:12.5px;color:var(--sub);line-height:1.55;background:var(--cream);padding:9px 11px;border-radius:6px;border:.5px solid var(--line);white-space:pre-wrap}
+  .dean-card-notes.empty{color:var(--faint);font-style:italic;font-size:11.5px}
+  .dean-card-foot{font-size:10.5px;color:var(--faint);font-family:'DM Mono',monospace;margin-top:auto}
 
-/* Strength dots */
-.str-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:.5px solid var(--border)}
-.str-row:last-child{border-bottom:none}
-.str-label{font-size:12px;color:var(--muted)}
-.str-dots{display:flex;gap:3px}
-.sdot{width:9px;height:9px;border-radius:50%;background:var(--border)}
-.sdot.on{background:var(--gold)}
+  /* Revenue verification strip */
+  .rev-strip{margin-top:14px;padding:11px 14px;border-radius:8px;display:flex;align-items:center;gap:10px;font-size:12.5px}
+  .rev-strip.ok{background:rgba(13,146,104,.06);border:1px solid rgba(13,146,104,.25);color:var(--teal-d)}
+  .rev-strip.flag{background:rgba(200,16,46,.05);border:1px solid rgba(200,16,46,.25);color:var(--red-d)}
+  .rev-strip.na{background:rgba(122,134,153,.06);border:1px dashed rgba(122,134,153,.3);color:var(--muted)}
+  .rev-strip-icon{font-size:14px;line-height:1}
+  .rev-strip-text strong{font-weight:600}
 
-/* Dean validation status */
-.dean-status{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.ds-card{border-radius:var(--rs);padding:10px 12px;border:.5px solid}
-.ds-card.validated{background:var(--teal-l);border-color:rgba(29,158,117,.3)}
-.ds-card.pending{background:var(--amber-l);border-color:rgba(239,159,39,.3)}
-.ds-role{font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
-.ds-card.validated .ds-role{color:var(--teal-d)}
-.ds-card.pending .ds-role{color:var(--amber-d)}
-.ds-name{font-size:11px;font-weight:500}
-.ds-card.validated .ds-name{color:var(--teal-d)}
-.ds-card.pending .ds-name{color:var(--amber-d)}
-.ds-stamp{font-size:10px;color:var(--faint);margin-top:2px;font-family:'DM Mono',monospace}
-.ds-notes{font-size:11px;margin-top:4px;line-height:1.5;color:var(--muted);font-style:italic}
+  /* Panel */
+  .panel-h{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1.2}
+  .panel-s{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:18px}
+  .panel-role{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:14px;font-size:10.5px;color:var(--gold-d);font-family:'DM Mono',monospace;letter-spacing:.06em;font-weight:600;margin-bottom:18px}
+  .panel-role-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
 
-/* Remarks areas */
-.remarks-section{margin-bottom:16px}
-.rs-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.rs-private{font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint)}
-.rs-ta{width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:90px;transition:border-color .15s;line-height:1.6}
-.rs-ta:focus{outline:none;border-color:rgba(201,168,76,.5)}
-.rs-ta.private-field{border-color:rgba(55,138,221,.25);background:#F8FBFF}
-.rs-ta.private-field:focus{border-color:rgba(55,138,221,.5)}
-.rs-ta.gate1-field{border-color:rgba(29,158,117,.25);background:#F8FCFA}
-.rs-ta.gate1-field:focus{border-color:rgba(29,158,117,.5)}
-.rs-ta:disabled{background:var(--cream);color:var(--muted);cursor:not-allowed}
-.rs-hint{font-size:11px;color:var(--faint);margin-top:4px;font-style:italic}
-.save-remarks{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:5px 14px;border-radius:var(--rs);border:.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);transition:all .12s;margin-top:6px}
-.save-remarks:hover{background:var(--parchment);border-color:var(--gold);color:var(--gold-d)}
+  .panel-field{margin-bottom:14px}
+  .panel-field-l{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+  .panel-field-l-r{font-size:10px;color:var(--faint);font-weight:500;text-transform:none;letter-spacing:.02em}
+  .panel-textarea{width:100%;min-height:130px;padding:11px 13px;border:1px solid var(--line-strong);border-radius:7px;font-family:inherit;font-size:13px;color:var(--text);resize:vertical;line-height:1.55;background:var(--parchment)}
+  .panel-textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
 
-/* Gate 1 release controls */
-.g1-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-.g1-status-pill{font-size:10px;font-weight:500;padding:3px 9px;border-radius:10px;letter-spacing:.04em}
-.g1-status-draft{background:var(--cream);color:var(--muted);border:.5px solid var(--border)}
-.g1-status-released{background:var(--teal-l);color:var(--teal-d);border:.5px solid rgba(29,158,117,.3)}
-.g1-released-meta{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:9px 12px;margin-top:8px;font-size:11px;color:var(--teal-d);font-family:'DM Mono',monospace}
-.g1-released-meta strong{font-family:'DM Sans',sans-serif;font-weight:600}
-.btn-release{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 14px;border-radius:var(--rs);border:none;background:var(--teal);color:#fff;cursor:pointer;transition:all .15s;margin-top:6px;margin-left:6px;letter-spacing:.03em}
-.btn-release:hover{background:var(--teal-d)}
-.btn-release:disabled{opacity:.4;cursor:not-allowed}
-.btn-release.unrelease{background:var(--white);color:var(--amber-d);border:1px solid rgba(239,159,39,.4)}
-.btn-release.unrelease:hover{background:var(--amber-l)}
+  /* Action buttons */
+  .panel-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .pa-btn{padding:13px 14px;border:1px solid var(--line-strong);background:white;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;letter-spacing:.02em;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1.2}
+  .pa-btn-sub{font-size:10px;font-weight:400;color:var(--faint);letter-spacing:0}
+  .pa-btn.verify{background:var(--teal);color:white;border-color:var(--teal)}
+  .pa-btn.verify:hover{background:var(--teal-d);border-color:var(--teal-d)}
+  .pa-btn.verify .pa-btn-sub{color:rgba(255,255,255,.7)}
+  .pa-btn.return{background:white;color:var(--red);border-color:var(--red)}
+  .pa-btn.return:hover{background:rgba(200,16,46,.05)}
+  .pa-btn:disabled{opacity:.55;cursor:not-allowed}
 
-/* History */
-.history-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px;margin-top:10px}
-.history-item{background:var(--cream);border-radius:var(--rs);padding:9px 12px;margin-bottom:6px}
-.hi-meta{font-size:10px;color:var(--faint);margin-bottom:3px;font-family:'DM Mono',monospace}
-.hi-text{font-size:12px;color:var(--text);line-height:1.6}
+  /* Status banner */
+  .panel-banner{padding:12px 14px;border-radius:7px;margin-bottom:14px;font-size:12px;line-height:1.55}
+  .panel-banner.verified{background:rgba(13,146,104,.08);border-left:3px solid var(--teal);color:var(--teal-d)}
+  .panel-banner.returned{background:rgba(200,16,46,.06);border-left:3px solid var(--red);color:var(--red-d)}
+  .panel-banner.complete{background:rgba(13,31,53,.06);border-left:3px solid var(--navy);color:var(--navy)}
+  .panel-banner strong{font-weight:600;display:block;margin-bottom:3px}
 
-/* Action buttons */
-.action-bar{padding:16px 22px;border-top:.5px solid var(--border);background:var(--white);flex-shrink:0;display:flex;flex-direction:column;gap:8px}
-.btn-forward{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-forward:hover{background:var(--gold);color:var(--navy)}
-.btn-forward:disabled{opacity:.4;cursor:not-allowed;background:var(--navy)}
-.btn-return{width:100%;padding:10px;background:var(--white);color:#991B1B;border:1.5px solid #FCA5A5;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
-.btn-return:hover{background:#FEF2F2}
-.btn-save-all{width:100%;padding:9px;background:var(--parchment);color:var(--muted);border:.5px solid var(--border-g);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
-.btn-save-all:hover{background:var(--cream);color:var(--navy)}
-.forwarded-state{background:var(--purple-l);border:.5px solid rgba(127,119,221,.3);border-radius:var(--rs);padding:11px 14px;font-size:12px;font-weight:500;color:var(--purple-d);display:flex;align-items:center;gap:8px}
-.endorsed-state{background:var(--teal-l);border:.5px solid rgba(29,158,117,.3);border-radius:var(--rs);padding:11px 14px;font-size:12px;font-weight:500;color:var(--teal-d);display:flex;align-items:center;gap:8px}
-.returned-state{background:#FCEBEB;border:.5px solid rgba(226,75,74,.3);border-radius:var(--rs);padding:11px 14px;font-size:12px;font-weight:500;color:#501313;display:flex;align-items:center;gap:8px}
+  /* Action history */
+  .panel-hist{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line)}
+  .panel-hist-h{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+  .hist-entry{padding:9px 11px;background:var(--cream);border:.5px solid var(--line);border-radius:6px;margin-bottom:6px;font-size:11.5px;line-height:1.5}
+  .hist-action{display:inline-block;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:600;padding:1px 7px;border-radius:8px;letter-spacing:.04em;margin-right:6px}
+  .hist-action.verify{background:rgba(13,146,104,.12);color:var(--teal-d)}
+  .hist-action.return{background:rgba(200,16,46,.1);color:var(--red-d)}
+  .hist-meta{color:var(--faint);font-size:10.5px;font-family:'DM Mono',monospace;margin-top:3px}
+  .hist-notes{color:var(--sub);margin-top:4px;font-size:11.5px;line-height:1.5;white-space:pre-wrap}
 
-.notice-not-ready{background:var(--amber-l);border:.5px solid rgba(239,159,39,.3);border-radius:var(--rs);padding:11px 14px;font-size:12px;color:var(--amber-d);margin-bottom:8px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy-dark);color:white;padding:12px 22px;border-radius:8px;border-left:3px solid var(--gold);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:300;max-width:480px}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);pointer-events:auto;cursor:pointer}
 
-.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:12px;padding:9px 14px;border-radius:var(--rs);border-left:3px solid var(--gold);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none}
-.toast.show{transform:translateY(0);opacity:1}
+  .blocker{display:none;padding:80px 32px;text-align:center;color:var(--muted);font-size:14px;max-width:520px;margin:0 auto}
+  .blocker-h{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--text);margin-bottom:12px;font-weight:500}
+
+  @media (max-width:900px){
+    .detail-layout{grid-template-columns:1fr}
+    .detail-panel{position:relative;top:0;height:auto;border-left:none;border-top:2px solid var(--gold);max-height:none}
+    .data-grid{grid-template-columns:1fr}
+    .hero{padding:24px 18px}
+    .main{padding:20px 16px 40px}
+    .detail-content{padding:24px 18px}
+  }
 </style>
 </head>
 <body>
@@ -187,35 +206,66 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--te
 <div class="topbar">
   <div class="tb-l">
     <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
-    <div class="sep"></div>
-    <div class="ttl">Magis Centre · Director Review · Annual Development Review</div>
+    <div class="tb-div"></div>
+    <div class="tb-title">X-Hub · Director Review</div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="dbadge" id="dir-badge">Loading...</div>
-    <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
-    <button class="back-btn" onclick="signOut()">Sign out</button>
+  <div class="tb-r">
+    <button class="tb-back" onclick="window.location.href='index.html'">← Home</button>
+    <button class="tb-signout" onclick="signOut()">Sign out</button>
   </div>
 </div>
 
-<div class="main" id="main-content">
-  <div style="padding:60px 0;text-align:center;color:var(--faint);font-size:13px">Loading review queue...</div>
+<div class="hero">
+  <div class="hero-l" id="hero-l">Director Review · AY 2025-26</div>
+  <div class="hero-t" id="hero-t">Loading...</div>
+  <div class="hero-s" id="hero-s">Validate institutional consistency across dean reviews. Verify and pass to Dean Academics for management synthesis, or return for re-review.</div>
+  <div class="hero-tag"><div class="hero-tag-dot"></div>AY 2025-26 · Cycle Open</div>
 </div>
 
-<div class="panel-wrap" id="panel-wrap" onclick="handleBackdrop(event)">
-  <div class="panel" id="panel">
-    <div class="p-head">
-      <div class="p-close" onclick="closePanel()">← Close</div>
-      <div class="p-name" id="p-name">Faculty</div>
-      <div class="p-sub" id="p-sub"></div>
-      <div class="p-tabs">
-        <button class="p-tab on" onclick="switchTab('record',this)">Performance Record</button>
-        <button class="p-tab" onclick="switchTab('ikigai',this)">Growth &amp; Purpose</button>
-        <button class="p-tab" onclick="switchTab('remarks',this)">Remarks</button>
+<div class="main" id="list-view">
+  <div class="seg-tabs">
+    <button class="seg-tab active" data-seg="pending" onclick="switchSeg('pending')">
+      Awaiting your verification <span class="seg-tab-count" id="ct-pending">0</span>
+    </button>
+    <button class="seg-tab" data-seg="returned" onclick="switchSeg('returned')">
+      Returned to dean <span class="seg-tab-count" id="ct-returned">0</span>
+    </button>
+    <button class="seg-tab" data-seg="verified" onclick="switchSeg('verified')">
+      Verified · Complete <span class="seg-tab-count" id="ct-verified">0</span>
+    </button>
+  </div>
+
+  <div class="fac-list" id="fac-list">
+    <div class="fac-empty">
+      <div class="fac-empty-icon">◇</div>
+      <span class="fac-empty-strong">Loading faculty list...</span>
+    </div>
+  </div>
+</div>
+
+<div class="detail" id="detail">
+  <div class="detail-bar">
+    <div class="detail-bar-l">
+      <button class="detail-back" onclick="closeDetail()">← Back to list</button>
+      <div>
+        <div class="detail-name" id="d-name">—</div>
+        <div class="detail-meta" id="d-meta">—</div>
       </div>
     </div>
-    <div class="p-body" id="p-body"></div>
-    <div class="action-bar" id="action-bar"></div>
+    <div class="tb-r">
+      <button class="tb-signout" onclick="signOut()">Sign out</button>
+    </div>
   </div>
+
+  <div class="detail-layout">
+    <div class="detail-content" id="d-content"></div>
+    <div class="detail-panel" id="d-panel"></div>
+  </div>
+</div>
+
+<div class="blocker" id="blocker">
+  <div class="blocker-h">Loading...</div>
+  <div id="blocker-msg">Verifying access</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -225,568 +275,43 @@ const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
 
-// Identity populated from session. See requireDirectorAccess().
-let DIRECTOR={email:'',name:'',campus:''};
-let USER_ROLE='';
+const ACADEMIC_YEAR='2025-26';
+const DEBUG=false;
+function dlog(...args){if(DEBUG)console.error(...args);}
+
+const DEAN_LABELS={academics:'Dean Academics',research:'Dean Research',ep:'Dean EP'};
+
+/* Status the director may see in their queue */
+const STATUS_LABEL={
+  all_deans_complete:'Awaiting verification',
+  with_director:'In your review',
+  returned_to_dean:'Returned to dean',
+  director_verified:'Verified · awaiting Dean Academics',
+  complete:'Complete'
+};
+
 let CURRENT_USER=null;
+let MY_CAMPUS=null;
+let MY_DIRECTOR_NAME=null;
 
-let allEvals=[], currentEval=null, currentDeanReviews=[], currentDirReview=null, currentTab='record';
+let SEG='pending';
+let FACULTY_LIST=[];
+let CURRENT_EVAL=null;
+let CURRENT_FAC=null;
+let DEAN_REVIEWS=[];      /* all 3 dean review rows for current eval */
+let MY_DIRECTOR_REVIEW=null; /* this director's row in evaluation_director_reviews if any */
 
-function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
-function initials(n){return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()}
-function fmt(v){return v?`<div class="fbv">${v}</div>`:`<div class="fbe">Not entered</div>`}
-function fblock(label,val){return`<div class="fblock"><div class="fbl">${label}</div>${fmt(val)}</div>`}
-function irow(k,v){return`<div class="irow"><span class="irl">${k}</span><span class="irv">${v||'-'}</span></div>`}
+function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-async function loadQueue(){
-  // Load all reviews for this scope that have been submitted past Gate 1
-  let q=sb.from('faculty_evaluations')
-    .select('*')
-    .in('workflow_status',['mid_year_locked','mid_year_validated','annual_submitted','dean_validated','director_forwarded','president_review','endorsed','returned_to_director','faculty_input_requested'])
-    .order('updated_at',{ascending:false});
-
-  if(USER_ROLE==='director'){
-    q=q.eq('snap_campus',DIRECTOR.campus);
-  }
-  // super_admin has no campus filter and sees all three campuses
-
-  const{data:evals,error}=await q;
-
-  if(error||!evals){
-    document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Could not load review queue.</div>';
-    return;
-  }
-  allEvals=evals;
-  renderPage();
-}
-
-function statusChip(s){
-  const m={
-    mid_year_locked:{cls:'chip-pending',label:'Gate 1 Locked'},
-    mid_year_validated:{cls:'chip-ready',label:'Mid-Year Validated'},
-    annual_submitted:{cls:'chip-pending',label:'Submitted · Awaiting Deans'},
-    dean_validated:{cls:'chip-ready',label:'Dean Validated · Action Required'},
-    director_forwarded:{cls:'chip-forwarded',label:'Forwarded to President'},
-    president_review:{cls:'chip-forwarded',label:'With President'},
-    endorsed:{cls:'chip-endorsed',label:'Endorsed'},
-    returned_to_director:{cls:'chip-returned',label:'Returned by President'},
-    faculty_input_requested:{cls:'chip-returned',label:'Returned to Faculty'}
-  };
-  return m[s]||{cls:'chip-pending',label:s};
-}
-
-async function renderPage(){
-  const badge=document.getElementById('dir-badge');
-  if(USER_ROLE==='super_admin'){
-    badge.textContent='All Campuses · Super Admin';
-  }else{
-    badge.textContent=`${DIRECTOR.campus} · Director`;
-  }
-
-  const actionNeeded=allEvals.filter(e=>['dean_validated','returned_to_director'].includes(e.workflow_status));
-  const inProgress=allEvals.filter(e=>['mid_year_locked','mid_year_validated','annual_submitted'].includes(e.workflow_status));
-  const forwarded=allEvals.filter(e=>['director_forwarded','president_review'].includes(e.workflow_status));
-  const closed=allEvals.filter(e=>['endorsed','faculty_input_requested'].includes(e.workflow_status));
-
-  const bannerName=USER_ROLE==='super_admin'?DIRECTOR.name:DIRECTOR.name;
-  const bannerSub=USER_ROLE==='super_admin'
-    ?`Super Admin View · All Campuses · AY 2025–26`
-    :`Officiating Director · ${DIRECTOR.campus} · AY 2025–26`;
-
-  document.getElementById('main-content').innerHTML=`
-    <div class="dir-banner">
-      <div>
-        <div class="db-eyebrow">Magis Centre · Director Review Panel</div>
-        <div class="db-name">${bannerName}</div>
-        <div class="db-sub">${bannerSub}</div>
-      </div>
-      <div class="db-right">
-        <div class="db-num">${actionNeeded.length}</div>
-        <div class="db-numl">Require your action</div>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat"><div class="sv">${allEvals.length}</div><div class="sl">Total submissions</div></div>
-      <div class="stat"><div class="sv" style="color:var(--amber-d)">${actionNeeded.length}</div><div class="sl">Action required</div></div>
-      <div class="stat"><div class="sv" style="color:var(--muted)">${inProgress.length}</div><div class="sl">In progress</div></div>
-      <div class="stat"><div class="sv" style="color:var(--purple-d)">${forwarded.length}</div><div class="sl">With President</div></div>
-      <div class="stat"><div class="sv" style="color:var(--teal)">${closed.length}</div><div class="sl">Endorsed</div></div>
-    </div>
-
-    ${actionNeeded.length>0?`
-    <div class="ql">Action Required</div>
-    <div class="queue">${actionNeeded.map(e=>qCard(e)).join('')}</div>`:''}
-
-    ${inProgress.length>0?`
-    <div class="ql">In Progress · Dean Validation Pending</div>
-    <div class="queue">${inProgress.map(e=>qCard(e)).join('')}</div>`:''}
-
-    ${forwarded.length>0?`
-    <div class="ql">Forwarded to President</div>
-    <div class="queue">${forwarded.map(e=>qCard(e)).join('')}</div>`:''}
-
-    ${closed.length>0?`
-    <div class="ql">Endorsed</div>
-    <div class="queue">${closed.map(e=>qCard(e)).join('')}</div>`:''}
-
-    ${allEvals.length===0?`<div class="empty-q">No reviews yet${USER_ROLE==='director'?` for ${DIRECTOR.campus}`:''}.</div>`:''}
-  `;
-}
-
-async function qCardDeanDots(evalId){
-  const{data}=await sb.from('evaluation_dean_reviews').select('validated,dean_role').eq('evaluation_id',evalId).eq('gate','annual');
-  if(!data||!data.length)return'';
-  const roles=['academics','research','ep'];
-  return`<div class="dean-progress">${roles.map(r=>{const d=data.find(x=>x.dean_role===r);return`<div class="dp-dot ${d?.validated?'done':'pending'}" title="${r}"></div>`;}).join('')}</div>`;
-}
-
-function qCard(e){
-  const sc=statusChip(e.workflow_status);
-  return`<div class="qcard${e.workflow_status==='endorsed'?' done':e.workflow_status==='returned_to_director'?' returned':''}" onclick="openPanel('${e.id}')">
-    <div class="qav">${initials(e.snap_name||'?')}</div>
-    <div style="flex:1">
-      <div class="qname">${e.snap_name||'Unknown'}</div>
-      <div class="qmeta">${e.snap_designation||'-'} · ${e.snap_campus||DIRECTOR.campus}</div>
-    </div>
-    <div class="qright">
-      <div class="chip ${sc.cls}">${sc.label}</div>
-      <div class="chip-sub">AY 2025–26</div>
-    </div>
-  </div>`;
-}
-
-async function openPanel(evalId){
-  const ev=allEvals.find(e=>e.id===evalId);
-  if(!ev)return;
-  currentEval=ev;
-  currentTab='record';
-
-  // Load dean reviews
-  const{data:dr}=await sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',evalId).eq('gate','annual');
-  currentDeanReviews=dr||[];
-
-  // Load director review row
-  const{data:dirRev}=await sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',evalId).maybeSingle();
-  currentDirReview=dirRev||null;
-
-  // Check for president return comments
-  const{data:presRev}=await sb.from('evaluation_president_reviews').select('*').eq('evaluation_id',evalId).maybeSingle();
-
-  document.getElementById('p-name').textContent=ev.snap_name||'Faculty';
-  document.getElementById('p-sub').textContent=`${ev.snap_designation||'-'} · ${ev.snap_campus||DIRECTOR.campus} · ${statusChip(ev.workflow_status).label}`;
-
-  // Reset tab to first
-  document.querySelectorAll('.p-tab').forEach((b,i)=>b.classList.toggle('on',i===0));
-
-  // Show president return banner if applicable
-  let presReturnBanner='';
-  if(ev.workflow_status==='returned_to_director'&&presRev?.return_comments){
-    presReturnBanner=`<div style="background:#FCEBEB;border:.5px solid rgba(226,75,74,.3);border-radius:var(--rs);padding:12px 14px;margin-bottom:14px">
-      <div style="font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#501313;margin-bottom:4px">Returned by President</div>
-      <div style="font-size:13px;color:#501313;line-height:1.6;font-style:italic">${presRev.return_comments}</div>
-      <div style="font-size:10px;color:var(--faint);margin-top:6px">${presRev.returned_at?new Date(presRev.returned_at).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):''}</div>
-    </div>`;
-  }
-
-  renderTab(presReturnBanner);
-  renderActionBar();
-  document.getElementById('panel-wrap').classList.add('open');
-}
-
-function switchTab(tab,btn){
-  currentTab=tab;
-  document.querySelectorAll('.p-tab').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  renderTab('');
-  renderActionBar();
-}
-
-function renderTab(bannerHtml=''){
-  const ev=currentEval;
-  const body=document.getElementById('p-body');
-  let html=bannerHtml;
-
-  if(currentTab==='record'){
-    // Dean validation status
-    html+=`<div class="p-section">
-      <div class="p-shead">Dean Validation Status</div>
-      <div class="dean-status">
-        ${['academics','research','ep'].map(role=>{
-          const d=currentDeanReviews.find(r=>r.dean_role===role);
-          const validated=d?.validated||false;
-          const label={academics:'Dean Academics',research:'Dean Research',ep:'Dean EP'}[role];
-          return`<div class="ds-card ${validated?'validated':'pending'}">
-            <div class="ds-role">${label}</div>
-            <div class="ds-name">${d?.dean_name||'Pending'}</div>
-            <div class="ds-stamp">${validated?'✓ Validated':'Awaiting'}</div>
-            ${d?.notes?`<div class="ds-notes">"${d.notes}"</div>`:''}
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
-
-    // Profile
-    html+=`<div class="p-section">
-      <div class="p-shead">Faculty Profile</div>
-      <div style="background:var(--parchment);border:.5px solid var(--border-g);border-radius:var(--rs);padding:11px 14px;margin-bottom:8px">
-        ${[['Name',ev.snap_name],['Designation',ev.snap_designation],['Campus',ev.snap_campus],['Subject Area',ev.snap_subject_area],['Admin Role',ev.snap_admin_role]].map(([k,v])=>irow(k,v)).join('')}
-      </div>
-    </div>`;
-
-    // Teaching
-    html+=`<div class="p-section">
-      <div class="p-shead" style="color:var(--teal-d)">Teaching</div>
-      ${fblock('Courses Taught',ev.snap_courses_taught?.replace(' · ',', '))}
-      ${fblock('Teaching Effectiveness Score',ev.teaching_effectiveness?`${ev.teaching_effectiveness} / 5.0`:null)}
-      ${fblock('Teaching Notes',ev.teaching_notes)}
-    </div>`;
-
-    // Research
-    html+=`<div class="p-section">
-      <div class="p-shead" style="color:var(--blue-d)">Research</div>
-      ${fblock('Publications',ev.publications_details)}
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:8px">
-        ${[['Scopus',ev.publications_count],['ABDC',ev.abdc_count],['WoS',ev.wos_count]].map(([l,v])=>`
-        <div class="fblock" style="text-align:center;padding:8px">
-          <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--blue-d)">${v||'0'}</div>
-          <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
-        </div>`).join('')}
-      </div>
-    </div>`;
-
-    // Industry & MDP
-    html+=`<div class="p-section">
-      <div class="p-shead" style="color:var(--amber-d)">Industry & MDP</div>
-      ${fblock('MDP Details',ev.mdp_details)}
-      ${fblock('Other Industry Engagements',ev.industry_summary)}
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
-        <div class="fblock" style="text-align:center">
-          <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--amber-d)">${ev.mdp_count||'0'}</div>
-          <div style="font-size:10px;color:var(--faint);margin-top:2px">MDPs Delivered</div>
-        </div>
-        <div class="fblock" style="text-align:center">
-          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--amber-d)">${ev.mdp_revenue?'₹'+Number(ev.mdp_revenue).toLocaleString('en-IN'):'-'}</div>
-          <div style="font-size:10px;color:var(--faint);margin-top:2px">Revenue</div>
-        </div>
-      </div>
-    </div>`;
-
-    // Institution Building
-    html+=`<div class="p-section">
-      <div class="p-shead">Institution Building</div>
-      ${fblock('Contributions',ev.institution_contributions)}
-    </div>`;
-
-  } else if(currentTab==='ikigai'){
-    // Growth & Purpose tab. Full view, Director sees everything
-    html+=`<div class="p-section">
-      <div class="p-shead">What the Faculty Loves</div>
-      ${fblock('Teaching Energy',ev.ikigai_passion?.split('\n\n')[0])}
-      ${fblock('Research Pull',ev.ikigai_passion?.split('\n\n')[1])}
-      ${fblock('Industry Engagement',ev.ikigai_passion?.split('\n\n')[2])}
-      ${fblock('Institutional Roles',ev.ikigai_passion?.split('\n\n')[3])}
-      ${fblock('Impact That Matters',ev.ikigai_passion?.split('\n\n')[4])}
-    </div>`;
-
-    html+=`<div class="p-section">
-      <div class="p-shead">Self-Rated Strengths</div>
-      <div style="background:var(--white);border:.5px solid var(--border);border-radius:var(--rs);padding:12px 16px;margin-bottom:8px">
-        ${[['Teaching Effectiveness',ev.ikigai_strength_teaching],['Research Capability',ev.ikigai_strength_research],['Industry Engagement',ev.ikigai_strength_industry],['Institution Building',ev.ikigai_strength_institution]].map(([l,v])=>`
-        <div class="str-row">
-          <span class="str-label">${l}</span>
-          <div class="str-dots">${[1,2,3,4,5].map(i=>`<div class="sdot${(v&&i<=v)?' on':''}"></div>`).join('')}</div>
-        </div>`).join('')}
-      </div>
-      ${fblock('Known For',ev.ikigai_strengths_text)}
-      ${fblock('Areas to Develop',ev.ikigai_develop_areas||ev.ikigai_growth_areas)}
-    </div>`;
-
-    html+=`<div class="p-section">
-      <div class="p-shead">Impact Focus</div>
-      ${fblock('The Gap You Want to Close',ev.ikigai_impact_focus)}
-    </div>`;
-
-    html+=`<div class="p-section">
-      <div class="p-shead">Contribution</div>
-      ${ev.courses_current&&ev.courses_current.length?fblock('Currently Delivering',ev.courses_current.join(', ')):''}
-      ${ev.courses_aspire&&ev.courses_aspire.length?fblock('Aspires to Deliver',ev.courses_aspire.join(', ')):''}
-      ${fblock('Domain Course Gaps',ev.domain_course_gaps||ev.ikigai_contribution)}
-      ${fblock('New Courses to Design',ev.new_courses_to_design)}
-      ${fblock('Courses to Stop',ev.courses_to_stop)}
-      ${fblock('Consulting / Training Capabilities',ev.consulting_capabilities)}
-      ${fblock('Consulting / Training Delivered',ev.consulting_delivered)}
-      ${fblock('New Programmes to Design',ev.new_programmes_to_design)}
-      ${fblock('Research Publication Potential',ev.research_publication_potential)}
-    </div>`;
-
-    // Purpose Statement (private)
-    html+=`<div class="p-section">
-      <div class="p-shead">IKIGAI Statement · Private</div>
-      ${ev.ikigai_statement?
-        `<div class="ikigai-display">
-          <div class="iki-label">IKIGAI Statement</div>
-          <div class="iki-text">${ev.ikigai_statement}</div>
-          <div class="iki-private">Not visible to Deans · Visible to Director and President only</div>
-        </div>`:
-        `<div class="fbe" style="padding:12px 0">Faculty has not yet submitted their IKIGAI Statement.</div>`}
-    </div>`;
-
-    // Time allocation
-    if(ev.alloc_teaching!=null||ev.alloc_research!=null||ev.alloc_institution!=null){
-      html+=`<div class="p-section">
-        <div class="p-shead">Time Allocation · Current</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px">
-          ${[['Teaching',ev.alloc_teaching],['Research',ev.alloc_research],['Institution',ev.alloc_institution]].map(([l,v])=>`
-          <div class="fblock" style="text-align:center;padding:8px">
-            <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--navy)">${v||'0'}%</div>
-            <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
-          </div>`).join('')}
-        </div>
-        ${(ev.alloc_teaching_ideal!=null||ev.alloc_research_ideal!=null||ev.alloc_institution_ideal!=null)?`
-        <div class="p-shead" style="margin-top:12px">Time Allocation · Ideal</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px">
-          ${[['Teaching',ev.alloc_teaching_ideal],['Research',ev.alloc_research_ideal],['Institution',ev.alloc_institution_ideal]].map(([l,v])=>`
-          <div class="fblock" style="text-align:center;padding:8px">
-            <div style="font-family:'DM Mono',monospace;font-size:20px;color:var(--gold-d)">${v||'0'}%</div>
-            <div style="font-size:10px;color:var(--faint);margin-top:2px">${l}</div>
-          </div>`).join('')}
-        </div>`:''}
-        ${ev.alloc_change_reason?fblock('Why this shift matters',ev.alloc_change_reason):''}
-        ${ev.alloc_change_actions?fblock('What faculty will do',ev.alloc_change_actions):''}
-        ${ev.alloc_change_support?fblock('Support faculty needs from XIME',ev.alloc_change_support):''}
-      </div>`;
-    }
-
-    html+=`<div class="p-section">
-      <div class="p-shead">Action Plan</div>
-      ${fblock('Start',ev.action_start)}
-      ${fblock('Stop',ev.action_stop)}
-      ${fblock('Continue',ev.action_continue)}
-      ${fblock('Key Goal',ev.action_key_goal)}
-      ${fblock('Support Requested from XIME',ev.action_support)}
-    </div>`;
-
-  } else if(currentTab==='remarks'){
-    // GATE 1 FEEDBACK. Releasable independently
-    const g1Released=currentDirReview?.gate1_released_to_faculty||false;
-    const g1ReleasedAt=currentDirReview?.gate1_released_at;
-    const g1Text=currentDirReview?.gate1_faculty_remarks||'';
-    html+=`<div class="p-section">
-      <div class="g1-panel-head">
-        <div class="p-shead" style="margin-bottom:0">Gate 1 Mid-Year Feedback <span style="font-size:10px;font-weight:400;color:var(--teal-d);text-transform:none;letter-spacing:0">. Releasable directly to faculty</span></div>
-        <span class="g1-status-pill ${g1Released?'g1-status-released':'g1-status-draft'}">${g1Released?'✓ Released':'Draft'}</span>
-      </div>
-      <div class="remarks-section">
-        <div class="rs-label">Your mid-year feedback to this faculty member</div>
-        <textarea class="rs-ta gate1-field" id="gate1-remarks" rows="5" placeholder="What you want the faculty to read at mid-year. Recognition of what is going well, course corrections, anything they should attend to before Gate 2. This releases independently of the Gate 2 endorsement flow.">${g1Text}</textarea>
-        <div class="rs-hint">Save the draft as often as you like. Click "Release to Faculty" only when ready. The faculty will see this on their Annual Development Review form once released.</div>
-        <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap">
-          <button class="save-remarks" onclick="saveRemarks()">Save draft</button>
-          ${g1Released
-            ?`<button class="btn-release unrelease" onclick="toggleGate1Release(false)">Withdraw release</button>`
-            :`<button class="btn-release" onclick="toggleGate1Release(true)" ${!g1Text.trim()?'disabled':''}>Release to Faculty →</button>`}
-        </div>
-        ${g1Released?`<div class="g1-released-meta"><strong>Released to faculty</strong> on ${g1ReleasedAt?new Date(g1ReleasedAt).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'recently'}</div>`:''}
-      </div>
-    </div>`;
-
-    // GATE 2 FACULTY REMARKS. Published after presidential endorsement
-    html+=`<div class="p-section">
-      <div class="p-shead">Gate 2 Faculty Remarks <span style="font-size:10px;font-weight:400;color:var(--teal-d);text-transform:none;letter-spacing:0">. Published to faculty after President endorses</span></div>
-      <div class="remarks-section">
-        <div class="rs-label">Your annual remarks to this faculty member</div>
-        <textarea class="rs-ta" id="faculty-remarks" rows="5" placeholder="These remarks will be shown to the faculty member once the President endorses the Annual Development Review. Write what you want them to read. Recognition, guidance, or direction for the year ahead.">${currentDirReview?.faculty_remarks||''}</textarea>
-        <div class="rs-hint">The faculty member sees this after presidential endorsement. They do not see your comments to the President.</div>
-        <button class="save-remarks" onclick="saveRemarks()">Save remarks</button>
-      </div>
-      ${currentDirReview?.faculty_remarks_history?.length?`
-      <div class="history-label">Remarks history</div>
-      ${JSON.parse(typeof currentDirReview.faculty_remarks_history==='string'?currentDirReview.faculty_remarks_history:JSON.stringify(currentDirReview.faculty_remarks_history)).map(h=>`
-      <div class="history-item">
-        <div class="hi-meta">${new Date(h.saved_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
-        <div class="hi-text">${h.text}</div>
-      </div>`).join('')}`:''}
-    </div>`;
-
-    // PRESIDENT COMMENTS. Private channel
-    html+=`<div class="p-section">
-      <div class="p-shead">Comments to President <span style="font-size:10px;font-weight:400;color:var(--blue-d);text-transform:none;letter-spacing:0">. Private. Never shared with faculty or Deans</span></div>
-      <div class="remarks-section">
-        <div class="rs-label">Your note accompanying this review <span class="rs-private">(Director ↔ President only)</span></div>
-        <textarea class="rs-ta private-field" id="president-comments" rows="5" placeholder="Context, observations, or recommendations you want the President to have before reviewing. This channel is strictly between you and the President. It does not appear anywhere else in the system.">${currentDirReview?.president_comments||''}</textarea>
-        <div class="rs-hint" style="color:var(--blue-d)">Strictly private. The faculty member and Deans never see this field or know it exists.</div>
-        <button class="save-remarks" onclick="saveRemarks()">Save comments</button>
-      </div>
-      ${currentDirReview?.president_comments_history?.length?`
-      <div class="history-label">Comments history</div>
-      ${JSON.parse(typeof currentDirReview.president_comments_history==='string'?currentDirReview.president_comments_history:JSON.stringify(currentDirReview.president_comments_history)).map(h=>`
-      <div class="history-item" style="border-left:2px solid var(--blue)">
-        <div class="hi-meta">${new Date(h.saved_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
-        <div class="hi-text">${h.text}</div>
-      </div>`).join('')}`:''}
-    </div>`;
-  }
-
-  body.innerHTML=html;
-}
-
-function renderActionBar(){
-  const s=currentEval?.workflow_status;
-  const bar=document.getElementById('action-bar');
-  const allDeansValidated=currentDeanReviews.length>=3&&currentDeanReviews.every(d=>d.validated);
-
-  if(s==='endorsed'){
-    bar.innerHTML=`<div class="endorsed-state"><span style="font-size:16px">✓</span>Endorsed by President · Review complete</div>`;
-    return;
-  }
-  if(s==='director_forwarded'||s==='president_review'){
-    bar.innerHTML=`<div class="forwarded-state"><span style="font-size:16px">→</span>Forwarded to President · Awaiting endorsement</div>`;
-    return;
-  }
-  if(s==='faculty_input_requested'){
-    bar.innerHTML=`<div class="returned-state"><span style="font-size:16px">↩</span>Returned to faculty for additional input</div>`;
-    return;
-  }
-
-  let html='';
-  if(!allDeansValidated&&(s==='annual_submitted'||s==='dean_validated')){
-    html+=`<div class="notice-not-ready">⏳ Waiting for all three Deans to validate. ${currentDeanReviews.filter(d=>d.validated).length} of ${currentDeanReviews.length} complete.</div>`;
-  }
-  if(s==='returned_to_director'){
-    html+=`<div style="background:#FAEEDA;border:.5px solid rgba(239,159,39,.3);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--amber-d);margin-bottom:8px">President returned this review. Review their comments in the Remarks tab, then re-forward or return to faculty.</div>`;
-  }
-  html+=`<button class="btn-forward" onclick="forwardToPresident()" ${!allDeansValidated&&s!=='returned_to_director'?'disabled':''}>
-    → Forward to President for Endorsement
-  </button>`;
-  html+=`<button class="btn-return" onclick="returnToFaculty()">↩ Return to Faculty for Input</button>`;
-  html+=`<button class="btn-save-all" onclick="saveRemarks()">Save remarks &amp; comments</button>`;
-  bar.innerHTML=html;
-}
-
-async function saveRemarks(){
-  if(!currentEval)return;
-  const fr=document.getElementById('faculty-remarks')?.value||'';
-  const pc=document.getElementById('president-comments')?.value||'';
-  const g1=document.getElementById('gate1-remarks')?.value||'';
-  const now=new Date().toISOString();
-
-  // Build history entries (only for the two history-tracked fields)
-  const frHistory=currentDirReview?.faculty_remarks_history||[];
-  const pcHistory=currentDirReview?.president_comments_history||[];
-  if(fr&&fr!==currentDirReview?.faculty_remarks)frHistory.push({text:fr,saved_at:now});
-  if(pc&&pc!==currentDirReview?.president_comments)pcHistory.push({text:pc,saved_at:now});
-
-  const payload={
-    evaluation_id:currentEval.id,
-    director_email:DIRECTOR.email,
-    director_name:DIRECTOR.name,
-    campus:DIRECTOR.campus,
-    faculty_remarks:fr||null,
-    faculty_remarks_history:frHistory,
-    president_comments:pc||null,
-    president_comments_history:pcHistory,
-    gate1_faculty_remarks:g1||null,
-    updated_at:now
-  };
-
-  const{error}=await sb.from('evaluation_director_reviews').upsert(payload,{onConflict:'evaluation_id'});
-  if(error){console.error(error);toast('Could not save',false);return;}
-  currentDirReview={...currentDirReview,...payload};
-  toast('Saved.');
-}
-
-async function toggleGate1Release(release){
-  if(!currentEval)return;
-  // Persist whatever's in the textarea first
-  const g1=document.getElementById('gate1-remarks')?.value?.trim()||'';
-  if(release&&!g1){toast('Please write Gate 1 feedback before releasing.',false);return;}
-  if(release&&!confirm('Release this Gate 1 feedback to the faculty? They will see it on their Annual Development Review form.'))return;
-  if(!release&&!confirm('Withdraw the released Gate 1 feedback from the faculty? They will no longer see it.'))return;
-  const now=new Date().toISOString();
-  await saveRemarks();
-  const payload={
-    evaluation_id:currentEval.id,
-    director_email:DIRECTOR.email,
-    director_name:DIRECTOR.name,
-    campus:DIRECTOR.campus,
-    gate1_released_to_faculty:release,
-    gate1_released_at:release?now:null,
-    updated_at:now
-  };
-  const{error}=await sb.from('evaluation_director_reviews').upsert(payload,{onConflict:'evaluation_id'});
-  if(error){console.error(error);toast('Could not '+(release?'release':'withdraw')+' Gate 1 feedback.',false);return;}
-  currentDirReview={...currentDirReview,...payload};
-  toast(release?'Gate 1 feedback released to faculty.':'Gate 1 feedback withdrawn.');
-  renderTab('');
-  renderActionBar();
-}
-
-async function forwardToPresident(){
-  if(!currentEval)return;
-  await saveRemarks();
-  const now=new Date().toISOString();
-  const{error}=await sb.from('evaluation_director_reviews').update({status:'forwarded',forwarded_at:now,updated_at:now}).eq('evaluation_id',currentEval.id);
-  if(error){toast('Could not forward',false);return;}
-  await sb.from('faculty_evaluations').update({workflow_status:'director_forwarded',updated_at:now}).eq('id',currentEval.id);
-  // Create president review row
-  await sb.from('evaluation_president_reviews').upsert({evaluation_id:currentEval.id,endorsement_status:'pending',updated_at:now},{onConflict:'evaluation_id'});
-  currentEval.workflow_status='director_forwarded';
-  const idx=allEvals.findIndex(e=>e.id===currentEval.id);
-  if(idx>=0)allEvals[idx].workflow_status='director_forwarded';
-  renderActionBar();
-  renderPage();
-  toast('Forwarded to President.');
-}
-
-async function returnToFaculty(){
-  if(!currentEval)return;
-  if(!confirm('Return this review to the faculty member for additional input?'))return;
-  const now=new Date().toISOString();
-  await sb.from('faculty_evaluations').update({workflow_status:'faculty_input_requested',gate2_locked:false,updated_at:now}).eq('id',currentEval.id);
-  currentEval.workflow_status='faculty_input_requested';
-  const idx=allEvals.findIndex(e=>e.id===currentEval.id);
-  if(idx>=0)allEvals[idx].workflow_status='faculty_input_requested';
-  renderActionBar();
-  renderPage();
-  toast('Returned to faculty for input. Gate 2 unlocked.');
-}
-
-function closePanel(){document.getElementById('panel-wrap').classList.remove('open');}
-function handleBackdrop(e){if(e.target===document.getElementById('panel-wrap'))closePanel();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
-
-async function requireDirectorAccess(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='login.html';return false;}
-
-  const{data:profile,error}=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
-  if(error||!profile){
-    document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">Profile not found. Contact admin.</div>';
-    return false;
-  }
-
-  CURRENT_USER=profile;
-  USER_ROLE=profile.role;
-
-  if(profile.role==='director'){
-    const{data:dirMap}=await sb.from('director_campus_map').select('*').eq('email',profile.email).maybeSingle();
-    if(!dirMap){
-      document.getElementById('main-content').innerHTML='<div style="padding:60px;text-align:center;color:var(--faint)">No campus assignment found for this director.</div>';
-      return false;
-    }
-    DIRECTOR={email:dirMap.email,name:dirMap.name,campus:dirMap.campus};
-    return true;
-  }
-
-  if(profile.role==='super_admin'){
-    DIRECTOR={email:profile.email,name:profile.full_name||'Super Admin',campus:'All Campuses'};
-    return true;
-  }
-
-  // Not authorised for this page
-  window.location.href='index.html';
-  return false;
+function toast(m,ok=true){
+  const t=document.getElementById('toast');
+  t.textContent=m;
+  t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';
+  t.style.background=ok?'var(--navy-dark)':'#7A1A1A';
+  t.classList.add('show');
+  if(t._timer)clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{t.classList.remove('show');t.style.background='';},ok?3000:9000);
+  t.onclick=()=>{t.classList.remove('show');t.style.background='';};
 }
 
 async function signOut(){
@@ -794,11 +319,736 @@ async function signOut(){
   window.location.href='login.html';
 }
 
-async function init(){
-  const ok=await requireDirectorAccess();
-  if(!ok)return;
-  await loadQueue();
+function formatDate(s){
+  if(!s)return '—';
+  try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
+  catch(e){return s;}
 }
+
+function formatDateTime(s){
+  if(!s)return '—';
+  try{return new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}
+  catch(e){return s;}
+}
+
+function timeAgo(s){
+  if(!s)return '';
+  try{
+    const d=new Date(s);
+    const diff=Math.floor((Date.now()-d.getTime())/1000);
+    if(diff<60)return 'just now';
+    if(diff<3600)return Math.floor(diff/60)+'m ago';
+    if(diff<86400)return Math.floor(diff/3600)+'h ago';
+    return Math.floor(diff/86400)+'d ago';
+  }catch(e){return '';}
+}
+
+/* ---------- Access resolution ---------- */
+async function resolveAccess(){
+  document.getElementById('blocker').style.display='block';
+  document.getElementById('blocker-msg').textContent='Verifying access';
+
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return null;}
+
+  const um=session.user.user_metadata||{};
+  if(um.must_change_password===true){
+    window.location.href='login.html?action=change-password';
+    return null;
+  }
+
+  const{data:profile}=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
+  if(!profile){
+    document.getElementById('blocker-msg').textContent='Profile not found. Contact admin.';
+    return null;
+  }
+  if(profile.must_change_password===true){
+    window.location.href='login.html?action=change-password';
+    return null;
+  }
+
+  CURRENT_USER=profile;
+
+  const{data:dirRow}=await sb.from('director_campus_map').select('*').eq('email',profile.email).maybeSingle();
+  const isSuper=profile.role==='super_admin';
+
+  if(!dirRow){
+    if(!isSuper){
+      document.getElementById('blocker').querySelector('.blocker-h').textContent='Access denied';
+      document.getElementById('blocker-msg').textContent='You are not listed as a director for AY 2025-26. If this is incorrect, contact Girish.';
+      return null;
+    }
+    /* super_admin without director assignment - default to Bengaluru for preview */
+    MY_CAMPUS='Bengaluru';
+    MY_DIRECTOR_NAME=profile.full_name||profile.email;
+  }else{
+    MY_CAMPUS=dirRow.campus;
+    MY_DIRECTOR_NAME=dirRow.name||profile.full_name||profile.email;
+  }
+
+  document.getElementById('blocker').style.display='none';
+  return true;
+}
+
+/* ---------- List view ---------- */
+async function loadFacultyList(){
+  const list=document.getElementById('fac-list');
+  list.innerHTML='<div class="fac-empty"><div class="fac-empty-icon">◇</div><span class="fac-empty-strong">Loading...</span></div>';
+
+  /* Pull evaluations that have reached director-relevant states */
+  const{data:evs,error}=await sb.from('faculty_evaluations')
+    .select('*,faculty_master:faculty_master_id(id,name,email,campus,designation,subject_area)')
+    .eq('academic_year',ACADEMIC_YEAR)
+    .in('workflow_status',['all_deans_complete','with_director','returned_to_dean','director_verified','complete']);
+  if(error){dlog('FAC LIST',error);toast('Failed to load list: '+error.message,false);return;}
+
+  /* Filter to this campus and exclude self-review (director cannot verify their own eval) */
+  const myEmail=(CURRENT_USER.email||'').toLowerCase();
+  const inCampus=(evs||[]).filter(e=>{
+    if(e.faculty_master?.campus!==MY_CAMPUS)return false;
+    const facEmail=(e.faculty_master?.email||'').toLowerCase();
+    if(facEmail&&facEmail===myEmail)return false;
+    return true;
+  });
+
+  /* Fetch existing director review rows in one go */
+  const evalIds=inCampus.map(e=>e.id);
+  let directorReviewsByEval={};
+  if(evalIds.length>0){
+    const{data:dirs}=await sb.from('evaluation_director_reviews')
+      .select('*')
+      .in('evaluation_id',evalIds);
+    (dirs||[]).forEach(r=>{directorReviewsByEval[r.evaluation_id]=r;});
+  }
+
+  /* Categorise */
+  FACULTY_LIST=inCampus.map(ev=>{
+    const dirReview=directorReviewsByEval[ev.id];
+    let seg;
+    const ws=ev.workflow_status;
+    if(ws==='returned_to_dean')seg='returned';
+    else if(ws==='director_verified'||ws==='complete')seg='verified';
+    else seg='pending'; /* all_deans_complete, with_director */
+    return{...ev,my_director_review:dirReview,seg};
+  });
+
+  const counts={pending:0,returned:0,verified:0};
+  FACULTY_LIST.forEach(f=>{counts[f.seg]++;});
+  document.getElementById('ct-pending').textContent=counts.pending;
+  document.getElementById('ct-returned').textContent=counts.returned;
+  document.getElementById('ct-verified').textContent=counts.verified;
+
+  renderList();
+}
+
+function switchSeg(seg){
+  SEG=seg;
+  document.querySelectorAll('.seg-tab').forEach(b=>b.classList.toggle('active',b.dataset.seg===seg));
+  renderList();
+}
+
+function renderList(){
+  const list=document.getElementById('fac-list');
+  const filtered=FACULTY_LIST.filter(f=>f.seg===SEG);
+  list.innerHTML='';
+  if(filtered.length===0){
+    const empty=document.createElement('div');
+    empty.className='fac-empty';
+    let msg='Nothing here yet';
+    if(SEG==='pending')msg='No evaluations awaiting your verification.';
+    else if(SEG==='returned')msg='No evaluations have been returned to dean.';
+    else if(SEG==='verified')msg='No evaluations verified yet for this cycle.';
+    empty.innerHTML=`<div class="fac-empty-icon">◇</div><span class="fac-empty-strong">${escapeHtml(msg)}</span><div>Evaluations appear here once all three deans have completed their reviews.</div>`;
+    list.appendChild(empty);
+    return;
+  }
+  filtered.forEach(f=>{
+    const fm=f.faculty_master||{};
+    const row=document.createElement('div');
+    row.className='fac-row';
+    row.onclick=()=>openDetail(f);
+
+    const pubCount=f.publications_count||0;
+    const epCount=f.ep_count||0;
+    const instCount=Array.isArray(f.institution_entries)?f.institution_entries.length:0;
+    const srCount=Array.isArray(f.sponsored_research_entries)?f.sponsored_research_entries.length:0;
+
+    let pillCls='pill-pending',pillTxt='Awaiting verification';
+    if(f.workflow_status==='returned_to_dean'){pillCls='pill-returned';pillTxt='Returned to dean';}
+    else if(f.workflow_status==='director_verified'){pillCls='pill-verified';pillTxt='Verified · awaiting Dean Academics';}
+    else if(f.workflow_status==='complete'){pillCls='pill-complete';pillTxt='Complete';}
+    else if(f.workflow_status==='with_director'){pillCls='pill-pending';pillTxt='In your review';}
+
+    const lastActionAt=f.my_director_review?.acted_at||f.updated_at;
+    const lastActionLabel=f.my_director_review?.acted_at?'Last acted':'Submitted';
+
+    row.innerHTML=`
+      <div class="fac-row-l">
+        <div class="fac-row-name">${escapeHtml(fm.name||'(unknown)')}</div>
+        <div class="fac-row-meta">
+          <span class="fac-row-meta-item">${escapeHtml(fm.designation||'')}</span>
+          <span class="fac-row-meta-sep">·</span>
+          <span class="fac-row-meta-item">${escapeHtml(fm.campus||'')}</span>
+          ${fm.subject_area?`<span class="fac-row-meta-sep">·</span><span class="fac-row-meta-item">${escapeHtml(fm.subject_area)}</span>`:''}
+        </div>
+        <div class="fac-row-counts">
+          <span class="fac-row-count"><span class="fac-row-count-n">${pubCount}</span> publications</span>
+          <span class="fac-row-count"><span class="fac-row-count-n">${epCount}</span> EP</span>
+          <span class="fac-row-count"><span class="fac-row-count-n">${srCount}</span> sponsored</span>
+          <span class="fac-row-count"><span class="fac-row-count-n">${instCount}</span> institution</span>
+        </div>
+      </div>
+      <div class="fac-row-r">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+          <span class="pill ${pillCls}"><span class="pill-dot"></span>${escapeHtml(pillTxt)}</span>
+          <div class="fac-row-time">
+            <span class="fac-row-time-l">${escapeHtml(lastActionLabel)}</span>
+            ${formatDate(lastActionAt)}
+          </div>
+        </div>
+        <div class="fac-row-chev">›</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+/* ---------- Detail view ---------- */
+async function openDetail(f){
+  CURRENT_EVAL=f;
+  CURRENT_FAC=f.faculty_master||{};
+
+  const[pubs,eps,deanReviews,dirReview]=await Promise.all([
+    sb.from('faculty_publications').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('year',{ascending:false}),
+    sb.from('ep_programmes').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('date_conducted',{ascending:false}),
+    sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',f.id),
+    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',f.id).maybeSingle()
+  ]);
+  const publications=pubs.data||[];
+  const programmes=eps.data||[];
+  DEAN_REVIEWS=(deanReviews.data||[]).filter(r=>r.validated===true);
+  MY_DIRECTOR_REVIEW=dirReview.data||null;
+
+  document.getElementById('d-name').textContent=CURRENT_FAC.name||'(unknown)';
+  document.getElementById('d-meta').textContent=`${CURRENT_FAC.designation||''} · ${CURRENT_FAC.campus||''} · Submitted ${formatDate(f.gate1_submitted_at||f.updated_at)}`;
+
+  renderDetailContent(f,publications,programmes);
+  renderPanel(f);
+
+  /* Optionally set workflow to with_director on first open if it's still all_deans_complete */
+  if(f.workflow_status==='all_deans_complete'){
+    try{
+      await sb.from('faculty_evaluations').update({workflow_status:'with_director',updated_at:new Date().toISOString()}).eq('id',f.id);
+      f.workflow_status='with_director';
+      CURRENT_EVAL.workflow_status='with_director';
+    }catch(e){dlog('mark with_director',e);}
+  }
+
+  document.getElementById('detail').classList.add('open');
+  window.scrollTo(0,0);
+}
+
+function closeDetail(){
+  document.getElementById('detail').classList.remove('open');
+  CURRENT_EVAL=null;CURRENT_FAC=null;DEAN_REVIEWS=[];MY_DIRECTOR_REVIEW=null;
+  loadFacultyList();
+}
+
+function renderDetailContent(f,publications,programmes){
+  const c=document.getElementById('d-content');
+  c.innerHTML='';
+
+  /* Dean Reviews Summary - prominent at top */
+  c.appendChild(buildDeansSummary(f));
+
+  /* Faculty submission sections */
+  c.appendChild(buildProfileSection(f));
+  c.appendChild(buildTeachingSection(f));
+  c.appendChild(buildResearchSection(f,publications));
+  c.appendChild(buildSponsoredSection(f));
+  c.appendChild(buildEpSection(f,programmes));
+  c.appendChild(buildInstitutionSection(f));
+}
+
+function buildDeansSummary(f){
+  const block=document.createElement('div');
+  block.className='deans-block';
+
+  const h=document.createElement('div');h.className='deans-h';
+  const wrap=document.createElement('div');
+  const ht=document.createElement('div');ht.className='deans-h-t';ht.textContent='Dean Reviews Summary';
+  const hs=document.createElement('div');hs.className='deans-h-s';
+  hs.textContent='Three dean perspectives on this evaluation. Your role is to validate institutional consistency across them, not to relitigate each call.';
+  wrap.appendChild(ht);wrap.appendChild(hs);
+  h.appendChild(wrap);
+  block.appendChild(h);
+
+  const grid=document.createElement('div');grid.className='deans-grid';
+  ['academics','research','ep'].forEach(role=>{
+    const r=DEAN_REVIEWS.find(x=>x.dean_role===role);
+    const card=document.createElement('div');
+    card.className='dean-card '+(r?'complete':'pending-c');
+
+    const head=document.createElement('div');head.className='dean-card-head';
+    const left=document.createElement('div');
+    const roleLbl=document.createElement('div');roleLbl.className='dean-card-role';roleLbl.textContent=DEAN_LABELS[role]||role;
+    const name=document.createElement('div');name.className='dean-card-name';name.textContent=r?(r.dean_name||r.dean_email||'—'):'Not yet reviewed';
+    left.appendChild(roleLbl);left.appendChild(name);
+    const status=document.createElement('div');status.className='dean-card-status '+(r?'ok':'wait');
+    status.textContent=r?'Reviewed':'Pending';
+    head.appendChild(left);head.appendChild(status);
+    card.appendChild(head);
+
+    const notes=document.createElement('div');notes.className='dean-card-notes'+(r&&r.notes?'':' empty');
+    notes.textContent=r&&r.notes?r.notes:'(no notes recorded)';
+    card.appendChild(notes);
+
+    const foot=document.createElement('div');foot.className='dean-card-foot';
+    foot.textContent=r&&r.validated_at?formatDateTime(r.validated_at):'';
+    card.appendChild(foot);
+
+    grid.appendChild(card);
+  });
+  block.appendChild(grid);
+
+  /* Revenue verification strip */
+  const epReview=DEAN_REVIEWS.find(x=>x.dean_role==='ep');
+  const strip=document.createElement('div');
+  if(!epReview){
+    strip.className='rev-strip na';
+    strip.innerHTML='<span class="rev-strip-icon">◇</span><span class="rev-strip-text">Revenue verification: <strong>not yet checked</strong> by Dean EP.</span>';
+  }else if(epReview.revenue_verified===true){
+    strip.className='rev-strip ok';
+    strip.innerHTML='<span class="rev-strip-icon">✓</span><span class="rev-strip-text">Revenue verification: <strong>verified</strong> by Dean EP with Finance.</span>';
+  }else if(epReview.revenue_verified===false){
+    strip.className='rev-strip flag';
+    strip.innerHTML='<span class="rev-strip-icon">!</span><span class="rev-strip-text">Revenue verification: <strong>discrepancy flagged</strong> by Dean EP. Consider returning to dean for reconciliation.</span>';
+  }else{
+    strip.className='rev-strip na';
+    strip.innerHTML='<span class="rev-strip-icon">◇</span><span class="rev-strip-text">Revenue verification: <strong>not recorded</strong>.</span>';
+  }
+  block.appendChild(strip);
+
+  return block;
+}
+
+function makeSection(num,title,subtitle){
+  const sec=document.createElement('div');
+  sec.className='sec-block';
+  const h=document.createElement('div');h.className='sec-h';
+  const n=document.createElement('div');n.className='sec-n';n.textContent=num;
+  const wrap=document.createElement('div');
+  const ht=document.createElement('div');ht.className='sec-h-t';ht.textContent=title;
+  const hs=document.createElement('div');hs.className='sec-h-s';hs.textContent=subtitle;
+  wrap.appendChild(ht);wrap.appendChild(hs);
+  h.appendChild(n);h.appendChild(wrap);
+  sec.appendChild(h);
+  return sec;
+}
+
+function dataRow(label,value){
+  const r=document.createElement('div');r.className='data-row';
+  const l=document.createElement('div');l.className='data-label';l.textContent=label;
+  const v=document.createElement('div');v.className='data-value';
+  if(value===null||value===undefined||value===''){v.classList.add('empty');v.textContent='Not provided';}
+  else v.textContent=value;
+  r.appendChild(l);r.appendChild(v);
+  return r;
+}
+
+function narrative(label,text){
+  if(!text)return null;
+  const w=document.createElement('div');w.className='narrative-block';
+  const h=document.createElement('div');h.className='narrative-h';h.textContent=label;
+  const t=document.createElement('div');t.className='narrative-t';t.textContent=text;
+  w.appendChild(h);w.appendChild(t);
+  return w;
+}
+
+function buildProfileSection(f){
+  const sec=makeSection('01','Profile','From faculty master record and self-reported scholar links');
+  const grid=document.createElement('div');grid.className='data-grid';
+  grid.appendChild(dataRow('Name',f.snap_name||CURRENT_FAC.name));
+  grid.appendChild(dataRow('Designation',f.snap_designation||CURRENT_FAC.designation));
+  grid.appendChild(dataRow('Campus',f.snap_campus||CURRENT_FAC.campus));
+  grid.appendChild(dataRow('Subject Area',f.snap_subject_area||CURRENT_FAC.subject_area));
+  grid.appendChild(dataRow('Google Scholar URL',f.scholar_url));
+  grid.appendChild(dataRow('ORCID / Scopus ID',f.orcid_id));
+  sec.appendChild(grid);
+  return sec;
+}
+
+function buildTeachingSection(f){
+  const sec=makeSection('02','Teaching','Course load and teaching context for AY 2025-26');
+  const grid=document.createElement('div');grid.className='data-grid';
+  grid.appendChild(dataRow('Terms Taught',f.terms_taught));
+  grid.appendChild(dataRow('Courses Taught (Digii)',f.snap_courses_taught));
+  sec.appendChild(grid);
+  const n=narrative('Teaching Notes',f.teaching_notes);
+  if(n)sec.appendChild(n);
+  return sec;
+}
+
+function buildResearchSection(f,publications){
+  const sec=makeSection('03','Research & Publications','Publications, indices, and library data sources used');
+  const grid=document.createElement('div');grid.className='data-grid';
+  grid.appendChild(dataRow('H-Index',f.h_index));
+  grid.appendChild(dataRow('Google Scholar Citations',f.gscholar_citations));
+  grid.appendChild(dataRow('UGC-CARE Listed (legacy)',f.ugc_care_count));
+  const ds=Array.isArray(f.data_sources_used)?f.data_sources_used.join(', '):null;
+  grid.appendChild(dataRow('Data Sources Used',ds));
+  sec.appendChild(grid);
+  const wip=narrative('Work in Progress',f.wip_details);
+  if(wip)sec.appendChild(wip);
+  const ext=narrative('External Resources Needed',f.external_resources_needed);
+  if(ext)sec.appendChild(ext);
+
+  if(publications.length>0){
+    const h=document.createElement('div');h.className='narrative-h';h.style.marginTop='18px';h.textContent='Publications ('+publications.length+')';
+    sec.appendChild(h);
+    const list=document.createElement('div');list.className='entry-list';
+    publications.forEach(p=>{
+      const card=document.createElement('div');card.className='entry-card';
+      const hdr=document.createElement('div');hdr.className='entry-card-h';
+      const t=document.createElement('div');t.className='entry-card-t';
+      t.textContent=(p.publication_type==='conference'?'[Presentation] ':'')+(p.title||'(no title)');
+      hdr.appendChild(t);
+      const tag=document.createElement('div');tag.className='entry-card-tag';
+      tag.textContent=(p.publication_type||'').replace(/_/g,' ').toUpperCase();
+      hdr.appendChild(tag);
+      if(p.abdc_category==='A*'||p.sjr_quartile==='Q1'){
+        const tier=document.createElement('div');tier.className='entry-card-tag tier';
+        tier.textContent=p.abdc_category==='A*'?'ABDC A*':'Q1';
+        hdr.appendChild(tier);
+      }
+      card.appendChild(hdr);
+      const metaParts=[];
+      if(p.year)metaParts.push(p.year);
+      if(p.journal_name)metaParts.push(p.journal_name);
+      else if(p.book_publisher)metaParts.push(p.book_publisher);
+      else if(p.case_publisher)metaParts.push(p.case_publisher);
+      else if(p.conference_name)metaParts.push(p.conference_name);
+      else if(p.chapter_publisher)metaParts.push(p.chapter_publisher);
+      if(p.abdc_category)metaParts.push('ABDC '+p.abdc_category);
+      if(p.sjr_quartile)metaParts.push('SJR '+p.sjr_quartile);
+      if(p.author_position)metaParts.push((p.author_position||'').replace(/_/g,' '));
+      if(p.coauthors)metaParts.push('with '+p.coauthors);
+      if(metaParts.length>0){
+        const meta=document.createElement('div');meta.className='entry-card-meta';
+        meta.textContent=metaParts.join(' · ');
+        card.appendChild(meta);
+      }
+      list.appendChild(card);
+    });
+    sec.appendChild(list);
+  }
+  return sec;
+}
+
+function buildSponsoredSection(f){
+  const sec=makeSection('04','Sponsored Research & Grants','Externally funded projects, consultancy research, and grants');
+  const entries=Array.isArray(f.sponsored_research_entries)?f.sponsored_research_entries:[];
+  if(entries.length===0){
+    const empty=document.createElement('div');empty.className='data-value empty';
+    empty.textContent='No sponsored research recorded for this AY.';
+    sec.appendChild(empty);
+    return sec;
+  }
+  const list=document.createElement('div');list.className='entry-list';
+  entries.forEach(e=>{
+    const card=document.createElement('div');card.className='entry-card';
+    const hdr=document.createElement('div');hdr.className='entry-card-h';
+    const t=document.createElement('div');t.className='entry-card-t';
+    t.textContent=e.title||'(untitled)';
+    hdr.appendChild(t);
+    if(e.status){
+      const tag=document.createElement('div');tag.className='entry-card-tag';
+      tag.textContent=e.status.toUpperCase();
+      hdr.appendChild(tag);
+    }
+    card.appendChild(hdr);
+    const metaParts=[];
+    if(e.agency)metaParts.push(e.agency);
+    if(e.amount)metaParts.push('Rs '+Number(e.amount).toLocaleString('en-IN'));
+    if(e.role)metaParts.push(e.role);
+    if(e.duration)metaParts.push(e.duration);
+    if(metaParts.length>0){
+      const meta=document.createElement('div');meta.className='entry-card-meta';
+      meta.textContent=metaParts.join(' · ');
+      card.appendChild(meta);
+    }
+    if(e.description){
+      const desc=document.createElement('div');desc.className='entry-card-desc';
+      desc.textContent=e.description;
+      card.appendChild(desc);
+    }
+    list.appendChild(card);
+  });
+  sec.appendChild(list);
+  return sec;
+}
+
+function buildEpSection(f,programmes){
+  const sec=makeSection('05','Industry & EP','Programmes delivered and industry referrals');
+  const grid=document.createElement('div');grid.className='data-grid';
+  grid.appendChild(dataRow('Referrals Sent',f.referrals_sent));
+  grid.appendChild(dataRow('Referrals Converted',f.referrals_converted));
+  sec.appendChild(grid);
+  const refDetail=narrative('Referral Detail',f.referrals_detail);
+  if(refDetail)sec.appendChild(refDetail);
+  const indSummary=narrative('Industry Summary',f.industry_summary);
+  if(indSummary)sec.appendChild(indSummary);
+
+  if(programmes.length>0){
+    const h=document.createElement('div');h.className='narrative-h';h.style.marginTop='18px';h.textContent='Programmes Delivered ('+programmes.length+')';
+    sec.appendChild(h);
+    const list=document.createElement('div');list.className='entry-list';
+    programmes.forEach(p=>{
+      const card=document.createElement('div');card.className='entry-card';
+      const hdr=document.createElement('div');hdr.className='entry-card-h';
+      const t=document.createElement('div');t.className='entry-card-t';
+      t.textContent=p.title||'(untitled)';
+      hdr.appendChild(t);
+      if(p.programme_type){
+        const tag=document.createElement('div');tag.className='entry-card-tag';
+        tag.textContent=p.programme_type;
+        hdr.appendChild(tag);
+      }
+      card.appendChild(hdr);
+      const metaParts=[];
+      if(p.client)metaParts.push(p.client);
+      if(p.date_conducted)metaParts.push(formatDate(p.date_conducted));
+      if(p.sessions)metaParts.push(p.sessions+' sessions');
+      if(p.participants)metaParts.push(p.participants+' participants');
+      if(p.duration)metaParts.push(p.duration);
+      if(p.revenue)metaParts.push('Rs '+Number(p.revenue).toLocaleString('en-IN'));
+      else metaParts.push('Revenue not entered');
+      if(p.role)metaParts.push((p.role||'').replace(/_/g,' '));
+      if(metaParts.length>0){
+        const meta=document.createElement('div');meta.className='entry-card-meta';
+        meta.textContent=metaParts.join(' · ');
+        card.appendChild(meta);
+      }
+      if(p.notes){
+        const desc=document.createElement('div');desc.className='entry-card-desc';
+        desc.textContent=p.notes;
+        card.appendChild(desc);
+      }
+      list.appendChild(card);
+    });
+    sec.appendChild(list);
+  }
+  return sec;
+}
+
+function buildInstitutionSection(f){
+  const sec=makeSection('06','Institution Building','Categorised contributions across the year');
+  const entries=Array.isArray(f.institution_entries)?f.institution_entries:[];
+  if(entries.length===0){
+    const empty=document.createElement('div');empty.className='data-value empty';
+    empty.textContent='No institution building entries recorded for this AY.';
+    sec.appendChild(empty);
+    return sec;
+  }
+  const list=document.createElement('div');list.className='entry-list';
+  entries.forEach(e=>{
+    const card=document.createElement('div');card.className='entry-card';
+    const hdr=document.createElement('div');hdr.className='entry-card-h';
+    const t=document.createElement('div');t.className='entry-card-t';
+    t.textContent=e.category||'(uncategorised)';
+    hdr.appendChild(t);
+    card.appendChild(hdr);
+    if(e.description){
+      const desc=document.createElement('div');desc.className='entry-card-desc';
+      desc.style.fontStyle='normal';desc.style.color='var(--sub)';
+      desc.textContent=e.description;
+      card.appendChild(desc);
+    }
+    if(e.date){
+      const meta=document.createElement('div');meta.className='entry-card-meta';
+      meta.style.marginTop='4px';
+      meta.textContent=e.date;
+      card.appendChild(meta);
+    }
+    list.appendChild(card);
+  });
+  sec.appendChild(list);
+  return sec;
+}
+
+/* ---------- Panel ---------- */
+function renderPanel(f){
+  const p=document.getElementById('d-panel');
+  p.innerHTML='';
+
+  const h=document.createElement('div');h.className='panel-h';h.textContent="Director's Validation";
+  p.appendChild(h);
+
+  const role=document.createElement('div');role.className='panel-role';
+  role.innerHTML=`<span class="panel-role-dot"></span>Director · ${escapeHtml(MY_CAMPUS)}`;
+  p.appendChild(role);
+
+  const s=document.createElement('div');s.className='panel-s';
+  s.textContent='Confirm the package is institutionally sound. Verify with optional comments to pass to Dean Academics, or return with comments if the dean reviews need reconciliation.';
+  p.appendChild(s);
+
+  /* Banner based on current state */
+  const ws=f.workflow_status;
+  const lastAction=MY_DIRECTOR_REVIEW?.action;
+  if(ws==='director_verified'){
+    const b=document.createElement('div');b.className='panel-banner verified';
+    b.innerHTML=`<strong>Verified.</strong>Sent to Dean Academics for management synthesis. ${MY_DIRECTOR_REVIEW?.acted_at?'Acted '+formatDateTime(MY_DIRECTOR_REVIEW.acted_at)+'.':''}`;
+    p.appendChild(b);
+  }else if(ws==='complete'){
+    const b=document.createElement('div');b.className='panel-banner complete';
+    b.innerHTML=`<strong>Complete.</strong>Dean Academics has released this evaluation to the faculty member.`;
+    p.appendChild(b);
+  }else if(ws==='returned_to_dean'){
+    const b=document.createElement('div');b.className='panel-banner returned';
+    b.innerHTML=`<strong>Returned to Dean Academics.</strong>Awaiting re-review. ${MY_DIRECTOR_REVIEW?.acted_at?'Returned '+formatDateTime(MY_DIRECTOR_REVIEW.acted_at)+'.':''}`;
+    p.appendChild(b);
+  }
+
+  /* Comments textarea */
+  const cf=document.createElement('div');cf.className='panel-field';
+  const cl=document.createElement('div');cl.className='panel-field-l';
+  cl.innerHTML=`<span>Your comments</span><span class="panel-field-l-r">required on return · optional on verify</span>`;
+  const ta=document.createElement('textarea');ta.className='panel-textarea';ta.id='dir-comments';
+  ta.placeholder='Note any observations about institutional consistency, the dean signals, or specific concerns to address.';
+  ta.value=MY_DIRECTOR_REVIEW?.action_comments||'';
+  cf.appendChild(cl);cf.appendChild(ta);
+  p.appendChild(cf);
+
+  /* Action buttons */
+  const actions=document.createElement('div');actions.className='panel-actions';
+  const verifyBtn=document.createElement('button');
+  verifyBtn.className='pa-btn verify';
+  verifyBtn.id='btn-verify';
+  verifyBtn.innerHTML=`Verify<span class="pa-btn-sub">Pass to Dean Academics</span>`;
+  verifyBtn.onclick=()=>submitAction('verify');
+  const returnBtn=document.createElement('button');
+  returnBtn.className='pa-btn return';
+  returnBtn.id='btn-return';
+  returnBtn.innerHTML=`Return<span class="pa-btn-sub">Send back to dean for re-review</span>`;
+  returnBtn.onclick=()=>submitAction('return');
+  actions.appendChild(verifyBtn);
+  actions.appendChild(returnBtn);
+  p.appendChild(actions);
+
+  /* Action history */
+  const hist=MY_DIRECTOR_REVIEW?.action_history||[];
+  if(Array.isArray(hist)&&hist.length>0){
+    const hb=document.createElement('div');hb.className='panel-hist';
+    const hh=document.createElement('div');hh.className='panel-hist-h';hh.textContent='Action history';
+    hb.appendChild(hh);
+    /* Most recent first */
+    [...hist].reverse().forEach(e=>{
+      const ent=document.createElement('div');ent.className='hist-entry';
+      const top=document.createElement('div');
+      const a=document.createElement('span');a.className='hist-action '+(e.action||'');
+      a.textContent=(e.action||'').toUpperCase();
+      top.appendChild(a);
+      const who=document.createElement('span');who.textContent=e.director_name||e.director_email||'';
+      top.appendChild(who);
+      ent.appendChild(top);
+      if(e.acted_at){
+        const m=document.createElement('div');m.className='hist-meta';m.textContent=formatDateTime(e.acted_at);
+        ent.appendChild(m);
+      }
+      if(e.comments){
+        const n=document.createElement('div');n.className='hist-notes';n.textContent=e.comments;
+        ent.appendChild(n);
+      }
+      hb.appendChild(ent);
+    });
+    p.appendChild(hb);
+  }
+}
+
+async function submitAction(action){
+  if(!CURRENT_EVAL){return;}
+  if(!['verify','return'].includes(action)){return;}
+
+  const comments=document.getElementById('dir-comments').value.trim();
+  if(action==='return'&&!comments){
+    toast('Comments are required when returning to Dean Academics. Tell her what needs to be reconciled.',false);
+    return;
+  }
+
+  /* Check all 3 dean reviews are present (defensive) */
+  if(DEAN_REVIEWS.filter(r=>r.validated).length<3){
+    toast('All three dean reviews must be complete before director action.',false);
+    return;
+  }
+
+  const verifyBtn=document.getElementById('btn-verify');
+  const returnBtn=document.getElementById('btn-return');
+  verifyBtn.disabled=true;returnBtn.disabled=true;
+  const activeBtn=action==='verify'?verifyBtn:returnBtn;
+  const origLabel=activeBtn.innerHTML;
+  activeBtn.innerHTML='Submitting...';
+
+  try{
+    const now=new Date().toISOString();
+    const histEntry={
+      action,
+      comments:comments||null,
+      acted_at:now,
+      director_email:CURRENT_USER.email,
+      director_name:MY_DIRECTOR_NAME
+    };
+    const prevHist=Array.isArray(MY_DIRECTOR_REVIEW?.action_history)?MY_DIRECTOR_REVIEW.action_history:[];
+    const newHist=[...prevHist,histEntry];
+
+    const payload={
+      evaluation_id:CURRENT_EVAL.id,
+      director_email:CURRENT_USER.email,
+      director_name:MY_DIRECTOR_NAME,
+      campus:MY_CAMPUS,
+      action,
+      action_comments:comments||null,
+      acted_at:now,
+      action_history:newHist
+    };
+
+    const{error}=await sb.from('evaluation_director_reviews')
+      .upsert(payload,{onConflict:'evaluation_id'});
+    if(error)throw error;
+
+    /* Advance workflow_status */
+    const newStatus=action==='verify'?'director_verified':'returned_to_dean';
+    const{error:wsErr}=await sb.from('faculty_evaluations')
+      .update({workflow_status:newStatus,updated_at:now})
+      .eq('id',CURRENT_EVAL.id);
+    if(wsErr)throw wsErr;
+
+    CURRENT_EVAL.workflow_status=newStatus;
+    MY_DIRECTOR_REVIEW={...payload};
+
+    toast(action==='verify'?'Verified. Sent to Dean Academics.':'Returned to Dean Academics.');
+
+    /* Re-render panel and update list state */
+    renderPanel(CURRENT_EVAL);
+  }catch(e){
+    dlog('SUBMIT DIR ACTION',e);
+    const code=e.code?` [${e.code}]`:'';
+    toast('Submit failed'+code+': '+(e.message||'unknown')+'. Tell Girish.',false);
+    activeBtn.innerHTML=origLabel;
+    verifyBtn.disabled=false;returnBtn.disabled=false;
+  }
+}
+
+/* ---------- Init ---------- */
+async function init(){
+  const access=await resolveAccess();
+  if(!access)return;
+
+  document.getElementById('hero-t').innerHTML='Welcome, <em>'+escapeHtml(MY_DIRECTOR_NAME)+'</em>';
+  document.getElementById('hero-l').textContent=`Director · ${MY_CAMPUS} · AY 2025-26`;
+
+  await loadFacultyList();
+}
+
 init();
 </script>
 </body>
