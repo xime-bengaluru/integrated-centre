@@ -525,7 +525,7 @@ select.pub-input{cursor:pointer}
   <div class="sbh">
     <div class="sbn" id="sb-name">Loading...</div>
     <div class="sbr" id="sb-role"></div>
-    <div class="sby">AY 2026-27</div>
+    <div class="sby">AY 2025-26</div>
   </div>
   <div class="pw">
     <div class="pw-lbl">Completion</div>
@@ -533,9 +533,9 @@ select.pub-input{cursor:pointer}
     <div class="pp" id="pp">0%</div>
   </div>
   <div class="gi gi-open" id="g1i">
-    <div class="gil gi-open">Mid-Year Submission</div>
+    <div class="gil gi-open">Performance Evaluation</div>
     <div class="gis gi-open" id="g1s">Open</div>
-    <div class="gid">Due 16 December 2026</div>
+    <div class="gid">Submit by 5 June 2026</div>
   </div>
 
   <!-- Performance tab sidebar -->
@@ -560,16 +560,12 @@ select.pub-input{cursor:pointer}
 
   <div class="ledger" id="points-ledger">
     <div class="ledger-l">
-      <div class="ledger-label">Points Ledger · AY 2026-27</div>
+      <div class="ledger-label">Points Ledger · AY 2025-26</div>
     </div>
     <div class="ledger-items">
       <div class="ledger-item">
-        <div class="ledger-val" id="ledger-g1">165</div>
-        <div class="ledger-sub">Mid-Year achievable</div>
-      </div>
-      <div class="ledger-item">
-        <div class="ledger-val" id="ledger-g2">135</div>
-        <div class="ledger-sub">Annual adds</div>
+        <div class="ledger-val" id="ledger-g1">300</div>
+        <div class="ledger-sub">Full year achievable</div>
       </div>
       <div class="ledger-item">
         <div class="ledger-total" id="ledger-total">300</div>
@@ -579,7 +575,7 @@ select.pub-input{cursor:pointer}
 
   <div id="g1-remarks-box" style="display:none">
     <div class="g1rmbox">
-      <div class="g1rml"><span class="g1rml-dot"></span>Director's Mid-Year Feedback</div>
+      <div class="g1rml"><span class="g1rml-dot"></span>Director's Feedback</div>
       <div class="g1rmt" id="g1-remarks-text"></div>
       <div class="g1rmmeta" id="g1-remarks-meta"></div>
     </div>
@@ -587,9 +583,9 @@ select.pub-input{cursor:pointer}
 
   <div class="gb gb1">
     <div>
-      <div class="gbl">Mid-Year · Performance Record</div>
-      <div class="gbt">What you did · April to December</div>
-      <div class="gbs">Locks on submission. Scored by Deans, endorsed by Director.</div>
+      <div class="gbl">Performance Evaluation · AY 2025-26</div>
+      <div class="gbt">What you did across the academic year</div>
+      <div class="gbs">Submit by 5 June 2026. Scored by Deans, endorsed by Director.</div>
     </div>
     <div class="gbst gst-open" id="g1bs">Open</div>
   </div>
@@ -1171,7 +1167,7 @@ select.pub-input{cursor:pointer}
       <div class="f"><div class="fl">Administrative Role <span class="ab">HR Records</span></div><input class="fi lk" id="f-admin" readonly></div>
       <div class="f">
         <div class="fl">Your Institution Building Contributions</div>
-        <div class="fh" style="margin-bottom:12px">Add individual entries across categories. Each entry is dated and can be edited before Mid-Year submission.</div>
+        <div class="fh" style="margin-bottom:12px">Add individual entries across categories. Each entry is dated and can be edited before submission.</div>
         <div class="inst-entry-list" id="inst-entries"><div class="inst-empty">No entries yet. Add your first contribution below.</div></div>
         <div class="inst-form" id="inst-form">
           <div class="inst-form-row">
@@ -1207,10 +1203,10 @@ select.pub-input{cursor:pointer}
 
   <div class="subbox" id="g1box">
     <div>
-      <div class="sbt">Submit Mid-Year Record</div>
-      <div class="sbn2">Sections 01 to 05 will be sent to your Deans for validation. During the test phase you can continue to edit and re-submit.</div>
+      <div class="sbt">Submit AY 2025-26 Performance Evaluation</div>
+      <div class="sbn2">Your complete record will be sent to your Deans for evaluation, then to the Director for endorsement. Submit by 5 June 2026. You can continue to edit and re-submit before the deadline.</div>
     </div>
-    <button class="subbtn" onclick="submitMidYear()" id="g1btn">Submit Mid-Year →</button>
+    <button class="subbtn" onclick="submitMidYear()" id="g1btn">Submit Performance Evaluation →</button>
   </div>
 
 </div>
@@ -1238,7 +1234,7 @@ const TEST_PHASE_LOCKS_OPEN=true;
 const DEBUG=false;
 function dlog(...args){if(DEBUG)console.error(...args);}
 
-const ACADEMIC_YEAR='2026-27';
+const ACADEMIC_YEAR='2025-26';
 
 let CURRENT_USER=null;
 let USER_ROLE='';
@@ -1927,7 +1923,7 @@ function g1EditBlocked(){return TEST_PHASE_LOCKS_OPEN?false:g1Locked();}
 function applyLocks(){
   const s=erec?.workflow_status||'draft';
   const pm={draft:'sp-draft',mid_year_locked:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked'};
-  const pl={draft:'Draft',mid_year_locked:'Mid-Year Submitted',mid_year_validated:'Mid-Year Validated',annual_submitted:'Annual Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
+  const pl={draft:'Draft',mid_year_locked:'Submitted',mid_year_validated:'Dean Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
   const pill=document.getElementById('spill');
   pill.className='spill '+(pm[s]||'sp-draft');
   pill.textContent=pl[s]||s;
@@ -1937,7 +1933,7 @@ function applyLocks(){
     document.getElementById('g1bs').textContent='Submitted';
     document.getElementById('g1bs').className='gbst gst-locked';
     const g1btn=document.getElementById('g1btn');
-    if(g1btn)g1btn.textContent='Re-submit Mid-Year →';
+    if(g1btn)g1btn.textContent='Re-submit Performance Evaluation →';
   }
 
   if(s==='endorsed')loadRemarks();
@@ -2052,8 +2048,8 @@ async function submitMidYear(){
   const reviewingDeans=DEANS.filter(d=>d.email!==fac.email);
   const isResubmit=g1Locked();
   const msg=isResubmit
-    ?'Re-submit Mid-Year with the latest edits? Your previous submission will be updated.'
-    :'Submit Mid-Year Performance Record? You can continue to edit and re-submit during the test phase.';
+    ?'Re-submit Performance Evaluation with your latest edits? Your previous submission will be updated.'
+    :'Submit your AY 2025-26 Performance Evaluation? You can continue to edit and re-submit before 5 June 2026.';
   if(!confirm(msg))return;
   try{
     await upsert({...midYearData(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
@@ -2067,12 +2063,12 @@ async function submitMidYear(){
       }
     }
     applyLocks();
-    toast(isResubmit?'Mid-Year re-submitted with latest edits.':'Mid-Year submitted. You can still edit and re-submit.');
+    toast(isResubmit?'Performance Evaluation re-submitted with latest edits.':'Performance Evaluation submitted. You can still edit and re-submit before 5 June 2026.');
   }catch(e){
-    dlog('MID-YEAR SUBMIT',e);
+    dlog('SUBMIT',e);
     const code=e.code?` [${e.code}]`:'';
     const detail=e.message||e.hint||'unknown error';
-    toast('Mid-Year submission failed'+code+': '+detail+'. Please tell Girish.',false);
+    toast('Submission failed'+code+': '+detail+'. Please tell Girish.',false);
   }
 }
 
@@ -2109,7 +2105,7 @@ function renderInstEntries(){
 }
 
 function addInstitutionEntry(){
-  if(g1EditBlocked()){toast('Mid-Year locked. Cannot add entries.',false);return;}
+  if(g1EditBlocked()){toast('Performance Evaluation locked. Cannot add entries.',false);return;}
   const cat=document.getElementById('inst-cat').value;
   const desc=document.getElementById('inst-desc').value.trim();
   const date=document.getElementById('inst-date').value;
