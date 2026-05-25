@@ -81,6 +81,22 @@
   .pill-reviewed .pill-dot{background:var(--teal)}
   .pill-finalized{background:rgba(13,31,53,.08);color:var(--navy);border:.5px solid rgba(13,31,53,.18)}
   .pill-finalized .pill-dot{background:var(--navy)}
+  .pill-returned{background:rgba(200,16,46,.08);color:var(--red);border:.5px solid rgba(200,16,46,.25)}
+  .pill-returned .pill-dot{background:var(--red)}
+  .pill-verified{background:rgba(201,168,76,.12);color:var(--gold-d);border:.5px solid rgba(201,168,76,.4)}
+  .pill-verified .pill-dot{background:var(--gold)}
+
+  /* Director comment surfacing block (re-review mode + finalize mode) */
+  .dir-block{margin-bottom:28px;border-radius:12px;padding:20px 22px;border:1px solid}
+  .dir-block.return{background:rgba(200,16,46,.04);border-color:rgba(200,16,46,.3)}
+  .dir-block.verify{background:rgba(13,146,104,.04);border-color:rgba(13,146,104,.3)}
+  .dir-block-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+  .dir-block.return .dir-block-eyebrow{color:var(--red)}
+  .dir-block.verify .dir-block-eyebrow{color:var(--teal)}
+  .dir-block-h{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.2}
+  .dir-block-comments{font-size:13px;color:var(--text);line-height:1.6;background:white;padding:12px 14px;border-radius:7px;border:.5px solid var(--line);white-space:pre-wrap}
+  .dir-block-comments.empty{color:var(--faint);font-style:italic}
+  .dir-block-foot{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:8px}
 
   /* Detail drawer (full page when active) */
   .detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);z-index:200;overflow-y:auto}
@@ -206,6 +222,9 @@
     <button class="seg-tab" data-seg="reviewed" onclick="switchSeg('reviewed')">
       You have reviewed <span class="seg-tab-count" id="ct-reviewed">0</span>
     </button>
+    <button class="seg-tab" data-seg="to_finalize" id="tab-to-finalize" onclick="switchSeg('to_finalize')" style="display:none">
+      To finalize <span class="seg-tab-count" id="ct-to-finalize">0</span>
+    </button>
     <button class="seg-tab" data-seg="finalized" onclick="switchSeg('finalized')">
       Finalized <span class="seg-tab-count" id="ct-finalized">0</span>
     </button>
@@ -273,6 +292,7 @@ let CURRENT_USER=null;
 let MY_CAMPUS=null;
 let MY_DEAN_ROLES=[];  /* may have multiple if same person holds two functions */
 let MY_ACTIVE_DEAN_ROLE='academics';
+let IS_DEAN_ACADEMICS=false; /* true if MY_DEAN_ROLES contains an academics row for MY_CAMPUS */
 
 let SEG='pending';
 let FACULTY_LIST=[];   /* enriched list for current segment */
@@ -280,6 +300,7 @@ let CURRENT_EVAL=null; /* eval row of faculty being viewed */
 let CURRENT_FAC=null;  /* faculty_master row being viewed */
 let MY_REVIEW=null;    /* this dean's review row for current eval, if any */
 let ALL_REVIEWS=[];    /* all dean reviews for current eval */
+let DIRECTOR_REVIEW=null; /* evaluation_director_reviews row for current eval, if any (for re-review and finalize modes) */
 
 function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -364,6 +385,13 @@ async function resolveAccess(){
     MY_ACTIVE_DEAN_ROLE=deanRows[0].role;
   }
 
+  /* Derive whether this user holds Dean Academics for MY_CAMPUS. Enables the To finalize tab and panel modes. */
+  IS_DEAN_ACADEMICS=MY_DEAN_ROLES.some(r=>r.role==='academics'&&r.campus===MY_CAMPUS);
+  if(IS_DEAN_ACADEMICS){
+    const tab=document.getElementById('tab-to-finalize');
+    if(tab)tab.style.display='';
+  }
+
   document.getElementById('blocker').style.display='none';
   return true;
 }
@@ -394,22 +422,41 @@ async function loadFacultyList(){
     (reviews||[]).forEach(r=>{myReviewsByEval[r.evaluation_id]=r;});
   }
 
-  /* Build segments */
-  FACULTY_LIST=inCampus.map(ev=>{
-    const myReview=myReviewsByEval[ev.id];
-    let seg='pending';
-    if(ev.workflow_status==='complete'||ev.workflow_status==='director_verified')seg='finalized';
-    else if(myReview&&myReview.validated===true)seg='reviewed';
-    else seg='pending';
-    return{...ev,my_review:myReview,seg};
-  });
+  /* Build segments. Self-review filter: a dean does not see their own evaluation in any tab. */
+  const myEmail=(CURRENT_USER.email||'').toLowerCase();
+  FACULTY_LIST=inCampus
+    .filter(ev=>{
+      const facEmail=(ev.faculty_master?.email||'').toLowerCase();
+      return !(facEmail&&facEmail===myEmail);
+    })
+    .map(ev=>{
+      const myReview=myReviewsByEval[ev.id];
+      let seg;
+      const ws=ev.workflow_status;
+      /* Dean Academics gets a dedicated "to_finalize" bucket for director-returned and director-verified evaluations */
+      if(IS_DEAN_ACADEMICS&&(ws==='returned_to_dean'||ws==='director_verified')){
+        seg='to_finalize';
+      }else if(ws==='complete'){
+        seg='finalized';
+      }else if(ws==='director_verified'){
+        /* Non-Academics deans see director_verified as finalized from their perspective */
+        seg='finalized';
+      }else if(myReview&&myReview.validated===true){
+        seg='reviewed';
+      }else{
+        seg='pending';
+      }
+      return{...ev,my_review:myReview,seg};
+    });
 
   /* Counts */
   const pendingCount=FACULTY_LIST.filter(f=>f.seg==='pending').length;
   const reviewedCount=FACULTY_LIST.filter(f=>f.seg==='reviewed').length;
+  const toFinalizeCount=FACULTY_LIST.filter(f=>f.seg==='to_finalize').length;
   const finalizedCount=FACULTY_LIST.filter(f=>f.seg==='finalized').length;
   document.getElementById('ct-pending').textContent=pendingCount;
   document.getElementById('ct-reviewed').textContent=reviewedCount;
+  document.getElementById('ct-to-finalize').textContent=toFinalizeCount;
   document.getElementById('ct-finalized').textContent=finalizedCount;
 
   renderList();
@@ -431,6 +478,7 @@ function renderList(){
     let icon='◇',msg='Nothing here yet';
     if(SEG==='pending'){msg='No faculty awaiting your review.';}
     else if(SEG==='reviewed'){msg='You have not reviewed anyone yet.';}
+    else if(SEG==='to_finalize'){msg='No evaluations awaiting management synthesis.';}
     else if(SEG==='finalized'){msg='No evaluations finalized yet.';}
     empty.innerHTML=`<div class="fac-empty-icon">${icon}</div><span class="fac-empty-strong">${msg}</span><div>Faculty submissions appear here as they come in.</div>`;
     list.appendChild(empty);
@@ -450,6 +498,10 @@ function renderList(){
     let pillHtml='';
     if(SEG==='pending')pillHtml='<span class="pill pill-pending"><span class="pill-dot"></span>Awaiting review</span>';
     else if(SEG==='reviewed')pillHtml='<span class="pill pill-reviewed"><span class="pill-dot"></span>Reviewed</span>';
+    else if(SEG==='to_finalize'){
+      if(f.workflow_status==='returned_to_dean')pillHtml='<span class="pill pill-returned"><span class="pill-dot"></span>Returned for re-review</span>';
+      else pillHtml='<span class="pill pill-verified"><span class="pill-dot"></span>Director verified · finalize</span>';
+    }
     else pillHtml='<span class="pill pill-finalized"><span class="pill-dot"></span>Finalized</span>';
 
     row.innerHTML=`
@@ -488,16 +540,18 @@ async function openDetail(f){
   CURRENT_EVAL=f;
   CURRENT_FAC=f.faculty_master||{};
 
-  /* Fetch publications and EP rows */
-  const[pubs,eps,reviews]=await Promise.all([
+  /* Fetch publications, EP rows, all dean reviews, and the director review row (if any) */
+  const[pubs,eps,reviews,dirRev]=await Promise.all([
     sb.from('faculty_publications').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('year',{ascending:false}),
     sb.from('ep_programmes').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('date_conducted',{ascending:false}),
-    sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',f.id)
+    sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',f.id),
+    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',f.id).maybeSingle()
   ]);
   const publications=pubs.data||[];
   const programmes=eps.data||[];
   ALL_REVIEWS=reviews.data||[];
   MY_REVIEW=ALL_REVIEWS.find(r=>r.dean_email===CURRENT_USER.email)||null;
+  DIRECTOR_REVIEW=dirRev.data||null;
 
   document.getElementById('d-name').textContent=CURRENT_FAC.name||'(unknown)';
   document.getElementById('d-meta').textContent=`${CURRENT_FAC.designation||''} · ${CURRENT_FAC.campus||''} · Submitted ${formatDate(f.gate1_submitted_at||f.updated_at)}`;
@@ -511,13 +565,19 @@ async function openDetail(f){
 
 function closeDetail(){
   document.getElementById('detail').classList.remove('open');
-  CURRENT_EVAL=null;CURRENT_FAC=null;MY_REVIEW=null;ALL_REVIEWS=[];
+  CURRENT_EVAL=null;CURRENT_FAC=null;MY_REVIEW=null;ALL_REVIEWS=[];DIRECTOR_REVIEW=null;
   loadFacultyList();
 }
 
 function renderDetailContent(f,publications,programmes){
   const c=document.getElementById('d-content');
   c.innerHTML='';
+
+  /* Director Comment block at the top in to-finalize modes (Dean Academics view only) */
+  if(IS_DEAN_ACADEMICS&&(f.workflow_status==='returned_to_dean'||f.workflow_status==='director_verified')){
+    const dirBlock=buildDirectorCommentBlock(f);
+    if(dirBlock)c.appendChild(dirBlock);
+  }
 
   /* Section 01 Profile */
   c.appendChild(buildProfileSection(f));
@@ -536,6 +596,56 @@ function renderDetailContent(f,publications,programmes){
   if(ALL_REVIEWS.filter(r=>r.dean_email!==CURRENT_USER.email&&r.validated).length>0){
     c.appendChild(buildOtherReviewsBlock());
   }
+}
+
+/* Build the director's comment block for finalization modes. Surfaces the most recent
+   director action (return or verify) with comments, so Dean Academics knows the context. */
+function buildDirectorCommentBlock(f){
+  const isReturn=f.workflow_status==='returned_to_dean';
+  const block=document.createElement('div');
+  block.className='dir-block '+(isReturn?'return':'verify');
+
+  const eb=document.createElement('div');eb.className='dir-block-eyebrow';
+  eb.textContent=isReturn?'Returned by Director for Re-review':'Verified by Director · Awaiting Management Synthesis';
+  block.appendChild(eb);
+
+  const h=document.createElement('div');h.className='dir-block-h';
+  h.textContent=isReturn?"Director's note on what needs reconciliation":"Director's verification";
+  block.appendChild(h);
+
+  /* Find the latest matching action from action_history, with fallback to current row */
+  let comments=null,actedAt=null,actedBy=null;
+  const hist=Array.isArray(DIRECTOR_REVIEW?.action_history)?DIRECTOR_REVIEW.action_history:[];
+  const wantAction=isReturn?'return':'verify';
+  /* iterate backwards to find most recent action of this type */
+  for(let i=hist.length-1;i>=0;i--){
+    if(hist[i].action===wantAction){
+      comments=hist[i].comments;
+      actedAt=hist[i].acted_at;
+      actedBy=hist[i].director_name||hist[i].director_email;
+      break;
+    }
+  }
+  /* fallback to top-level columns if history not yet populated */
+  if(!actedAt&&DIRECTOR_REVIEW){
+    if(DIRECTOR_REVIEW.action===wantAction){
+      comments=DIRECTOR_REVIEW.action_comments;
+      actedAt=DIRECTOR_REVIEW.acted_at;
+      actedBy=DIRECTOR_REVIEW.director_name||DIRECTOR_REVIEW.director_email;
+    }
+  }
+
+  const cm=document.createElement('div');cm.className='dir-block-comments'+(comments?'':' empty');
+  cm.textContent=comments||'(no specific comments recorded)';
+  block.appendChild(cm);
+
+  if(actedAt){
+    const f2=document.createElement('div');f2.className='dir-block-foot';
+    f2.textContent=`${actedBy||'Director'} · ${formatDate(actedAt)}`;
+    block.appendChild(f2);
+  }
+
+  return block;
 }
 
 function makeSection(num,title,subtitle){
@@ -820,6 +930,17 @@ function renderPanel(f,programmes){
   const p=document.getElementById('d-panel');
   p.innerHTML='';
 
+  /* Mode router: when Dean Academics views a to-finalize evaluation, the panel is mode-specific */
+  if(IS_DEAN_ACADEMICS){
+    if(f.workflow_status==='returned_to_dean'){
+      return renderRereviewPanel(p,f);
+    }else if(f.workflow_status==='director_verified'){
+      return renderFinalizePanel(p,f);
+    }else if(f.workflow_status==='complete'){
+      return renderCompleteReadonlyPanel(p,f);
+    }
+  }
+
   const h=document.createElement('div');h.className='panel-h';h.textContent='Your Review';
   p.appendChild(h);
 
@@ -881,6 +1002,188 @@ function renderPanel(f,programmes){
     saved.classList.add('show');saved.textContent='Last saved '+timeAgo(MY_REVIEW.validated_at);
   }
   p.appendChild(saved);
+}
+
+/* ---------- Re-review panel (Dean Academics, workflow=returned_to_dean) ---------- */
+function renderRereviewPanel(p,f){
+  const h=document.createElement('div');h.className='panel-h';h.textContent='Re-review';
+  p.appendChild(h);
+
+  const role=document.createElement('div');role.className='panel-role';
+  role.innerHTML=`<span class="panel-role-dot"></span>Dean Academics · ${escapeHtml(MY_CAMPUS)}`;
+  p.appendChild(role);
+
+  const s=document.createElement('div');s.className='panel-s';
+  s.textContent='The director returned this evaluation. Address the director\'s note (shown at the top of the content), update your review notes, and resubmit. It will go back to the director for a second look.';
+  p.appendChild(s);
+
+  /* Comments textarea pre-filled with current Dean Academics review row */
+  const cf=document.createElement('div');cf.className='panel-field';
+  const cl=document.createElement('div');cl.className='panel-field-l';
+  cl.innerHTML=`<span>Your updated review notes</span><span class="panel-field-l-r">visible to Director and Faculty</span>`;
+  const ta=document.createElement('textarea');ta.className='panel-textarea';ta.id='dean-comments';
+  ta.placeholder='Update your dean review in light of the director\'s note.';
+  ta.value=MY_REVIEW?.notes||'';
+  cf.appendChild(cl);cf.appendChild(ta);
+  p.appendChild(cf);
+
+  const btn=document.createElement('button');btn.className='panel-submit';btn.id='dean-submit';
+  btn.textContent='Resubmit to Director';
+  btn.onclick=submitRereview;
+  p.appendChild(btn);
+}
+
+async function submitRereview(){
+  if(!CURRENT_EVAL){return;}
+  const comments=document.getElementById('dean-comments').value.trim();
+  if(!comments){
+    toast('Please add updated notes before resubmitting.',false);return;
+  }
+
+  const btn=document.getElementById('dean-submit');
+  const orig=btn.textContent;
+  btn.textContent='Submitting...';btn.disabled=true;
+
+  try{
+    const myName=MY_DEAN_ROLES.find(d=>d.role==='academics')?.name||CURRENT_USER.full_name||CURRENT_USER.email;
+    const now=new Date().toISOString();
+
+    /* Update the academics dean review row */
+    const payload={
+      evaluation_id:CURRENT_EVAL.id,
+      dean_email:CURRENT_USER.email,
+      dean_name:myName,
+      dean_role:'academics',
+      campus:MY_CAMPUS,
+      gate:'annual',
+      validated:true,
+      validated_at:now,
+      notes:comments
+    };
+    /* Preserve revenue_verified if it exists on the row (shouldn't for academics but defensive) */
+    if(MY_REVIEW&&MY_REVIEW.revenue_verified!==undefined&&MY_REVIEW.revenue_verified!==null){
+      payload.revenue_verified=MY_REVIEW.revenue_verified;
+    }
+    const{error:upErr}=await sb.from('evaluation_dean_reviews')
+      .upsert(payload,{onConflict:'evaluation_id,dean_email,gate'});
+    if(upErr)throw upErr;
+
+    /* Advance workflow_status from returned_to_dean back to with_director */
+    const{error:wsErr}=await sb.from('faculty_evaluations')
+      .update({workflow_status:'with_director',updated_at:now})
+      .eq('id',CURRENT_EVAL.id);
+    if(wsErr)throw wsErr;
+
+    CURRENT_EVAL.workflow_status='with_director';
+    MY_REVIEW={...payload};
+    toast('Resubmitted to Director.');
+    /* Detail view stays open but the eval has moved out of this tab on next list reload */
+    btn.textContent='Resubmitted';btn.disabled=true;
+  }catch(e){
+    dlog('SUBMIT REREVIEW',e);
+    const code=e.code?` [${e.code}]`:'';
+    toast('Resubmit failed'+code+': '+(e.message||'unknown')+'. Tell Girish.',false);
+    btn.textContent=orig;btn.disabled=false;
+  }
+}
+
+/* ---------- Finalize panel (Dean Academics, workflow=director_verified) ---------- */
+function renderFinalizePanel(p,f){
+  const h=document.createElement('div');h.className='panel-h';h.textContent='Management Synthesis';
+  p.appendChild(h);
+
+  const role=document.createElement('div');role.className='panel-role';
+  role.innerHTML=`<span class="panel-role-dot"></span>Dean Academics · ${escapeHtml(MY_CAMPUS)}`;
+  p.appendChild(role);
+
+  const s=document.createElement('div');s.className='panel-s';
+  s.textContent='Director has verified. Write the final management voice and release to faculty. This is what the faculty member will see when they open their evaluation. Step back from the dean signals and frame the year as you would describe it to the President or to the faculty member directly.';
+  p.appendChild(s);
+
+  const cf=document.createElement('div');cf.className='panel-field';
+  const cl=document.createElement('div');cl.className='panel-field-l';
+  cl.innerHTML=`<span>Management synthesis</span><span class="panel-field-l-r">visible to Faculty</span>`;
+  const ta=document.createElement('textarea');ta.className='panel-textarea';ta.id='mgmt-synthesis';
+  ta.style.minHeight='200px';
+  ta.placeholder='Your final management framing of the year. What did this faculty member contribute, what stood out, and what is the overall takeaway?';
+  ta.value=f.management_synthesis||'';
+  cf.appendChild(cl);cf.appendChild(ta);
+  p.appendChild(cf);
+
+  const btn=document.createElement('button');btn.className='panel-submit';btn.id='dean-submit';
+  btn.textContent='Finalize and Release to Faculty';
+  btn.onclick=finalizeAndRelease;
+  p.appendChild(btn);
+}
+
+async function finalizeAndRelease(){
+  if(!CURRENT_EVAL){return;}
+  const synth=document.getElementById('mgmt-synthesis').value.trim();
+  if(!synth){
+    toast('Please write the management synthesis before releasing.',false);return;
+  }
+  if(!confirm('Release this evaluation to the faculty member? They will be able to see the full review and your management synthesis.'))return;
+
+  const btn=document.getElementById('dean-submit');
+  const orig=btn.textContent;
+  btn.textContent='Releasing...';btn.disabled=true;
+
+  try{
+    const myName=MY_DEAN_ROLES.find(d=>d.role==='academics')?.name||CURRENT_USER.full_name||CURRENT_USER.email;
+    const now=new Date().toISOString();
+
+    const{error}=await sb.from('faculty_evaluations')
+      .update({
+        management_synthesis:synth,
+        management_synthesis_by:CURRENT_USER.email,
+        management_synthesis_at:now,
+        released_to_faculty_at:now,
+        workflow_status:'complete',
+        updated_at:now
+      })
+      .eq('id',CURRENT_EVAL.id);
+    if(error)throw error;
+
+    CURRENT_EVAL.workflow_status='complete';
+    CURRENT_EVAL.management_synthesis=synth;
+    CURRENT_EVAL.management_synthesis_by=CURRENT_USER.email;
+    CURRENT_EVAL.management_synthesis_at=now;
+    CURRENT_EVAL.released_to_faculty_at=now;
+
+    toast('Released to faculty. Evaluation complete.');
+    btn.textContent='Released';btn.disabled=true;
+  }catch(e){
+    dlog('FINALIZE',e);
+    const code=e.code?` [${e.code}]`:'';
+    toast('Release failed'+code+': '+(e.message||'unknown')+'. Tell Girish.',false);
+    btn.textContent=orig;btn.disabled=false;
+  }
+}
+
+/* ---------- Complete (read-only) panel (Dean Academics, workflow=complete) ---------- */
+function renderCompleteReadonlyPanel(p,f){
+  const h=document.createElement('div');h.className='panel-h';h.textContent='Complete';
+  p.appendChild(h);
+
+  const role=document.createElement('div');role.className='panel-role';
+  role.innerHTML=`<span class="panel-role-dot"></span>Dean Academics · ${escapeHtml(MY_CAMPUS)}`;
+  p.appendChild(role);
+
+  const banner=document.createElement('div');banner.className='panel-completed';
+  banner.innerHTML=`<strong>Released to faculty.</strong>${f.released_to_faculty_at?'Released '+formatDate(f.released_to_faculty_at)+'.':''} The faculty member can now see the full evaluation.`;
+  p.appendChild(banner);
+
+  if(f.management_synthesis){
+    const cf=document.createElement('div');cf.className='panel-field';
+    const cl=document.createElement('div');cl.className='panel-field-l';
+    cl.innerHTML=`<span>Management synthesis (released)</span>`;
+    const ta=document.createElement('textarea');ta.className='panel-textarea';
+    ta.style.minHeight='180px';
+    ta.value=f.management_synthesis;
+    ta.readOnly=true;
+    cf.appendChild(cl);cf.appendChild(ta);
+    p.appendChild(cf);
+  }
 }
 
 let MY_REVENUE_VERIFIED=null;
