@@ -255,7 +255,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
   <div class="sbh">
     <div class="sbn" id="sb-name">Loading...</div>
     <div class="sbr" id="sb-role"></div>
-    <div class="sby">AY 2026-27</div>
+    <div class="sby">AY 2025-26</div>
   </div>
   <div class="pw">
     <div class="pw-lbl">Course entries</div>
@@ -291,7 +291,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
     <div class="sn-mini">3.1</div>
     <div>
       <div class="si-t">Course Feedback Entries</div>
-      <div class="si-s">One entry per course per term. Add all courses taught in AY 2026-27.</div>
+      <div class="si-s">One entry per course per term. Add all courses taught in AY 2025-26.</div>
     </div>
   </div>
   <div class="srl"></div>
@@ -331,7 +331,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
             <option>4</option><option>5</option><option>6</option>
           </select>
         </div>
-        <div class="fb-field"><div class="fb-label">Academic Year</div><input class="fb-input" id="fb-ay" value="2026-27" readonly></div>
+        <div class="fb-field"><div class="fb-label">Academic Year</div><input class="fb-input" id="fb-ay" value="2025-26" readonly></div>
       </div>
 
       <div class="fb-form-sec">Scores</div>
@@ -361,7 +361,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 
       <div class="fb-form-sec">Source Document</div>
       <div class="fb-grid2">
-        <div class="fb-field"><div class="fb-label">Source Note</div><input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2026-27"></div>
+        <div class="fb-field"><div class="fb-label">Source Note</div><input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2025-26"></div>
         <div class="fb-field">
           <div class="fb-label">Upload PDF <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional, for reference)</span></div>
           <input type="file" accept=".pdf" class="fb-input" id="fb-pdf" style="padding:7px">
@@ -386,7 +386,7 @@ const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
 
-const ACADEMIC_YEAR='2026-27';
+const ACADEMIC_YEAR='2025-26';
 const TEST_PHASE_LOCKS_OPEN=true;
 const DEBUG=false;
 
