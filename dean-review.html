@@ -805,9 +805,9 @@ function buildOtherReviewsBlock(){
     meta.style.marginBottom='6px';
     meta.innerHTML=`<strong>${escapeHtml(r.dean_name||r.dean_email)}</strong> · ${escapeHtml(DEAN_LABELS[r.dean_role]||r.dean_role||'')} · ${formatDate(r.validated_at)}`;
     block.appendChild(meta);
-    if(r.comments){
+    if(r.notes){
       const c=document.createElement('div');c.className='narrative-t';
-      c.textContent=r.comments;
+      c.textContent=r.notes;
       block.appendChild(c);
     }
     sec.appendChild(block);
@@ -866,7 +866,7 @@ function renderPanel(f,programmes){
   cl.innerHTML=`<span>Your comments</span><span class="panel-field-l-r">visible to Director and Faculty</span>`;
   const ta=document.createElement('textarea');ta.className='panel-textarea';ta.id='dean-comments';
   ta.placeholder='Comment on overall completeness, accuracy, and quality. What stands out? Anything missing?';
-  ta.value=MY_REVIEW?.comments||'';
+  ta.value=MY_REVIEW?.notes||'';
   cf.appendChild(cl);cf.appendChild(ta);
   p.appendChild(cf);
 
@@ -918,7 +918,7 @@ async function submitReview(){
       gate:'annual',
       validated:true,
       validated_at:new Date().toISOString(),
-      comments:comments
+      notes:comments
     };
     /* EP-specific field */
     if(myRole==='ep'&&MY_REVENUE_VERIFIED!==null){
