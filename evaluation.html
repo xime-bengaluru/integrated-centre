@@ -123,6 +123,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .g1rmt{font-size:14px;color:var(--teal-d);line-height:1.7}
 .g1rmmeta{font-size:11px;color:var(--teal-d);opacity:.7;margin-top:8px;font-family:'DM Mono',monospace}
 
+/* Completion packet (AY 2025-26 single cycle, shown when workflow_status='complete') */
+.cpkt{background:var(--parchment);border:1px solid var(--border-g);border-left:4px solid var(--gold);border-radius:var(--r);padding:26px 30px;margin-bottom:28px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.cpkt-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cpkt-eyebrow-released{color:var(--mute);font-weight:400;letter-spacing:.06em;text-transform:none;font-size:10.5px}
+.cpkt-synth-h{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--navy);line-height:1.2;margin-bottom:14px}
+.cpkt-synth-text{font-size:14.5px;color:var(--ink);line-height:1.75;white-space:pre-wrap;background:white;border:.5px solid var(--line);border-radius:var(--rs);padding:18px 20px;margin-bottom:10px}
+.cpkt-synth-by{font-size:11px;color:var(--mute);font-family:'DM Mono',monospace;letter-spacing:.04em}
+.cpkt-trail{margin-top:24px;padding-top:22px;border-top:1px dashed var(--border-g)}
+.cpkt-trail-h{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--navy);margin-bottom:4px}
+.cpkt-trail-s{font-size:11.5px;color:var(--mute);margin-bottom:16px;line-height:1.5}
+.cpkt-deans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+@media (max-width:900px){.cpkt-deans{grid-template-columns:1fr}}
+.cpkt-dean{background:white;border:.5px solid var(--line);border-radius:var(--rs);padding:13px 15px;display:flex;flex-direction:column;gap:7px;min-height:120px}
+.cpkt-dean-role{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d)}
+.cpkt-dean-name{font-size:12.5px;color:var(--navy);font-weight:500;line-height:1.3}
+.cpkt-dean-notes{font-size:12.5px;color:var(--charcoal);line-height:1.6;white-space:pre-wrap;background:var(--cream);padding:9px 11px;border-radius:5px;flex:1}
+.cpkt-dean-notes.empty{color:var(--faint);font-style:italic;font-size:11.5px}
+.cpkt-dean-foot{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace}
+.cpkt-dir{background:white;border:.5px solid var(--line);border-radius:var(--rs);padding:14px 16px;margin-top:8px}
+.cpkt-dir-h{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.cpkt-dir-h-name{color:var(--navy);font-size:11.5px;font-weight:500;letter-spacing:.02em;text-transform:none}
+.cpkt-dir-text{font-size:12.5px;color:var(--charcoal);line-height:1.6;white-space:pre-wrap}
+.cpkt-dir-text.empty{color:var(--faint);font-style:italic}
+.cpkt-rev-strip{margin-top:10px;padding:8px 12px;border-radius:5px;font-size:11.5px;display:inline-flex;align-items:center;gap:7px}
+.cpkt-rev-strip.ok{background:rgba(13,146,104,.08);color:var(--teal-d)}
+.cpkt-rev-strip.flag{background:rgba(200,16,46,.06);color:var(--red)}
+
 /* Sections */
 .sec{margin-bottom:46px;scroll-margin-top:80px}
 .sh{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
@@ -573,6 +600,8 @@ select.pub-input{cursor:pointer}
       </div>
     </div>
   </div>
+
+  <div id="completion-packet" style="display:none"></div>
 
   <div id="g1-remarks-box" style="display:none">
     <div class="g1rmbox">
@@ -2051,6 +2080,105 @@ async function loadGate1Remarks(){
   }
 }
 
+/* AY 2025-26 completion packet: read-only management feedback shown to faculty
+   when their evaluation has been finalized and released by Dean Academics. */
+async function renderCompletionPacket(){
+  if(!eid||!erec)return;
+  if(erec.workflow_status!=='complete')return;
+
+  const container=document.getElementById('completion-packet');
+  if(!container)return;
+
+  /* Fetch the three dean reviews and the director review row in parallel */
+  const[deanRes,dirRes]=await Promise.all([
+    sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',eid),
+    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',eid).maybeSingle()
+  ]);
+  const deanReviews=(deanRes.data||[]).filter(r=>r.validated===true);
+  const dirReview=dirRes.data||null;
+
+  const fmtDate=s=>{if(!s)return '';try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});}catch(e){return s;}};
+  const esc=s=>(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const DEAN_LABELS={academics:'Dean Academics',research:'Dean Research',ep:'Dean EP'};
+
+  /* Build synthesis hero */
+  const synthText=erec.management_synthesis||'(No management synthesis recorded.)';
+  const synthBy=erec.management_synthesis_by||'';
+  const synthAt=erec.management_synthesis_at?fmtDate(erec.management_synthesis_at):'';
+  const releasedAt=erec.released_to_faculty_at?fmtDate(erec.released_to_faculty_at):'';
+
+  /* Build dean cards */
+  let deanCardsHtml='';
+  ['academics','research','ep'].forEach(role=>{
+    const r=deanReviews.find(x=>x.dean_role===role);
+    const name=r?(r.dean_name||r.dean_email||''):'(not recorded)';
+    const notes=r?.notes||'';
+    const validatedAt=r?.validated_at?fmtDate(r.validated_at):'';
+    deanCardsHtml+=`
+      <div class="cpkt-dean">
+        <div class="cpkt-dean-role">${esc(DEAN_LABELS[role]||role)}</div>
+        <div class="cpkt-dean-name">${esc(name)}</div>
+        <div class="cpkt-dean-notes${notes?'':' empty'}">${esc(notes||'(no notes recorded)')}</div>
+        <div class="cpkt-dean-foot">${esc(validatedAt)}</div>
+      </div>`;
+  });
+
+  /* Director verification block - find the latest verify action */
+  let dirHtml='';
+  let dirComments=null,dirName=null,dirActedAt=null;
+  if(dirReview){
+    const hist=Array.isArray(dirReview.action_history)?dirReview.action_history:[];
+    for(let i=hist.length-1;i>=0;i--){
+      if(hist[i].action==='verify'){
+        dirComments=hist[i].comments;
+        dirName=hist[i].director_name||hist[i].director_email;
+        dirActedAt=hist[i].acted_at;
+        break;
+      }
+    }
+    if(!dirActedAt&&dirReview.action==='verify'){
+      dirComments=dirReview.action_comments;
+      dirName=dirReview.director_name||dirReview.director_email;
+      dirActedAt=dirReview.acted_at;
+    }
+    dirHtml=`
+      <div class="cpkt-dir">
+        <div class="cpkt-dir-h">Director Verification <span class="cpkt-dir-h-name">· ${esc(dirName||'Director')} · ${esc(fmtDate(dirActedAt))}</span></div>
+        <div class="cpkt-dir-text${dirComments?'':' empty'}">${esc(dirComments||'(verified without specific comments)')}</div>
+      </div>`;
+  }
+
+  /* Revenue verification strip (from Dean EP review row) */
+  const epReview=deanReviews.find(r=>r.dean_role==='ep');
+  let revStripHtml='';
+  if(epReview?.revenue_verified===true){
+    revStripHtml='<div class="cpkt-rev-strip ok">✓ EP revenue verified by Dean EP with Finance</div>';
+  }else if(epReview?.revenue_verified===false){
+    revStripHtml='<div class="cpkt-rev-strip flag">! EP revenue discrepancy was flagged during review</div>';
+  }
+
+  container.innerHTML=`
+    <div class="cpkt">
+      <div class="cpkt-eyebrow">
+        <span>Annual Evaluation · Complete</span>
+        ${releasedAt?`<span class="cpkt-eyebrow-released">Released to you on ${esc(releasedAt)}</span>`:''}
+      </div>
+      <div class="cpkt-synth-h">Management Synthesis</div>
+      <div class="cpkt-synth-text">${esc(synthText)}</div>
+      <div class="cpkt-synth-by">From Dean Academics${synthBy?' · '+esc(synthBy):''}${synthAt?' · '+esc(synthAt):''}</div>
+
+      <div class="cpkt-trail">
+        <div class="cpkt-trail-h">Review Trail</div>
+        <div class="cpkt-trail-s">The institutional review chain that shaped this evaluation. Three deans reviewed across their domains, the Director verified institutional consistency, and Dean Academics wrote the management synthesis above.</div>
+        <div class="cpkt-deans">${deanCardsHtml}</div>
+        ${revStripHtml}
+        ${dirHtml}
+      </div>
+    </div>
+  `;
+  container.style.display='block';
+}
+
 /* ---------- Data helpers ---------- */
 function val(id){const el=document.getElementById(id);return el&&el.value&&String(el.value).trim()?String(el.value).trim():null;}
 function numVal(id){const v=val(id);return v!==null?parseInt(v):null;}
@@ -2391,6 +2519,8 @@ async function init(){
     .select('*').eq('faculty_master_id',fac.id).eq('academic_year',ACADEMIC_YEAR).maybeSingle();
   if(ev){eid=ev.id;erec=ev;restore(ev);}
   else erec={gate1_locked:false,workflow_status:'draft'};
+
+  await renderCompletionPacket();
 
   await loadPublications();
   renderPubSummary();renderPubTable();
