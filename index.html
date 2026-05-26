@@ -461,6 +461,17 @@
       </div>
     </div>
 
+    <!-- ADOPTION DASHBOARD -->
+    <div class="module-card dimmed" id="tile-adoption-dashboard">
+      <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
+      <div class="card-body">
+        <div class="card-tag">Institutional View</div>
+        <div class="card-icon">&#9670;</div>
+        <div class="card-title">Adoption Dashboard</div>
+        <div class="card-desc">Institutional view across all three campuses · evaluation throughput, bottlenecks, and intervention triggers.</div>
+      </div>
+    </div>
+
     <!-- FACULTY INTELLIGENCE -->
     <div class="module-card dimmed">
       <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
@@ -627,12 +638,12 @@ async function initAuth() {
     db.from('dean_registry').select('email, name, role, campus').eq('email', profile.email),
     db.from('director_campus_map').select('email, name, campus').eq('email', profile.email).maybeSingle()
   ]);
-  unlockReviewTiles(deanRes.data || [], dirRes.data || null);
+  unlockReviewTiles(deanRes.data || [], dirRes.data || null, profile);
 }
 
 const DEAN_LABELS = { academics: 'Dean Academics', research: 'Dean Research', ep: 'Dean EP' };
 
-function unlockReviewTiles(deanRows, dirRow) {
+function unlockReviewTiles(deanRows, dirRow, profile) {
   if (deanRows && deanRows.length > 0) {
     const tile = document.getElementById('tile-dean-review');
     if (tile) {
@@ -663,6 +674,21 @@ function unlockReviewTiles(deanRows, dirRow) {
       badge.innerHTML = '<span class="role-badge-dot"></span>Director &middot; ' + (dirRow.campus || '');
       tile.appendChild(badge);
       tile.onclick = () => { window.location.href = '/director-review.html'; };
+    }
+  }
+  /* Adoption Dashboard - super_admin only */
+  if (profile && profile.role === 'super_admin') {
+    const tile = document.getElementById('tile-adoption-dashboard');
+    if (tile) {
+      tile.classList.remove('dimmed');
+      tile.classList.add('unlocked');
+      const lockBadge = tile.querySelector('.locked-badge');
+      if (lockBadge) lockBadge.remove();
+      const badge = document.createElement('div');
+      badge.className = 'role-badge';
+      badge.innerHTML = '<span class="role-badge-dot"></span>Institutional';
+      tile.appendChild(badge);
+      tile.onclick = () => { window.location.href = '/adoption-dashboard.html'; };
     }
   }
 }
