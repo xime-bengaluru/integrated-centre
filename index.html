@@ -255,9 +255,25 @@
     gap: 5px;
     border: 1px solid rgba(201,168,76,0.3);
   }
+  /* Test phase notice */
   .role-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
 
-  /* Test phase notice */
+  /* Admin-only view (super_admin without faculty_master row, e.g. President).
+     Hidden by default, JS reveals it. Two-tile institutional layout. */
+  .admin-view { margin-bottom: 32px; opacity: 0; animation: fadeUp 0.5s ease forwards; animation-delay: 0.15s; display: none; }
+  .admin-view.active { display: block; }
+  .admin-view-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 600; }
+  .admin-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+  @media (max-width: 800px) { .admin-grid { grid-template-columns: 1fr; } }
+  .admin-tile { background: white; border: 1px solid var(--border); border-left: 4px solid var(--gold); border-radius: 14px; padding: 26px 28px; cursor: pointer; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; display: flex; flex-direction: column; min-height: 180px; position: relative; }
+  .admin-tile:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.08); }
+  .admin-tile-tag { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 9px; border-radius: 10px; width: fit-content; margin-bottom: 14px; font-weight: 600; background: rgba(201,168,76,0.15); color: var(--gold); }
+  .admin-tile-icon { font-size: 26px; color: var(--gold); margin-bottom: 12px; line-height: 1; }
+  .admin-tile-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--text); line-height: 1.2; margin-bottom: 8px; }
+  .admin-tile-desc { font-size: 13px; color: var(--muted); line-height: 1.6; flex: 1; }
+  .admin-tile-cta { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold-d); margin-top: 14px; font-weight: 600; letter-spacing: 0.04em; }
+
+  /* Test phase notice (continued) */
   .test-notice {
     background: rgba(201,168,76,0.08);
     border-left: 3px solid var(--gold);
@@ -344,8 +360,29 @@
 <!-- MAIN -->
 <div class="modules-section">
 
+  <!-- ADMIN-ONLY VIEW (super_admin without faculty_master row, e.g. President) -->
+  <div class="admin-view" id="admin-view">
+    <div class="admin-view-label">Institutional Oversight</div>
+    <div class="admin-grid">
+      <div class="admin-tile" onclick="window.location.href='/adoption-dashboard.html'">
+        <div class="admin-tile-tag">Live Funnel</div>
+        <div class="admin-tile-icon">&#9670;</div>
+        <div class="admin-tile-title">Adoption Dashboard</div>
+        <div class="admin-tile-desc">Institutional view across all three campuses. Where every evaluation sits right now, what needs attention, and which director or dean is responsible for the next action.</div>
+        <div class="admin-tile-cta">Open Dashboard &rarr;</div>
+      </div>
+      <div class="admin-tile" id="admin-tile-preview">
+        <div class="admin-tile-tag">Preview Mode</div>
+        <div class="admin-tile-icon">&#9678;</div>
+        <div class="admin-tile-title">Faculty 3X Preview</div>
+        <div class="admin-tile-desc">Open any faculty member's 3X review in read-only preview mode. Use this to spot-check evaluations as they come in.</div>
+        <div class="admin-tile-cta">Pick a faculty &rarr;</div>
+      </div>
+    </div>
+  </div>
+
   <!-- 3X HERO TILE -->
-  <div class="hero-tile" onclick="window.location.href='evaluation.html'">
+  <div class="hero-tile" id="hero-tile-3x" onclick="window.location.href='evaluation.html'">
     <div class="hero-tile-body">
       <div class="hero-tile-left">
         <div class="hero-tile-tag">
@@ -394,7 +431,7 @@
   </div>
 
   <!-- TEST PHASE NOTICE -->
-  <div class="test-notice">
+  <div class="test-notice" id="test-notice">
     <div class="test-notice-icon">&#9432;</div>
     <div class="test-notice-text">
       <strong>AY 2025-26 Performance Evaluation is open.</strong> 3X is the active module for capturing your annual performance. <strong>X-Drive</strong> holds your performance data and submission. <strong>X-Purpose</strong> is optional reflection. <strong>X-Impact</strong> stays open year round for teaching feedback. Submit your evaluation by 5 June 2026.
@@ -402,9 +439,9 @@
   </div>
 
   <!-- COMING NEXT -->
-  <div class="other-section-label">Coming Next &middot; Locked During Test Phase</div>
+  <div class="other-section-label" id="other-section-label">Coming Next &middot; Locked During Test Phase</div>
 
-  <div class="modules-grid">
+  <div class="modules-grid" id="modules-grid">
 
     <!-- FACULTY DEVELOPMENT -->
     <div class="module-card dimmed">
@@ -630,6 +667,42 @@ async function initAuth() {
     .select('id')
     .eq('email', profile.email)
     .maybeSingle();
+
+  /* Admin-only view: super_admin without a faculty_master row (e.g. President).
+     They are not faculty - hide the 3X performance layout and show institutional tiles only. */
+  const isAdminOnly = profile.role === 'super_admin' && !facRow;
+  if (isAdminOnly) {
+    /* Custom hero subtitle */
+    const heroSub = document.getElementById('hero-sub');
+    if (heroSub) heroSub.textContent = 'Institutional view across XIME\u2019s three campuses.';
+    /* Hide the faculty layout */
+    const heroTile = document.getElementById('hero-tile-3x');
+    if (heroTile) heroTile.style.display = 'none';
+    const testNotice = document.getElementById('test-notice');
+    if (testNotice) testNotice.style.display = 'none';
+    const otherLabel = document.getElementById('other-section-label');
+    if (otherLabel) otherLabel.style.display = 'none';
+    const modulesGrid = document.getElementById('modules-grid');
+    if (modulesGrid) modulesGrid.style.display = 'none';
+    /* Show the admin layout */
+    const adminView = document.getElementById('admin-view');
+    if (adminView) adminView.classList.add('active');
+    /* Wire the Faculty 3X Preview tile to a picker. For now, prompt for an email
+       since the faculty picker page is not yet built. The audit will decide whether
+       to build a proper picker or to remove this tile entirely. */
+    const previewTile = document.getElementById('admin-tile-preview');
+    if (previewTile) {
+      previewTile.onclick = () => {
+        const email = prompt('Faculty email to preview (e.g. bhadra@xime.org):');
+        if (email && email.trim()) {
+          window.location.href = '/evaluation.html?as=' + encodeURIComponent(email.trim().toLowerCase());
+        }
+      };
+    }
+    /* Skip the status chip load and the rest of the faculty-side wiring */
+    return;
+  }
+
   loadStatusChips(facRow?.id || null);
 
   /* Resolve dean and director roles for tile unlocking. Both can be true for the same user
