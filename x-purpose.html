@@ -386,6 +386,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
   <div class="gbst gst-open" id="g2bs">Open</div>
 </div>
 
+<!-- EXISTING IKIGAI WRITE-UP (paste-text, optional shortcut for those who've done IKIGAI elsewhere) -->
+<section class="sec" id="s-writeup">
+  <div class="sh"><div class="sn-mini">2.0</div><div><div class="si-t">Have you already done an IKIGAI exercise? <span class="si-tag">Shortcut</span></div><div class="si-s">If you have an existing IKIGAI write-up from a Forteen workshop, IIMB program, external facilitator, or your own reflection, paste it here. The structured form below is also available if you prefer to work within the platform. Either is fine. Both is welcome.</div></div></div>
+  <div class="srl"></div>
+  <div style="margin-top:20px">
+    <textarea id="f-writeup" rows="14" placeholder="Paste your existing IKIGAI reflection here..." style="font-family:'DM Sans',sans-serif;font-size:13.5px;line-height:1.7"></textarea>
+  </div>
+</section>
+
 <!-- SECTION 2.1 PASSION -->
 <section class="sec" id="s-passion">
   <div class="sh"><div class="sn-mini">2.1</div><div><div class="si-t">What You Love <span class="si-tag">Passion</span></div><div class="si-s">Reflect on your full professional identity, not just teaching</div></div></div>
@@ -948,6 +957,7 @@ function purposeData(){
     ikigai_impact_focus:val('f-impact'),
     ikigai_contribution:val('f-gaps'),
     ikigai_statement:val('f-iki'),
+    ikigai_writeup:val('f-writeup'),
     courses_current:Array.from(courseState.current.selected),
     courses_aspire:Array.from(courseState.aspire.selected),
     domain_course_gaps:val('f-gaps'),new_courses_to_design:val('f-newcourses'),courses_to_stop:val('f-stopcourses'),
@@ -1053,6 +1063,7 @@ function restore(d){
     'f-pi':d.ikigai_passion?.split('\n\n')[2],'f-ps':d.ikigai_passion?.split('\n\n')[3],
     'f-pimp':d.ikigai_passion?.split('\n\n')[4],
     'f-impact':d.ikigai_impact_focus,'f-iki':d.ikigai_statement,
+    'f-writeup':d.ikigai_writeup,
     'f-gaps':d.domain_course_gaps||d.ikigai_contribution,'f-newcourses':d.new_courses_to_design,
     'f-stopcourses':d.courses_to_stop,'f-caps':d.consulting_capabilities,'f-delivered':d.consulting_delivered,
     'f-newprogs':d.new_programmes_to_design,'f-respotential':d.research_publication_potential,
