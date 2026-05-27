@@ -146,6 +146,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .fb-resp.feature{border-left-color:var(--teal);background:var(--teal-l);color:var(--teal-d);font-style:italic}
 .fb-card-footer{padding:12px 22px;background:var(--cream);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
 .fb-source-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint)}
+.fb-extra-block{padding:14px 22px 18px;background:var(--cream);border-top:1px dashed var(--line)}
+.fb-extra-label{font-family:'DM Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+.fb-extra-body{font-size:12.5px;color:var(--charcoal);line-height:1.6;white-space:pre-wrap;background:white;border:.5px solid var(--line);border-radius:6px;padding:10px 12px}
 .fb-remove{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--faint);background:transparent;border:1px solid var(--line);padding:5px 12px;border-radius:var(--rs);cursor:pointer;transition:all .15s}
 .fb-remove:hover{background:rgba(200,16,46,.06);border-color:rgba(200,16,46,.25);color:#A32D2D}
 
@@ -359,13 +362,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
         </div>
       </div>
 
-      <div class="fb-form-sec">Source Document</div>
-      <div class="fb-grid2">
-        <div class="fb-field"><div class="fb-label">Source Note</div><input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2025-26"></div>
-        <div class="fb-field">
-          <div class="fb-label">Upload PDF <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional, for reference)</span></div>
-          <input type="file" accept=".pdf" class="fb-input" id="fb-pdf" style="padding:7px">
-        </div>
+      <div class="fb-form-sec">Source Document &amp; Additional Notes</div>
+      <div class="fb-field" style="margin-bottom:14px">
+        <div class="fb-label">Source Note</div>
+        <input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2025-26">
+      </div>
+      <div class="fb-field">
+        <div class="fb-label">Additional Feedback Summary <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></div>
+        <textarea class="fi" id="fb-extra-text" rows="6" placeholder="Paste qualitative student feedback summary, additional quantitative breakdown, or any context not captured in the structured fields above. PDF upload will be available in the next cycle."></textarea>
       </div>
 
       <div class="fb-form-actions">
@@ -645,7 +649,7 @@ function buildFbCard(e){
   /* Footer */
   const footer=document.createElement('div');footer.className='fb-card-footer';
   const sourceNote=document.createElement('div');sourceNote.className='fb-source-note';
-  sourceNote.textContent=(e.source_note||'')+(e.source_doc?'  \u00b7  '+e.source_doc:'');
+  sourceNote.textContent=e.source_note||'';
   footer.appendChild(sourceNote);
   if(!IS_PREVIEW){
     const removeBtn=document.createElement('button');removeBtn.className='fb-remove';removeBtn.textContent='Remove';
@@ -653,6 +657,18 @@ function buildFbCard(e){
     footer.appendChild(removeBtn);
   }
   card.appendChild(footer);
+
+  /* Additional pasted feedback summary, if any. Uses textContent (not innerHTML)
+     since it is user-pasted free-text content. Renders below the structured fields. */
+  if(e.extra_text&&e.extra_text.trim()){
+    const extraBlock=document.createElement('div');extraBlock.className='fb-extra-block';
+    const extraLabel=document.createElement('div');extraLabel.className='fb-extra-label';
+    extraLabel.textContent='Additional Feedback Summary';
+    const extraBody=document.createElement('div');extraBody.className='fb-extra-body';
+    extraBody.textContent=e.extra_text;
+    extraBlock.appendChild(extraLabel);extraBlock.appendChild(extraBody);
+    card.appendChild(extraBlock);
+  }
 
   return card;
 }
@@ -785,7 +801,7 @@ async function saveFbEntry(){
     did_best:didBest,
     one_change:oneChange,
     source_note:document.getElementById('fb-source-note').value.trim(),
-    source_doc:document.getElementById('fb-pdf').files[0]?.name||''
+    extra_text:document.getElementById('fb-extra-text').value.trim()
   };
 
   FEEDBACK_ENTRIES.push(entry);
@@ -795,10 +811,9 @@ async function saveFbEntry(){
   toast('Course feedback entry added and saved');
 
   /* Clear form */
-  ['fb-course-name','fb-course-code','fb-term','fb-students','fb-overall-pct','fb-overall-mean','fb-did-best','fb-one-change','fb-source-note'].forEach(id=>{
+  ['fb-course-name','fb-course-code','fb-term','fb-students','fb-overall-pct','fb-overall-mean','fb-did-best','fb-one-change','fb-source-note','fb-extra-text'].forEach(id=>{
     const el=document.getElementById(id);if(el&&el.id!=='fb-ay')el.value='';
   });
-  document.getElementById('fb-pdf').value='';
   buildFbQInputs();
 }
 
