@@ -2495,10 +2495,9 @@ async function init(){
   }
 
   const rows=[
-    ['Name',fac.name],['Designation',fac.designation],['Campus',fac.campus],
-    ['Joined',fac.joined||'Not recorded'],
-    ['PhD',fac.phd==='yes'?`PhD ${fac.phd_year||''}`:fac.phd==='pursuing'?'Pursuing':'Not recorded'],
-    ['Subject',fac.subject_area||'Not recorded']
+    ['Name',fac.name],
+    ['Title',fac.designation],
+    ['Campus',fac.campus]
   ];
   const profRows=document.getElementById('prof-rows');
   profRows.innerHTML='';
