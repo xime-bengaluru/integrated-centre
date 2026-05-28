@@ -392,6 +392,11 @@ select.pub-input{cursor:pointer}
 .ds-summary-dot.low{background:#d5c89c;opacity:.6}
 .ds-summary-count{font-weight:600;color:var(--navy)}
 .ds-summary-total{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--mute);background:var(--parchment);padding:4px 10px;border-radius:12px;border:1px solid var(--line)}
+.ds-none-affirm{display:flex;align-items:center;gap:9px;padding:9px 13px;background:var(--parchment);border:1px solid var(--line);border-radius:var(--rs);cursor:pointer;font-size:12.5px;color:var(--charcoal);margin-bottom:10px;transition:all .12s}
+.ds-none-affirm:hover{border-color:var(--gold-d)}
+.ds-none-affirm input[type="checkbox"]{margin:0;cursor:pointer;accent-color:var(--gold)}
+.ds-none-affirm:has(input:checked){background:var(--cream);border-color:var(--gold);color:var(--gold-d);font-weight:500}
+.ds-matrix.ds-disabled{opacity:.4;pointer-events:none;filter:grayscale(0.6)}
 
 /* ===================================================
    TEACHING SECTION RESTRUCTURE
@@ -422,6 +427,7 @@ select.pub-input{cursor:pointer}
 .ped-row-name{flex:1;font-weight:500}
 .ped-row-sub{font-weight:400;color:var(--mute);font-size:11.5px;margin-left:4px}
 .ped-select{width:160px;padding:6px 10px;font-size:12px}
+.ped-count{width:160px;padding:6px 10px;font-size:12px;text-align:left}
 .ped-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .ped-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--parchment);border:1px solid var(--line);border-radius:var(--rs);cursor:pointer;font-size:12.5px;color:var(--charcoal);transition:all .12s}
 .ped-chip:hover{border-color:var(--gold-d);background:var(--cream)}
@@ -451,6 +457,7 @@ select.pub-input{cursor:pointer}
   .tc-table .tc-section-cell::before{content:"Section: ";color:var(--faint)}
   .ped-row{flex-direction:column;align-items:flex-start;gap:6px}
   .ped-select{width:100%}
+  .ped-count{width:100%}
   .pub-table-wrap{overflow-x:auto}
   .pub-table{min-width:780px}
 }
@@ -702,10 +709,10 @@ select.pub-input{cursor:pointer}
       <span class="tab-num">01</span><span class="tab-x">X-Drive</span><span class="tab-sub">Performance Record</span>
     </button>
     <a class="tab-btn" href="x-purpose.html" style="text-decoration:none">
-      <span class="tab-num">02</span><span class="tab-x">X-Purpose</span><span class="tab-sub">Growth &amp; Purpose</span>
+      <span class="tab-num">02</span><span class="tab-x">X-Purpose</span><span class="tab-sub">Under Development</span>
     </a>
     <a class="tab-btn" href="x-impact.html" style="text-decoration:none">
-      <span class="tab-num">03</span><span class="tab-x">X-Impact</span><span class="tab-sub">Teaching Effectiveness</span>
+      <span class="tab-num">03</span><span class="tab-x">X-Impact</span><span class="tab-sub">Under Development</span>
     </a>
   </div>
   </div>
@@ -891,8 +898,8 @@ select.pub-input{cursor:pointer}
 
         <div class="ped-block">
           <div class="ped-group-label">Simulations</div>
-          <div class="ped-row"><div class="ped-row-name">HBS Simulations</div><select class="fi ped-select" id="pm-sims-hbs"><option value="">Select...</option><option value="none">None</option><option value="1-5">1 to 5</option><option value="5-10">5 to 10</option><option value="10+">10+</option></select></div>
-          <div class="ped-row"><div class="ped-row-name">Other simulations <span class="ped-row-sub">(any non-HBS simulation)</span></div><select class="fi ped-select" id="pm-sims-other"><option value="">Select...</option><option value="none">None</option><option value="1-5">1 to 5</option><option value="5-10">5 to 10</option><option value="10+">10+</option></select></div>
+          <div class="ped-row"><div class="ped-row-name">HBS Simulations</div><input class="fi ped-count" id="pm-sims-hbs" type="number" min="0" step="1" placeholder="Count"></div>
+          <div class="ped-row"><div class="ped-row-name">Other simulations <span class="ped-row-sub">(any non-HBS simulation)</span></div><input class="fi ped-count" id="pm-sims-other" type="number" min="0" step="1" placeholder="Count"></div>
         </div>
 
         <div class="ped-block">
@@ -901,6 +908,7 @@ select.pub-input{cursor:pointer}
             <label class="ped-chip"><input type="checkbox" id="pm-alt-projects" value="projects"><span>Projects</span></label>
             <label class="ped-chip"><input type="checkbox" id="pm-alt-labs" value="labs"><span>Labs</span></label>
             <label class="ped-chip"><input type="checkbox" id="pm-alt-field" value="projects_field_visits"><span>Projects with Field Visits</span></label>
+            <label class="ped-chip"><input type="checkbox" id="pm-alt-gamification" value="gamification"><span>Gamification</span></label>
             <label class="ped-chip"><input type="checkbox" id="pm-alt-others" value="others" onchange="toggleOtherMethodsText()"><span>Others</span></label>
           </div>
           <div class="ped-other-wrap" id="pm-alt-other-wrap" style="display:none;margin-top:10px">
@@ -909,16 +917,10 @@ select.pub-input{cursor:pointer}
         </div>
       </div>
 
-      <!-- 2.3 Terms Taught -->
+      <!-- 2.3 Reflections on teaching -->
       <div class="f" style="margin-top:18px">
-        <div class="fl">Terms Taught</div>
-        <input class="fi" id="f-terms" placeholder="e.g. Terms I, III, V">
-      </div>
-
-      <!-- 2.4 Teaching Notes -->
-      <div class="f">
-        <div class="fl">Teaching Notes</div>
-        <textarea class="fi" id="f-tnotes" rows="3" placeholder="New approaches, innovations, case studies developed, course-design changes..."></textarea>
+        <div class="fl">Reflections on your teaching journey this year</div>
+        <textarea class="fi" id="f-tnotes" rows="3" placeholder="New approaches, innovations, case studies developed, course-design changes, what worked and what you would change..."></textarea>
       </div>
 
       <!-- 2.5 Dean Office footnote -->
@@ -1184,16 +1186,9 @@ select.pub-input{cursor:pointer}
         </div>
       </div>
 
-      <div class="fdiv"></div>
-
-      <!-- Supporting research metrics -->
-      <div class="thc">
-        <div class="f"><div class="fl">h-Index</div><input class="fi" id="f-hi" type="number" min="0" placeholder="0"></div>
-        <div class="f"><div class="fl">Google Scholar Citations</div><input class="fi" id="f-gscholar-cites" type="number" min="0" placeholder="0"></div>
-        <div class="f"><div class="fl">UGC-CARE Listed <span class="ab">India</span></div><input class="fi" id="f-ugc-care" type="number" min="0" placeholder="0"></div>
-      </div>
-
       <div class="f"><div class="fl">Work in Progress</div><textarea class="fi" id="f-wip" rows="2" placeholder="Papers under review, ongoing projects, working titles..."></textarea></div>
+
+      <div class="f"><div class="fl">Reflections on your Research Journey this year</div><textarea class="fi" id="f-rnotes" rows="3" placeholder="Themes you pursued, collaborations, what shifted in your research direction, what you are building toward..."></textarea></div>
 
       <div class="fdiv"></div>
 
@@ -1210,6 +1205,7 @@ select.pub-input{cursor:pointer}
         <div class="f">
           <div class="fl">XIME data sources used for your publications this year</div>
           <div class="fh" style="margin-bottom:10px">For each source XIME provides, indicate how much you used it this year. Leave blank if not used.</div>
+          <label class="ds-none-affirm"><input type="checkbox" id="ds-none-affirm" onchange="toggleDsNone()"><span>I did not use any XIME research databases this year</span></label>
           <div class="ds-matrix">
             <div class="ds-matrix-header">
               <div class="ds-matrix-head-name">Source</div>
@@ -2388,7 +2384,7 @@ function showDualRoleNote(faculty){
 
 /* ---------- Progress ---------- */
 function upProg(){
-  const fids=['f-scholar','f-orcid','f-terms','f-tnotes','f-hi','f-gscholar-cites','f-ugc-care','f-wip','f-external-resources','f-referrals-sent','f-referrals-converted','f-referrals-detail','f-ind','f-rp-summary','f-year-end-achievements'];
+  const fids=['f-scholar','f-orcid','f-tnotes','f-wip','f-rnotes','f-external-resources','f-referrals-sent','f-referrals-converted','f-referrals-detail','f-ind','f-rp-summary','f-year-end-achievements'];
   let filled=0;
   fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&String(el.value).trim())filled++;});
   if(PUBLICATIONS.length>0)filled+=2;
@@ -2401,7 +2397,7 @@ function upProg(){
   ['pm-cases-hbp','pm-cases-other','pm-sims-hbs','pm-sims-other'].forEach(id=>{
     const el=document.getElementById(id);if(el&&el.value)pmFilled=true;
   });
-  ['pm-alt-projects','pm-alt-labs','pm-alt-field','pm-alt-others'].forEach(id=>{
+  ['pm-alt-projects','pm-alt-labs','pm-alt-field','pm-alt-gamification','pm-alt-others'].forEach(id=>{
     const el=document.getElementById(id);if(el&&el.checked)pmFilled=true;
   });
   if(pmFilled)filled++;
@@ -2596,6 +2592,22 @@ function clearDsRating(key){
   upProg();
 }
 
+function toggleDsNone(){
+  const none=document.getElementById('ds-none-affirm')?.checked;
+  const matrix=document.querySelector('.ds-matrix');
+  if(none){
+    /* Clear all ratings and disable the matrix */
+    ['scopus','ebsco_bse','ebsco_ebooks','tracxn','turnitin','statista','cmie_eo','sage','cmie_prowess','bloomberg'].forEach(k=>{
+      document.querySelectorAll('input[name="ds-'+k+'"]').forEach(r=>{r.checked=false;});
+    });
+    if(matrix)matrix.classList.add('ds-disabled');
+  }else{
+    if(matrix)matrix.classList.remove('ds-disabled');
+  }
+  updateDsSummary();
+  upProg();
+}
+
 function updateDsSummary(){
   const keys=['scopus','ebsco_bse','ebsco_ebooks','tracxn','turnitin','statista','cmie_eo','sage','cmie_prowess','bloomberg'];
   let high=0,medium=0,low=0;
@@ -2616,18 +2628,21 @@ function updateDsSummary(){
 
 function midYearData(){
   const dataSourcesUsage={};
-  ['scopus','ebsco_bse','ebsco_ebooks','tracxn','turnitin','statista','cmie_eo','sage','cmie_prowess','bloomberg'].forEach(k=>{
-    const r=document.querySelector('input[name="ds-'+k+'"]:checked');
-    if(r)dataSourcesUsage[k]=r.value;
-  });
+  const dsNone=document.getElementById('ds-none-affirm')?.checked;
+  if(dsNone){
+    dataSourcesUsage._none_affirmed=true;
+  }else{
+    ['scopus','ebsco_bse','ebsco_ebooks','tracxn','turnitin','statista','cmie_eo','sage','cmie_prowess','bloomberg'].forEach(k=>{
+      const r=document.querySelector('input[name="ds-'+k+'"]:checked');
+      if(r)dataSourcesUsage[k]=r.value;
+    });
+  }
   return{
     snap_name:fac?.name,snap_designation:fac?.designation,snap_campus:fac?.campus,
     snap_subject_area:fac?.subject_area,snap_courses_taught:fac?.courses_taught,snap_admin_role:fac?.admin_role,
-    scholar_url:val('f-scholar'),orcid_id:val('f-orcid'),terms_taught:val('f-terms'),teaching_notes:val('f-tnotes'),
-    h_index:numVal('f-hi'),
-    gscholar_citations:numVal('f-gscholar-cites'),
-    ugc_care_count:numVal('f-ugc-care'),
+    scholar_url:val('f-scholar'),orcid_id:val('f-orcid'),teaching_notes:val('f-tnotes'),
     wip_details:val('f-wip'),
+    research_reflections:val('f-rnotes'),
     data_sources_usage:dataSourcesUsage,
     external_resources_needed:val('f-external-resources'),
     referrals_sent:numVal('f-referrals-sent'),
@@ -2715,7 +2730,7 @@ async function submitMidYear(){
    Course entries pattern matches Institution Building (inline add list).
    Pedagogical methods read four dropdowns + checkbox chips, write to one jsonb. */
 
-const PEDAGOGY_ALT_KEYS=['projects','labs','projects_field_visits','others'];
+const PEDAGOGY_ALT_KEYS=['projects','labs','projects_field_visits','gamification','others'];
 
 function renderTeachingCourses(){
   const el=document.getElementById('tc-rows');
@@ -2992,10 +3007,9 @@ async function loadPointsLedger(){
 /* ---------- Restore from DB ---------- */
 function restore(d){
   const m={
-    'f-scholar':d.scholar_url,'f-orcid':d.orcid_id,'f-terms':d.terms_taught,'f-tnotes':d.teaching_notes,
-    'f-ugc-care':d.ugc_care_count,'f-hi':d.h_index,
-    'f-gscholar-cites':d.gscholar_citations,
+    'f-scholar':d.scholar_url,'f-orcid':d.orcid_id,'f-tnotes':d.teaching_notes,
     'f-wip':d.wip_details,
+    'f-rnotes':d.research_reflections,
     'f-external-resources':d.external_resources_needed,
     'f-referrals-sent':d.referrals_sent,
     'f-referrals-converted':d.referrals_converted,
@@ -3008,10 +3022,16 @@ function restore(d){
   if(d.teaching_effectiveness){const teEl=document.getElementById('f-te');if(teEl)teEl.value=d.teaching_effectiveness+' / 5.0';}
 
   if(d.data_sources_usage&&typeof d.data_sources_usage==='object'&&!Array.isArray(d.data_sources_usage)){
-    Object.entries(d.data_sources_usage).forEach(([k,v])=>{
-      const r=document.querySelector('input[name="ds-'+k+'"][value="'+v+'"]');
-      if(r)r.checked=true;
-    });
+    if(d.data_sources_usage._none_affirmed){
+      const noneEl=document.getElementById('ds-none-affirm');
+      if(noneEl){noneEl.checked=true;toggleDsNone();}
+    }else{
+      Object.entries(d.data_sources_usage).forEach(([k,v])=>{
+        if(k==='_none_affirmed')return;
+        const r=document.querySelector('input[name="ds-'+k+'"][value="'+v+'"]');
+        if(r)r.checked=true;
+      });
+    }
   }else if(Array.isArray(d.data_sources_used)){
     /* Legacy migration: old 8-key array, map to new keys where possible, default to 'medium' rating */
     const LEGACY_MAP={statista:'statista',tracxn:'tracxn',ebsco:'ebsco_bse',sage:'sage'};
