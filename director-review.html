@@ -145,6 +145,30 @@
   .rev-strip-icon{font-size:14px;line-height:1}
   .rev-strip-text strong{font-weight:600}
 
+  /* Director Performance Assessment block */
+  .assess-block{margin-bottom:32px;background:white;border:1px solid var(--line);border-radius:12px;padding:24px 26px}
+  .assess-h{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .assess-n{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold-d);line-height:1;font-weight:500;min-width:30px}
+  .assess-h-t{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);line-height:1.15;margin-bottom:3px}
+  .assess-h-s{font-size:12px;color:var(--muted);line-height:1.45}
+  .assess-grid{display:grid;grid-template-columns:148px 1fr 1fr 1fr;gap:9px 12px;align-items:center}
+  .assess-colh{font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);text-align:center}
+  .assess-area{font-size:13.5px;font-weight:500;color:var(--text);line-height:1.3}
+  .assess-area-na{font-size:10.5px;color:var(--faint);font-style:italic;margin-top:2px}
+  .assess-seg{display:flex;gap:3px}
+  .assess-b{flex:1;font-size:11px;padding:6px 0;text-align:center;border:1px solid var(--line-strong);background:white;color:var(--sub);cursor:pointer;border-radius:6px;font-family:inherit;transition:all .12s}
+  .assess-b:hover{border-color:var(--gold)}
+  .assess-b.on{background:var(--navy);color:white;border-color:var(--navy);font-weight:600}
+  .assess-b.na.on{background:var(--faint);border-color:var(--faint)}
+  .assess-comment{width:100%;min-height:72px;margin-top:16px;padding:11px 13px;border:1px solid var(--line-strong);border-radius:7px;font-family:inherit;font-size:13px;color:var(--text);resize:vertical;line-height:1.55;background:var(--parchment)}
+  .assess-comment:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+  .assess-foot{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+  .assess-save{padding:11px 22px;background:var(--gold-d);color:white;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .assess-save:hover{background:var(--gold)}
+  .assess-save:disabled{opacity:.55;cursor:not-allowed}
+  .assess-note{font-size:11px;color:var(--muted);line-height:1.4}
+  @media (max-width:900px){.assess-grid{grid-template-columns:104px 1fr 1fr 1fr;gap:7px 6px}.assess-b{font-size:10px;padding:5px 0}}
+
   /* Panel */
   .panel-h{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1.2}
   .panel-s{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:18px}
@@ -300,6 +324,7 @@ let CURRENT_EVAL=null;
 let CURRENT_FAC=null;
 let DEAN_REVIEWS=[];      /* all 3 dean review rows for current eval */
 let MY_DIRECTOR_REVIEW=null; /* this director's row in evaluation_director_reviews if any */
+let CURRENT_ASSESSMENT=null; /* director_performance_assessments row for current faculty if any */
 
 function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -518,16 +543,18 @@ async function openDetail(f){
   CURRENT_EVAL=f;
   CURRENT_FAC=f.faculty_master||{};
 
-  const[pubs,eps,deanReviews,dirReview]=await Promise.all([
+  const[pubs,eps,deanReviews,dirReview,assessment]=await Promise.all([
     sb.from('faculty_publications').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('year',{ascending:false}),
     sb.from('ep_programmes').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('date_conducted',{ascending:false}),
     sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',f.id),
-    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',f.id).maybeSingle()
+    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',f.id).maybeSingle(),
+    sb.from('director_performance_assessments').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).maybeSingle()
   ]);
   const publications=pubs.data||[];
   const programmes=eps.data||[];
   DEAN_REVIEWS=(deanReviews.data||[]).filter(r=>r.validated===true);
   MY_DIRECTOR_REVIEW=dirReview.data||null;
+  CURRENT_ASSESSMENT=assessment.data||null;
 
   document.getElementById('d-name').textContent=CURRENT_FAC.name||'(unknown)';
   document.getElementById('d-meta').textContent=`${CURRENT_FAC.designation||''} · ${CURRENT_FAC.campus||''} · Submitted ${formatDate(f.gate1_submitted_at||f.updated_at)}`;
@@ -550,7 +577,7 @@ async function openDetail(f){
 
 function closeDetail(){
   document.getElementById('detail').classList.remove('open');
-  CURRENT_EVAL=null;CURRENT_FAC=null;DEAN_REVIEWS=[];MY_DIRECTOR_REVIEW=null;
+  CURRENT_EVAL=null;CURRENT_FAC=null;DEAN_REVIEWS=[];MY_DIRECTOR_REVIEW=null;CURRENT_ASSESSMENT=null;
   loadFacultyList();
 }
 
@@ -560,6 +587,9 @@ function renderDetailContent(f,publications,programmes){
 
   /* Dean Reviews Summary - prominent at top */
   c.appendChild(buildDeansSummary(f));
+
+  /* Director Performance Assessment - judgment layer, immediately after the dean signals */
+  c.appendChild(buildAssessmentBlock(f));
 
   /* Faculty submission sections */
   c.appendChild(buildProfileSection(f));
@@ -630,6 +660,104 @@ function buildDeansSummary(f){
   block.appendChild(strip);
 
   return block;
+}
+
+/* ---------- Director Performance Assessment ---------- */
+const ASSESS_AREAS=[['teaching','Teaching'],['research','Research'],['institution','Institution building'],['external','External programs']];
+const ASSESS_DIMS=[['effort','Effort'],['performance','Performance'],['potential','Potential']];
+const ASSESS_VALS=[['L','L'],['M','M'],['H','H'],['NA','–']];
+
+function buildAssessmentBlock(f){
+  const block=document.createElement('div');block.className='assess-block';
+
+  const h=document.createElement('div');h.className='assess-h';
+  const n=document.createElement('div');n.className='assess-n';n.textContent='★';
+  const wrap=document.createElement('div');
+  const ht=document.createElement('div');ht.className='assess-h-t';ht.textContent='Director Performance Assessment';
+  const hs=document.createElement('div');hs.className='assess-h-s';
+  hs.textContent='Your judgment of this faculty member across the four areas. Rate effort, performance, and potential as High, Medium, or Low. Mark an area not applicable if it was not part of their remit this year. Saving here is separate from verification and does not block it.';
+  wrap.appendChild(ht);wrap.appendChild(hs);
+  h.appendChild(n);h.appendChild(wrap);
+  block.appendChild(h);
+
+  const grid=document.createElement('div');grid.className='assess-grid';
+  grid.appendChild(document.createElement('div'));
+  ASSESS_DIMS.forEach(([dk,dl])=>{const c=document.createElement('div');c.className='assess-colh';c.textContent=dl;grid.appendChild(c);});
+
+  const existing=(CURRENT_ASSESSMENT&&CURRENT_ASSESSMENT.ratings)||{};
+  ASSESS_AREAS.forEach(([ak,al])=>{
+    const areaCell=document.createElement('div');
+    const a=document.createElement('div');a.className='assess-area';a.textContent=al;
+    areaCell.appendChild(a);
+    if(ak==='external'){const na=document.createElement('div');na.className='assess-area-na';na.textContent='mark – if outside their remit';areaCell.appendChild(na);}
+    grid.appendChild(areaCell);
+    ASSESS_DIMS.forEach(([dk])=>{
+      const seg=document.createElement('div');seg.className='assess-seg';
+      const cur=(existing[ak]&&existing[ak][dk])||null;
+      ASSESS_VALS.forEach(([v,lab])=>{
+        const b=document.createElement('div');
+        b.className='assess-b'+(v==='NA'?' na':'')+(cur===v?' on':'');
+        b.textContent=lab;b.dataset.area=ak;b.dataset.dim=dk;b.dataset.val=v;
+        b.onclick=()=>{seg.querySelectorAll('.assess-b').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
+        seg.appendChild(b);
+      });
+      grid.appendChild(seg);
+    });
+  });
+  block.appendChild(grid);
+
+  const ta=document.createElement('textarea');ta.className='assess-comment';ta.id='assess-comment';
+  ta.placeholder='One qualitative note the President will see alongside the grid. Optional.';
+  ta.value=(CURRENT_ASSESSMENT&&CURRENT_ASSESSMENT.comments&&CURRENT_ASSESSMENT.comments.overall)||'';
+  block.appendChild(ta);
+
+  const foot=document.createElement('div');foot.className='assess-foot';
+  const save=document.createElement('button');save.className='assess-save';save.id='assess-save-btn';save.textContent='Save assessment';
+  save.onclick=saveAssessment;
+  const note=document.createElement('div');note.className='assess-note';note.id='assess-note';
+  note.textContent=CURRENT_ASSESSMENT?'Last saved assessment loaded. Update and save again any time before the cycle closes.':'Does not block verification. You can verify now and assess later.';
+  foot.appendChild(save);foot.appendChild(note);
+  block.appendChild(foot);
+
+  return block;
+}
+
+async function saveAssessment(){
+  if(!CURRENT_EVAL||!CURRENT_FAC){return;}
+  const ratings={};
+  ASSESS_AREAS.forEach(([ak])=>{
+    const obj={};
+    ASSESS_DIMS.forEach(([dk])=>{
+      const on=document.querySelector('.assess-b.on[data-area="'+ak+'"][data-dim="'+dk+'"]');
+      if(on)obj[dk]=on.dataset.val;
+    });
+    if(Object.keys(obj).length>0)ratings[ak]=obj;
+  });
+  const commentVal=document.getElementById('assess-comment').value.trim();
+  const comments={overall:commentVal||null};
+  const payload={
+    faculty_master_id:CURRENT_FAC.id,
+    academic_year:ACADEMIC_YEAR,
+    ratings,
+    comments,
+    director_email:CURRENT_USER.email
+  };
+  const btn=document.getElementById('assess-save-btn');
+  const orig=btn.textContent;btn.textContent='Saving...';btn.disabled=true;
+  try{
+    const{error}=await sb.from('director_performance_assessments')
+      .upsert(payload,{onConflict:'faculty_master_id,academic_year'});
+    if(error)throw error;
+    CURRENT_ASSESSMENT=Object.assign({},CURRENT_ASSESSMENT||{},payload);
+    const note=document.getElementById('assess-note');if(note)note.textContent='Saved. Update and save again any time before the cycle closes.';
+    toast('Assessment saved');
+  }catch(e){
+    dlog('SAVE ASSESSMENT',e);
+    const code=e.code?' ['+e.code+']':'';
+    toast('Assessment save failed'+code+': '+(e.message||'unknown')+'. Tell Girish.',false);
+  }finally{
+    btn.textContent=orig;btn.disabled=false;
+  }
 }
 
 function makeSection(num,title,subtitle){
@@ -857,6 +985,11 @@ function buildInstitutionSection(f){
     const t=document.createElement('div');t.className='entry-card-t';
     t.textContent=e.category||'(uncategorised)';
     hdr.appendChild(t);
+    if(e.role){
+      const tag=document.createElement('div');tag.className='entry-card-tag tier';
+      tag.textContent=e.role;
+      hdr.appendChild(tag);
+    }
     card.appendChild(hdr);
     if(e.description){
       const desc=document.createElement('div');desc.className='entry-card-desc';
