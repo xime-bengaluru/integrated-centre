@@ -520,6 +520,15 @@ select.pub-input{cursor:pointer}
 .ep-close:hover{color:#fff}
 
 .ep-type-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:14px;background:var(--cream);border-bottom:1px solid var(--line)}
+.ep-type-tabs-3col{grid-template-columns:repeat(3,1fr)}
+.ep-format-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ep-format-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#fff;border:1.5px solid var(--line);border-radius:var(--rs);cursor:pointer;transition:all .15s}
+.ep-format-card:hover{border-color:var(--gold-2);background:var(--parchment)}
+.ep-format-card input[type="radio"]{margin-top:2px;cursor:pointer;accent-color:var(--gold);flex-shrink:0}
+.ep-format-card:has(input:checked){background:var(--cream);border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.ep-format-card-content{flex:1}
+.ep-format-name{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.ep-format-hint{font-size:11px;color:var(--mute);line-height:1.4}
 .ep-type-tab{background:#fff;border:1px solid var(--line);padding:12px 8px;cursor:pointer;border-radius:var(--rs);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s}
 .ep-type-tab:hover{border-color:var(--gold-2);background:var(--parchment)}
 .ep-type-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
@@ -571,6 +580,8 @@ select.pub-input{cursor:pointer}
   .ep-grid3{grid-template-columns:1fr}
   .ep-grid2{grid-template-columns:1fr}
   .ep-role-grid{grid-template-columns:1fr}
+  .ep-format-grid{grid-template-columns:1fr}
+  .ep-type-tabs-3col{grid-template-columns:1fr}
   .ep-table-wrap{overflow-x:auto}
   .ep-table{min-width:780px}
 }
@@ -590,6 +601,91 @@ select.pub-input{cursor:pointer}
   .tb-mobile-tabs{display:flex}
 }
 .tb-mobile-tabs{display:none}
+
+/* ================================================================
+   PRINT BUTTON + PRINT MEDIA RULES
+   Compact print layout for faculty to save evaluation as PDF
+   ================================================================ */
+.sidebar-print{padding:14px 16px 4px}
+.print-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--charcoal);font-weight:500;transition:all .15s;text-align:left}
+.print-btn:hover{border-color:var(--gold);background:var(--parchment);color:var(--gold-d)}
+.print-btn-icon{font-size:16px;line-height:1;color:var(--gold-d)}
+.print-btn-text{flex:1}
+
+@media print {
+  /* Hide all interactive and structural chrome */
+  body{background:#fff !important;color:#111;font-size:9pt;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sidebar,.topbar,.blocker,.toast,.pub-form-wrap,.ep-form-wrap,.inst-form,.tc-add-form,
+  .sidebar-print,.print-btn,.subbtn,.subbox,.tb-mobile-tabs,
+  .pub-row-actions,.tc-remove,.inst-entry-remove,.sr-entry-remove,
+  .ep-toolbar,.ep-add-btn,.ep-filter,.add-form-block,
+  button:not(.ep-type-tab):not(.ep-role-card):not(.ep-format-card){display:none !important}
+
+  .layout{display:block !important}
+  .main{padding:0 !important;max-width:100% !important;margin:0 !important}
+
+  /* Cover banner: print header */
+  .main::before{
+    content:"XIME Faculty Performance Evaluation - AY 2025-26";
+    display:block;font-family:'Cormorant Garamond',serif;font-size:18pt;color:#0e1828;
+    text-align:center;border-bottom:2px solid #c9a84c;padding-bottom:8pt;margin-bottom:14pt;font-weight:600
+  }
+
+  /* Sections compact */
+  .sec{page-break-inside:avoid;break-inside:avoid;margin-bottom:18pt;border:none;padding:0}
+  .sh{margin-bottom:8pt}
+  .sn{font-size:14pt;color:#c9a84c;font-family:'Cormorant Garamond',serif}
+  .si-t{font-size:13pt;color:#0e1828;font-family:'Cormorant Garamond',serif;font-weight:600}
+  .si-s{font-size:8.5pt;color:#666;margin-top:2pt}
+  .srl,.fdiv{border-top:1px solid #ddd;margin:6pt 0 8pt}
+  .locked-badge{display:none !important}
+
+  /* Form fields */
+  .f{margin-bottom:6pt;page-break-inside:avoid}
+  .fl{font-size:8pt;font-weight:600;color:#444;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2pt}
+  .fh{font-size:7.5pt;color:#777;margin-bottom:3pt}
+  .fi,.ep-input,.fb-input,input,textarea,select{
+    background:transparent !important;border:none !important;border-bottom:1px dotted #999 !important;
+    border-radius:0 !important;padding:2pt 0 !important;font-size:9pt;color:#111 !important;
+    width:100% !important;display:block;font-family:'DM Sans',sans-serif !important
+  }
+  textarea{min-height:auto !important;white-space:pre-wrap}
+
+  /* Tables print well */
+  table{border-collapse:collapse !important;width:100% !important;font-size:8.5pt;page-break-inside:avoid}
+  th,td{border:1px solid #ccc !important;padding:4pt 6pt !important;text-align:left;vertical-align:top}
+  thead th{background:#f5efe3 !important;color:#0e1828;font-size:7.5pt;text-transform:uppercase;letter-spacing:.04em}
+
+  /* Data sources matrix - keep readable */
+  .ds-matrix{border:1px solid #ccc;padding:6pt}
+  .ds-matrix-row{border-bottom:1px solid #eee;padding:3pt 0;display:flex;justify-content:space-between;gap:8pt}
+  .ds-matrix-opts label{font-size:7.5pt;padding:1pt 6pt;border:1px solid #ddd}
+  .ds-matrix-opts label:has(input:checked){background:#c9a84c !important;color:#fff !important;border-color:#a88a3a !important;font-weight:600}
+  .ds-clear{display:none !important}
+  .ds-summary{border:1px solid #c9a84c;background:#fdf9ed !important;padding:6pt;margin-top:8pt;font-size:8pt}
+
+  /* Pedagogical methods */
+  .ped-block{border:1px solid #ddd;padding:6pt;margin-bottom:6pt}
+  .ped-group-label{font-size:8pt;color:#a88a3a;font-weight:600;margin-bottom:3pt}
+  .ped-row{display:flex;justify-content:space-between;padding:2pt 0;border-bottom:1px solid #f0f0f0;font-size:8.5pt}
+  .ped-chip{font-size:7.5pt;padding:2pt 6pt;border:1px solid #ddd;background:#fff}
+  .ped-chip:has(input:checked){background:#fdf9ed !important;border-color:#c9a84c !important;font-weight:600}
+
+  /* Pills, badges visible in print */
+  .ep-stat-num,.fb-mean-line{color:#c9a84c !important;font-weight:700}
+  .ep-summary{border:1px solid #c9a84c;background:#fdf9ed !important;padding:8pt;margin-bottom:10pt}
+  .ep-summary-row{display:flex;gap:14pt;flex-wrap:wrap;font-size:9pt}
+
+  /* Hide nav within sections, faculty completion packet UI */
+  .nav,.nav-top,.completion-packet{display:none !important}
+
+  /* Footer footnote */
+  .teaching-footnote,.ep-filter-hint{font-size:8pt;color:#666;font-style:italic;margin-top:4pt;padding:3pt;background:#f9f7f0 !important;border-left:2px solid #c9a84c}
+
+  /* Section-level page breaks: encourage breaks BETWEEN sections, not inside */
+  section.sec:nth-of-type(3),
+  section.sec:nth-of-type(5){page-break-before:auto}
+}
 </style>
 </head>
 <body>
@@ -645,6 +741,12 @@ select.pub-input{cursor:pointer}
     <div class="gil gi-open">Performance Evaluation</div>
     <div class="gis gi-open" id="g1s">Open</div>
     <div class="gid">Submit by 5 June 2026</div>
+  </div>
+  <div class="sidebar-print">
+    <button class="print-btn" onclick="printEvaluation()" title="Print or save as PDF">
+      <span class="print-btn-icon">&#128424;</span>
+      <span class="print-btn-text">Print / Save as PDF</span>
+    </button>
   </div>
 
   <!-- Performance tab sidebar -->
@@ -1287,21 +1389,16 @@ select.pub-input{cursor:pointer}
           </div>
 
           <!-- Type selector -->
-          <div class="ep-type-tabs">
-            <button class="ep-type-tab active" data-eptype="MDP" onclick="selectEpType('MDP',this)">
+          <div class="ep-type-tabs ep-type-tabs-3col">
+            <button class="ep-type-tab active" data-eptype="MDP_OBP" onclick="selectEpType('MDP_OBP',this)">
               <div class="ep-type-icon">&#9776;</div>
-              <div class="ep-type-name">MDP</div>
-              <div class="ep-type-hint">Open enrolment</div>
-            </button>
-            <button class="ep-type-tab" data-eptype="OBP" onclick="selectEpType('OBP',this)">
-              <div class="ep-type-icon">&#9783;</div>
-              <div class="ep-type-name">OBP</div>
-              <div class="ep-type-hint">In-company</div>
+              <div class="ep-type-name">MDP / OBP</div>
+              <div class="ep-type-hint">Programme you organised</div>
             </button>
             <button class="ep-type-tab" data-eptype="Consulting" onclick="selectEpType('Consulting',this)">
               <div class="ep-type-icon">&#128218;</div>
               <div class="ep-type-name">Consulting</div>
-              <div class="ep-type-hint">Advisory or project</div>
+              <div class="ep-type-hint">Engagement you ran</div>
             </button>
             <button class="ep-type-tab" data-eptype="Conference_Sponsored" onclick="selectEpType('Conference_Sponsored',this)">
               <div class="ep-type-icon">&#127942;</div>
@@ -1311,6 +1408,26 @@ select.pub-input{cursor:pointer}
           </div>
 
           <!-- Common fields -->
+          <div class="ep-form-section" id="ep-format-section">
+            <div class="ep-section-label">Format <span class="ep-label-hint">applies to MDP / OBP only</span></div>
+            <div class="ep-format-grid">
+              <label class="ep-format-card">
+                <input type="radio" name="ep-format" value="MDP" checked onchange="onEpFormatChange()">
+                <div class="ep-format-card-content">
+                  <div class="ep-format-name">Open Enrolment (MDP)</div>
+                  <div class="ep-format-hint">Public programme, mixed participant cohort</div>
+                </div>
+              </label>
+              <label class="ep-format-card">
+                <input type="radio" name="ep-format" value="OBP" onchange="onEpFormatChange()">
+                <div class="ep-format-card-content">
+                  <div class="ep-format-name">In-Company (OBP)</div>
+                  <div class="ep-format-hint">Single client, customised delivery</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
           <div class="ep-form-section">
             <div class="ep-section-label">Programme Details</div>
             <div class="ep-field"><div class="ep-label">Programme Title</div><input class="ep-input" id="ep-title" placeholder="e.g. Strategic Decision-Making for Mid-Career Managers"></div>
@@ -1599,6 +1716,16 @@ const PUB_AUTHOR_LABELS={
 };
 
 function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function printEvaluation(){
+  /* Expand any modal that's open so it doesn't print on its own; then trigger native print.
+     The @media print CSS handles the layout transform. */
+  const openModals=document.querySelectorAll('.pub-form-wrap.open,.ep-form-wrap.open');
+  openModals.forEach(m=>m.classList.remove('open'));
+  document.body.style.overflow='';
+  /* Give the browser a tick to settle layout before invoking print */
+  setTimeout(()=>{window.print();},150);
+}
 
 async function loadPublications(){
   if(!fac)return;
@@ -2015,7 +2142,15 @@ function editEp(id){
   EP_EDIT_ID=p.id;
   resetEpForm();
   document.getElementById('ep-form-title').textContent='Edit Programme';
-  selectEpType(p.programme_type||'MDP',document.querySelector(`.ep-type-tab[data-eptype="${p.programme_type||'MDP'}"]`));
+  /* Route legacy MDP/OBP entries to the composite tab, then sync the Format radio */
+  const rawType=p.programme_type||'MDP';
+  if(rawType==='MDP'||rawType==='OBP'){
+    const fmtRadio=document.querySelector(`input[name="ep-format"][value="${rawType}"]`);
+    if(fmtRadio)fmtRadio.checked=true;
+    selectEpType('MDP_OBP',document.querySelector('.ep-type-tab[data-eptype="MDP_OBP"]'));
+  }else{
+    selectEpType(rawType,document.querySelector(`.ep-type-tab[data-eptype="${rawType}"]`));
+  }
   document.getElementById('ep-title').value=p.title||'';
   document.getElementById('ep-client').value=p.client||'';
   document.getElementById('ep-date').value=p.date_conducted||'';
@@ -2044,12 +2179,33 @@ function resetEpForm(){
   });
   const def=document.querySelector('input[name="ep-role"][value="Coordinator"]');
   if(def)def.checked=true;
+  /* Default Format radio to MDP (Open Enrolment) */
+  const fmtDef=document.querySelector('input[name="ep-format"][value="MDP"]');
+  if(fmtDef)fmtDef.checked=true;
+  /* Default to MDP_OBP composite tab being active */
+  selectEpType('MDP_OBP',document.querySelector('.ep-type-tab[data-eptype="MDP_OBP"]'));
 }
 
 function selectEpType(type,btn){
-  EP_CURRENT_TYPE=type;
   document.querySelectorAll('.ep-type-tab').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
+  const fmtSection=document.getElementById('ep-format-section');
+  if(type==='MDP_OBP'){
+    /* Composite tab: actual programme_type comes from the inner Format radio */
+    if(fmtSection)fmtSection.style.display='block';
+    const checked=document.querySelector('input[name="ep-format"]:checked');
+    EP_CURRENT_TYPE=checked?checked.value:'MDP';
+  }else{
+    /* Consulting or Conference_Sponsored: hide format selector */
+    if(fmtSection)fmtSection.style.display='none';
+    EP_CURRENT_TYPE=type;
+  }
+}
+
+function onEpFormatChange(){
+  /* Format radio inside the MDP_OBP tab updates the underlying programme_type */
+  const r=document.querySelector('input[name="ep-format"]:checked');
+  if(r)EP_CURRENT_TYPE=r.value;
 }
 
 function calcRevenuePerHead(){
