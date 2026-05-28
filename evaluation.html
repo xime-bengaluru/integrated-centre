@@ -205,6 +205,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .inst-entry-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .inst-entry{background:#fff;border:.5px solid var(--line);border-radius:var(--rs);padding:11px 13px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
 .inst-entry-cat{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:4px}
+.inst-entry-role{display:inline-block;background:var(--navy-dark);color:#fff;font-size:9px;font-weight:600;padding:2px 7px;border-radius:9px;margin-right:7px;letter-spacing:.04em;text-transform:uppercase}
 .inst-entry-desc{font-size:13px;color:var(--ink);line-height:1.5}
 .inst-entry-date{font-size:11px;color:var(--faint);margin-top:4px;font-family:'DM Mono',monospace}
 .inst-entry-remove{background:transparent;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:4px;line-height:1}
@@ -1426,15 +1427,19 @@ select.pub-input{cursor:pointer}
 
           <div class="ep-form-section">
             <div class="ep-section-label">Programme Details</div>
-            <div class="ep-field"><div class="ep-label">Programme Title</div><input class="ep-input" id="ep-title" placeholder="e.g. Strategic Decision-Making for Mid-Career Managers"></div>
+            <div class="ep-field" id="ep-fld-title"><div class="ep-label" id="ep-lbl-title">Programme Title</div><input class="ep-input" id="ep-title" placeholder="e.g. Strategic Decision-Making for Mid-Career Managers"></div>
             <div class="ep-grid2">
-              <div class="ep-field"><div class="ep-label">Client / Organisation</div><input class="ep-input" id="ep-client" placeholder="e.g. Bosch India, ACMA, Self-organised"></div>
-              <div class="ep-field"><div class="ep-label">Date Conducted</div><input class="ep-input" id="ep-date" type="date"></div>
+              <div class="ep-field" id="ep-fld-client"><div class="ep-label" id="ep-lbl-client">Client / Organisation</div><input class="ep-input" id="ep-client" placeholder="e.g. Bosch India, ACMA, Self-organised"></div>
+              <div class="ep-field" id="ep-fld-date"><div class="ep-label">Date Conducted</div><input class="ep-input" id="ep-date" type="date"></div>
+            </div>
+            <div class="ep-field" id="ep-fld-days" style="display:none;margin-top:14px">
+              <div class="ep-label">Days of Consulting</div>
+              <input class="ep-input" id="ep-days" type="number" min="0" step="0.5" placeholder="e.g. 6">
             </div>
           </div>
 
-          <!-- Sessions and participants -->
-          <div class="ep-form-section">
+          <!-- Sessions and participants (MDP / OBP only) -->
+          <div class="ep-form-section" id="ep-delivery-section">
             <div class="ep-section-label">Delivery &amp; Engagement</div>
             <div class="ep-grid3">
               <div class="ep-field">
@@ -1450,52 +1455,48 @@ select.pub-input{cursor:pointer}
                 <input class="ep-input" id="ep-duration" placeholder="e.g. 2 days, 8 hours">
               </div>
             </div>
+          </div>
+
+          <!-- Revenue (MDP / OBP + Consulting) -->
+          <div class="ep-form-section" id="ep-revenue-section">
+            <div class="ep-section-label">Revenue</div>
             <div class="ep-grid2">
               <div class="ep-field">
                 <div class="ep-label">Total Revenue Generated <span class="ep-label-hint">in INR · optional</span></div>
                 <input class="ep-input" id="ep-revenue" type="number" min="0" placeholder="Leave blank if not known" oninput="calcRevenuePerHead()">
-                <div class="ep-label-hint" style="margin-top:4px;font-style:italic">If you were the Resource Person and revenue is unknown, leave blank.</div>
+                <div class="ep-label-hint" style="margin-top:4px;font-style:italic" id="ep-revenue-hint">If revenue is unknown, leave blank.</div>
               </div>
-              <div class="ep-field">
+              <div class="ep-field" id="ep-fld-revper">
                 <div class="ep-label">Revenue per Participant</div>
                 <input class="ep-input" id="ep-revenue-per" readonly placeholder="Auto-calculated">
               </div>
             </div>
+            <label class="ep-probono-row" id="ep-fld-probono" style="display:none;align-items:center;gap:8px;margin-top:12px;cursor:pointer">
+              <input type="checkbox" id="ep-probono">
+              <span class="ep-label" style="margin:0">This was a pro bono engagement (no fee charged)</span>
+            </label>
           </div>
 
-          <!-- Role -->
-          <div class="ep-form-section">
+          <!-- Role (MDP / OBP only) -->
+          <div class="ep-form-section" id="ep-role-section">
             <div class="ep-section-label">Your Role</div>
             <div class="ep-role-grid">
               <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Organiser">
+                <input type="radio" name="ep-role" value="Organiser" checked>
                 <div class="ep-role-card-content">
                   <div class="ep-role-name">Organiser</div>
                   <div class="ep-role-hint">End-to-end programme ownership and revenue accountability</div>
                 </div>
               </label>
               <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Coordinator" checked>
+                <input type="radio" name="ep-role" value="Co-organiser">
                 <div class="ep-role-card-content">
-                  <div class="ep-role-name">Coordinator</div>
-                  <div class="ep-role-hint">Programme management and delivery coordination</div>
-                </div>
-              </label>
-              <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Facilitator">
-                <div class="ep-role-card-content">
-                  <div class="ep-role-name">Facilitator</div>
-                  <div class="ep-role-hint">Lead session delivery for multiple sessions</div>
-                </div>
-              </label>
-              <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Resource_Person">
-                <div class="ep-role-card-content">
-                  <div class="ep-role-name">Resource Person</div>
-                  <div class="ep-role-hint">Subject expert delivering one or two sessions</div>
+                  <div class="ep-role-name">Co-organiser</div>
+                  <div class="ep-role-hint">Shared programme ownership with another faculty member</div>
                 </div>
               </label>
             </div>
+            <div class="ep-label-hint" style="margin-top:10px;font-style:italic">Only add a programme here if you organised or co-organised it. If you contributed as a resource person or facilitator within someone else's programme, record that in the Resource Person Engagements block below.</div>
           </div>
 
           <!-- Notes -->
@@ -1584,28 +1585,30 @@ select.pub-input{cursor:pointer}
         <div class="inst-form" id="inst-form">
           <div class="inst-form-row" style="grid-template-columns:1fr">
             <div>
+              <div class="fl" style="margin-bottom:5px">Role <span class="ab" style="font-weight:400;text-transform:none;letter-spacing:0">optional</span></div>
+              <select class="fi" id="inst-role" style="font-family:'DM Sans',sans-serif">
+                <option value="">No formal role</option>
+                <option>Batch Coordinator</option>
+                <option>Club Faculty Coordinator</option>
+                <option>SIP Coordinator</option>
+                <option>Ximera Coordinator</option>
+                <option>Exams Controller</option>
+                <option>Admissions Committee</option>
+                <option>Placement Committee</option>
+              </select>
+            </div>
+          </div>
+          <div class="inst-form-row" style="grid-template-columns:1fr">
+            <div>
               <div class="fl" style="margin-bottom:5px">Category</div>
               <select class="fi" id="inst-cat" style="font-family:'DM Sans',sans-serif">
                 <option value="">Select category...</option>
-                <option>Committee Memberships</option>
-                <option>Event Leadership (organised or anchored)</option>
-                <option>Student Mentoring (beyond formal teaching)</option>
-                <option>Admissions and Outreach Support</option>
-                <option>Placement and Industry Linkages</option>
-                <option>Alumni Engagement</option>
-                <option>Cross-campus or Cross-department Contribution</option>
-                <option>Accreditation Work</option>
-                <option>IQAC / Quality Systems Contribution</option>
-                <option>Club Faculty Coordinator</option>
-                <option>SIP Coordinator</option>
-                <option>Batch Coordinator</option>
-                <option>Maria Philip Debate</option>
-                <option>Ximera Coordinator</option>
-                <option>Exams Controller</option>
-                <option>JME Editor / Reviewer</option>
-                <option>Newsletter Editor</option>
-                <option>Research Guide</option>
-                <option>Other Institutional Role</option>
+                <option>Event organised (e.g. Maria Philip Debate)</option>
+                <option>Committee membership</option>
+                <option>Process or policy contribution</option>
+                <option>Accreditation work</option>
+                <option>Student mentoring beyond SIP</option>
+                <option>Other</option>
               </select>
             </div>
           </div>
@@ -2154,6 +2157,8 @@ function editEp(id){
   document.getElementById('ep-participants').value=p.participants_count||'';
   document.getElementById('ep-duration').value=p.duration||'';
   document.getElementById('ep-revenue').value=p.revenue||'';
+  document.getElementById('ep-days').value=p.days_consulted||'';
+  document.getElementById('ep-probono').checked=!!p.pro_bono;
   if(p.role){
     const r=document.querySelector(`input[name="ep-role"][value="${p.role}"]`);
     if(r)r.checked=true;
@@ -2170,10 +2175,11 @@ function closeEpForm(){
 }
 
 function resetEpForm(){
-  ['ep-title','ep-client','ep-date','ep-sessions','ep-participants','ep-duration','ep-revenue','ep-revenue-per','ep-notes'].forEach(id=>{
+  ['ep-title','ep-client','ep-date','ep-sessions','ep-participants','ep-duration','ep-revenue','ep-revenue-per','ep-days','ep-notes'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value='';
   });
-  const def=document.querySelector('input[name="ep-role"][value="Coordinator"]');
+  const pb=document.getElementById('ep-probono');if(pb)pb.checked=false;
+  const def=document.querySelector('input[name="ep-role"][value="Organiser"]');
   if(def)def.checked=true;
   /* Default Format radio to MDP (Open Enrolment) */
   const fmtDef=document.querySelector('input[name="ep-format"][value="MDP"]');
@@ -2185,15 +2191,31 @@ function resetEpForm(){
 function selectEpType(type,btn){
   document.querySelectorAll('.ep-type-tab').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  const fmtSection=document.getElementById('ep-format-section');
-  if(type==='MDP_OBP'){
+  const isConsulting=(type==='Consulting');
+  const isMdpObp=(type==='MDP_OBP');
+  const show=(id,on,disp)=>{const el=document.getElementById(id);if(el)el.style.display=on?(disp||'block'):'none';};
+  /* Format, Delivery, Role, Revenue-per-participant: MDP / OBP only */
+  show('ep-format-section',isMdpObp);
+  show('ep-delivery-section',isMdpObp);
+  show('ep-role-section',isMdpObp);
+  show('ep-fld-revper',isMdpObp);
+  /* Consulting-only: days of consulting + pro bono flag */
+  show('ep-fld-days',isConsulting);
+  show('ep-fld-probono',isConsulting,'flex');
+  /* Date hidden for consulting to keep the form lean */
+  show('ep-fld-date',!isConsulting);
+  /* Contextual relabelling for consulting */
+  const lblTitle=document.getElementById('ep-lbl-title');
+  const lblClient=document.getElementById('ep-lbl-client');
+  const revHint=document.getElementById('ep-revenue-hint');
+  if(lblTitle)lblTitle.textContent=isConsulting?'Subject of Consulting':'Programme Title';
+  if(lblClient)lblClient.textContent=isConsulting?'Company Name':'Client / Organisation';
+  if(revHint)revHint.textContent=isConsulting?'Leave blank if pro bono or not disclosed.':'If revenue is unknown, leave blank.';
+  if(isMdpObp){
     /* Composite tab: actual programme_type comes from the inner Format radio */
-    if(fmtSection)fmtSection.style.display='block';
     const checked=document.querySelector('input[name="ep-format"]:checked');
     EP_CURRENT_TYPE=checked?checked.value:'MDP';
   }else{
-    /* Consulting or Conference_Sponsored: hide format selector */
-    if(fmtSection)fmtSection.style.display='none';
     EP_CURRENT_TYPE=type;
   }
 }
@@ -2216,18 +2238,22 @@ async function saveEp(){
   if(!fac){toast('No faculty loaded',false);return;}
   const title=document.getElementById('ep-title').value.trim();
   if(!title){toast('Please enter a programme title',false);return;}
+  const isMdpObp=(EP_CURRENT_TYPE==='MDP'||EP_CURRENT_TYPE==='OBP');
+  const isConsulting=(EP_CURRENT_TYPE==='Consulting');
   const r=document.querySelector('input[name="ep-role"]:checked');
   const data={
     faculty_master_id:fac.id,academic_year:ACADEMIC_YEAR,
     programme_type:EP_CURRENT_TYPE,
     title,
     client:document.getElementById('ep-client').value.trim()||null,
-    date_conducted:document.getElementById('ep-date').value||null,
-    sessions_count:parseInt(document.getElementById('ep-sessions').value)||null,
-    participants_count:parseInt(document.getElementById('ep-participants').value)||null,
-    duration:document.getElementById('ep-duration').value.trim()||null,
+    date_conducted:isConsulting?null:(document.getElementById('ep-date').value||null),
+    sessions_count:isMdpObp?(parseInt(document.getElementById('ep-sessions').value)||null):null,
+    participants_count:isMdpObp?(parseInt(document.getElementById('ep-participants').value)||null):null,
+    duration:isMdpObp?(document.getElementById('ep-duration').value.trim()||null):null,
     revenue:parseFloat(document.getElementById('ep-revenue').value)||null,
-    role:r?r.value:'Coordinator',
+    days_consulted:isConsulting?(parseFloat(document.getElementById('ep-days').value)||null):null,
+    pro_bono:isConsulting?!!document.getElementById('ep-probono').checked:false,
+    role:isMdpObp?(r?r.value:'Organiser'):null,
     notes:document.getElementById('ep-notes').value.trim()||null
   };
   const btn=document.getElementById('ep-save-btn');
@@ -2870,7 +2896,14 @@ function renderInstEntries(){
     const wrap=document.createElement('div');
     wrap.className='inst-entry';
     const inner=document.createElement('div');
-    const cat=document.createElement('div');cat.className='inst-entry-cat';cat.textContent=e.category||'';
+    const cat=document.createElement('div');cat.className='inst-entry-cat';
+    if(e.role){
+      const chip=document.createElement('span');chip.className='inst-entry-role';chip.textContent=e.role;
+      cat.appendChild(chip);
+      cat.appendChild(document.createTextNode(e.category||''));
+    }else{
+      cat.textContent=e.category||'';
+    }
     const desc=document.createElement('div');desc.className='inst-entry-desc';desc.textContent=e.description||'';
     inner.appendChild(cat);inner.appendChild(desc);
     /* Date shown only for legacy entries that already have one; new entries do not capture date (Ranjana feedback) */
@@ -2892,11 +2925,13 @@ function renderInstEntries(){
 
 function addInstitutionEntry(){
   if(g1EditBlocked()){toast('Performance Evaluation locked. Cannot add entries.',false);return;}
+  const role=document.getElementById('inst-role').value;
   const cat=document.getElementById('inst-cat').value;
   const desc=document.getElementById('inst-desc').value.trim();
   if(!cat){toast('Please select a category',false);return;}
   if(!desc){toast('Please enter a description',false);return;}
-  INST_ENTRIES.push({id:'e'+Date.now(),category:cat,description:desc,date:null});
+  INST_ENTRIES.push({id:'e'+Date.now(),role:role||null,category:cat,description:desc,date:null});
+  document.getElementById('inst-role').value='';
   document.getElementById('inst-cat').value='';
   document.getElementById('inst-desc').value='';
   renderInstEntries();
