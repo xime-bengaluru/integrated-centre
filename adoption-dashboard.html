@@ -46,6 +46,12 @@
 
   .main{max-width:1280px;margin:0 auto;padding:28px 24px 60px}
 
+  /* Dashboard tabs */
+  .dash-tabs{display:flex;gap:0;background:white;border:1px solid var(--line-strong);border-radius:10px;padding:4px;width:fit-content;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .dash-tab{padding:9px 18px;font-size:13px;font-weight:500;color:var(--sub);background:transparent;border:none;border-radius:7px;cursor:pointer;font-family:inherit;transition:all .15s}
+  .dash-tab.active{background:var(--navy);color:white}
+  .dash-tab:not(.active):hover{background:var(--cream)}
+
   /* Headline KPIs */
   .kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:32px}
   @media (max-width:900px){.kpi-strip{grid-template-columns:repeat(2,1fr)}}
@@ -126,6 +132,42 @@
   .grid-table tr.total-row td{font-weight:600;background:var(--cream);border-top:1px solid var(--line-strong);border-bottom:none}
   .grid-table tr.total-row td.campus-cell{color:var(--gold-d)}
 
+  /* Performance summary: controls */
+  .perf-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px}
+  .perf-chip{font-size:12px;padding:6px 13px;border-radius:8px;border:1px solid var(--line-strong);background:white;color:var(--sub);cursor:pointer;font-family:inherit}
+  .perf-chip:hover{border-color:var(--gold)}
+  .perf-chip.on{background:var(--navy);color:white;border-color:var(--navy)}
+  .perf-chip-group{display:flex;gap:6px;flex-wrap:wrap}
+  .perf-chip-sep{width:1px;height:22px;background:var(--line-strong);margin:0 6px}
+  .perf-coverage{margin-left:auto;font-size:12px;color:var(--muted);background:white;border:1px solid var(--line);padding:6px 13px;border-radius:8px}
+  .perf-coverage strong{color:var(--gold-d);font-weight:600}
+
+  /* 9-box */
+  .ninebox-wrap{background:white;border:1px solid var(--line);border-radius:12px;padding:24px 26px;margin-bottom:24px}
+  .nb-axis-row{display:flex;gap:10px}
+  .nb-yaxis{display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .nb-grid{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:8px}
+  .nb-cell{position:relative;border:1px solid var(--line);background:var(--cream);border-radius:8px;min-height:128px;padding:7px 9px}
+  .nb-cell.star{border:2px solid var(--gold);background:var(--gold-pale)}
+  .nb-cell-lbl{font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;letter-spacing:.03em}
+  .nb-xaxis{text-align:center;font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-top:6px}
+  .nb-dot{position:absolute;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;cursor:default;border:1px solid rgba(13,31,53,.12);font-family:'DM Sans',sans-serif}
+  .nb-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--sub);align-items:center}
+  .nb-legend-sw{width:14px;height:14px;border-radius:50%;border:1px solid rgba(13,31,53,.12)}
+  .nb-empty{padding:40px 0;text-align:center;color:var(--muted);font-size:13px}
+
+  /* Roster */
+  .roster-block{background:white;border:1px solid var(--line);border-radius:12px;padding:24px 26px;margin-bottom:28px;overflow-x:auto}
+  .roster-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:820px}
+  .roster-table th{font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:9px 7px;border-bottom:1px solid var(--line);text-align:center;line-height:1.3;vertical-align:bottom}
+  .roster-table th.l{text-align:left}
+  .roster-table td{padding:10px 7px;text-align:center;border-bottom:.5px solid var(--line);font-family:'DM Mono',monospace;font-size:12px;color:var(--text)}
+  .roster-table td.l{text-align:left;font-family:'DM Sans',sans-serif}
+  .roster-name{font-weight:500;color:var(--text)}
+  .roster-sub{font-size:10.5px;color:var(--faint)}
+  .roster-na{color:var(--faint);font-style:italic;font-family:'DM Sans',sans-serif;font-size:11.5px;text-align:center}
+  .roster-trip{letter-spacing:.06em}
+
   .blocker{display:none;padding:80px 32px;text-align:center;color:var(--muted);font-size:14px;max-width:520px;margin:0 auto}
   .blocker-h{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--text);margin-bottom:12px;font-weight:500}
 
@@ -138,6 +180,8 @@
     .bar-row{grid-template-columns:90px 1fr 50px;gap:10px}
     .interv-row{grid-template-columns:1fr;gap:8px}
     .interv-row-r{justify-content:space-between}
+    .nb-cell{min-height:108px}
+    .perf-coverage{margin-left:0}
   }
 </style>
 </head>
@@ -166,12 +210,27 @@
 </div>
 
 <div class="main" id="main">
-  <div class="kpi-strip" id="kpi-strip"></div>
-  <div id="interv-section"></div>
-  <div class="sec-header">Stage Occupancy by Campus</div>
-  <div class="sec-sub">Where every faculty evaluation sits right now. The bars give the institutional shape at a glance, the grid below gives the precise counts. Total faculty population: 83 (Bengaluru 45, Chennai 17, Kochi 21).</div>
-  <div class="bars-block" id="bars-block"></div>
-  <div class="grid-block" id="grid-block"></div>
+  <div class="dash-tabs">
+    <button class="dash-tab active" data-tab="adoption" onclick="switchTab('adoption')">Adoption throughput</button>
+    <button class="dash-tab" data-tab="performance" onclick="switchTab('performance')">Performance summary</button>
+  </div>
+
+  <div id="tab-adoption">
+    <div class="kpi-strip" id="kpi-strip"></div>
+    <div id="interv-section"></div>
+    <div class="sec-header">Stage Occupancy by Campus</div>
+    <div class="sec-sub">Where every faculty evaluation sits right now. The bars give the institutional shape at a glance, the grid below gives the precise counts. Total faculty population: 83 (Bengaluru 45, Chennai 17, Kochi 21).</div>
+    <div class="bars-block" id="bars-block"></div>
+    <div class="grid-block" id="grid-block"></div>
+  </div>
+
+  <div id="tab-performance" style="display:none">
+    <div class="sec-header">Performance Summary</div>
+    <div class="sec-sub">Director assessments across the four areas, plotted by performance and potential. Effort shows as dot colour. Filter by area or campus. A faculty member appears once their director has saved an assessment, so coverage builds through the cycle.</div>
+    <div class="perf-controls" id="perf-controls"></div>
+    <div class="ninebox-wrap" id="ninebox-wrap"></div>
+    <div class="roster-block" id="roster-block"></div>
+  </div>
 </div>
 
 <div class="blocker" id="blocker">
@@ -224,6 +283,10 @@ let ALL_DEAN_REVIEWS=[];
 let ALL_DIR_REVIEWS=[];
 let DEAN_REGISTRY=[];
 let DIR_REGISTRY=[];
+let ALL_ASSESSMENTS=[];
+let ASSESS_BY_FAC={};
+let PERF_VIEW='overall';
+let PERF_CAMPUS='All';
 
 function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -328,13 +391,14 @@ async function resolveAccess(){
 
 /* ---------- Data load ---------- */
 async function loadAll(){
-  const[facRes,evRes,deanRes,dirRes,deanRegRes,dirRegRes]=await Promise.all([
+  const[facRes,evRes,deanRes,dirRes,deanRegRes,dirRegRes,assessRes]=await Promise.all([
     sb.from('faculty_master').select('id,name,email,campus,designation,subject_area').order('campus'),
     sb.from('faculty_evaluations').select('*').eq('academic_year',ACADEMIC_YEAR),
     sb.from('evaluation_dean_reviews').select('*'),
     sb.from('evaluation_director_reviews').select('*'),
     sb.from('dean_registry').select('*'),
-    sb.from('director_campus_map').select('*')
+    sb.from('director_campus_map').select('*'),
+    sb.from('director_performance_assessments').select('*').eq('academic_year',ACADEMIC_YEAR)
   ]);
   ALL_FACULTY=facRes.data||[];
   ALL_EVALS=evRes.data||[];
@@ -342,6 +406,9 @@ async function loadAll(){
   ALL_DIR_REVIEWS=dirRes.data||[];
   DEAN_REGISTRY=deanRegRes.data||[];
   DIR_REGISTRY=dirRegRes.data||[];
+  ALL_ASSESSMENTS=assessRes.data||[];
+  ASSESS_BY_FAC={};
+  ALL_ASSESSMENTS.forEach(a=>{ASSESS_BY_FAC[a.faculty_master_id]=a;});
 
   /* Index evals and reviews by faculty_master_id and evaluation_id */
   const evalByFac={};
@@ -582,6 +649,208 @@ function renderGrid(){
   container.appendChild(table);
 }
 
+/* ---------- Performance Summary (Tier 4) ---------- */
+const PERF_AREA_KEYS=['teaching','research','institution','external'];
+const PERF_AREA_LABELS={overall:'Overall',teaching:'Teaching',research:'Research',institution:'Institution',external:'External programs'};
+const VAL_NUM={H:3,M:2,L:1};
+const NB_CELLS=[['Develop','Growth','Star'],['Inconsistent','Core','High performer'],['Concern','Effective','Expert']];
+const EFF_FILL=['#FCE3BC','#D97706','#7A4200'];
+const EFF_TEXT=['#7A4200','#FFFFFF','#FFFFFF'];
+const EFF_LBL=['Low','Medium','High'];
+const BAND_LBL=['Low','Med','High'];
+
+function bandOf(avg){if(avg==null)return null;if(avg<=1.66)return 0;if(avg<2.34)return 1;return 2;}
+
+function areaTriple(ratings,area){
+  const o=(ratings&&ratings[area])||{};
+  const num=v=>(v&&VAL_NUM[v])?VAL_NUM[v]:null;
+  return{e:num(o.effort),p:num(o.performance),po:num(o.potential)};
+}
+
+function computeView(ratings,view){
+  if(!ratings)return null;
+  if(view==='overall'){
+    const ps=[],pos=[],es=[];
+    PERF_AREA_KEYS.forEach(a=>{const t=areaTriple(ratings,a);if(t.p!=null)ps.push(t.p);if(t.po!=null)pos.push(t.po);if(t.e!=null)es.push(t.e);});
+    if(ps.length===0||pos.length===0)return null;
+    const mean=arr=>arr.reduce((x,y)=>x+y,0)/arr.length;
+    return{perf:bandOf(mean(ps)),pot:bandOf(mean(pos)),eff:es.length?bandOf(mean(es)):1};
+  }
+  const t=areaTriple(ratings,view);
+  if(t.p==null||t.po==null)return null;
+  return{perf:bandOf(t.p),pot:bandOf(t.po),eff:t.e!=null?bandOf(t.e):1};
+}
+
+function initials(name){
+  const parts=(name||'').trim().split(/\s+/).filter(Boolean);
+  if(parts.length===0)return '?';
+  if(parts.length===1)return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+}
+
+function hasRatings(a){return !!(a&&a.ratings&&Object.keys(a.ratings).length>0);}
+
+function scopeFaculty(){
+  return PERF_CAMPUS==='All'?ALL_FACULTY:ALL_FACULTY.filter(f=>f.campus===PERF_CAMPUS);
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.dash-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  document.getElementById('tab-adoption').style.display=(tab==='adoption')?'block':'none';
+  document.getElementById('tab-performance').style.display=(tab==='performance')?'block':'none';
+}
+
+function renderPerformance(){
+  renderPerfControls();
+  render9box();
+  renderRoster();
+}
+
+function renderPerfControls(){
+  const scope=scopeFaculty();
+  const assessed=scope.filter(f=>hasRatings(ASSESS_BY_FAC[f.id])).length;
+  const c=document.getElementById('perf-controls');
+  c.innerHTML='';
+
+  const areaGroup=document.createElement('div');areaGroup.className='perf-chip-group';
+  ['overall','teaching','research','institution','external'].forEach(v=>{
+    const b=document.createElement('button');b.className='perf-chip'+(PERF_VIEW===v?' on':'');
+    b.textContent=PERF_AREA_LABELS[v];b.onclick=()=>{PERF_VIEW=v;renderPerformance();};
+    areaGroup.appendChild(b);
+  });
+  c.appendChild(areaGroup);
+
+  const sep=document.createElement('div');sep.className='perf-chip-sep';c.appendChild(sep);
+
+  const campGroup=document.createElement('div');campGroup.className='perf-chip-group';
+  ['All','Bengaluru','Chennai','Kochi'].forEach(v=>{
+    const b=document.createElement('button');b.className='perf-chip'+(PERF_CAMPUS===v?' on':'');
+    b.textContent=v;b.onclick=()=>{PERF_CAMPUS=v;renderPerformance();};
+    campGroup.appendChild(b);
+  });
+  c.appendChild(campGroup);
+
+  const cov=document.createElement('div');cov.className='perf-coverage';
+  cov.innerHTML=`<strong>${assessed}</strong> / ${scope.length} assessed`;
+  c.appendChild(cov);
+}
+
+function render9box(){
+  const wrap=document.getElementById('ninebox-wrap');
+  wrap.innerHTML='';
+
+  const scope=scopeFaculty();
+  const plotted=[];
+  scope.forEach(f=>{
+    const a=ASSESS_BY_FAC[f.id];
+    if(!hasRatings(a))return;
+    const pos=computeView(a.ratings,PERF_VIEW);
+    if(!pos)return;
+    plotted.push({f,pos});
+  });
+
+  if(plotted.length===0){
+    const e=document.createElement('div');e.className='nb-empty';
+    e.textContent='No assessments to plot for this view yet. They appear here as directors save them.';
+    wrap.appendChild(e);
+    return;
+  }
+
+  const axisRow=document.createElement('div');axisRow.className='nb-axis-row';
+  const yaxis=document.createElement('div');yaxis.className='nb-yaxis';yaxis.textContent='Potential →';
+  axisRow.appendChild(yaxis);
+
+  const grid=document.createElement('div');grid.className='nb-grid';
+  const cellEl={};
+  for(let row=0;row<3;row++)for(let col=0;col<3;col++){
+    const cell=document.createElement('div');cell.className='nb-cell'+(row===0&&col===2?' star':'');
+    const lbl=document.createElement('div');lbl.className='nb-cell-lbl';lbl.textContent=NB_CELLS[row][col];
+    cell.appendChild(lbl);grid.appendChild(cell);cellEl[col+'-'+row]=cell;
+  }
+  axisRow.appendChild(grid);
+  wrap.appendChild(axisRow);
+
+  const xaxis=document.createElement('div');xaxis.className='nb-xaxis';xaxis.textContent='Performance →';
+  wrap.appendChild(xaxis);
+
+  plotted.forEach((item,k)=>{
+    const f=item.f,pos=item.pos;
+    const col=pos.perf,row=2-pos.pot;
+    const cell=cellEl[col+'-'+row];
+    if(!cell)return;
+    const dot=document.createElement('div');dot.className='nb-dot';
+    dot.style.background=EFF_FILL[pos.eff];dot.style.color=EFF_TEXT[pos.eff];
+    dot.textContent=initials(f.name);
+    dot.title=(f.name||'')+' — '+(f.campus||'')+' · effort '+EFF_LBL[pos.eff];
+    const jx=20+((k*41)%56),jy=26+((k*57)%72);
+    dot.style.left=jx+'px';dot.style.top=jy+'px';
+    cell.appendChild(dot);
+  });
+
+  const legend=document.createElement('div');legend.className='nb-legend';
+  const effLbl=document.createElement('span');effLbl.style.color='var(--faint)';effLbl.textContent='Effort:';
+  legend.appendChild(effLbl);
+  [0,1,2].forEach(i=>{
+    const s=document.createElement('span');s.style.display='flex';s.style.alignItems='center';s.style.gap='6px';
+    const sw=document.createElement('span');sw.className='nb-legend-sw';sw.style.background=EFF_FILL[i];
+    const tx=document.createElement('span');tx.textContent=EFF_LBL[i];
+    s.appendChild(sw);s.appendChild(tx);legend.appendChild(s);
+  });
+  const note=document.createElement('span');note.style.marginLeft='auto';note.style.color='var(--faint)';
+  note.textContent=plotted.length+' plotted · hover a dot for the name';
+  legend.appendChild(note);
+  wrap.appendChild(legend);
+}
+
+function tripStr(t){
+  const m=v=>v==null?'–':(v===3?'H':v===2?'M':'L');
+  return m(t.e)+' '+m(t.p)+' '+m(t.po);
+}
+
+function renderRoster(){
+  const block=document.getElementById('roster-block');
+  block.innerHTML='';
+  const scope=scopeFaculty();
+
+  const table=document.createElement('table');table.className='roster-table';
+  const thead=document.createElement('thead');
+  thead.innerHTML='<tr><th class="l">Faculty</th><th>Overall<br>perf / pot</th><th>Effort</th><th>Teaching<br>E·P·Po</th><th>Research<br>E·P·Po</th><th>Institution<br>E·P·Po</th><th>External<br>E·P·Po</th><th>Note</th></tr>';
+  table.appendChild(thead);
+
+  const tbody=document.createElement('tbody');
+  /* sort: assessed first, then by name */
+  const sorted=[...scope].sort((a,b)=>{
+    const aa=hasRatings(ASSESS_BY_FAC[a.id])?0:1, bb=hasRatings(ASSESS_BY_FAC[b.id])?0:1;
+    if(aa!==bb)return aa-bb;
+    return (a.name||'').localeCompare(b.name||'');
+  });
+
+  sorted.forEach(f=>{
+    const a=ASSESS_BY_FAC[f.id];
+    const tr=document.createElement('tr');
+    const nameCell=`<td class="l"><div class="roster-name">${escapeHtml(f.name||'')}</div><div class="roster-sub">${escapeHtml(f.campus||'')} · ${escapeHtml(f.designation||'')}</div></td>`;
+    if(!hasRatings(a)){
+      tr.innerHTML=nameCell+'<td colspan="7" class="roster-na">Not assessed yet</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+    const ov=computeView(a.ratings,'overall');
+    const ovStr=ov?(BAND_LBL[ov.perf]+' / '+BAND_LBL[ov.pot]):'–';
+    const effStr=ov?EFF_LBL[ov.eff]:'–';
+    let cells=nameCell+`<td>${ovStr}</td><td>${effStr}</td>`;
+    PERF_AREA_KEYS.forEach(ak=>{
+      const t=areaTriple(a.ratings,ak);
+      cells+=`<td class="roster-trip">${tripStr(t)}</td>`;
+    });
+    const hasNote=!!(a.comments&&a.comments.overall);
+    cells+=`<td title="${hasNote?escapeHtml(a.comments.overall):''}">${hasNote?'●':'–'}</td>`;
+    tr.innerHTML=cells;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  block.appendChild(table);
+}
+
 /* ---------- Init ---------- */
 async function init(){
   const access=await resolveAccess();
@@ -593,6 +862,7 @@ async function init(){
     renderInterventions();
     renderBars();
     renderGrid();
+    renderPerformance();
   }catch(e){
     dlog('INIT',e);
     toast('Dashboard load failed: '+(e.message||'unknown')+'. Tell Girish.',false);
