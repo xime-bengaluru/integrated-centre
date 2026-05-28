@@ -169,6 +169,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .fb-form-head{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy);margin-bottom:6px}
 .fb-form-sub{font-size:12px;color:var(--mute);margin-bottom:20px;line-height:1.6}
 .fb-form-sec{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.fb-sec-hint{display:inline-block;font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);background:var(--parchment);border:1px solid var(--line);border-radius:10px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.fb-form-sec:has(.fb-sec-hint:not(:empty)) .fb-sec-hint{font-style:normal}
 .fb-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .fb-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .fb-grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
@@ -337,18 +339,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
         <div class="fb-field"><div class="fb-label">Academic Year</div><input class="fb-input" id="fb-ay" value="2025-26" readonly></div>
       </div>
 
-      <div class="fb-form-sec">Scores</div>
+      <div class="fb-form-sec">Quick Capture <span class="fb-sec-hint">recommended</span></div>
+      <div class="fh" style="margin-bottom:14px">Paste your feedback report text and enter the headline numbers from your PDF. This alone is enough to submit. Per-question detail is optional.</div>
       <div class="fb-grid3">
-        <div class="fb-field"><div class="fb-label">Students Who Submitted</div><input class="fb-input" id="fb-students" type="number" min="1" placeholder="e.g. 46" oninput="recalcOverall()"></div>
-        <div class="fb-field"><div class="fb-label">Overall Percentage Score</div><input class="fb-input" id="fb-overall-pct" readonly placeholder="Auto-calculated"></div>
-        <div class="fb-field"><div class="fb-label">Overall Mean Score</div><input class="fb-input" id="fb-overall-mean" readonly placeholder="Auto-calculated"></div>
+        <div class="fb-field"><div class="fb-label">Students Who Submitted</div><input class="fb-input" id="fb-students" type="number" min="0" placeholder="e.g. 46" oninput="recalcOverall()"></div>
+        <div class="fb-field"><div class="fb-label">Overall Percentage Score</div><input class="fb-input" id="fb-overall-pct" type="number" step="0.01" min="0" max="100" placeholder="e.g. 87.50"></div>
+        <div class="fb-field"><div class="fb-label">Overall Mean Score</div><input class="fb-input" id="fb-overall-mean" type="number" step="0.01" min="0" max="4" placeholder="e.g. 3.50"></div>
+      </div>
+      <div class="fh" style="margin:6px 0 14px;font-size:11px;color:var(--faint);font-style:italic">Type these directly from your PDF, or leave blank to auto-calculate when you fill the per-question grid below.</div>
+
+      <div class="fb-field" style="margin-bottom:6px">
+        <div class="fb-label">Paste Feedback Report Text</div>
+        <div class="fh" style="margin-bottom:6px">Paste the full text from your PDF report here. Dean Office will validate the headline scores against this content.</div>
+        <textarea class="fi" id="fb-raw-text" rows="10" placeholder="Paste the full feedback report text (sections, question summaries, student verbatims, anything)..."></textarea>
       </div>
 
-      <div class="fb-form-sec">Objective Questions · Response Distribution</div>
-      <div class="fh" style="margin-bottom:14px">Enter the count of students who selected each option for each question. Mean auto-calculates.</div>
+      <div class="fb-form-sec">Objective Questions · Response Distribution <span class="fb-sec-hint">optional</span></div>
+      <div class="fh" style="margin-bottom:14px">If you want structured per-question data, enter the count of students who selected each option. Mean auto-calculates and overrides the value above.</div>
       <div id="fb-q-inputs"></div>
 
-      <div class="fb-form-sec">Subjective Responses</div>
+      <div class="fb-form-sec">Subjective Responses <span class="fb-sec-hint">optional</span></div>
       <div class="fb-grid2" style="margin-bottom:14px">
         <div class="fb-field">
           <div class="fb-label">What did this faculty do best?</div>
@@ -362,14 +372,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
         </div>
       </div>
 
-      <div class="fb-form-sec">Source Document &amp; Additional Notes</div>
+      <div class="fb-form-sec">Source &amp; Notes <span class="fb-sec-hint">optional</span></div>
       <div class="fb-field" style="margin-bottom:14px">
         <div class="fb-label">Source Note</div>
         <input class="fb-input" id="fb-source-note" placeholder="e.g. XIME BA-05 End Term Feedback, Term 3, AY 2025-26">
       </div>
       <div class="fb-field">
-        <div class="fb-label">Additional Feedback Summary <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></div>
-        <textarea class="fi" id="fb-extra-text" rows="6" placeholder="Paste qualitative student feedback summary, additional quantitative breakdown, or any context not captured in the structured fields above. PDF upload will be available in the next cycle."></textarea>
+        <div class="fb-label">Additional Notes <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></div>
+        <textarea class="fi" id="fb-extra-text" rows="4" placeholder="Anything else the Dean Office should see alongside this entry (context, mitigating factors, supplementary analysis)..."></textarea>
       </div>
 
       <div class="fb-form-actions">
@@ -658,12 +668,24 @@ function buildFbCard(e){
   }
   card.appendChild(footer);
 
+  /* Raw pasted feedback report text, if any. Renders above the Additional
+     Notes block. Uses textContent (not innerHTML) since it is user-pasted. */
+  if(e.raw_feedback_text&&e.raw_feedback_text.trim()){
+    const rawBlock=document.createElement('div');rawBlock.className='fb-extra-block';
+    const rawLabel=document.createElement('div');rawLabel.className='fb-extra-label';
+    rawLabel.textContent='Pasted Feedback Report';
+    const rawBody=document.createElement('div');rawBody.className='fb-extra-body';
+    rawBody.textContent=e.raw_feedback_text;
+    rawBlock.appendChild(rawLabel);rawBlock.appendChild(rawBody);
+    card.appendChild(rawBlock);
+  }
+
   /* Additional pasted feedback summary, if any. Uses textContent (not innerHTML)
      since it is user-pasted free-text content. Renders below the structured fields. */
   if(e.extra_text&&e.extra_text.trim()){
     const extraBlock=document.createElement('div');extraBlock.className='fb-extra-block';
     const extraLabel=document.createElement('div');extraLabel.className='fb-extra-label';
-    extraLabel.textContent='Additional Feedback Summary';
+    extraLabel.textContent='Additional Notes';
     const extraBody=document.createElement('div');extraBody.className='fb-extra-body';
     extraBody.textContent=e.extra_text;
     extraBlock.appendChild(extraLabel);extraBlock.appendChild(extraBody);
@@ -737,11 +759,6 @@ function calcQMean(qi){
 
 function recalcOverall(){
   const students=parseInt(document.getElementById('fb-students').value)||0;
-  if(students===0){
-    document.getElementById('fb-overall-mean').value='';
-    document.getElementById('fb-overall-pct').value='';
-    return;
-  }
   let totalMean=0;let validQ=0;
   FB_QUESTIONS.forEach((_,i)=>{
     const E=parseInt(document.getElementById('fb-q'+i+'-e')?.value)||0;
@@ -755,7 +772,9 @@ function recalcOverall(){
       totalMean+=m;validQ++;
     }
   });
-  if(validQ>0){
+  /* Only override the editable mean/pct fields when the structured grid
+     actually has data. Otherwise leave any typed values intact. */
+  if(validQ>0&&students>0){
     const overallMean=totalMean/validQ;
     const overallPct=(overallMean/4)*100;
     document.getElementById('fb-overall-mean').value=overallMean.toFixed(2);
@@ -769,10 +788,11 @@ async function saveFbEntry(){
   const courseCode=document.getElementById('fb-course-code').value.trim();
   const term=document.getElementById('fb-term').value;
   const students=parseInt(document.getElementById('fb-students').value)||0;
+  const rawText=document.getElementById('fb-raw-text').value.trim();
 
   if(!courseName){toast('Please enter the course name',false);return;}
   if(!term){toast('Please select the term',false);return;}
-  if(students<1){toast('Please enter the number of students who submitted',false);return;}
+  if(students<1&&!rawText){toast('Please enter the number of students who submitted, or paste your feedback report text',false);return;}
 
   const questions=FB_QUESTIONS.map((_,i)=>({
     excellent:parseInt(document.getElementById('fb-q'+i+'-e').value)||0,
@@ -801,6 +821,7 @@ async function saveFbEntry(){
     did_best:didBest,
     one_change:oneChange,
     source_note:document.getElementById('fb-source-note').value.trim(),
+    raw_feedback_text:rawText,
     extra_text:document.getElementById('fb-extra-text').value.trim()
   };
 
@@ -811,7 +832,7 @@ async function saveFbEntry(){
   toast('Course feedback entry added and saved');
 
   /* Clear form */
-  ['fb-course-name','fb-course-code','fb-term','fb-students','fb-overall-pct','fb-overall-mean','fb-did-best','fb-one-change','fb-source-note','fb-extra-text'].forEach(id=>{
+  ['fb-course-name','fb-course-code','fb-term','fb-students','fb-overall-pct','fb-overall-mean','fb-did-best','fb-one-change','fb-source-note','fb-raw-text','fb-extra-text'].forEach(id=>{
     const el=document.getElementById(id);if(el&&el.id!=='fb-ay')el.value='';
   });
   buildFbQInputs();
