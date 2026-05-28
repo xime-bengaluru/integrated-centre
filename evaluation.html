@@ -377,9 +377,21 @@ select.pub-input{cursor:pointer}
 .ds-matrix-opts label{display:flex;align-items:center;justify-content:center;padding:5px 0;background:var(--parchment);border:1px solid var(--line);border-radius:4px;cursor:pointer;font-size:11px;color:var(--mute);transition:all .12s;position:relative}
 .ds-matrix-opts label:hover{border-color:var(--gold-d);color:var(--charcoal)}
 .ds-matrix-opts label input[type="radio"]{position:absolute;opacity:0;pointer-events:none}
-.ds-matrix-opts label:has(input:checked){background:var(--cream);border-color:var(--gold);color:var(--gold-d);font-weight:600}
+.ds-matrix-opts label:has(input:checked){background:var(--gold);border-color:var(--gold-d);color:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
 .ds-clear{background:transparent;border:1px solid transparent;color:var(--mute);cursor:pointer;font-size:13px;padding:4px 0;border-radius:4px;transition:all .12s}
 .ds-clear:hover{color:#a93e3e;border-color:#e5d4d4;background:#fbf5f5}
+
+/* Data sources usage summary strip - live updates */
+.ds-summary{margin-top:12px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:var(--rs);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px}
+.ds-summary-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);font-weight:600}
+.ds-summary-stats{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ds-summary-stat{display:flex;align-items:center;gap:6px;color:var(--charcoal)}
+.ds-summary-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.ds-summary-dot.high{background:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,0.18)}
+.ds-summary-dot.medium{background:#bfa769;opacity:.75}
+.ds-summary-dot.low{background:#d5c89c;opacity:.6}
+.ds-summary-count{font-weight:600;color:var(--navy)}
+.ds-summary-total{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--mute);background:var(--parchment);padding:4px 10px;border-radius:12px;border:1px solid var(--line)}
 
 /* ===================================================
    TEACHING SECTION RESTRUCTURE
@@ -464,6 +476,8 @@ select.pub-input{cursor:pointer}
 .ep-add-btn:hover{background:var(--gold);color:var(--navy-dark)}
 
 .ep-table-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.ep-filter-hint{font-size:11.5px;color:var(--mute);font-style:italic;margin:-6px 0 14px 4px;padding:0;line-height:1.5}
+.ep-filter-hint strong{font-style:normal;color:var(--gold-d);font-weight:600}
 .ep-table{width:100%;border-collapse:collapse;font-size:12.5px}
 .ep-table thead{background:var(--cream)}
 .ep-table th{padding:10px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--charcoal);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -1115,6 +1129,15 @@ select.pub-input{cursor:pointer}
             <div class="ds-matrix-row" data-src="cmie_prowess"><div class="ds-matrix-name">CMIE <span class="ds-sub">Prowess</span></div><div class="ds-matrix-opts"><label><input type="radio" name="ds-cmie_prowess" value="low"><span>Low</span></label><label><input type="radio" name="ds-cmie_prowess" value="medium"><span>Med</span></label><label><input type="radio" name="ds-cmie_prowess" value="high"><span>High</span></label><button type="button" class="ds-clear" onclick="clearDsRating('cmie_prowess')">x</button></div></div>
             <div class="ds-matrix-row" data-src="bloomberg"><div class="ds-matrix-name">Bloomberg</div><div class="ds-matrix-opts"><label><input type="radio" name="ds-bloomberg" value="low"><span>Low</span></label><label><input type="radio" name="ds-bloomberg" value="medium"><span>Med</span></label><label><input type="radio" name="ds-bloomberg" value="high"><span>High</span></label><button type="button" class="ds-clear" onclick="clearDsRating('bloomberg')">x</button></div></div>
           </div>
+          <div class="ds-summary" id="ds-summary">
+            <div class="ds-summary-label">Tools usage summary</div>
+            <div class="ds-summary-stats" id="ds-summary-stats">
+              <div class="ds-summary-stat"><span class="ds-summary-dot high"></span>High <span class="ds-summary-count" id="ds-count-high">0</span></div>
+              <div class="ds-summary-stat"><span class="ds-summary-dot medium"></span>Medium <span class="ds-summary-count" id="ds-count-medium">0</span></div>
+              <div class="ds-summary-stat"><span class="ds-summary-dot low"></span>Low <span class="ds-summary-count" id="ds-count-low">0</span></div>
+            </div>
+            <div class="ds-summary-total" id="ds-summary-total">0 of 10 sources used</div>
+          </div>
         </div>
 
         <div class="f" style="margin-top:14px">
@@ -1223,13 +1246,13 @@ select.pub-input{cursor:pointer}
       <div class="ep-toolbar">
         <div class="ep-filters">
           <button class="ep-filter active" data-ep-filter="all" onclick="filterEps('all',this)">All</button>
-          <button class="ep-filter" data-ep-filter="MDP" onclick="filterEps('MDP',this)">MDP</button>
-          <button class="ep-filter" data-ep-filter="OBP" onclick="filterEps('OBP',this)">OBP</button>
+          <button class="ep-filter" data-ep-filter="MDP_OBP" onclick="filterEps('MDP_OBP',this)">MDP / OBP</button>
           <button class="ep-filter" data-ep-filter="Consulting" onclick="filterEps('Consulting',this)">Consulting</button>
           <button class="ep-filter" data-ep-filter="Conference_Sponsored" onclick="filterEps('Conference_Sponsored',this)">Conference Sponsored</button>
         </div>
         <button class="ep-add-btn" onclick="openEpForm()" id="ep-add-btn">+ Add Programme</button>
       </div>
+      <div class="ep-filter-hint" id="ep-filter-hint">Showing all programmes you led this year.</div>
 
       <!-- EP consolidated table -->
       <div class="ep-table-wrap">
@@ -1380,12 +1403,27 @@ select.pub-input{cursor:pointer}
 
       <div class="fdiv"></div>
 
+      <!-- Resource Person Summary (separate from organised programmes) -->
+      <div class="ep-referral-block">
+        <div class="ep-referral-head">
+          <div>
+            <div class="ep-referral-title">Resource Person Engagements</div>
+            <div class="ep-referral-sub">For sessions you delivered as a resource person inside someone else's programme - not your own organised MDP, OBP, or Consulting. Summarise all such work this year in one block.</div>
+          </div>
+        </div>
+        <div class="ep-field">
+          <textarea class="fi" id="f-rp-summary" rows="4" placeholder="e.g. Delivered 3 sessions on leadership for XYZ Corp internal programme (July); guest faculty for IIM-K executive course (Sep); 2 sessions on strategy at Bosch internal training (Jan)..."></textarea>
+        </div>
+      </div>
+
+      <div class="fdiv"></div>
+
       <!-- Referral logging -->
       <div class="ep-referral-block">
         <div class="ep-referral-head">
           <div>
-            <div class="ep-referral-title">MDP Referrals Generated</div>
-            <div class="ep-referral-sub">Track enquiries or conversions you brought to the EP team</div>
+            <div class="ep-referral-title">EP Referrals Generated</div>
+            <div class="ep-referral-sub">Summary of referrals you generated this year across MDP, OBP, and Consulting engagements</div>
           </div>
         </div>
         <div class="ep-grid2">
@@ -1399,17 +1437,17 @@ select.pub-input{cursor:pointer}
           </div>
         </div>
         <div class="ep-field" style="margin-top:12px">
-          <div class="ep-label">Referral Details <span class="ep-label-hint">brief context for each referral</span></div>
-          <textarea class="fi" id="f-referrals-detail" rows="2" placeholder="e.g. Bosch India, introduced via alumni network, 35 participants programme"></textarea>
+          <div class="ep-label">Referral Details <span class="ep-label-hint">brief context across MDP, OBP, and Consulting</span></div>
+          <textarea class="fi" id="f-referrals-detail" rows="2" placeholder="e.g. Bosch India (MDP), introduced via alumni network, 35 participants programme; ACME (Consulting), 6-month engagement on strategy..."></textarea>
         </div>
       </div>
 
       <div class="fdiv"></div>
 
       <div class="f">
-        <div class="fl">Other Industry Engagements</div>
-        <div class="fh" style="margin-bottom:6px">Advisory boards, expert panels, speaking engagements not captured above</div>
-        <textarea class="fi" id="f-ind" rows="3" placeholder="Industry roles, advisory positions, conference talks, live projects supervised..."></textarea>
+        <div class="fl">Other Industry Contributions</div>
+        <div class="fh" style="margin-bottom:6px">Anything you did this year that deepened industry understanding - yours, your students', or the institution's. Roles, exchanges, observations, learnings, advisory positions, expert panels, live projects supervised. Free-form.</div>
+        <textarea class="fi" id="f-ind" rows="3" placeholder="e.g. Sat on advisory panel for industry body, ran a live project capturing 20 student site visits, attended 3 sector roundtables and brought back insights for the Marketing core course..."></textarea>
       </div>
     </div>
   </section>
@@ -1905,7 +1943,14 @@ function renderEpSummary(){
 
 function renderEpTable(){
   const tbody=document.getElementById('ep-table-body');
-  const filtered=EP_FILTER==='all'?EP_PROGRAMMES:EP_PROGRAMMES.filter(p=>p.programme_type===EP_FILTER);
+  let filtered;
+  if(EP_FILTER==='all'){
+    filtered=EP_PROGRAMMES;
+  }else if(EP_FILTER==='MDP_OBP'){
+    filtered=EP_PROGRAMMES.filter(p=>p.programme_type==='MDP'||p.programme_type==='OBP');
+  }else{
+    filtered=EP_PROGRAMMES.filter(p=>p.programme_type===EP_FILTER);
+  }
   if(filtered.length===0){
     tbody.innerHTML='<tr><td colspan="8" class="ep-empty-row">No programmes recorded yet. Click + Add Programme to add the first.</td></tr>';
     return;
@@ -1945,6 +1990,14 @@ function filterEps(type,btn){
   EP_FILTER=type;
   document.querySelectorAll('.ep-filter').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  const hints={
+    all:'Showing all programmes you led this year.',
+    MDP_OBP:'<strong>Add only if you organised the MDP or OBP.</strong> If you were a resource person within someone else\'s programme, capture that in the Resource Person Summary below.',
+    Consulting:'<strong>Add only if you were running the consulting engagement.</strong> If you participated as a resource person, capture that in the Resource Person Summary below.',
+    Conference_Sponsored:'Conference attendance or sponsorship delivered this year.'
+  };
+  const hintEl=document.getElementById('ep-filter-hint');
+  if(hintEl)hintEl.innerHTML=hints[type]||hints.all;
   renderEpTable();
 }
 
@@ -2179,7 +2232,7 @@ function showDualRoleNote(faculty){
 
 /* ---------- Progress ---------- */
 function upProg(){
-  const fids=['f-scholar','f-orcid','f-terms','f-tnotes','f-hi','f-gscholar-cites','f-ugc-care','f-wip','f-external-resources','f-referrals-sent','f-referrals-converted','f-referrals-detail','f-ind','f-year-end-achievements'];
+  const fids=['f-scholar','f-orcid','f-terms','f-tnotes','f-hi','f-gscholar-cites','f-ugc-care','f-wip','f-external-resources','f-referrals-sent','f-referrals-converted','f-referrals-detail','f-ind','f-rp-summary','f-year-end-achievements'];
   let filled=0;
   fids.forEach(id=>{const el=document.getElementById(id);if(el&&el.value&&String(el.value).trim())filled++;});
   if(PUBLICATIONS.length>0)filled+=2;
@@ -2201,6 +2254,7 @@ function upProg(){
     if(document.querySelector('input[name="ds-'+k+'"]:checked'))dsChecked=true;
   });
   if(dsChecked)filled++;
+  if(typeof updateDsSummary==='function')updateDsSummary();
   const totalFields=fids.length+10;
   const pct=Math.min(100,Math.round((filled/totalFields)*100));
   document.getElementById('pf').style.width=pct+'%';
@@ -2382,7 +2436,26 @@ function numVal(id){const v=val(id);return v!==null?parseInt(v):null;}
 
 function clearDsRating(key){
   document.querySelectorAll('input[name="ds-'+key+'"]').forEach(r=>{r.checked=false;});
+  updateDsSummary();
   upProg();
+}
+
+function updateDsSummary(){
+  const keys=['scopus','ebsco_bse','ebsco_ebooks','tracxn','turnitin','statista','cmie_eo','sage','cmie_prowess','bloomberg'];
+  let high=0,medium=0,low=0;
+  keys.forEach(k=>{
+    const r=document.querySelector('input[name="ds-'+k+'"]:checked');
+    if(!r)return;
+    if(r.value==='high')high++;
+    else if(r.value==='medium')medium++;
+    else if(r.value==='low')low++;
+  });
+  const total=high+medium+low;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('ds-count-high',high);
+  set('ds-count-medium',medium);
+  set('ds-count-low',low);
+  set('ds-summary-total',total+' of '+keys.length+' sources used');
 }
 
 function midYearData(){
@@ -2404,6 +2477,7 @@ function midYearData(){
     referrals_sent:numVal('f-referrals-sent'),
     referrals_converted:numVal('f-referrals-converted'),
     referrals_detail:val('f-referrals-detail'),
+    resource_person_summary:val('f-rp-summary'),
     industry_summary:val('f-ind'),
     year_end_achievements:val('f-year-end-achievements'),
     teaching_course_entries:TEACHING_COURSES,
@@ -2770,6 +2844,7 @@ function restore(d){
     'f-referrals-sent':d.referrals_sent,
     'f-referrals-converted':d.referrals_converted,
     'f-referrals-detail':d.referrals_detail,
+    'f-rp-summary':d.resource_person_summary,
     'f-ind':d.industry_summary,
     'f-year-end-achievements':d.year_end_achievements
   };
