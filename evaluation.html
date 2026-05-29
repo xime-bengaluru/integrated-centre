@@ -525,6 +525,7 @@ select.pub-input{cursor:pointer}
 .ep-tag-Conference_Sponsored{background:rgba(201,168,76,.15);color:var(--gold-2);border:.5px solid rgba(201,168,76,.35)}
 .ep-tag-role{font-family:'DM Mono',monospace;font-weight:600;font-size:10px;padding:3px 8px;border-radius:5px;background:var(--cream);color:var(--charcoal)}
 .ep-tag-role-Organiser{background:var(--gold);color:var(--navy-dark)}
+.ep-tag-role-Co_Organiser{background:rgba(201,168,76,.35);color:var(--navy-dark);font-weight:600}
 .ep-tag-role-Coordinator{background:rgba(201,168,76,.18);color:var(--gold-2)}
 .ep-tag-role-Facilitator{background:rgba(13,146,104,.15);color:var(--teal-d)}
 .ep-tag-role-Resource_Person{background:rgba(0,0,0,.06);color:var(--charcoal)}
@@ -579,6 +580,9 @@ select.pub-input{cursor:pointer}
 
 /* Role selector cards */
 .ep-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ep-role-scope-hint{display:flex;align-items:flex-start;gap:9px;padding:10px 14px;background:#fbf6e9;border-left:3px solid var(--gold);border-radius:0 var(--rs) var(--rs) 0;margin-bottom:12px;font-size:12.5px;color:var(--charcoal);line-height:1.5}
+.ep-role-scope-icon{color:var(--gold-d);font-size:15px;flex-shrink:0;margin-top:1px}
+.ep-role-scope-hint em{color:var(--gold-d);font-style:italic;font-weight:500}
 .ep-role-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#fff;border:1.5px solid var(--line);border-radius:var(--rs);cursor:pointer;transition:all .15s}
 .ep-role-card:hover{border-color:var(--gold-2);background:var(--parchment)}
 .ep-role-card input[type="radio"]{margin-top:2px;cursor:pointer;accent-color:var(--gold);flex-shrink:0}
@@ -1482,33 +1486,23 @@ select.pub-input{cursor:pointer}
           <!-- Role -->
           <div class="ep-form-section">
             <div class="ep-section-label">Your Role</div>
+            <div class="ep-role-scope-hint">
+              <span class="ep-role-scope-icon">&#9432;</span>
+              <span><strong>Only add this programme if you organised or co-organised it.</strong> If you were a facilitator, coordinator, or resource person within someone else's programme, do not add it here. Capture that work in the <em>Resource Person Engagements</em> box outside this form instead.</span>
+            </div>
             <div class="ep-role-grid">
               <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Organiser">
+                <input type="radio" name="ep-role" value="Organiser" checked>
                 <div class="ep-role-card-content">
                   <div class="ep-role-name">Organiser</div>
-                  <div class="ep-role-hint">End-to-end programme ownership and revenue accountability</div>
+                  <div class="ep-role-hint">Sole owner. End-to-end programme ownership and revenue accountability.</div>
                 </div>
               </label>
               <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Coordinator" checked>
+                <input type="radio" name="ep-role" value="Co_Organiser">
                 <div class="ep-role-card-content">
-                  <div class="ep-role-name">Coordinator</div>
-                  <div class="ep-role-hint">Programme management and delivery coordination</div>
-                </div>
-              </label>
-              <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Facilitator">
-                <div class="ep-role-card-content">
-                  <div class="ep-role-name">Facilitator</div>
-                  <div class="ep-role-hint">Lead session delivery for multiple sessions</div>
-                </div>
-              </label>
-              <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Resource_Person">
-                <div class="ep-role-card-content">
-                  <div class="ep-role-name">Resource Person</div>
-                  <div class="ep-role-hint">Subject expert delivering one or two sessions</div>
+                  <div class="ep-role-name">Co-Organiser</div>
+                  <div class="ep-role-hint">Shared ownership with another faculty. Both names appear on the programme.</div>
                 </div>
               </label>
             </div>
@@ -1573,10 +1567,16 @@ select.pub-input{cursor:pointer}
 
       <div class="fdiv"></div>
 
-      <div class="f">
-        <div class="fl">Other Industry Contributions</div>
-        <div class="fh" style="margin-bottom:6px">Anything you did this year that deepened industry understanding - yours, your students', or the institution's. Roles, exchanges, observations, learnings, advisory positions, expert panels, live projects supervised. Free-form.</div>
-        <textarea class="fi" id="f-ind" rows="3" placeholder="e.g. Sat on advisory panel for industry body, ran a live project capturing 20 student site visits, attended 3 sector roundtables and brought back insights for the Marketing core course..."></textarea>
+      <div class="ep-referral-block">
+        <div class="ep-referral-head">
+          <div>
+            <div class="ep-referral-title">Other Industry Contributions</div>
+            <div class="ep-referral-sub">Anything you did this year that deepened industry understanding - yours, your students', or the institution's. Roles, exchanges, observations, learnings, advisory positions, expert panels, live projects supervised. Free-form.</div>
+          </div>
+        </div>
+        <div class="ep-field">
+          <textarea class="fi" id="f-ind" rows="3" placeholder="e.g. Sat on advisory panel for industry body, ran a live project capturing 20 student site visits, attended 3 sector roundtables and brought back insights for the Marketing core course..."></textarea>
+        </div>
       </div>
     </div>
   </section>
@@ -2207,7 +2207,12 @@ function editEp(id){
   document.getElementById('ep-revenue').value=p.revenue||'';
   if(p.role){
     const r=document.querySelector(`input[name="ep-role"][value="${p.role}"]`);
-    if(r)r.checked=true;
+    if(r){r.checked=true;}else{
+      /* Legacy role (Coordinator/Facilitator/Resource_Person) no longer in form.
+         Fall back to Organiser so the form opens cleanly. Faculty can re-select. */
+      const fallback=document.querySelector('input[name="ep-role"][value="Organiser"]');
+      if(fallback)fallback.checked=true;
+    }
   }
   document.getElementById('ep-notes').value=p.notes||'';
   calcRevenuePerHead();
@@ -2224,7 +2229,7 @@ function resetEpForm(){
   ['ep-title','ep-date','ep-sessions','ep-participants','ep-duration','ep-revenue','ep-revenue-per','ep-notes'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value='';
   });
-  const def=document.querySelector('input[name="ep-role"][value="Coordinator"]');
+  const def=document.querySelector('input[name="ep-role"][value="Organiser"]');
   if(def)def.checked=true;
   /* Default Format radio to MDP (Open Enrolment) */
   const fmtDef=document.querySelector('input[name="ep-format"][value="MDP"]');
