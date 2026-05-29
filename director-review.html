@@ -494,7 +494,7 @@ function renderList(){
     row.onclick=()=>openDetail(f);
 
     const pubCount=f.publications_count||0;
-    const epCount=f.ep_count||0;
+    const epCount=f.mdp_count||0;
     const instCount=Array.isArray(f.institution_entries)?f.institution_entries.length:0;
     const srCount=Array.isArray(f.sponsored_research_entries)?f.sponsored_research_entries.length:0;
 
