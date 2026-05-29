@@ -204,9 +204,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 /* Institution building entries */
 .inst-entry-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .inst-entry{background:#fff;border:.5px solid var(--line);border-radius:var(--rs);padding:11px 13px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
-.inst-entry-cat{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:4px}
-.inst-entry-role{display:inline-block;background:var(--navy-dark);color:#fff;font-size:9px;font-weight:600;padding:2px 7px;border-radius:9px;margin-right:7px;letter-spacing:.04em;text-transform:uppercase}
-.inst-entry-desc{font-size:13px;color:var(--ink);line-height:1.5}
+.inst-entry-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.inst-entry-cat{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);background:var(--parchment);padding:2px 8px;border-radius:10px;border:1px solid var(--line)}
+.inst-entry-role{font-size:13px;font-weight:600;color:var(--navy)}
+.inst-entry-desc{font-size:13px;color:var(--ink);line-height:1.5;margin-bottom:4px}
+.inst-entry-outcome{font-size:12.5px;color:var(--charcoal);line-height:1.45;padding:6px 10px;background:#fdfcf6;border-left:2px solid var(--gold);border-radius:3px;margin-top:4px}
+.inst-entry-outcome-lbl{font-weight:600;color:var(--gold-d);text-transform:uppercase;letter-spacing:.05em;font-size:10px}
+
+/* FAQ accordion (Common Questions pattern) */
+.faq-block{background:#fff;border:1px solid var(--line);border-radius:var(--rs);overflow:hidden}
+.faq-toggle{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;background:var(--parchment);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--charcoal);font-weight:500;text-align:left;transition:background .12s}
+.faq-toggle:hover{background:var(--cream)}
+.faq-toggle-icon{display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--gold);color:#fff;border-radius:50%;font-size:13px;font-weight:700;flex-shrink:0}
+.faq-toggle-text{flex:1;font-weight:600;color:var(--gold-d);letter-spacing:.01em}
+.faq-toggle-arrow{font-size:18px;color:var(--mute);font-weight:300;line-height:1;transition:transform .15s}
+.faq-toggle[aria-expanded="true"] .faq-toggle-arrow{transform:rotate(45deg)}
+.faq-body{padding:14px 18px;border-top:1px solid var(--line);background:#fff}
+.faq-item{padding:10px 0;border-bottom:1px solid #f0ede4}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:5px}
+.faq-a{font-size:12.5px;color:var(--charcoal);line-height:1.55}
+.faq-a strong{color:var(--navy)}
 .inst-entry-date{font-size:11px;color:var(--faint);margin-top:4px;font-family:'DM Mono',monospace}
 .inst-entry-remove{background:transparent;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:4px;line-height:1}
 .inst-entry-remove:hover{background:rgba(226,75,74,.1);color:#A32D2D}
@@ -1358,7 +1376,7 @@ select.pub-input{cursor:pointer}
         <table class="ep-table">
           <thead>
             <tr>
-              <th class="ep-th-title">Programme &amp; Client</th>
+              <th class="ep-th-title">Programme</th>
               <th class="ep-th-narrow">Type</th>
               <th class="ep-th-narrow">Date</th>
               <th class="ep-th-narrow">Sessions</th>
@@ -1427,19 +1445,12 @@ select.pub-input{cursor:pointer}
 
           <div class="ep-form-section">
             <div class="ep-section-label">Programme Details</div>
-            <div class="ep-field" id="ep-fld-title"><div class="ep-label" id="ep-lbl-title">Programme Title</div><input class="ep-input" id="ep-title" placeholder="e.g. Strategic Decision-Making for Mid-Career Managers"></div>
-            <div class="ep-grid2">
-              <div class="ep-field" id="ep-fld-client"><div class="ep-label" id="ep-lbl-client">Client / Organisation</div><input class="ep-input" id="ep-client" placeholder="e.g. Bosch India, ACMA, Self-organised"></div>
-              <div class="ep-field" id="ep-fld-date"><div class="ep-label">Date Conducted</div><input class="ep-input" id="ep-date" type="date"></div>
-            </div>
-            <div class="ep-field" id="ep-fld-days" style="display:none;margin-top:14px">
-              <div class="ep-label">Days of Consulting</div>
-              <input class="ep-input" id="ep-days" type="number" min="0" step="0.5" placeholder="e.g. 6">
-            </div>
+            <div class="ep-field"><div class="ep-label">Programme Title</div><input class="ep-input" id="ep-title" placeholder="MDP: programme name. OBP: include client e.g. Strategic Decision-Making for Bosch India"></div>
+            <div class="ep-field"><div class="ep-label">Date Conducted</div><input class="ep-input" id="ep-date" type="date"></div>
           </div>
 
-          <!-- Sessions and participants (MDP / OBP only) -->
-          <div class="ep-form-section" id="ep-delivery-section">
+          <!-- Sessions and participants -->
+          <div class="ep-form-section">
             <div class="ep-section-label">Delivery &amp; Engagement</div>
             <div class="ep-grid3">
               <div class="ep-field">
@@ -1455,48 +1466,52 @@ select.pub-input{cursor:pointer}
                 <input class="ep-input" id="ep-duration" placeholder="e.g. 2 days, 8 hours">
               </div>
             </div>
-          </div>
-
-          <!-- Revenue (MDP / OBP + Consulting) -->
-          <div class="ep-form-section" id="ep-revenue-section">
-            <div class="ep-section-label">Revenue</div>
             <div class="ep-grid2">
               <div class="ep-field">
                 <div class="ep-label">Total Revenue Generated <span class="ep-label-hint">in INR · optional</span></div>
                 <input class="ep-input" id="ep-revenue" type="number" min="0" placeholder="Leave blank if not known" oninput="calcRevenuePerHead()">
-                <div class="ep-label-hint" style="margin-top:4px;font-style:italic" id="ep-revenue-hint">If revenue is unknown, leave blank.</div>
+                <div class="ep-label-hint" style="margin-top:4px;font-style:italic">If you were the Resource Person and revenue is unknown, leave blank.</div>
               </div>
-              <div class="ep-field" id="ep-fld-revper">
+              <div class="ep-field">
                 <div class="ep-label">Revenue per Participant</div>
                 <input class="ep-input" id="ep-revenue-per" readonly placeholder="Auto-calculated">
               </div>
             </div>
-            <label class="ep-probono-row" id="ep-fld-probono" style="display:none;align-items:center;gap:8px;margin-top:12px;cursor:pointer">
-              <input type="checkbox" id="ep-probono">
-              <span class="ep-label" style="margin:0">This was a pro bono engagement (no fee charged)</span>
-            </label>
           </div>
 
-          <!-- Role (MDP / OBP only) -->
-          <div class="ep-form-section" id="ep-role-section">
+          <!-- Role -->
+          <div class="ep-form-section">
             <div class="ep-section-label">Your Role</div>
             <div class="ep-role-grid">
               <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Organiser" checked>
+                <input type="radio" name="ep-role" value="Organiser">
                 <div class="ep-role-card-content">
                   <div class="ep-role-name">Organiser</div>
                   <div class="ep-role-hint">End-to-end programme ownership and revenue accountability</div>
                 </div>
               </label>
               <label class="ep-role-card">
-                <input type="radio" name="ep-role" value="Co-organiser">
+                <input type="radio" name="ep-role" value="Coordinator" checked>
                 <div class="ep-role-card-content">
-                  <div class="ep-role-name">Co-organiser</div>
-                  <div class="ep-role-hint">Shared programme ownership with another faculty member</div>
+                  <div class="ep-role-name">Coordinator</div>
+                  <div class="ep-role-hint">Programme management and delivery coordination</div>
+                </div>
+              </label>
+              <label class="ep-role-card">
+                <input type="radio" name="ep-role" value="Facilitator">
+                <div class="ep-role-card-content">
+                  <div class="ep-role-name">Facilitator</div>
+                  <div class="ep-role-hint">Lead session delivery for multiple sessions</div>
+                </div>
+              </label>
+              <label class="ep-role-card">
+                <input type="radio" name="ep-role" value="Resource_Person">
+                <div class="ep-role-card-content">
+                  <div class="ep-role-name">Resource Person</div>
+                  <div class="ep-role-hint">Subject expert delivering one or two sessions</div>
                 </div>
               </label>
             </div>
-            <div class="ep-label-hint" style="margin-top:10px;font-style:italic">Only add a programme here if you organised or co-organised it. If you contributed as a resource person or facilitator within someone else's programme, record that in the Resource Person Engagements block below.</div>
           </div>
 
           <!-- Notes -->
@@ -1572,7 +1587,7 @@ select.pub-input{cursor:pointer}
       <div class="sn">06</div>
       <div>
         <div class="si-t">Institution Building <span class="locked-badge">Locked</span></div>
-        <div class="si-s">Categorised contributions with individual entries</div>
+        <div class="si-s">Capture every contribution you made to XIME this year. Activity and outcome each get their own space.</div>
       </div>
     </div>
     <div class="srl"></div>
@@ -1580,43 +1595,77 @@ select.pub-input{cursor:pointer}
       <div class="f"><div class="fl">Administrative Role <span class="ab">HR Records</span></div><input class="fi lk" id="f-admin" readonly></div>
       <div class="f">
         <div class="fl">Your Institution Building Contributions</div>
-        <div class="fh" style="margin-bottom:12px">Add individual entries across categories. Each entry is dated and can be edited before submission.</div>
+        <div class="fh" style="margin-bottom:12px">Add one entry per contribution. You can add as many as you want. Each entry captures category, role or activity name, what you did, and the outcome.</div>
         <div class="inst-entry-list" id="inst-entries"><div class="inst-empty">No entries yet. Add your first contribution below.</div></div>
         <div class="inst-form" id="inst-form">
-          <div class="inst-form-row" style="grid-template-columns:1fr">
-            <div>
-              <div class="fl" style="margin-bottom:5px">Role <span class="ab" style="font-weight:400;text-transform:none;letter-spacing:0">optional</span></div>
-              <select class="fi" id="inst-role" style="font-family:'DM Sans',sans-serif">
-                <option value="">No formal role</option>
-                <option>Batch Coordinator</option>
-                <option>Club Faculty Coordinator</option>
-                <option>SIP Coordinator</option>
-                <option>Ximera Coordinator</option>
-                <option>Exams Controller</option>
-                <option>Admissions Committee</option>
-                <option>Placement Committee</option>
-              </select>
-            </div>
-          </div>
-          <div class="inst-form-row" style="grid-template-columns:1fr">
+          <div class="inst-form-row" style="grid-template-columns:1fr 1fr">
             <div>
               <div class="fl" style="margin-bottom:5px">Category</div>
+              <div class="fh" style="margin-bottom:5px;font-size:11px">Pick the broad area this contribution falls under.</div>
               <select class="fi" id="inst-cat" style="font-family:'DM Sans',sans-serif">
                 <option value="">Select category...</option>
-                <option>Event organised (e.g. Maria Philip Debate)</option>
-                <option>Committee membership</option>
-                <option>Process or policy contribution</option>
-                <option>Accreditation work</option>
-                <option>Student mentoring beyond SIP</option>
+                <option>Administrative</option>
+                <option>Institution Building</option>
+                <option>Academic</option>
                 <option>Other</option>
               </select>
             </div>
+            <div>
+              <div class="fl" style="margin-bottom:5px">Role or Activity Name</div>
+              <div class="fh" style="margin-bottom:5px;font-size:11px">Position you held, committee, or activity name. Write whatever fits.</div>
+              <input class="fi" id="inst-role" placeholder="e.g. SIP Coordinator, Maria Philip Debate, AICTE accreditation team">
+            </div>
           </div>
           <div style="margin-bottom:10px">
-            <div class="fl" style="margin-bottom:5px">Description</div>
-            <textarea class="fi" id="inst-desc" rows="2" placeholder="What did you contribute? Be specific."></textarea>
+            <div class="fl" style="margin-bottom:5px">What you did</div>
+            <div class="fh" style="margin-bottom:5px;font-size:11px">The activity, scope, scale. Plain factual description.</div>
+            <textarea class="fi" id="inst-desc" rows="2" placeholder="e.g. Coordinated SIP for the PGDM Section D batch, managed 10 mentees across 8 companies, oversaw mid-internship reviews and WIPER submissions."></textarea>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="fl" style="margin-bottom:5px">Outcome or contribution</div>
+            <div class="fh" style="margin-bottom:5px;font-size:11px">What changed because of you. Even briefly. Leave blank if not applicable.</div>
+            <textarea class="fi" id="inst-outcome" rows="2" placeholder="e.g. Brought 3 new companies to the SIP roster, achieved 100% mentee report submission, identified 2 candidates for full-time offers."></textarea>
           </div>
           <button class="inst-form-btn" onclick="addInstitutionEntry()">+ Add Entry</button>
+        </div>
+
+        <!-- Common Questions accordion -->
+        <div class="faq-block" style="margin-top:18px">
+          <button class="faq-toggle" onclick="toggleFaq('faq-ib')" type="button" aria-expanded="false">
+            <span class="faq-toggle-icon">?</span>
+            <span class="faq-toggle-text">Common Questions about Institution Building</span>
+            <span class="faq-toggle-arrow">+</span>
+          </button>
+          <div class="faq-body" id="faq-ib" style="display:none">
+            <div class="faq-item">
+              <div class="faq-q">What counts as institution building?</div>
+              <div class="faq-a">Anything you did this year that contributed to XIME beyond your core teaching and research load. Roles you held, events you led, committees you served on, processes you improved, students you mentored outside the classroom, accreditation prep, alumni work. If it took your time and added value to the institution, it counts.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">What is the difference between the four categories?</div>
+              <div class="faq-a"><strong>Administrative:</strong> formal positions and operational roles (Batch Coordinator, Exams Controller, Admissions, Placement). <strong>Institution Building:</strong> contributions that strengthen XIME as an institution (accreditation work, IQAC, alumni engagement, new initiatives, cross-campus collaboration). <strong>Academic:</strong> contributions to academic life beyond your own teaching (curriculum committee, research guidance, journal editing, peer review of colleagues' work, FDPs you ran). <strong>Other:</strong> anything that genuinely does not fit the first three. Use it without hesitation.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">What if my role is not in any list?</div>
+              <div class="faq-a">Just type it in the Role or Activity Name box. The field is fully open. No predefined list to fit.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Should I add a separate entry for each role?</div>
+              <div class="faq-a">Yes. One contribution per entry. If you held three roles this year, that is three entries. This keeps each contribution legible to your reviewers.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">What if I am not sure something counts?</div>
+              <div class="faq-a">Add it. Your reviewers can decide what to weight. Leaving out a contribution because you are unsure costs you visibility for work you actually did.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">How specific should the Outcome be?</div>
+              <div class="faq-a">As specific as you can be honest about. Numbers help when you have them ("brought 3 new companies", "90% submission rate"). When you do not, plain language is fine ("improved coordination between sections", "introduced a new review template"). Leave blank if there is genuinely nothing to add beyond the activity itself.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">Can I edit my entries after submission?</div>
+              <div class="faq-a">Yes, until the 5 June deadline. After deadline the entries lock for Dean Office review. Use the edit button on any entry card to update it.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2151,14 +2200,11 @@ function editEp(id){
     selectEpType(rawType,document.querySelector(`.ep-type-tab[data-eptype="${rawType}"]`));
   }
   document.getElementById('ep-title').value=p.title||'';
-  document.getElementById('ep-client').value=p.client||'';
   document.getElementById('ep-date').value=p.date_conducted||'';
   document.getElementById('ep-sessions').value=p.sessions_count||'';
   document.getElementById('ep-participants').value=p.participants_count||'';
   document.getElementById('ep-duration').value=p.duration||'';
   document.getElementById('ep-revenue').value=p.revenue||'';
-  document.getElementById('ep-days').value=p.days_consulted||'';
-  document.getElementById('ep-probono').checked=!!p.pro_bono;
   if(p.role){
     const r=document.querySelector(`input[name="ep-role"][value="${p.role}"]`);
     if(r)r.checked=true;
@@ -2175,11 +2221,10 @@ function closeEpForm(){
 }
 
 function resetEpForm(){
-  ['ep-title','ep-client','ep-date','ep-sessions','ep-participants','ep-duration','ep-revenue','ep-revenue-per','ep-days','ep-notes'].forEach(id=>{
+  ['ep-title','ep-date','ep-sessions','ep-participants','ep-duration','ep-revenue','ep-revenue-per','ep-notes'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value='';
   });
-  const pb=document.getElementById('ep-probono');if(pb)pb.checked=false;
-  const def=document.querySelector('input[name="ep-role"][value="Organiser"]');
+  const def=document.querySelector('input[name="ep-role"][value="Coordinator"]');
   if(def)def.checked=true;
   /* Default Format radio to MDP (Open Enrolment) */
   const fmtDef=document.querySelector('input[name="ep-format"][value="MDP"]');
@@ -2191,31 +2236,15 @@ function resetEpForm(){
 function selectEpType(type,btn){
   document.querySelectorAll('.ep-type-tab').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  const isConsulting=(type==='Consulting');
-  const isMdpObp=(type==='MDP_OBP');
-  const show=(id,on,disp)=>{const el=document.getElementById(id);if(el)el.style.display=on?(disp||'block'):'none';};
-  /* Format, Delivery, Role, Revenue-per-participant: MDP / OBP only */
-  show('ep-format-section',isMdpObp);
-  show('ep-delivery-section',isMdpObp);
-  show('ep-role-section',isMdpObp);
-  show('ep-fld-revper',isMdpObp);
-  /* Consulting-only: days of consulting + pro bono flag */
-  show('ep-fld-days',isConsulting);
-  show('ep-fld-probono',isConsulting,'flex');
-  /* Date hidden for consulting to keep the form lean */
-  show('ep-fld-date',!isConsulting);
-  /* Contextual relabelling for consulting */
-  const lblTitle=document.getElementById('ep-lbl-title');
-  const lblClient=document.getElementById('ep-lbl-client');
-  const revHint=document.getElementById('ep-revenue-hint');
-  if(lblTitle)lblTitle.textContent=isConsulting?'Subject of Consulting':'Programme Title';
-  if(lblClient)lblClient.textContent=isConsulting?'Company Name':'Client / Organisation';
-  if(revHint)revHint.textContent=isConsulting?'Leave blank if pro bono or not disclosed.':'If revenue is unknown, leave blank.';
-  if(isMdpObp){
+  const fmtSection=document.getElementById('ep-format-section');
+  if(type==='MDP_OBP'){
     /* Composite tab: actual programme_type comes from the inner Format radio */
+    if(fmtSection)fmtSection.style.display='block';
     const checked=document.querySelector('input[name="ep-format"]:checked');
     EP_CURRENT_TYPE=checked?checked.value:'MDP';
   }else{
+    /* Consulting or Conference_Sponsored: hide format selector */
+    if(fmtSection)fmtSection.style.display='none';
     EP_CURRENT_TYPE=type;
   }
 }
@@ -2238,22 +2267,17 @@ async function saveEp(){
   if(!fac){toast('No faculty loaded',false);return;}
   const title=document.getElementById('ep-title').value.trim();
   if(!title){toast('Please enter a programme title',false);return;}
-  const isMdpObp=(EP_CURRENT_TYPE==='MDP'||EP_CURRENT_TYPE==='OBP');
-  const isConsulting=(EP_CURRENT_TYPE==='Consulting');
   const r=document.querySelector('input[name="ep-role"]:checked');
   const data={
     faculty_master_id:fac.id,academic_year:ACADEMIC_YEAR,
     programme_type:EP_CURRENT_TYPE,
     title,
-    client:document.getElementById('ep-client').value.trim()||null,
-    date_conducted:isConsulting?null:(document.getElementById('ep-date').value||null),
-    sessions_count:isMdpObp?(parseInt(document.getElementById('ep-sessions').value)||null):null,
-    participants_count:isMdpObp?(parseInt(document.getElementById('ep-participants').value)||null):null,
-    duration:isMdpObp?(document.getElementById('ep-duration').value.trim()||null):null,
+    date_conducted:document.getElementById('ep-date').value||null,
+    sessions_count:parseInt(document.getElementById('ep-sessions').value)||null,
+    participants_count:parseInt(document.getElementById('ep-participants').value)||null,
+    duration:document.getElementById('ep-duration').value.trim()||null,
     revenue:parseFloat(document.getElementById('ep-revenue').value)||null,
-    days_consulted:isConsulting?(parseFloat(document.getElementById('ep-days').value)||null):null,
-    pro_bono:isConsulting?!!document.getElementById('ep-probono').checked:false,
-    role:isMdpObp?(r?r.value:'Organiser'):null,
+    role:r?r.value:'Coordinator',
     notes:document.getElementById('ep-notes').value.trim()||null
   };
   const btn=document.getElementById('ep-save-btn');
@@ -2829,6 +2853,17 @@ function removeTeachingCourse(id){
   upProg();
 }
 
+function toggleFaq(id){
+  const body=document.getElementById(id);
+  if(!body)return;
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  const btn=body.previousElementSibling;
+  if(btn&&btn.classList.contains('faq-toggle')){
+    btn.setAttribute('aria-expanded',open?'true':'false');
+  }
+}
+
 function toggleOtherMethodsText(){
   const checked=document.getElementById('pm-alt-others')?.checked;
   const wrap=document.getElementById('pm-alt-other-wrap');
@@ -2881,7 +2916,8 @@ function applyPedagogicalMethods(pm){
 }
 
 /* ---------- Institution Building ----------
-   Uses g1EditBlocked() not g1Locked() for action gating. */
+   Uses g1EditBlocked() not g1Locked() for action gating.
+   Entry shape: {id, category, role, description, outcome, date?} */
 function renderInstEntries(){
   const el=document.getElementById('inst-entries');
   el.innerHTML='';
@@ -2896,17 +2932,32 @@ function renderInstEntries(){
     const wrap=document.createElement('div');
     wrap.className='inst-entry';
     const inner=document.createElement('div');
-    const cat=document.createElement('div');cat.className='inst-entry-cat';
+    inner.style.flex='1';
+
+    /* Top line: category pill + role/activity name */
+    const top=document.createElement('div');top.className='inst-entry-top';
+    const cat=document.createElement('span');cat.className='inst-entry-cat';cat.textContent=e.category||'';
+    top.appendChild(cat);
     if(e.role){
-      const chip=document.createElement('span');chip.className='inst-entry-role';chip.textContent=e.role;
-      cat.appendChild(chip);
-      cat.appendChild(document.createTextNode(e.category||''));
-    }else{
-      cat.textContent=e.category||'';
+      const role=document.createElement('span');role.className='inst-entry-role';role.textContent=e.role;
+      top.appendChild(role);
     }
-    const desc=document.createElement('div');desc.className='inst-entry-desc';desc.textContent=e.description||'';
-    inner.appendChild(cat);inner.appendChild(desc);
-    /* Date shown only for legacy entries that already have one; new entries do not capture date (Ranjana feedback) */
+    inner.appendChild(top);
+
+    /* What you did */
+    if(e.description){
+      const desc=document.createElement('div');desc.className='inst-entry-desc';desc.textContent=e.description;
+      inner.appendChild(desc);
+    }
+    /* Outcome / contribution */
+    if(e.outcome){
+      const outBlock=document.createElement('div');outBlock.className='inst-entry-outcome';
+      const outLbl=document.createElement('span');outLbl.className='inst-entry-outcome-lbl';outLbl.textContent='Outcome: ';
+      const outTxt=document.createElement('span');outTxt.textContent=e.outcome;
+      outBlock.appendChild(outLbl);outBlock.appendChild(outTxt);
+      inner.appendChild(outBlock);
+    }
+    /* Date shown only for legacy entries that already have one */
     if(e.date){
       const date=document.createElement('div');date.className='inst-entry-date';date.textContent=e.date;
       inner.appendChild(date);
@@ -2925,15 +2976,24 @@ function renderInstEntries(){
 
 function addInstitutionEntry(){
   if(g1EditBlocked()){toast('Performance Evaluation locked. Cannot add entries.',false);return;}
-  const role=document.getElementById('inst-role').value;
   const cat=document.getElementById('inst-cat').value;
+  const role=document.getElementById('inst-role').value.trim();
   const desc=document.getElementById('inst-desc').value.trim();
+  const outcome=document.getElementById('inst-outcome').value.trim();
   if(!cat){toast('Please select a category',false);return;}
-  if(!desc){toast('Please enter a description',false);return;}
-  INST_ENTRIES.push({id:'e'+Date.now(),role:role||null,category:cat,description:desc,date:null});
-  document.getElementById('inst-role').value='';
+  if(!desc&&!role){toast('Please describe what you did, or at least name the role or activity',false);return;}
+  INST_ENTRIES.push({
+    id:'e'+Date.now(),
+    category:cat,
+    role:role||null,
+    description:desc||null,
+    outcome:outcome||null,
+    date:null
+  });
   document.getElementById('inst-cat').value='';
+  document.getElementById('inst-role').value='';
   document.getElementById('inst-desc').value='';
+  document.getElementById('inst-outcome').value='';
   renderInstEntries();
   upProg();
   toast('Entry added');
