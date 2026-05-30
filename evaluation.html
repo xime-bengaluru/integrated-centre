@@ -3099,9 +3099,14 @@ async function loadPointsLedger(){
   if(error||!data||data.length===0)return;
   const g1=data.filter(r=>r.gate==='mid_year').reduce((s,r)=>s+(r.achievable_points||0),0);
   const g2=data.filter(r=>r.gate==='annual').reduce((s,r)=>s+(r.achievable_points||0),0);
-  document.getElementById('ledger-g1').textContent=g1;
-  document.getElementById('ledger-g2').textContent=g2;
-  document.getElementById('ledger-total').textContent=g1+g2;
+  /* Null-safe: some ledger DOM elements may not exist in current layout.
+     A missing element here must not break init() which calls this before restore(). */
+  const el1=document.getElementById('ledger-g1');
+  const el2=document.getElementById('ledger-g2');
+  const elT=document.getElementById('ledger-total');
+  if(el1)el1.textContent=g1;
+  if(el2)el2.textContent=g2;
+  if(elT)elT.textContent=g1+g2;
 }
 
 /* ---------- Restore from DB ---------- */
