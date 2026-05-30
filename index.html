@@ -627,13 +627,9 @@ async function initAuth() {
   const { data: { session } } = await db.auth.getSession();
   if (!session) { window.location.href = '/login.html'; return; }
 
-  /* H8: Force password change before any access */
-  const um = session.user.user_metadata || {};
-  if (um.must_change_password === true) {
-    window.location.href = '/login.html?action=change-password';
-    return;
-  }
-
+  /* H8: Force password change before access. profile.must_change_password is
+     source of truth, NOT user_metadata which doesn't auto-clear on password
+     change. Fixes flicker loop seen 30 May 2026. */
   const { data: profile } = await db
     .from('user_profiles')
     .select('full_name, email, role, campus, must_change_password')
