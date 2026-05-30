@@ -2484,8 +2484,8 @@ function g1EditBlocked(){return TEST_PHASE_LOCKS_OPEN?false:g1Locked();}
 
 function applyLocks(){
   const s=erec?.workflow_status||'draft';
-  const pm={draft:'sp-draft',mid_year_locked:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked'};
-  const pl={draft:'Draft',mid_year_locked:'Submitted',mid_year_validated:'Dean Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
+  const pm={draft:'sp-draft',mid_year_locked:'sp-locked',submitted_held:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked'};
+  const pl={draft:'Draft',mid_year_locked:'Submitted',submitted_held:'Submitted',mid_year_validated:'Dean Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
   const pill=document.getElementById('spill');
   pill.className='spill '+(pm[s]||'sp-draft');
   pill.textContent=pl[s]||s;
@@ -2761,8 +2761,8 @@ async function submitMidYear(){
     :'Submit your AY 2025-26 Performance Evaluation? You can continue to edit and re-submit before 5 June 2026.';
   if(!confirm(msg))return;
   try{
-    await upsert({...midYearData(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'mid_year_locked',status:'submitted'});
-    erec={...erec,gate1_locked:true,workflow_status:'mid_year_locked'};
+    await upsert({...midYearData(),gate1_locked:true,gate1_submitted_at:new Date().toISOString(),workflow_status:'submitted_held',status:'submitted'});
+    erec={...erec,gate1_locked:true,workflow_status:'submitted_held'};
     if(reviewingDeans.length>0){
       for(const d of reviewingDeans){
         await sb.from('evaluation_dean_reviews').upsert({
