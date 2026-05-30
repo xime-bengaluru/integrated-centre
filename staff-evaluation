@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub · Annual Performance Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600&family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="assets/js/supabase-js-2.105.4.umd.js"></script>
+<style>
+  :root {
+    --ink:#1a1a2e; --ink-soft:#3d3d5c; --cream:#faf8f3; --warm-white:#f5f0e8;
+    --gold:#c9974a; --gold-light:#e8c88a; --teal:#2a6b6e; --sage:#4a6741;
+    --navy:#0D1F35; --navy-gold:#C9A84C;
+    --border:rgba(26,26,46,0.1); --shadow:0 2px 20px rgba(26,26,46,0.08);
+    --ok:#2f7a4d; --warn:#b9791c; --err:#991B1B;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
+
+  /* TOPBAR */
+  .magis-topbar { background:var(--navy); padding:0 28px; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; border-bottom:1px solid rgba(201,168,76,.2); }
+  .mt-l { display:flex; align-items:center; gap:14px; }
+  .mt-logo { height:26px; width:auto; display:block; }
+  .mt-sep { width:1px; height:20px; background:rgba(255,255,255,.15); }
+  .mt-crumb { font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; transition:color .15s; background:none; border:none; font-family:inherit; }
+  .mt-crumb:hover { color:#fff; }
+  .mt-page { font-size:12px; color:rgba(255,255,255,.55); }
+  .mt-r { display:flex; align-items:center; gap:10px; }
+  .mt-role { font-size:10px; font-weight:500; padding:3px 9px; border-radius:20px; background:rgba(201,168,76,.15); color:var(--navy-gold); border:1px solid rgba(201,168,76,.3); letter-spacing:.04em; }
+  .mt-user { font-size:12px; color:rgba(255,255,255,.7); font-family:'DM Mono',monospace; }
+  .mt-signout { font-family:'DM Sans',sans-serif; font-size:11px; padding:5px 10px; border-radius:6px; border:1px solid rgba(255,255,255,.2); background:transparent; color:rgba(255,255,255,.6); cursor:pointer; transition:all .15s; }
+  .mt-signout:hover { background:rgba(255,255,255,.1); color:#fff; }
+
+  /* AUTH / MESSAGE OVERLAY (used for verifying, denied, and hard errors) */
+  .auth-overlay { position:fixed; inset:0; background:var(--cream); display:flex; align-items:center; justify-content:center; z-index:500; flex-direction:column; gap:14px; padding:24px; text-align:center; }
+  .auth-sub { font-size:12px; color:var(--gold); font-family:'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; }
+  .auth-msg { font-family:'Fraunces',serif; font-size:20px; color:var(--ink-soft); max-width:520px; line-height:1.4; }
+  .auth-detail { font-size:13px; color:var(--ink-soft); max-width:460px; line-height:1.6; }
+  .auth-detail b { color:var(--ink); }
+  .auth-link { color:var(--gold); cursor:pointer; text-decoration:underline; background:none; border:none; font-family:inherit; font-size:inherit; }
+  .auth-err .auth-msg { color:var(--err); }
+
+  /* HEADER */
+  .header { background:var(--ink); padding:1.5rem 2rem 1.3rem; position:sticky; top:56px; z-index:100; box-shadow:0 4px 24px rgba(0,0,0,0.2); }
+  .header h1 { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--gold-light); letter-spacing:.01em; line-height:1.2; }
+  .header .sub { font-size:.72rem; color:rgba(255,255,255,.45); font-weight:300; margin-top:.3rem; letter-spacing:.05em; text-transform:uppercase; }
+  .staff-meta { display:flex; flex-wrap:wrap; gap:1.2rem; margin-top:1rem; }
+  .meta-item { min-width:0; }
+  .meta-label { font-size:.6rem; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,.4); }
+  .meta-val { font-family:'DM Mono',monospace; font-size:.85rem; color:#fff; margin-top:2px; }
+
+  /* SAVED-STATE BANNER */
+  .savebar { position:sticky; top:calc(56px + 0px); z-index:90; display:flex; align-items:center; gap:.5rem; padding:.55rem 2rem; font-size:.78rem; border-bottom:1px solid var(--border); }
+  .savebar.s-ok   { background:#eef7f0; color:var(--ok); }
+  .savebar.s-idle { background:var(--warm-white); color:var(--ink-soft); }
+  .savebar.s-saving { background:#fdf6e9; color:var(--warn); }
+  .savebar.s-err  { background:#fdecec; color:var(--err); }
+  .savebar .dot { width:8px; height:8px; border-radius:50%; background:currentColor; flex-shrink:0; }
+
+  /* BODY */
+  .wrap { max-width:880px; margin:0 auto; padding:1.75rem 2rem 4rem; }
+  .intro { font-family:'Fraunces',serif; font-size:1.02rem; color:var(--ink-soft); line-height:1.5; margin-bottom:1.6rem; }
+
+  .field { background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:1.2rem 1.3rem; margin-bottom:1.1rem; }
+  .field-num { font-family:'DM Mono',monospace; font-size:.72rem; color:var(--gold); }
+  .field-label { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--ink); margin:.15rem 0 .25rem; }
+  .field-help { font-size:.8rem; color:var(--ink-soft); margin-bottom:.7rem; line-height:1.4; }
+  textarea { width:100%; min-height:110px; resize:vertical; font-family:'DM Sans',sans-serif; font-size:.95rem; line-height:1.55; color:var(--ink); background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:.7rem .8rem; outline:none; transition:border-color .15s,background .15s; }
+  textarea:focus { border-color:var(--gold); background:#fff; }
+  textarea:disabled { background:var(--warm-white); color:var(--ink-soft); cursor:default; }
+
+  /* read-only rendered answers */
+  .ro-answer { white-space:pre-wrap; font-size:.95rem; line-height:1.55; color:var(--ink); background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:.7rem .8rem; min-height:1.2rem; }
+  .ro-empty { color:var(--ink-soft); font-style:italic; opacity:.7; }
+
+  /* ACTIONS */
+  .actions { display:flex; gap:.7rem; align-items:center; margin-top:1.4rem; flex-wrap:wrap; }
+  .btn { font-family:'DM Sans',sans-serif; font-size:.9rem; font-weight:500; padding:.7rem 1.3rem; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--ink); transition:all .15s; }
+  .btn:hover { border-color:var(--ink); }
+  .btn-primary { background:var(--navy); color:#fff; border-color:var(--navy); }
+  .btn-primary:hover { background:#16304f; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .actions .hint { font-size:.78rem; color:var(--ink-soft); }
+
+  /* STATUS BANNERS (submitted / complete / returned) */
+  .status-banner { border-radius:12px; padding:1rem 1.2rem; margin-bottom:1.4rem; font-size:.9rem; line-height:1.5; border:1px solid; }
+  .status-submitted { background:#eef4fa; border-color:#cfe0f2; color:#1e4a7a; }
+  .status-returned { background:#fdf6e9; border-color:#f0dcb0; color:#8a5a12; }
+  .status-complete { background:#eef7f0; border-color:#cfe8d6; color:#1f5b39; }
+  .status-banner .sb-title { font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:.3rem; }
+
+  /* MANAGEMENT PACKET (completion view) */
+  .packet { background:#fff; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:1.2rem 1.3rem; margin-bottom:1.1rem; }
+  .packet h3 { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--ink); margin-bottom:.8rem; }
+  .packet .pk-block { margin-bottom:.9rem; }
+  .packet .pk-from { font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--gold); font-weight:600; margin-bottom:.25rem; }
+  .packet .pk-text { white-space:pre-wrap; font-size:.92rem; line-height:1.55; color:var(--ink); }
+
+  /* FAQ */
+  .faq { margin-top:2.2rem; border-top:1px solid var(--border); padding-top:1.4rem; }
+  .faq-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-soft); font-weight:600; margin-bottom:.8rem; }
+  .faq-item { border:1px solid var(--border); border-radius:8px; margin-bottom:.5rem; background:#fff; overflow:hidden; }
+  .faq-q { padding:.7rem .9rem; font-size:.88rem; font-weight:500; cursor:pointer; display:flex; justify-content:space-between; gap:1rem; }
+  .faq-q::after { content:'+'; color:var(--gold); font-family:'DM Mono',monospace; }
+  .faq-item.open .faq-q::after { content:'–'; }
+  .faq-a { padding:0 .9rem; max-height:0; overflow:hidden; transition:max-height .2s, padding .2s; font-size:.85rem; line-height:1.55; color:var(--ink-soft); }
+  .faq-item.open .faq-a { max-height:300px; padding:0 .9rem .8rem; }
+
+  /* toast */
+  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:.7rem 1.1rem; border-radius:8px; font-size:.85rem; z-index:600; box-shadow:0 8px 30px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s; max-width:90vw; }
+  .toast.show { opacity:1; }
+  .toast.err { background:var(--err); }
+
+  @media (max-width:600px) {
+    .magis-topbar { padding:0 14px; } .mt-page,.mt-user { display:none; } .mt-logo { height:22px; }
+    .header { padding:1.1rem 1rem 1rem; } .savebar { padding:.55rem 1rem; } .wrap { padding:1.3rem 1rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- OVERLAY: verifying / denied / hard error -->
+<div class="auth-overlay" id="overlay">
+  <div class="auth-sub">X-Hub</div>
+  <div class="auth-msg" id="overlay-msg">Loading your record…</div>
+  <div class="auth-detail" id="overlay-detail" style="display:none"></div>
+</div>
+
+<!-- TOPBAR -->
+<div class="magis-topbar" id="topbar" style="display:none">
+  <div class="mt-l">
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="mt-logo">
+    <span class="mt-sep"></span>
+    <button class="mt-crumb" onclick="goHome()">← X-Hub</button>
+    <span class="mt-sep"></span>
+    <span class="mt-page">Annual Performance Review</span>
+  </div>
+  <div class="mt-r">
+    <span class="mt-role" id="mt-role">Staff</span>
+    <span class="mt-user" id="mt-user"></span>
+    <button class="mt-signout" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header" id="header" style="display:none">
+  <h1>Annual Performance Review</h1>
+  <div class="sub">Staff Track · Academic Year 2025-26</div>
+  <div class="staff-meta" id="staff-meta"></div>
+</div>
+
+<!-- SAVED-STATE BANNER -->
+<div class="savebar s-idle" id="savebar" style="display:none">
+  <span class="dot"></span><span id="savebar-text">Not saved yet</span>
+</div>
+
+<!-- BODY -->
+<div class="wrap" id="body" style="display:none">
+  <div id="status-area"></div>
+  <div class="intro" id="intro"></div>
+  <div id="form-area"></div>
+  <div id="packet-area"></div>
+
+  <div class="faq">
+    <div class="faq-title">Common Questions</div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is my work saved automatically?</div><div class="faq-a">Yes. Your answers save as you type, and the bar at the top shows the time of the last save. You can also press Save draft any time. You can close this page and come back later, your text will be here.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Who will see what I write?</div><div class="faq-a">Your functional head, your campus Director, and the President. It is a simple yearly record so that your work is seen and recognised.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What if I do not have much to write in a box?</div><div class="faq-a">That is fine. Write what is true for your role in a line or two. There is no minimum length.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Something looks wrong or the page seems empty. What do I do?</div><div class="faq-a">Please do not retype everything. Refresh the page first. If it still looks wrong, contact Reetha at 9845280734 and your saved text will be recovered.</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------------------------------------------------------------------
+// Supabase + constants
+// ---------------------------------------------------------------------
+const SU = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb = supabase.createClient(SU, SK);
+const ACADEMIC_YEAR = '2025-26';
+const HELP_CONTACT = 'Reetha at 9845280734';
+
+const FIELDS = [
+  { key:'key_focus_areas',       num:'1', label:'Key focus areas this year', help:'The main responsibilities and priorities your role centred on.' },
+  { key:'notable_achievements',  num:'2', label:'Notable achievements',      help:'Two or three things you are proud of, or that went well. For example: ran a cycle with no errors, covered for a colleague, sorted out a recurring problem.' },
+  { key:'areas_for_improvement', num:'3', label:'Areas for improvement',     help:'Where you would like to grow, or do things differently.' },
+  { key:'plan_next_year',        num:'4', label:'Plan for next year',        help:'What you would like to focus on or achieve in the coming year.' },
+];
+
+const EDITABLE_STATES = ['draft','returned'];
+
+// session-scoped state
+let STAFF = null;        // staff_master row
+let EVAL = null;         // staff_evaluations row (or null until first save)
+let SAVE_TIMER = null;
+let SAVING = false;
+let PENDING = false;
+
+// ---------------------------------------------------------------------
+// helpers
+// ---------------------------------------------------------------------
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function fmtTime(ts){
+  if(!ts) return '';
+  const d=new Date(ts), now=new Date();
+  const hh=String(d.getHours()).padStart(2,'0'), mm=String(d.getMinutes()).padStart(2,'0');
+  const sameDay = d.toDateString()===now.toDateString();
+  if(sameDay) return `${hh}:${mm} today`;
+  return `${hh}:${mm}, ${d.getDate()}/${d.getMonth()+1}`;
+}
+
+function toast(msg, isErr){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(isErr?' err':'');
+  clearTimeout(t._t); t._t=setTimeout(()=>{ t.className='toast'+(isErr?' err':''); }, 4000);
+}
+
+// Telemetry: turn silence into signal. Must never throw.
+async function logEvent(event_type, detail){
+  try{
+    await sb.from('staff_app_events').insert({
+      event_type, detail: detail==null?null:String(detail).slice(0,2000),
+      staff_email: (STAFF && STAFF.email) || (sb._lastEmail||null),
+      page_url: location.href, user_agent: navigator.userAgent
+    });
+  }catch(_){ /* swallow: telemetry can never break the form */ }
+}
+
+function goHome(){ location.href='index.html'; }
+async function signOut(){ try{ await sb.auth.signOut(); }catch(_){} location.href='login.html'; }
+
+// Hard failure: show explicit overlay, never leave the user on empty fields.
+function failHard(message, detailHtml){
+  document.getElementById('topbar').style.display='none';
+  document.getElementById('header').style.display='none';
+  document.getElementById('savebar').style.display='none';
+  document.getElementById('body').style.display='none';
+  const o=document.getElementById('overlay');
+  o.style.display='flex'; o.classList.add('auth-err');
+  document.getElementById('overlay-msg').textContent=message;
+  const d=document.getElementById('overlay-detail');
+  d.style.display='block'; d.innerHTML=detailHtml;
+}
+
+function setSaveBar(state, text){
+  const bar=document.getElementById('savebar');
+  bar.style.display='flex';
+  bar.className='savebar '+state;
+  document.getElementById('savebar-text').textContent=text;
+}
+
+// ---------------------------------------------------------------------
+// auth gate
+// ---------------------------------------------------------------------
+async function gate(){
+  let session;
+  try{
+    const r=await sb.auth.getSession();
+    session=r.data.session;
+  }catch(e){
+    await logEvent('init_failure','getSession threw: '+(e&&e.message));
+    failHard('We could not check your sign-in.', `Please refresh the page. If it keeps happening, contact <b>${HELP_CONTACT}</b>.`);
+    return null;
+  }
+  if(!session){ location.href='login.html'; return null; }
+
+  sb._lastEmail = (session.user && session.user.email) || null;
+
+  // H8: force password change before any access
+  const um=(session.user && session.user.user_metadata)||{};
+  if(um.must_change_password===true){ location.href='login.html?action=change-password'; return null; }
+
+  // defensive profile read for password gate (do not hard-fail if missing)
+  try{
+    const { data:profile } = await sb.from('user_profiles').select('must_change_password').eq('id', session.user.id).maybeSingle();
+    if(profile && profile.must_change_password===true){ location.href='login.html?action=change-password'; return null; }
+  }catch(_){ /* non-fatal */ }
+
+  return session;
+}
+
+async function loadStaff(email){
+  const { data, error } = await sb.from('staff_master').select('*').ilike('email', email).maybeSingle();
+  if(error) throw error;
+  return data;
+}
+
+async function loadEval(staffId){
+  const { data, error } = await sb.from('staff_evaluations').select('*')
+    .eq('staff_master_id', staffId).eq('academic_year', ACADEMIC_YEAR).maybeSingle();
+  if(error) throw error;
+  return data;
+}
+
+// ---------------------------------------------------------------------
+// save
+// ---------------------------------------------------------------------
+function collectAnswers(){
+  const out={};
+  FIELDS.forEach(f=>{
+    const el=document.getElementById('ta-'+f.key);
+    if(el) out[f.key]=el.value;
+  });
+  return out;
+}
+
+async function doSave(isManual){
+  if(!STAFF) return;
+  if(!isEditable()) return;
+  if(SAVING){ PENDING=true; return; }
+  SAVING=true; setSaveBar('s-saving','Saving…');
+  const answers=collectAnswers();
+  try{
+    if(EVAL && EVAL.id){
+      const { data, error } = await sb.from('staff_evaluations')
+        .update(answers).eq('id', EVAL.id).select().single();
+      if(error) throw error;
+      EVAL=data;
+    } else {
+      const payload=Object.assign({ staff_master_id:STAFF.id, academic_year:ACADEMIC_YEAR, workflow_status:'draft' }, answers);
+      const { data, error } = await sb.from('staff_evaluations').insert(payload).select().single();
+      if(error){
+        // possible concurrent insert -> fall back to existing row then update
+        const existing=await loadEval(STAFF.id);
+        if(existing){ EVAL=existing; const { data:u, error:ue }=await sb.from('staff_evaluations').update(answers).eq('id',existing.id).select().single(); if(ue) throw ue; EVAL=u; }
+        else throw error;
+      } else { EVAL=data; }
+    }
+    setSaveBar('s-ok','Saved · last saved '+fmtTime(EVAL.updated_at||new Date().toISOString()));
+    if(isManual) toast('Saved.');
+  }catch(e){
+    setSaveBar('s-err','Could not save. Your text is safe here, please try again.');
+    toast('Could not save. Your text is still on screen, please check your connection and try again.', true);
+    await logEvent('save_failure','save threw: '+(e&&e.message));
+  }finally{
+    SAVING=false;
+    if(PENDING){ PENDING=false; doSave(false); }
+  }
+}
+
+function scheduleSave(){
+  if(!isEditable()) return;
+  setSaveBar('s-saving','Saving…');
+  clearTimeout(SAVE_TIMER);
+  SAVE_TIMER=setTimeout(()=>doSave(false), 1200);
+}
+
+// ---------------------------------------------------------------------
+// submit
+// ---------------------------------------------------------------------
+async function submitForm(){
+  if(!STAFF) return;
+  if(!confirm('Submit your Annual Performance Review? You can view it afterwards, but you will not be able to edit it once submitted.')) return;
+  // make sure latest text is saved first
+  await doSave(false);
+  if(!EVAL || !EVAL.id){ toast('Please add something before submitting.', true); return; }
+  try{
+    const { data, error } = await sb.from('staff_evaluations')
+      .update({ workflow_status:'submitted', submitted_at:new Date().toISOString() })
+      .eq('id', EVAL.id).select().single();
+    if(error) throw error;
+    EVAL=data;
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+    toast('Submitted. Thank you.');
+  }catch(e){
+    toast('Could not submit just now. Your answers are saved. Please try again.', true);
+    await logEvent('submit_failure','submit threw: '+(e&&e.message));
+  }
+}
+
+// ---------------------------------------------------------------------
+// render
+// ---------------------------------------------------------------------
+function isEditable(){ const s=(EVAL&&EVAL.workflow_status)||'draft'; return EDITABLE_STATES.includes(s); }
+
+function renderMeta(){
+  const m=document.getElementById('staff-meta');
+  const items=[['Name',STAFF.staff_name],['Level',STAFF.level||'—'],['Function',STAFF.function||'—'],['Campus',STAFF.campus||'—']];
+  m.innerHTML=items.map(([l,v])=>`<div class="meta-item"><div class="meta-label">${escapeHtml(l)}</div><div class="meta-val">${escapeHtml(v)}</div></div>`).join('');
+}
+
+function renderStatusBanner(){
+  const s=(EVAL&&EVAL.workflow_status)||'draft';
+  const area=document.getElementById('status-area');
+  if(s==='submitted'||s==='fh_reviewed'||s==='director_reviewed'){
+    area.innerHTML=`<div class="status-banner status-submitted"><div class="sb-title">Submitted</div>Your review has been submitted and is with your reviewers. There is nothing more to do right now. You can return to this page any time to see it.</div>`;
+  } else if(s==='returned'){
+    const note=(EVAL && (EVAL.functional_head_comments||EVAL.director_comments))||'';
+    area.innerHTML=`<div class="status-banner status-returned"><div class="sb-title">Sent back for a small update</div>${note?('A note from your reviewer: '+escapeHtml(note)):'Your reviewer has asked for a small update. Please review your answers below and submit again.'}</div>`;
+  } else if(s==='complete'){
+    area.innerHTML=`<div class="status-banner status-complete"><div class="sb-title">Complete</div>Your review for this year is complete. Your reviewers' notes are below.</div>`;
+  } else {
+    area.innerHTML='';
+  }
+}
+
+function renderIntro(){
+  document.getElementById('intro').textContent = isEditable()
+    ? 'A simple record of your year, in your own words. Write a line or two in each box. Your answers save automatically.'
+    : '';
+}
+
+function renderForm(){
+  const area=document.getElementById('form-area');
+  const editable=isEditable();
+  area.innerHTML=FIELDS.map(f=>{
+    const val=(EVAL&&EVAL[f.key])||'';
+    if(editable){
+      return `<div class="field">
+        <div class="field-num">${f.num}</div>
+        <div class="field-label">${escapeHtml(f.label)}</div>
+        <div class="field-help">${escapeHtml(f.help)}</div>
+        <textarea id="ta-${f.key}" oninput="scheduleSave()" onblur="doSave(false)">${escapeHtml(val)}</textarea>
+      </div>`;
+    }
+    return `<div class="field">
+      <div class="field-num">${f.num}</div>
+      <div class="field-label">${escapeHtml(f.label)}</div>
+      <div class="ro-answer ${val?'':'ro-empty'}">${val?escapeHtml(val):'Not filled in.'}</div>
+    </div>`;
+  }).join('');
+
+  if(editable){
+    area.innerHTML+=`<div class="actions">
+      <button class="btn" onclick="doSave(true)">Save draft</button>
+      <button class="btn btn-primary" onclick="submitForm()">Submit review</button>
+      <span class="hint">You can save and come back later. Submit only when you are done.</span>
+    </div>`;
+  }
+}
+
+function renderPacket(){
+  const area=document.getElementById('packet-area');
+  if(!EVAL || EVAL.workflow_status!=='complete'){ area.innerHTML=''; return; }
+  const blocks=[];
+  if(EVAL.functional_head_comments) blocks.push(['From your functional head', EVAL.functional_head_comments]);
+  if(EVAL.functional_head_recognition) blocks.push(['Recognised by your functional head', EVAL.functional_head_recognition]);
+  if(EVAL.director_comments) blocks.push(['From your campus Director', EVAL.director_comments]);
+  if(EVAL.president_recognition) blocks.push(['From the President', EVAL.president_recognition]);
+  if(!blocks.length){ area.innerHTML=''; return; }
+  area.innerHTML=`<div class="packet"><h3>Your reviewers' notes</h3>${
+    blocks.map(([from,text])=>`<div class="pk-block"><div class="pk-from">${escapeHtml(from)}</div><div class="pk-text">${escapeHtml(text)}</div></div>`).join('')
+  }</div>`;
+}
+
+function renderSaveBar(){
+  if(!isEditable()){ document.getElementById('savebar').style.display='none'; return; }
+  if(EVAL && EVAL.updated_at) setSaveBar('s-ok','Saved · last saved '+fmtTime(EVAL.updated_at));
+  else setSaveBar('s-idle','Not saved yet · your answers will save as you type');
+}
+
+function render(){ renderStatusBanner(); renderIntro(); renderForm(); renderPacket(); renderSaveBar(); }
+
+// ---------------------------------------------------------------------
+// init
+// ---------------------------------------------------------------------
+async function init(){
+  const session=await gate();
+  if(!session) return;
+  const email=(session.user&&session.user.email)||'';
+
+  // 1) resolve staff record
+  try{
+    STAFF=await loadStaff(email);
+  }catch(e){
+    await logEvent('init_failure','loadStaff threw: '+(e&&e.message));
+    failHard('We could not load your record.', `Please refresh the page. If it still does not load, contact <b>${HELP_CONTACT}</b>. Do not worry, nothing is lost.`);
+    return;
+  }
+  if(!STAFF){
+    // not a staff self-author: faculty, or out-of-scope staff. Be clear, not empty.
+    failHard('This Annual Performance Review is for staff members.',
+      `We could not find a staff record for <b>${escapeHtml(email)}</b>. If you are a faculty member, your review is on the X-Hub home page. If you believe this is a mistake, contact <b>${HELP_CONTACT}</b>. <br><br><button class="auth-link" onclick="goHome()">Return to X-Hub</button> · <button class="auth-link" onclick="signOut()">Sign out</button>`);
+    return;
+  }
+
+  // 2) load evaluation (may legitimately be null = brand new blank form)
+  try{
+    EVAL=await loadEval(STAFF.id);
+  }catch(e){
+    await logEvent('init_failure','loadEval threw: '+(e&&e.message));
+    failHard('We could not load your saved answers.', `Please refresh the page. If it still does not load, contact <b>${HELP_CONTACT}</b>. Your previous answers are safe.`);
+    return;
+  }
+
+  // 3) reveal UI only after everything loaded cleanly (empty-render bug is impossible)
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('header').style.display='block';
+  document.getElementById('body').style.display='block';
+  document.getElementById('mt-user').textContent=STAFF.staff_name||email.split('@')[0];
+  document.getElementById('mt-role').textContent=STAFF.level||'Staff';
+
+  renderMeta();
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
