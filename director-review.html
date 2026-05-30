@@ -376,12 +376,8 @@ async function resolveAccess(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='login.html';return null;}
 
-  const um=session.user.user_metadata||{};
-  if(um.must_change_password===true){
-    window.location.href='login.html?action=change-password';
-    return null;
-  }
-
+  /* H8 password gate - profile is source of truth, not user_metadata.
+     Fixes flicker loop seen 30 May 2026. */
   const{data:profile}=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
   if(!profile){
     document.getElementById('blocker-msg').textContent='Profile not found. Contact admin.';
