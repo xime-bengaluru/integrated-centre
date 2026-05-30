@@ -2365,9 +2365,17 @@ async function resolveAccess(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='login.html';return null;}
 
-  /* H8: Force password change before any access */
-  const um=session.user.user_metadata||{};
-  if(um.must_change_password===true){
+  /* H8: Force password change before any access.
+     IMPORTANT: check user_profiles.must_change_password as the source of truth,
+     NOT session.user.user_metadata. Supabase user_metadata is set at user creation
+     and does NOT auto-clear when password is updated. user_profiles.must_change_password
+     is the column the password-change flow actually updates.
+     Caught 30 May 2026 when Dr Bhatta + Shimona both hit a flicker loop:
+     metadata still said true, profile said false, page redirected back to login,
+     login redirected back to evaluation, infinite ping-pong. */
+  const{data:authProfile}=await sb.from('user_profiles')
+    .select('must_change_password').eq('id',session.user.id).maybeSingle();
+  if(authProfile?.must_change_password===true){
     window.location.href='login.html?force_change=1';
     return null;
   }
