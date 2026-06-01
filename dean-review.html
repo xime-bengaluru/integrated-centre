@@ -1252,15 +1252,21 @@ async function submitReview(){
 }
 
 async function maybeAdvanceWorkflow(){
-  /* Re-read all reviews. If all 3 deans for this campus have validated, set status to all_deans_complete.
-     Otherwise set to dean_review_in_progress (if currently submitted or mid_year_locked). */
+  /* Re-read all reviews. Advance to all_deans_complete when every dean role ACTUALLY
+     ASSIGNED to this evaluation has at least one validated review. Counts the roles
+     present on this evaluation's dean_review rows rather than a fixed
+     academics+research+ep triple, so the AY 2025-26 recipient model (Dean Academics
+     + Dean Research, EP retired) advances correctly. Tolerant of duplicate rows of
+     the same role. Falls back to dean_review_in_progress while reviews are outstanding. */
   const{data:rs}=await sb.from('evaluation_dean_reviews').select('dean_role,validated').eq('evaluation_id',CURRENT_EVAL.id);
-  const validatedRoles=new Set((rs||[]).filter(r=>r.validated).map(r=>r.dean_role));
-  const allThree=['academics','research','ep'].every(r=>validatedRoles.has(r));
+  const rows=rs||[];
+  const assignedRoles=new Set(rows.map(r=>r.dean_role));
+  const validatedRoles=new Set(rows.filter(r=>r.validated).map(r=>r.dean_role));
+  const allDone=assignedRoles.size>0&&[...assignedRoles].every(role=>validatedRoles.has(role));
 
   let newStatus=null;
   const currentStatus=CURRENT_EVAL.workflow_status;
-  if(allThree){
+  if(allDone){
     if(currentStatus!=='with_director'&&currentStatus!=='returned_to_dean'&&currentStatus!=='director_verified'&&currentStatus!=='complete'){
       newStatus='all_deans_complete';
     }
