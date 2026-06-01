@@ -803,15 +803,11 @@ select.pub-input{cursor:pointer}
 
   <div class="ledger" id="points-ledger">
     <div class="ledger-l">
-      <div class="ledger-label">Points Ledger · AY 2025-26</div>
+      <div class="ledger-label">Points · AY 2025-26</div>
     </div>
     <div class="ledger-items">
       <div class="ledger-item">
-        <div class="ledger-val" id="ledger-g1">300</div>
-        <div class="ledger-sub">Full year achievable</div>
-      </div>
-      <div class="ledger-item">
-        <div class="ledger-total" id="ledger-total">300</div>
+        <div class="ledger-val" style="font-size:13px;color:var(--mute)">Not scored in this form</div>
       </div>
     </div>
   </div>
@@ -1898,6 +1894,11 @@ function openPubForm(){
   PUB_EDIT_ID=null;
   resetPubForm();
   document.getElementById('pub-form-title').textContent='Add Publication';
+  /* Render the default Journal type on open so the ABDC / Indexed / Quartile
+     fields are visible immediately. Without this the Journal tab shows active
+     but its section stays display:none until the tab is clicked, which is why
+     the ABDC dropdown appeared "missing" on first open. */
+  selectPubType('journal',document.querySelector('.pub-type-tab[data-pubtype="journal"]'));
   document.getElementById('pub-form-wrap').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -3101,20 +3102,13 @@ function removeSrEntry(id){
   upProg();
 }
 
-/* ---------- Points ledger ---------- */
+/* ---------- Points ledger ----------
+   No-op for AY 2025-26: this form does not display scoring to faculty.
+   The ledger card now reads "Not scored in this form" as static markup, so
+   this function intentionally does nothing and returns immediately. Left in
+   place so init() can keep calling it without a guard. */
 async function loadPointsLedger(){
-  const{data,error}=await sb.from('evaluation_gate_config').select('*').eq('academic_year',ACADEMIC_YEAR);
-  if(error||!data||data.length===0)return;
-  const g1=data.filter(r=>r.gate==='mid_year').reduce((s,r)=>s+(r.achievable_points||0),0);
-  const g2=data.filter(r=>r.gate==='annual').reduce((s,r)=>s+(r.achievable_points||0),0);
-  /* Null-safe: some ledger DOM elements may not exist in current layout.
-     A missing element here must not break init() which calls this before restore(). */
-  const el1=document.getElementById('ledger-g1');
-  const el2=document.getElementById('ledger-g2');
-  const elT=document.getElementById('ledger-total');
-  if(el1)el1.textContent=g1;
-  if(el2)el2.textContent=g2;
-  if(elT)elT.textContent=g1+g2;
+  return;
 }
 
 /* ---------- Restore from DB ---------- */
