@@ -2776,7 +2776,7 @@ async function submitMidYear(){
       for(const d of reviewingDeans){
         await sb.from('evaluation_dean_reviews').upsert({
           evaluation_id:eid,dean_email:d.email,dean_name:d.name,dean_role:d.role,
-          campus:fac.campus,gate:'mid_year',validated:false
+          campus:fac.campus,gate:'annual',validated:false
         },{onConflict:'evaluation_id,dean_email,gate'});
       }
     }
