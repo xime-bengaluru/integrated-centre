@@ -33,10 +33,10 @@
 
   /* HEADER */
   .header { background: var(--navy); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(201,168,76,0.25); }
-  .header-left { display: flex; align-items: center; gap: 16px; }
+  .header-left { display: flex; align-items: center; gap: 22px; }
   .header-logo { height: 28px; width: auto; display: block; }
-  .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.15); }
-  .header-title { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); letter-spacing: 0.04em; }
+  .header-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.32); }
+  .header-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.82); letter-spacing: 0.08em; }
   .header-right { display: flex; align-items: center; gap: 12px; }
   .header-date { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; }
   .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--navy-l); border: 1.5px solid rgba(201,168,76,0.4); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--gold); letter-spacing: 0.05em; cursor: pointer; position: relative; }
@@ -353,8 +353,8 @@
 <div class="hero">
   <div class="hero-greeting" id="hero-greeting">Welcome</div>
   <div class="hero-name" id="hero-name">Welcome back</div>
-  <div class="hero-sub" id="hero-sub">3X &mdash; your annual performance, purpose and impact review.</div>
-  <div class="focus-badge"><div class="focus-dot"></div>Test Phase &middot; 3X Pilot</div>
+  <div class="hero-sub" id="hero-sub">3X is your annual performance, purpose and impact review.</div>
+  <div class="focus-badge" id="focus-badge"><div class="focus-dot"></div>Test Phase &middot; 3X Pilot</div>
 </div>
 
 <!-- MAIN -->
@@ -439,13 +439,13 @@
           Active &middot; AY 2025-26
         </div>
         <div class="hero-tile-icon">&#9670;</div>
-        <div class="hero-tile-title">Annual Performance Review</div>
+        <div class="hero-tile-title">X-Drive Staff</div>
         <div class="hero-tile-desc">A simple record of your year, in your own words. Note your key focus areas, what went well, where you would value support, and your plan for the year ahead. Your reviewers add their notes after you submit.</div>
         <button class="hero-tile-cta">Open My Review &rarr;</button>
       </div>
     </div>
     <div class="hero-tile-footer">
-      <div class="hero-tile-footer-left">centre.xime.org &middot; X-Hub &middot; Staff Track</div>
+      <div class="hero-tile-footer-left">centre.xime.org &middot; X-Hub &middot; X-Drive Staff</div>
       <div class="hero-tile-footer-right">Live</div>
     </div>
   </div>
@@ -525,7 +525,7 @@
         <div class="card-tag">Institutional View</div>
         <div class="card-icon">&#9670;</div>
         <div class="card-title">Adoption Dashboard</div>
-        <div class="card-desc">Institutional view across all three campuses · evaluation throughput, bottlenecks, and intervention triggers.</div>
+        <div class="card-desc">Institutional view across all three campuses &middot; evaluation throughput, bottlenecks, and intervention triggers.</div>
       </div>
     </div>
 
@@ -547,7 +547,7 @@
 <div class="footer">
   <div class="footer-left">
     <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="footer-logo">
-    <div class="footer-text">X-Hub &middot; Test Phase &middot; 3X Pilot</div>
+    <div class="footer-text" id="footer-text">X-Hub &middot; Test Phase &middot; 3X Pilot</div>
   </div>
   <div class="footer-right">centre.xime.org &middot; AY 2025-26 &middot; Build v7</div>
 </div>
@@ -725,6 +725,10 @@ async function initAuth() {
   if (profile.role === 'staff') {
     const heroSub = document.getElementById('hero-sub');
     if (heroSub) heroSub.textContent = 'Your annual performance review.';
+    const focusBadge = document.getElementById('focus-badge');
+    if (focusBadge) focusBadge.innerHTML = '<div class="focus-dot"></div>X-Drive Staff &middot; AY 2025-26';
+    const footerText = document.getElementById('footer-text');
+    if (footerText) footerText.textContent = 'X-Hub \u00b7 X-Drive Staff';
     const heroTile = document.getElementById('hero-tile-3x');
     if (heroTile) heroTile.style.display = 'none';
     const testNotice = document.getElementById('test-notice');
