@@ -430,6 +430,26 @@
     </div>
   </div>
 
+  <!-- STAFF APR HERO TILE (shown only for staff role, hidden by default) -->
+  <div class="hero-tile" id="hero-tile-apr" style="display:none" onclick="window.location.href='staff-evaluation.html'">
+    <div class="hero-tile-body">
+      <div class="hero-tile-left">
+        <div class="hero-tile-tag">
+          <div class="hero-tile-tag-dot"></div>
+          Active &middot; AY 2025-26
+        </div>
+        <div class="hero-tile-icon">&#9670;</div>
+        <div class="hero-tile-title">Annual Performance Review</div>
+        <div class="hero-tile-desc">A simple record of your year, in your own words. Note your key focus areas, what went well, where you would value support, and your plan for the year ahead. Your reviewers add their notes after you submit.</div>
+        <button class="hero-tile-cta">Open My Review &rarr;</button>
+      </div>
+    </div>
+    <div class="hero-tile-footer">
+      <div class="hero-tile-footer-left">centre.xime.org &middot; X-Hub &middot; Staff Track</div>
+      <div class="hero-tile-footer-right">Live</div>
+    </div>
+  </div>
+
   <!-- TEST PHASE NOTICE -->
   <div class="test-notice" id="test-notice">
     <div class="test-notice-icon">&#9432;</div>
@@ -696,6 +716,25 @@ async function initAuth() {
       };
     }
     /* Skip the status chip load and the rest of the faculty-side wiring */
+    return;
+  }
+
+  /* Staff role: not faculty. Show the staff APR tile only, hide the faculty 3X layout.
+     Mirrors the isAdminOnly branch above. Staff land here only via the "X-Hub"
+     breadcrumb from their form; login routes them straight to the form. */
+  if (profile.role === 'staff') {
+    const heroSub = document.getElementById('hero-sub');
+    if (heroSub) heroSub.textContent = 'Your annual performance review.';
+    const heroTile = document.getElementById('hero-tile-3x');
+    if (heroTile) heroTile.style.display = 'none';
+    const testNotice = document.getElementById('test-notice');
+    if (testNotice) testNotice.style.display = 'none';
+    const otherLabel = document.getElementById('other-section-label');
+    if (otherLabel) otherLabel.style.display = 'none';
+    const modulesGrid = document.getElementById('modules-grid');
+    if (modulesGrid) modulesGrid.style.display = 'none';
+    const aprTile = document.getElementById('hero-tile-apr');
+    if (aprTile) aprTile.style.display = 'block';
     return;
   }
 
