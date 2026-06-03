@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>X-Hub · Annual Performance Review</title>
+<title>X-Hub · X-Drive Staff</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600&family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="assets/js/supabase-js-2.105.4.umd.js"></script>
 <style>
@@ -44,7 +44,7 @@
   .header { background:var(--ink); padding:1.5rem 2rem 1.3rem; position:sticky; top:56px; z-index:100; box-shadow:0 4px 24px rgba(0,0,0,0.2); }
   .header h1 { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--gold-light); letter-spacing:.01em; line-height:1.2; }
   .header .sub { font-size:.72rem; color:rgba(255,255,255,.45); font-weight:300; margin-top:.3rem; letter-spacing:.05em; text-transform:uppercase; }
-  .staff-meta { display:flex; flex-wrap:wrap; gap:1.2rem; margin-top:1rem; }
+  .staff-meta { display:flex; flex-wrap:wrap; gap:1.6rem; margin-top:1rem; }
   .meta-item { min-width:0; }
   .meta-label { font-size:.6rem; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,.4); }
   .meta-val { font-family:'DM Mono',monospace; font-size:.85rem; color:#fff; margin-top:2px; }
@@ -133,7 +133,7 @@
     <span class="mt-sep"></span>
     <button class="mt-crumb" onclick="goHome()">← X-Hub</button>
     <span class="mt-sep"></span>
-    <span class="mt-page">Annual Performance Review</span>
+    <span class="mt-page">X-Drive Staff</span>
   </div>
   <div class="mt-r">
     <span class="mt-role" id="mt-role">Staff</span>
@@ -144,8 +144,8 @@
 
 <!-- HEADER -->
 <div class="header" id="header" style="display:none">
-  <h1>Annual Performance Review</h1>
-  <div class="sub">Staff Track · Academic Year 2025-26</div>
+  <h1>X-Drive Staff</h1>
+  <div class="sub">Annual Performance Review · 2025-26</div>
   <div class="staff-meta" id="staff-meta"></div>
 </div>
 
@@ -165,7 +165,7 @@
     <div class="faq-title">Common Questions</div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is my work saved automatically?</div><div class="faq-a">Yes. Your answers save as you type, and the bar at the top shows the time of the last save. You can also press Save draft any time. You can close this page and come back later, your text will be here.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Who will see what I write?</div><div class="faq-a">Your functional head, your campus Director, and the President. It is a simple yearly record so that your work is seen and recognised.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What if I do not have much to write in a box?</div><div class="faq-a">That is fine. Write what is true for your role in a line or two. There is no minimum length.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What if I do not have much to write in a box?</div><div class="faq-a">The suggested numbers under each box are a guide, not a rule. Write what is true for your role. If a box has little to add, a line is fine.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Something looks wrong or the page seems empty. What do I do?</div><div class="faq-a">Please do not retype everything. Refresh the page first. If it still looks wrong, contact Reetha at 9845280734 and your saved text will be recovered.</div></div>
   </div>
 </div>
@@ -183,9 +183,9 @@ const ACADEMIC_YEAR = '2025-26';
 const HELP_CONTACT = 'Reetha at 9845280734';
 
 const FIELDS = [
-  { key:'key_focus_areas',       num:'1', label:'Key focus areas this year', help:'The main responsibilities and priorities your role centred on.' },
-  { key:'notable_achievements',  num:'2', label:'Notable achievements',      help:'Two or three things you are proud of, or that went well. For example: ran a cycle with no errors, covered for a colleague, sorted out a recurring problem.' },
-  { key:'areas_for_improvement', num:'3', label:'Areas for improvement',     help:'Where you would like to grow, or do things differently.' },
+  { key:'key_focus_areas',       num:'1', label:'Key focus areas this year', help:'Your main objectives for the year, in brief. The few priorities your role was meant to deliver or move forward.' },
+  { key:'notable_achievements',  num:'2', label:'Notable achievements',      help:'Five to seven things you are proud of this year, and a few words on why each one mattered. For example: set up the new STP, installed the 20-ton AC for the auditorium, cleared a recurring billing error.' },
+  { key:'areas_for_improvement', num:'3', label:'Areas for improvement',     help:'At least two or three areas where you would like to grow, or do things differently.' },
   { key:'plan_next_year',        num:'4', label:'Plan for next year',        help:'What you would like to focus on or achieve in the coming year.' },
 ];
 
@@ -353,7 +353,7 @@ function scheduleSave(){
 // ---------------------------------------------------------------------
 async function submitForm(){
   if(!STAFF) return;
-  if(!confirm('Submit your Annual Performance Review? You can view it afterwards, but you will not be able to edit it once submitted.')) return;
+  if(!confirm('Submit your X-Drive Staff review? You can view it afterwards, but you will not be able to edit it once submitted.')) return;
   // make sure latest text is saved first
   await doSave(false);
   if(!EVAL || !EVAL.id){ toast('Please add something before submitting.', true); return; }
@@ -379,7 +379,7 @@ function isEditable(){ const s=(EVAL&&EVAL.workflow_status)||'draft'; return EDI
 
 function renderMeta(){
   const m=document.getElementById('staff-meta');
-  const items=[['Name',STAFF.staff_name],['Level',STAFF.level||'—'],['Function',STAFF.function||'—'],['Campus',STAFF.campus||'—']];
+  const items=[['Name',STAFF.staff_name],['Level',STAFF.level||'-'],['Function',STAFF.function||'-'],['Campus',STAFF.campus||'-']];
   m.innerHTML=items.map(([l,v])=>`<div class="meta-item"><div class="meta-label">${escapeHtml(l)}</div><div class="meta-val">${escapeHtml(v)}</div></div>`).join('');
 }
 
@@ -400,7 +400,7 @@ function renderStatusBanner(){
 
 function renderIntro(){
   document.getElementById('intro').textContent = isEditable()
-    ? 'A simple record of your year, in your own words. Write a line or two in each box. Your answers save automatically.'
+    ? 'A simple record of your year, in your own words. The note under each box shows what to capture. Your answers save automatically.'
     : '';
 }
 
@@ -473,7 +473,7 @@ async function init(){
   }
   if(!STAFF){
     // not a staff self-author: faculty, or out-of-scope staff. Be clear, not empty.
-    failHard('This Annual Performance Review is for staff members.',
+    failHard('X-Drive Staff is for staff members.',
       `We could not find a staff record for <b>${escapeHtml(email)}</b>. If you are a faculty member, your review is on the X-Hub home page. If you believe this is a mistake, contact <b>${HELP_CONTACT}</b>. <br><br><button class="auth-link" onclick="goHome()">Return to X-Hub</button> · <button class="auth-link" onclick="signOut()">Sign out</button>`);
     return;
   }
