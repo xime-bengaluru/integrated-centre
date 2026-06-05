@@ -268,11 +268,10 @@ async function gate(){
 
   sb._lastEmail = (session.user && session.user.email) || null;
 
-  // H8: force password change before any access
-  const um=(session.user && session.user.user_metadata)||{};
-  if(um.must_change_password===true){ location.href='login.html?action=change-password'; return null; }
-
-  // defensive profile read for password gate (do not hard-fail if missing)
+  // Password-change gate. user_profiles.must_change_password is the single source
+  // of truth; login.html clears it when the password is actually changed. We do NOT
+  // gate on auth user_metadata here: that copy is never cleared on change and caused
+  // a redirect loop for users migrated in from other roles (fixed 5 Jun 2026).
   try{
     const { data:profile } = await sb.from('user_profiles').select('must_change_password').eq('id', session.user.id).maybeSingle();
     if(profile && profile.must_change_password===true){ location.href='login.html?action=change-password'; return null; }
