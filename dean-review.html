@@ -171,6 +171,17 @@
   .panel-completed{background:rgba(13,146,104,.08);border-left:3px solid var(--teal);padding:12px 14px;border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--teal-l);line-height:1.5}
   .panel-completed strong{color:var(--teal);font-weight:600;display:block;margin-bottom:3px}
 
+  /* Paused-box shade (INTERIM: management synthesis moves to the panel review session).
+     Non-destructive. Lays an elegant translucent shade over the synthesis box and
+     disables the release action. Reversible: restore renderFinalizePanel from version
+     control once the panel review surface ships. */
+  .panel-note{font-size:11.5px;color:var(--muted);line-height:1.5;background:rgba(201,168,76,.07);border:1px dashed rgba(201,168,76,.35);border-radius:8px;padding:11px 13px;margin-bottom:14px}
+  .paused-wrap{position:relative}
+  .paused-wrap .panel-textarea{opacity:.5;background:var(--cream);color:var(--muted);cursor:not-allowed;resize:none}
+  .paused-shade{position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,rgba(13,31,53,.30),rgba(13,31,53,.42));-webkit-backdrop-filter:blur(1.5px);backdrop-filter:blur(1.5px);display:flex;align-items:center;justify-content:center;text-align:center;padding:18px}
+  .paused-note{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--gold-l);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.05em;padding:8px 15px;border-radius:20px;border:1px solid rgba(201,168,76,.5);box-shadow:0 6px 18px rgba(13,31,53,.32)}
+  .paused-note-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
   /* Toast */
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy-dark);color:white;padding:12px 22px;border-radius:8px;border-left:3px solid var(--gold);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:300;max-width:480px}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);pointer-events:auto;cursor:pointer}
@@ -1086,7 +1097,15 @@ async function submitRereview(){
   }
 }
 
-/* ---------- Finalize panel (Dean Academics, workflow=director_verified) ---------- */
+/* ---------- Finalize panel (Dean Academics, workflow=director_verified) ----------
+   INTERIM (paused): the final management synthesis AND the agreed rating are moving to
+   the panel review session, where the panel agrees them together with the faculty
+   member present. The synthesis box is shaded and the release action is disabled here
+   so nothing is written through the old single-author path while the transition is in
+   flight. Non-destructive: any prior synthesis still shows, read-only. Reversible:
+   restore the active version of this function (synthesis textarea + finalizeAndRelease
+   button) from version control once the panel review surface ships. The original
+   finalizeAndRelease() is left intact below but is no longer wired to any control. */
 function renderFinalizePanel(p,f){
   const h=document.createElement('div');h.className='panel-h';h.textContent='Management Synthesis';
   p.appendChild(h);
@@ -1095,23 +1114,31 @@ function renderFinalizePanel(p,f){
   role.innerHTML=`<span class="panel-role-dot"></span>Dean Academics · ${escapeHtml(MY_CAMPUS)}`;
   p.appendChild(role);
 
-  const s=document.createElement('div');s.className='panel-s';
-  s.textContent='Director has verified. Write the final management voice and release to faculty. This is what the faculty member will see when they open their evaluation. Step back from the dean signals and frame the year as you would describe it to the President or to the faculty member directly.';
-  p.appendChild(s);
+  const note=document.createElement('div');note.className='panel-note';
+  note.textContent='The final summary and rating are moving to the panel review session, where the panel agrees them together with the faculty member present. This step is paused here in the meantime.';
+  p.appendChild(note);
 
   const cf=document.createElement('div');cf.className='panel-field';
   const cl=document.createElement('div');cl.className='panel-field-l';
-  cl.innerHTML=`<span>Management synthesis</span><span class="panel-field-l-r">visible to Faculty</span>`;
+  cl.innerHTML=`<span>Management synthesis</span><span class="panel-field-l-r">paused</span>`;
+  cf.appendChild(cl);
+
+  const wrap=document.createElement('div');wrap.className='paused-wrap';
   const ta=document.createElement('textarea');ta.className='panel-textarea';ta.id='mgmt-synthesis';
   ta.style.minHeight='200px';
-  ta.placeholder='Your final management framing of the year. What did this faculty member contribute, what stood out, and what is the overall takeaway?';
   ta.value=f.management_synthesis||'';
-  cf.appendChild(cl);cf.appendChild(ta);
+  ta.readOnly=true;
+  ta.setAttribute('aria-disabled','true');
+  wrap.appendChild(ta);
+  const shade=document.createElement('div');shade.className='paused-shade';
+  shade.innerHTML=`<span class="paused-note"><span class="paused-note-dot"></span>Paused · moving to panel review</span>`;
+  wrap.appendChild(shade);
+  cf.appendChild(wrap);
   p.appendChild(cf);
 
   const btn=document.createElement('button');btn.className='panel-submit';btn.id='dean-submit';
-  btn.textContent='Finalize and Release to Faculty';
-  btn.onclick=finalizeAndRelease;
+  btn.textContent='Finalize via panel review';
+  btn.disabled=true;
   p.appendChild(btn);
 }
 
