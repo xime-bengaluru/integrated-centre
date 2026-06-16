@@ -364,7 +364,7 @@
   <div class="admin-view" id="admin-view">
     <div class="admin-view-label">Institutional Oversight</div>
     <div class="admin-grid">
-      <div class="admin-tile" onclick="window.location.href='/adoption-dashboard.html'">
+      <div class="admin-tile" id="admin-tile-adoption" onclick="window.location.href='/adoption-dashboard.html'">
         <div class="admin-tile-tag">Live Funnel</div>
         <div class="admin-tile-icon">&#9670;</div>
         <div class="admin-tile-title">Adoption Dashboard</div>
@@ -377,6 +377,13 @@
         <div class="admin-tile-title">Faculty 3X Preview</div>
         <div class="admin-tile-desc">Open any faculty member's 3X review in read-only preview mode. Use this to spot-check evaluations as they come in.</div>
         <div class="admin-tile-cta">Pick a faculty &rarr;</div>
+      </div>
+      <div class="admin-tile" id="admin-tile-staff-summary" style="display:none" onclick="window.location.href='staff-summary.html'">
+        <div class="admin-tile-tag">Staff Oversight</div>
+        <div class="admin-tile-icon">&#9670;</div>
+        <div class="admin-tile-title">Staff Evaluation Summary</div>
+        <div class="admin-tile-desc">Every staff member across the three campuses, their submission status, and the rating and note recorded by their campus Director. Search by name to open any one.</div>
+        <div class="admin-tile-cta">Open Summary &rarr;</div>
       </div>
     </div>
   </div>
@@ -526,6 +533,17 @@
         <div class="card-icon">&#9678;</div>
         <div class="card-title">Panel Review</div>
         <div class="card-desc">Record the panel's decision for each faculty member in your campus. Browse and select a candidate, project the one-page summary, and capture the agreed rating and written review.</div>
+      </div>
+    </div>
+
+    <!-- STAFF REVIEW -->
+    <div class="module-card dimmed" id="tile-staff-director-review">
+      <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
+      <div class="card-body">
+        <div class="card-tag">Staff Review</div>
+        <div class="card-icon">&#9678;</div>
+        <div class="card-title">Staff Review</div>
+        <div class="card-desc">Read each staff member's submitted review in your campus, then record your note and rating. Search by name, no IDs to type.</div>
       </div>
     </div>
 
@@ -695,13 +713,17 @@ async function initAuth() {
     .eq('email', profile.email)
     .maybeSingle();
 
-  /* Admin-only view: super_admin without a faculty_master row (e.g. President).
-     They are not faculty - hide the 3X performance layout and show institutional tiles only. */
-  const isAdminOnly = profile.role === 'super_admin' && !facRow;
+  /* Institutional-only views: the President (role 'president', or today a
+     super_admin without a faculty_master row). They are not faculty - hide the
+     3X performance layout and show institutional tiles only. */
+  const isPresident = profile.role === 'president';
+  const isAdminOnly = (profile.role === 'super_admin' && !facRow) || isPresident;
   if (isAdminOnly) {
     /* Custom hero subtitle */
     const heroSub = document.getElementById('hero-sub');
-    if (heroSub) heroSub.textContent = 'Institutional view across XIME\u2019s three campuses.';
+    if (heroSub) heroSub.textContent = isPresident
+      ? 'Staff evaluation across XIME\u2019s three campuses.'
+      : 'Institutional view across XIME\u2019s three campuses.';
     /* Hide the faculty layout */
     const heroTile = document.getElementById('hero-tile-3x');
     if (heroTile) heroTile.style.display = 'none';
@@ -714,17 +736,33 @@ async function initAuth() {
     /* Show the admin layout */
     const adminView = document.getElementById('admin-view');
     if (adminView) adminView.classList.add('active');
-    /* Wire the Faculty 3X Preview tile to a picker. For now, prompt for an email
-       since the faculty picker page is not yet built. The audit will decide whether
-       to build a proper picker or to remove this tile entirely. */
-    const previewTile = document.getElementById('admin-tile-preview');
-    if (previewTile) {
-      previewTile.onclick = () => {
-        const email = prompt('Faculty email to preview (e.g. bhadra@xime.org):');
-        if (email && email.trim()) {
-          window.location.href = '/evaluation.html?as=' + encodeURIComponent(email.trim().toLowerCase());
-        }
-      };
+
+    /* Staff Evaluation Summary tile: visible to both the President and super_admin. */
+    const staffSummaryTile = document.getElementById('admin-tile-staff-summary');
+    if (staffSummaryTile) staffSummaryTile.style.display = 'flex';
+
+    if (isPresident) {
+      /* Focused President view: staff summary only. Hide the faculty-funnel tiles
+         and let the staff summary stand on its own. */
+      const adoptionTile = document.getElementById('admin-tile-adoption');
+      if (adoptionTile) adoptionTile.style.display = 'none';
+      const previewTile = document.getElementById('admin-tile-preview');
+      if (previewTile) previewTile.style.display = 'none';
+      const adminGrid = document.querySelector('.admin-grid');
+      if (adminGrid) adminGrid.style.gridTemplateColumns = '1fr';
+      const adminLabel = document.querySelector('.admin-view-label');
+      if (adminLabel) adminLabel.textContent = 'Staff Evaluation';
+    } else {
+      /* super_admin keeps the Faculty 3X Preview spot-check tile (prompt-based for now). */
+      const previewTile = document.getElementById('admin-tile-preview');
+      if (previewTile) {
+        previewTile.onclick = () => {
+          const email = prompt('Faculty email to preview (e.g. bhadra@xime.org):');
+          if (email && email.trim()) {
+            window.location.href = '/evaluation.html?as=' + encodeURIComponent(email.trim().toLowerCase());
+          }
+        };
+      }
     }
     /* Skip the status chip load and the rest of the faculty-side wiring */
     return;
@@ -813,6 +851,19 @@ function unlockReviewTiles(deanRows, dirRow, profile) {
       badge.innerHTML = '<span class="role-badge-dot"></span>Director &middot; ' + (dirRow.campus || '');
       tile.appendChild(badge);
       tile.onclick = () => { window.location.href = '/director-review.html'; };
+    }
+    /* Staff Review: same director, staff side. Read submitted staff reviews and record note + rating. */
+    const staffTile = document.getElementById('tile-staff-director-review');
+    if (staffTile) {
+      staffTile.classList.remove('dimmed');
+      staffTile.classList.add('unlocked');
+      const sLock = staffTile.querySelector('.locked-badge');
+      if (sLock) sLock.remove();
+      const sBadge = document.createElement('div');
+      sBadge.className = 'role-badge';
+      sBadge.innerHTML = '<span class="role-badge-dot"></span>Director &middot; ' + (dirRow.campus || '');
+      staffTile.appendChild(sBadge);
+      staffTile.onclick = () => { window.location.href = '/staff-director-review.html'; };
     }
   }
   /* Adoption Dashboard - super_admin only */

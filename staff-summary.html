@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub · Staff Evaluation Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="assets/js/supabase-js-2.105.4.umd.js"></script>
+<style>
+  :root{
+    --navy:#0D1F35;--navy-mid:#1A3352;--navy-l:#243D5C;--navy-dark:#0a1a2e;
+    --gold:#C9A84C;--gold-l:#E8C97A;--gold-d:#A88A2B;--gold-pale:#F7EDD0;
+    --cream:#FAF8F4;--parchment:#FBFAF6;--white:#FFFFFF;
+    --text:#0D1F35;--sub:#4A5D72;--muted:#5A6B82;--faint:#7a8699;
+    --line:#E5DFD2;--line-strong:#D8D2C5;--border:#D8D2C5;
+    --red:#C8102E;--teal:#0D9268;--teal-l:#6FCDA8;--teal-d:#075B41;--amber:#D97706;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+  .topbar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.25)}
+  .tb-l{display:flex;align-items:center;gap:14px}
+  .tb-logo{height:26px;width:auto}
+  .tb-div{width:1px;height:22px;background:rgba(255,255,255,.15)}
+  .tb-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.04em}
+  .tb-r{display:flex;align-items:center;gap:12px}
+  .tb-back{font-size:12px;color:rgba(255,255,255,.6);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .tb-back:hover{background:rgba(255,255,255,.05);color:white}
+  .tb-signout{font-size:12px;color:rgba(255,255,255,.6);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .tb-signout:hover{background:rgba(255,255,255,.05);color:white}
+
+  .hero{background:var(--navy);padding:32px 32px 36px;border-bottom:2px solid var(--gold)}
+  .hero-l{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .hero-t{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:white;line-height:1.15;margin-bottom:6px}
+  .hero-t em{color:var(--gold-l);font-style:italic}
+  .hero-s{font-size:13px;color:rgba(255,255,255,.55);max-width:680px;line-height:1.55}
+
+  .main{max-width:1180px;margin:0 auto;padding:28px 24px 60px}
+
+  /* Summary strip */
+  .stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .stat{background:white;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .stat-k{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .stat-v{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--navy);line-height:1.05;margin-top:3px}
+  .stat-d{font-size:11px;color:var(--sub);margin-top:1px}
+
+  .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .seg-tabs{display:flex;gap:0;background:white;border:1px solid var(--line-strong);border-radius:10px;padding:4px;width:fit-content;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-wrap:wrap}
+  .seg-tab{padding:9px 16px;font-size:13px;font-weight:500;color:var(--sub);background:transparent;border:none;border-radius:7px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;transition:all .15s}
+  .seg-tab.active{background:var(--navy);color:white}
+  .seg-tab:not(.active):hover{background:var(--cream)}
+  .seg-tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:18px;padding:0 6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:600;border-radius:9px;background:rgba(201,168,76,.18);color:var(--gold-d)}
+  .seg-tab.active .seg-tab-count{background:rgba(255,255,255,.18);color:white}
+
+  .search-box{flex:1;min-width:220px;max-width:360px;position:relative}
+  .search-box input{width:100%;padding:10px 14px 10px 36px;border:1px solid var(--line-strong);border-radius:9px;font-family:inherit;font-size:13px;color:var(--text);background:white}
+  .search-box input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+  .search-box .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:14px;pointer-events:none}
+
+  .campus-filter{display:flex;gap:6px;flex-wrap:wrap}
+  .cf-btn{padding:8px 13px;font-size:12px;font-weight:500;color:var(--sub);background:white;border:1px solid var(--line-strong);border-radius:8px;cursor:pointer;font-family:inherit;transition:all .15s}
+  .cf-btn.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:600}
+  .cf-btn:not(.active):hover{border-color:var(--gold)}
+
+  .fac-list{display:flex;flex-direction:column;gap:10px}
+  .fac-empty{padding:48px 32px;background:white;border:1px dashed var(--line-strong);border-radius:12px;text-align:center;color:var(--muted);font-size:13px}
+  .fac-empty-icon{font-size:32px;color:var(--faint);margin-bottom:10px;line-height:1}
+  .fac-empty-strong{display:block;color:var(--sub);font-weight:500;margin-bottom:4px;font-size:14px}
+
+  .fac-row{background:white;border:1px solid var(--line);border-radius:11px;padding:16px 22px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;transition:border-color .15s,box-shadow .15s,transform .15s}
+  .fac-row.clickable{cursor:pointer}
+  .fac-row.clickable:hover{border-color:var(--gold);box-shadow:0 4px 12px rgba(0,0,0,.06);transform:translateY(-1px)}
+  .fac-row-l{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .fac-row-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;color:var(--text);line-height:1.15}
+  .fac-row-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .fac-row-meta-sep{color:var(--line-strong)}
+  .fac-row-r{display:flex;align-items:center;gap:14px}
+  .fac-row-chev{font-size:18px;color:var(--gold);line-height:1}
+  .fac-row-chev.off{color:var(--line-strong)}
+
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;font-family:'DM Mono',monospace;padding:3px 10px;border-radius:11px;letter-spacing:.03em}
+  .pill-dot{width:5px;height:5px;border-radius:50%}
+  .pill-none{background:rgba(90,107,130,.1);color:var(--muted);border:.5px solid rgba(90,107,130,.25)}
+  .pill-none .pill-dot{background:var(--muted)}
+  .pill-submitted{background:rgba(217,119,6,.1);color:var(--amber);border:.5px solid rgba(217,119,6,.25)}
+  .pill-submitted .pill-dot{background:var(--amber)}
+  .pill-reviewed{background:rgba(13,146,104,.1);color:var(--teal);border:.5px solid rgba(13,146,104,.3)}
+  .pill-reviewed .pill-dot{background:var(--teal)}
+  .pill-rating{background:var(--gold-pale);color:var(--gold-d);border:.5px solid rgba(201,168,76,.4)}
+  .pill-rating .pill-dot{background:var(--gold)}
+  .row-pills{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+
+  .detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);z-index:200;overflow-y:auto}
+  .detail.open{display:block}
+  .detail-bar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(201,168,76,.25)}
+  .detail-bar-l{display:flex;align-items:center;gap:14px;color:white}
+  .detail-back{font-size:13px;color:rgba(255,255,255,.7);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .detail-back:hover{background:rgba(255,255,255,.05);color:white}
+  .detail-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:white}
+  .detail-meta{font-size:11px;color:rgba(255,255,255,.55);font-family:'DM Mono',monospace}
+
+  .detail-wrap{max-width:840px;margin:0 auto;padding:32px 24px 60px}
+
+  .sub-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:2px solid var(--navy);padding-bottom:14px;margin-bottom:22px}
+  .sub-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--navy);line-height:1.05}
+  .sub-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.02em;margin-top:5px}
+  .sub-ay{font-size:11px;color:var(--gold-d);font-family:'DM Mono',monospace;letter-spacing:.08em;text-align:right;white-space:nowrap}
+
+  .verdict{background:white;border:1px solid var(--gold);border-radius:12px;padding:22px 24px;margin-bottom:18px}
+  .verdict-h{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);margin-bottom:12px}
+  .verdict-rating{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .verdict-rating-l{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .verdict-rating-band{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--navy);background:linear-gradient(150deg,var(--gold-pale),rgba(201,168,76,.18));border:1px solid var(--gold);border-radius:9px;padding:4px 18px;line-height:1.15}
+  .verdict-note-h{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
+  .verdict-note{font-size:13.5px;color:var(--text);line-height:1.6;white-space:pre-wrap}
+  .verdict-meta{font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-top:12px}
+  .verdict.pending{border-color:var(--line-strong);color:var(--faint);font-style:italic;font-size:13px}
+
+  .ans-block{background:white;border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-bottom:16px}
+  .ans-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold-d);letter-spacing:.04em}
+  .ans-label{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--text);line-height:1.2;margin:3px 0 12px}
+  .ans-text{font-size:13.5px;color:var(--text);line-height:1.65;white-space:pre-wrap}
+  .ans-text.empty{color:var(--faint);font-style:italic}
+  .full-divider{display:flex;align-items:center;gap:12px;margin:6px 0 18px;color:var(--faint)}
+  .full-divider span{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+  .full-divider::before,.full-divider::after{content:'';height:1px;background:var(--line);flex:1}
+
+  .blocker{display:none;padding:80px 32px;text-align:center;color:var(--muted);font-size:14px;max-width:520px;margin:0 auto}
+  .blocker-h{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--text);margin-bottom:12px;font-weight:500}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy-dark);color:white;padding:12px 22px;border-radius:8px;border-left:3px solid var(--gold);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:300;max-width:480px}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);pointer-events:auto;cursor:pointer}
+
+  @media (max-width:760px){
+    .stat-strip{grid-template-columns:repeat(2,1fr)}
+    .hero{padding:24px 18px}
+    .main{padding:20px 16px 40px}
+    .detail-wrap{padding:24px 16px 40px}
+    .search-box{max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="tb-div"></div>
+    <div class="tb-title">X-Hub · Staff Evaluation Summary</div>
+  </div>
+  <div class="tb-r">
+    <button class="tb-back" onclick="window.location.href='index.html'">← Home</button>
+    <button class="tb-signout" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-l">Staff Evaluation Summary · AY 2025-26</div>
+  <div class="hero-t" id="hero-t">Loading...</div>
+  <div class="hero-s">Every staff member across the three campuses, where their review stands, and the rating and note recorded by their campus Director. Search by name to open any one.</div>
+</div>
+
+<div class="main" id="list-view">
+  <div class="stat-strip" id="stat-strip"></div>
+
+  <div class="toolbar">
+    <div class="seg-tabs" id="seg-tabs">
+      <button class="seg-tab active" data-seg="all" onclick="switchSeg('all')">All <span class="seg-tab-count" id="ct-all">0</span></button>
+      <button class="seg-tab" data-seg="reviewed" onclick="switchSeg('reviewed')">Reviewed <span class="seg-tab-count" id="ct-reviewed">0</span></button>
+      <button class="seg-tab" data-seg="submitted" onclick="switchSeg('submitted')">Awaiting <span class="seg-tab-count" id="ct-submitted">0</span></button>
+      <button class="seg-tab" data-seg="none" onclick="switchSeg('none')">Not submitted <span class="seg-tab-count" id="ct-none">0</span></button>
+    </div>
+    <div class="search-box">
+      <span class="si">&#9906;</span>
+      <input type="text" id="search" placeholder="Search by name or function" oninput="onSearch()" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="campus-filter" id="campus-filter" style="margin-bottom:18px"></div>
+
+  <div class="fac-list" id="fac-list">
+    <div class="fac-empty"><div class="fac-empty-icon">◇</div><span class="fac-empty-strong">Loading staff...</span></div>
+  </div>
+</div>
+
+<div class="detail" id="detail">
+  <div class="detail-bar">
+    <div class="detail-bar-l">
+      <button class="detail-back" onclick="closeDetail()">← Back to summary</button>
+      <div>
+        <div class="detail-name" id="d-name">·</div>
+        <div class="detail-meta" id="d-meta">·</div>
+      </div>
+    </div>
+    <div class="tb-r">
+      <button class="tb-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+  <div class="detail-wrap" id="d-content"></div>
+</div>
+
+<div class="blocker" id="blocker">
+  <div class="blocker-h">Loading...</div>
+  <div id="blocker-msg">Verifying access</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+
+const ACADEMIC_YEAR='2025-26';
+const DEBUG=false;
+function dlog(){if(DEBUG)console.error.apply(console,arguments);}
+
+const FIELDS=[
+  ['key_focus_areas','1','Key Goals and Focus Areas'],
+  ['notable_achievements','2','Notable achievements'],
+  ['areas_for_improvement','3','Areas for improvement']
+];
+
+let ROWS=[];          /* merged staff + eval, one per active staff member */
+let SEG='all';
+let SEARCH='';
+let CAMPUS='All';
+let CAMPUSES=[];
+
+function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function toast(m,ok){
+  if(ok===undefined)ok=true;
+  const t=document.getElementById('toast');
+  t.textContent=m;t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';t.style.background=ok?'var(--navy-dark)':'#7A1A1A';
+  t.classList.add('show');
+  if(t._timer)clearTimeout(t._timer);
+  t._timer=setTimeout(function(){t.classList.remove('show');t.style.background='';},ok?3000:9000);
+  t.onclick=function(){t.classList.remove('show');t.style.background='';};
+}
+
+async function signOut(){try{await sb.auth.signOut();}catch(e){}window.location.href='login.html';}
+
+function formatDate(s){if(!s)return '·';try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}catch(e){return s;}}
+function formatDateTime(s){if(!s)return '·';try{return new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}catch(e){return s;}}
+
+/* status: 'reviewed' (complete) | 'submitted' (submitted/director_reviewed) | 'none' (no eval or draft/returned) */
+function statusOf(r){
+  const ws=r.eval&&r.eval.workflow_status;
+  if(ws==='complete')return 'reviewed';
+  if(ws==='submitted'||ws==='director_reviewed'||ws==='fh_reviewed')return 'submitted';
+  return 'none';
+}
+
+/* ---------- Access ---------- */
+async function resolveAccess(){
+  document.getElementById('blocker').style.display='block';
+  document.getElementById('blocker-msg').textContent='Verifying access';
+
+  const r=await sb.auth.getSession();
+  const session=r.data.session;
+  if(!session){window.location.href='login.html';return null;}
+
+  const pr=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
+  const profile=pr.data;
+  if(!profile){document.getElementById('blocker-msg').textContent='Profile not found. Contact admin.';return null;}
+  if(profile.must_change_password===true){window.location.href='login.html?action=change-password';return null;}
+
+  if(profile.role!=='president'&&profile.role!=='super_admin'){
+    document.getElementById('blocker').querySelector('.blocker-h').textContent='Access denied';
+    document.getElementById('blocker-msg').textContent='This summary is for the President. If you believe you should have access, contact Girish.';
+    return null;
+  }
+  document.getElementById('blocker').style.display='none';
+  return profile;
+}
+
+/* ---------- Load ---------- */
+async function loadAll(){
+  /* Query staff and evaluations separately, then join in JS by staff_master_id.
+     Avoids relationship-detection surprises and keeps not-yet-submitted staff in view. */
+  const sres=await sb.from('staff_master').select('id,staff_name,email,campus,level,function,is_active').eq('is_active',true);
+  if(sres.error){dlog('STAFF',sres.error);toast('Failed to load staff: '+sres.error.message,false);return;}
+
+  const eres=await sb.from('staff_evaluations').select('*').eq('academic_year',ACADEMIC_YEAR);
+  if(eres.error){dlog('EVALS',eres.error);toast('Failed to load evaluations: '+eres.error.message,false);return;}
+
+  const evalByStaff={};
+  (eres.data||[]).forEach(function(ev){evalByStaff[ev.staff_master_id]=ev;});
+
+  ROWS=(sres.data||[]).map(function(sm){return{staff:sm,eval:evalByStaff[sm.id]||null};});
+
+  const cset={};
+  ROWS.forEach(function(r){if(r.staff.campus)cset[r.staff.campus]=true;});
+  CAMPUSES=Object.keys(cset).sort();
+
+  renderStrip();
+  renderCampusFilter();
+  renderCounts();
+  renderList();
+}
+
+function renderStrip(){
+  const total=ROWS.length;
+  let reviewed=0,submitted=0,none=0;
+  ROWS.forEach(function(r){const s=statusOf(r);if(s==='reviewed')reviewed++;else if(s==='submitted')submitted++;else none++;});
+  const strip=document.getElementById('stat-strip');
+  const items=[
+    ['Active staff',String(total),'across three campuses'],
+    ['Reviewed',String(reviewed),'rating recorded'],
+    ['Awaiting review',String(submitted),'submitted, with director'],
+    ['Not submitted',String(none),'no submission yet']
+  ];
+  strip.innerHTML=items.map(function(it){
+    return '<div class="stat"><div class="stat-k">'+escapeHtml(it[0])+'</div><div class="stat-v">'+escapeHtml(it[1])+'</div><div class="stat-d">'+escapeHtml(it[2])+'</div></div>';
+  }).join('');
+}
+
+function renderCampusFilter(){
+  const wrap=document.getElementById('campus-filter');
+  const opts=['All'].concat(CAMPUSES);
+  wrap.innerHTML=opts.map(function(c){
+    return '<button class="cf-btn'+(CAMPUS===c?' active':'')+'" onclick="setCampus(\''+c.replace(/'/g,"\\'")+'\')">'+escapeHtml(c)+'</button>';
+  }).join('');
+}
+
+function setCampus(c){CAMPUS=c;renderCampusFilter();renderCounts();renderList();}
+
+function scope(){
+  /* rows under the current campus filter only (used for tab counts) */
+  return ROWS.filter(function(r){return CAMPUS==='All'||r.staff.campus===CAMPUS;});
+}
+
+function renderCounts(){
+  const s=scope();
+  let reviewed=0,submitted=0,none=0;
+  s.forEach(function(r){const st=statusOf(r);if(st==='reviewed')reviewed++;else if(st==='submitted')submitted++;else none++;});
+  document.getElementById('ct-all').textContent=s.length;
+  document.getElementById('ct-reviewed').textContent=reviewed;
+  document.getElementById('ct-submitted').textContent=submitted;
+  document.getElementById('ct-none').textContent=none;
+}
+
+function switchSeg(seg){
+  SEG=seg;
+  const tabs=document.querySelectorAll('.seg-tab');
+  for(let i=0;i<tabs.length;i++){tabs[i].classList.toggle('active',tabs[i].dataset.seg===seg);}
+  renderList();
+}
+
+function onSearch(){SEARCH=(document.getElementById('search').value||'').trim().toLowerCase();renderList();}
+
+function renderList(){
+  const list=document.getElementById('fac-list');
+  let rows=scope();
+  if(SEG!=='all')rows=rows.filter(function(r){return statusOf(r)===SEG;});
+  if(SEARCH){
+    rows=rows.filter(function(r){
+      const hay=((r.staff.staff_name||'')+' '+(r.staff.function||'')+' '+(r.staff.level||'')).toLowerCase();
+      return hay.indexOf(SEARCH)!==-1;
+    });
+  }
+  rows.sort(function(a,b){return (a.staff.staff_name||'').localeCompare(b.staff.staff_name||'');});
+
+  list.innerHTML='';
+  if(rows.length===0){
+    const empty=document.createElement('div');empty.className='fac-empty';
+    empty.innerHTML='<div class="fac-empty-icon">◇</div><span class="fac-empty-strong">'+escapeHtml(SEARCH?'No staff match your search.':'No staff in this view.')+'</span><div>Adjust the filters or search above.</div>';
+    list.appendChild(empty);
+    return;
+  }
+
+  rows.forEach(function(r){
+    const sm=r.staff;const st=statusOf(r);
+    const openable=(st!=='none');
+    const row=document.createElement('div');
+    row.className='fac-row'+(openable?' clickable':'');
+    if(openable)row.onclick=function(){openDetail(r);};
+
+    const metaBits=[];
+    if(sm.level)metaBits.push('<span>'+escapeHtml(sm.level)+'</span>');
+    if(sm.function)metaBits.push('<span class="fac-row-meta-sep">·</span><span>'+escapeHtml(sm.function)+'</span>');
+    if(sm.campus)metaBits.push('<span class="fac-row-meta-sep">·</span><span>'+escapeHtml(sm.campus)+'</span>');
+
+    let statusPill='';
+    if(st==='reviewed')statusPill='<span class="pill pill-reviewed"><span class="pill-dot"></span>Reviewed</span>';
+    else if(st==='submitted')statusPill='<span class="pill pill-submitted"><span class="pill-dot"></span>Awaiting review</span>';
+    else statusPill='<span class="pill pill-none"><span class="pill-dot"></span>Not submitted</span>';
+
+    const ratingPill=(st==='reviewed'&&r.eval.director_rating)
+      ? '<span class="pill pill-rating"><span class="pill-dot"></span>'+escapeHtml(r.eval.director_rating)+'</span>' : '';
+
+    row.innerHTML=
+      '<div class="fac-row-l">'+
+        '<div class="fac-row-name">'+escapeHtml(sm.staff_name||'(unknown)')+'</div>'+
+        '<div class="fac-row-meta">'+metaBits.join('')+'</div>'+
+      '</div>'+
+      '<div class="fac-row-r">'+
+        '<div class="row-pills">'+statusPill+ratingPill+'</div>'+
+        '<div class="fac-row-chev'+(openable?'':' off')+'">›</div>'+
+      '</div>';
+    list.appendChild(row);
+  });
+}
+
+/* ---------- Detail (read only) ---------- */
+function openDetail(r){
+  const sm=r.staff;const ev=r.eval||{};
+  document.getElementById('d-name').textContent=sm.staff_name||'(unknown)';
+  document.getElementById('d-meta').textContent=[sm.level,sm.function,sm.campus].filter(Boolean).join(' · ');
+
+  const c=document.getElementById('d-content');
+  c.innerHTML='';
+
+  const head=document.createElement('div');head.className='sub-head';
+  const hl=document.createElement('div');
+  const nm=document.createElement('div');nm.className='sub-name';nm.textContent=sm.staff_name||'(unknown)';
+  const sub=document.createElement('div');sub.className='sub-sub';sub.textContent=[sm.level,sm.function,sm.campus].filter(Boolean).join('  ·  ');
+  hl.appendChild(nm);hl.appendChild(sub);
+  const ay=document.createElement('div');ay.className='sub-ay';ay.textContent='Staff Evaluation · AY '+ACADEMIC_YEAR;
+  head.appendChild(hl);head.appendChild(ay);
+  c.appendChild(head);
+
+  /* Director verdict first, so the President sees the outcome up top */
+  const verdict=document.createElement('div');
+  if(ev.workflow_status==='complete'&&ev.director_rating){
+    verdict.className='verdict';
+    let html='<div class="verdict-h">Director\u2019s review</div>';
+    html+='<div class="verdict-rating"><span class="verdict-rating-l">Rating</span><span class="verdict-rating-band">'+escapeHtml(ev.director_rating)+'</span></div>';
+    if(ev.director_comments){
+      html+='<div class="verdict-note-h">Note to the staff member</div><div class="verdict-note">'+escapeHtml(ev.director_comments)+'</div>';
+    }
+    const meta=[ev.director_reviewed_by?('Recorded by '+ev.director_reviewed_by):'',ev.director_reviewed_at?formatDateTime(ev.director_reviewed_at):''].filter(Boolean).join(' · ');
+    if(meta)html+='<div class="verdict-meta">'+escapeHtml(meta)+'</div>';
+    verdict.innerHTML=html;
+  }else{
+    verdict.className='verdict pending';
+    verdict.textContent='Submitted, awaiting the campus Director\u2019s review. The rating and note will appear here once recorded.';
+  }
+  c.appendChild(verdict);
+
+  const divider=document.createElement('div');divider.className='full-divider';
+  divider.innerHTML='<span>Their submission</span>';
+  c.appendChild(divider);
+
+  FIELDS.forEach(function(fld){
+    const key=fld[0],num=fld[1],label=fld[2];
+    const val=(ev[key]||'').trim();
+    const block=document.createElement('div');block.className='ans-block';
+    const n=document.createElement('div');n.className='ans-num';n.textContent=num;
+    const l=document.createElement('div');l.className='ans-label';l.textContent=label;
+    const t=document.createElement('div');t.className='ans-text'+(val?'':' empty');t.textContent=val?val:'Not filled in.';
+    block.appendChild(n);block.appendChild(l);block.appendChild(t);
+    c.appendChild(block);
+  });
+
+  document.getElementById('detail').classList.add('open');
+  window.scrollTo(0,0);
+}
+
+function closeDetail(){document.getElementById('detail').classList.remove('open');}
+
+/* ---------- Init ---------- */
+async function init(){
+  const profile=await resolveAccess();
+  if(!profile)return;
+  const nm=profile.full_name||'President';
+  document.getElementById('hero-t').innerHTML='Welcome, <em>'+escapeHtml(nm)+'</em>';
+  await loadAll();
+}
+
+init();
+</script>
+</body>
+</html>

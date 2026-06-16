@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub · Staff Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="assets/js/supabase-js-2.105.4.umd.js"></script>
+<style>
+  :root{
+    --navy:#0D1F35;--navy-mid:#1A3352;--navy-l:#243D5C;--navy-dark:#0a1a2e;
+    --gold:#C9A84C;--gold-l:#E8C97A;--gold-d:#A88A2B;--gold-pale:#F7EDD0;
+    --cream:#FAF8F4;--parchment:#FBFAF6;--white:#FFFFFF;
+    --text:#0D1F35;--sub:#4A5D72;--muted:#5A6B82;--faint:#7a8699;
+    --line:#E5DFD2;--line-strong:#D8D2C5;--border:#D8D2C5;
+    --red:#C8102E;--red-l:#F4D5DA;--red-d:#7A1A1A;
+    --teal:#0D9268;--teal-l:#6FCDA8;--teal-d:#075B41;--amber:#D97706;--amber-l:#FCE3BC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+  .topbar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.25)}
+  .tb-l{display:flex;align-items:center;gap:14px}
+  .tb-logo{height:26px;width:auto}
+  .tb-div{width:1px;height:22px;background:rgba(255,255,255,.15)}
+  .tb-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.04em}
+  .tb-r{display:flex;align-items:center;gap:12px}
+  .tb-back{font-size:12px;color:rgba(255,255,255,.6);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .tb-back:hover{background:rgba(255,255,255,.05);color:white}
+  .tb-signout{font-size:12px;color:rgba(255,255,255,.6);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .tb-signout:hover{background:rgba(255,255,255,.05);color:white}
+
+  .hero{background:var(--navy);padding:32px 32px 36px;border-bottom:2px solid var(--gold)}
+  .hero-l{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .hero-t{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:white;line-height:1.15;margin-bottom:6px}
+  .hero-t em{color:var(--gold-l);font-style:italic}
+  .hero-s{font-size:13px;color:rgba(255,255,255,.55);max-width:680px;line-height:1.55}
+  .hero-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.4);border-radius:18px;font-size:11px;color:var(--gold-l);font-weight:500;letter-spacing:.04em;margin-top:14px}
+  .hero-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+  .main{max-width:1180px;margin:0 auto;padding:28px 24px 60px}
+
+  .toolbar{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+  .seg-tabs{display:flex;gap:0;background:white;border:1px solid var(--line-strong);border-radius:10px;padding:4px;width:fit-content;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .seg-tab{padding:9px 18px;font-size:13px;font-weight:500;color:var(--sub);background:transparent;border:none;border-radius:7px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;transition:all .15s}
+  .seg-tab.active{background:var(--navy);color:white}
+  .seg-tab:not(.active):hover{background:var(--cream)}
+  .seg-tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:18px;padding:0 6px;font-family:'DM Mono',monospace;font-size:10px;font-weight:600;border-radius:9px;background:rgba(201,168,76,.18);color:var(--gold-d)}
+  .seg-tab.active .seg-tab-count{background:rgba(255,255,255,.18);color:white}
+
+  .search-box{flex:1;min-width:220px;max-width:360px;position:relative}
+  .search-box input{width:100%;padding:10px 14px 10px 36px;border:1px solid var(--line-strong);border-radius:9px;font-family:inherit;font-size:13px;color:var(--text);background:white}
+  .search-box input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+  .search-box .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:14px;pointer-events:none}
+
+  .fac-list{display:flex;flex-direction:column;gap:10px}
+  .fac-empty{padding:48px 32px;background:white;border:1px dashed var(--line-strong);border-radius:12px;text-align:center;color:var(--muted);font-size:13px}
+  .fac-empty-icon{font-size:32px;color:var(--faint);margin-bottom:10px;line-height:1}
+  .fac-empty-strong{display:block;color:var(--sub);font-weight:500;margin-bottom:4px;font-size:14px}
+
+  .fac-row{background:white;border:1px solid var(--line);border-radius:11px;padding:18px 22px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+  .fac-row:hover{border-color:var(--gold);box-shadow:0 4px 12px rgba(0,0,0,.06);transform:translateY(-1px)}
+  .fac-row-l{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .fac-row-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--text);line-height:1.15}
+  .fac-row-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .fac-row-meta-item{display:inline-flex;align-items:center;gap:5px}
+  .fac-row-meta-sep{color:var(--line-strong)}
+  .fac-row-r{display:flex;align-items:center;gap:14px}
+  .fac-row-time{font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;text-align:right;line-height:1.4}
+  .fac-row-time-l{display:block;text-transform:uppercase;letter-spacing:.06em;font-size:9px;color:var(--faint);margin-bottom:2px}
+  .fac-row-chev{font-size:18px;color:var(--gold);line-height:1}
+
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;font-family:'DM Mono',monospace;padding:3px 10px;border-radius:11px;letter-spacing:.03em}
+  .pill-dot{width:5px;height:5px;border-radius:50%}
+  .pill-pending{background:rgba(217,119,6,.1);color:var(--amber);border:.5px solid rgba(217,119,6,.25)}
+  .pill-pending .pill-dot{background:var(--amber)}
+  .pill-complete{background:rgba(13,146,104,.1);color:var(--teal);border:.5px solid rgba(13,146,104,.3)}
+  .pill-complete .pill-dot{background:var(--teal)}
+  .pill-rating{background:var(--gold-pale);color:var(--gold-d);border:.5px solid rgba(201,168,76,.4)}
+  .pill-rating .pill-dot{background:var(--gold)}
+
+  .detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);z-index:200;overflow-y:auto}
+  .detail.open{display:block}
+  .detail-bar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(201,168,76,.25)}
+  .detail-bar-l{display:flex;align-items:center;gap:14px;color:white}
+  .detail-back{font-size:13px;color:rgba(255,255,255,.7);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+  .detail-back:hover{background:rgba(255,255,255,.05);color:white}
+  .detail-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:white}
+  .detail-meta{font-size:11px;color:rgba(255,255,255,.55);font-family:'DM Mono',monospace}
+
+  .detail-layout{display:grid;grid-template-columns:1fr 400px;gap:0;min-height:calc(100vh - 62px)}
+  .detail-content{padding:32px 36px;border-right:1px solid var(--line);overflow-y:auto}
+  .detail-panel{background:white;padding:28px 26px;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;border-left:1px solid var(--line)}
+
+  .sub-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:2px solid var(--navy);padding-bottom:14px;margin-bottom:22px}
+  .sub-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--navy);line-height:1.05}
+  .sub-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.02em;margin-top:5px}
+  .sub-ay{font-size:11px;color:var(--gold-d);font-family:'DM Mono',monospace;letter-spacing:.08em;text-align:right;white-space:nowrap}
+
+  .ans-block{background:white;border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-bottom:16px}
+  .ans-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold-d);letter-spacing:.04em}
+  .ans-label{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--text);line-height:1.2;margin:3px 0 12px}
+  .ans-text{font-size:13.5px;color:var(--text);line-height:1.65;white-space:pre-wrap}
+  .ans-text.empty{color:var(--faint);font-style:italic}
+
+  /* Panel side (director recorder) */
+  .panel-h{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1.2}
+  .panel-s{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:18px}
+  .panel-role{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:14px;font-size:10.5px;color:var(--gold-d);font-family:'DM Mono',monospace;letter-spacing:.06em;font-weight:600;margin-bottom:18px}
+  .panel-role-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+  .panel-field{margin-bottom:14px}
+  .panel-field-l{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+  .panel-field-l-r{font-size:10px;color:var(--faint);font-weight:500;text-transform:none;letter-spacing:.02em}
+  .panel-textarea{width:100%;min-height:140px;padding:11px 13px;border:1px solid var(--line-strong);border-radius:7px;font-family:inherit;font-size:13px;color:var(--text);resize:vertical;line-height:1.55;background:var(--parchment)}
+  .panel-textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+  .panel-banner{padding:12px 14px;border-radius:7px;margin-bottom:14px;font-size:12px;line-height:1.55}
+  .panel-banner.complete{background:rgba(13,146,104,.08);border-left:3px solid var(--teal);color:var(--teal-d)}
+  .panel-banner strong{font-weight:600;display:block;margin-bottom:3px}
+
+  .rate-row{display:flex;flex-direction:column;gap:7px}
+  .rate-opt{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 14px;border:1px solid var(--line-strong);background:white;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .15s}
+  .rate-opt:hover{border-color:var(--gold)}
+  .rate-opt.sel{border-color:var(--gold);background:linear-gradient(150deg,var(--gold-pale),rgba(201,168,76,.16));box-shadow:0 0 0 2px rgba(201,168,76,.18)}
+  .rate-opt-b{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--navy)}
+  .rate-opt-d{font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace}
+  .panel-record{width:100%;margin-top:8px;padding:14px 18px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;letter-spacing:.02em;transition:background .15s}
+  .panel-record:hover{background:var(--gold-l)}
+  .panel-record:disabled{background:var(--line-strong);color:var(--faint);cursor:not-allowed}
+  .panel-edit-btn,.panel-cancel{width:100%;margin-top:10px;padding:11px 16px;background:white;border:1px solid var(--line-strong);border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--sub);cursor:pointer}
+  .panel-edit-btn:hover,.panel-cancel:hover{border-color:var(--gold);color:var(--navy)}
+  .panel-recmeta{font-size:10.5px;color:var(--faint);font-family:'DM Mono',monospace;margin-top:10px}
+  .ro-text{font-size:12.5px;color:var(--text);line-height:1.55;white-space:pre-wrap;background:var(--cream);border:.5px solid var(--line);border-radius:7px;padding:10px 12px}
+  .ro-rating{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .ro-rating-l{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .ro-rating-band{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--navy);background:var(--gold-pale);border:1px solid var(--gold);border-radius:7px;padding:2px 14px}
+
+  .blocker{display:none;padding:80px 32px;text-align:center;color:var(--muted);font-size:14px;max-width:520px;margin:0 auto}
+  .blocker-h{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--text);margin-bottom:12px;font-weight:500}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy-dark);color:white;padding:12px 22px;border-radius:8px;border-left:3px solid var(--gold);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:300;max-width:480px}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);pointer-events:auto;cursor:pointer}
+
+  @media (max-width:900px){
+    .detail-layout{grid-template-columns:1fr}
+    .detail-panel{position:relative;top:0;height:auto;border-left:none;border-top:2px solid var(--gold);max-height:none}
+    .hero{padding:24px 18px}
+    .main{padding:20px 16px 40px}
+    .detail-content{padding:24px 18px}
+    .search-box{max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="tb-div"></div>
+    <div class="tb-title">X-Hub · Staff Review</div>
+  </div>
+  <div class="tb-r">
+    <button class="tb-back" onclick="window.location.href='index.html'">← Home</button>
+    <button class="tb-signout" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-l" id="hero-l">Staff Review · AY 2025-26</div>
+  <div class="hero-t" id="hero-t">Loading...</div>
+  <div class="hero-s" id="hero-s">Read each staff member's submitted review, then record your note and rating. Your note is shared with the staff member; the rating goes to the President's summary.</div>
+  <div class="hero-tag"><div class="hero-tag-dot"></div>AY 2025-26 · Cycle Open</div>
+</div>
+
+<div class="main" id="list-view">
+  <div class="toolbar">
+    <div class="seg-tabs">
+      <button class="seg-tab active" data-seg="to_review" onclick="switchSeg('to_review')">
+        To review <span class="seg-tab-count" id="ct-to_review">0</span>
+      </button>
+      <button class="seg-tab" data-seg="reviewed" onclick="switchSeg('reviewed')">
+        Reviewed <span class="seg-tab-count" id="ct-reviewed">0</span>
+      </button>
+    </div>
+    <div class="search-box">
+      <span class="si">&#9906;</span>
+      <input type="text" id="search" placeholder="Search by name or function" oninput="onSearch()" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="fac-list" id="fac-list">
+    <div class="fac-empty">
+      <div class="fac-empty-icon">◇</div>
+      <span class="fac-empty-strong">Loading staff list...</span>
+    </div>
+  </div>
+</div>
+
+<div class="detail" id="detail">
+  <div class="detail-bar">
+    <div class="detail-bar-l">
+      <button class="detail-back" onclick="closeDetail()">← Back to list</button>
+      <div>
+        <div class="detail-name" id="d-name">·</div>
+        <div class="detail-meta" id="d-meta">·</div>
+      </div>
+    </div>
+    <div class="tb-r">
+      <button class="tb-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="detail-layout">
+    <div class="detail-content" id="d-content"></div>
+    <div class="detail-panel" id="d-panel"></div>
+  </div>
+</div>
+
+<div class="blocker" id="blocker">
+  <div class="blocker-h">Loading...</div>
+  <div id="blocker-msg">Verifying access</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+
+const ACADEMIC_YEAR='2025-26';
+const DEBUG=false;
+function dlog(){if(DEBUG)console.error.apply(console,arguments);}
+
+/* Staff submission fields, in order. Mirrors staff-evaluation.html. */
+const FIELDS=[
+  ['key_focus_areas','1','Key Goals and Focus Areas'],
+  ['notable_achievements','2','Notable achievements'],
+  ['areas_for_improvement','3','Areas for improvement']
+];
+
+/* Same agreed rating instrument as the faculty panel. */
+const RATING_BANDS=[
+  ['Outstanding','top tier'],
+  ['Exceeds','above expectation'],
+  ['Meets','on track'],
+  ['Developing','support needed']
+];
+
+let CURRENT_USER=null;
+let MY_CAMPUS=null;
+let MY_DIRECTOR_NAME=null;
+
+let SEG='to_review';
+let STAFF_LIST=[];
+let SEARCH='';
+let CURRENT_EVAL=null;
+let CURRENT_STAFF=null;
+let SELECTED_RATING=null;
+
+function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function toast(m,ok){
+  if(ok===undefined)ok=true;
+  const t=document.getElementById('toast');
+  t.textContent=m;
+  t.style.borderLeftColor=ok?'var(--gold)':'var(--red)';
+  t.style.background=ok?'var(--navy-dark)':'#7A1A1A';
+  t.classList.add('show');
+  if(t._timer)clearTimeout(t._timer);
+  t._timer=setTimeout(function(){t.classList.remove('show');t.style.background='';},ok?3000:9000);
+  t.onclick=function(){t.classList.remove('show');t.style.background='';};
+}
+
+async function signOut(){
+  try{await sb.auth.signOut();}catch(e){}
+  window.location.href='login.html';
+}
+
+function formatDate(s){
+  if(!s)return '·';
+  try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
+  catch(e){return s;}
+}
+function formatDateTime(s){
+  if(!s)return '·';
+  try{return new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}
+  catch(e){return s;}
+}
+
+/* ---------- Access resolution ---------- */
+async function resolveAccess(){
+  document.getElementById('blocker').style.display='block';
+  document.getElementById('blocker-msg').textContent='Verifying access';
+
+  const r=await sb.auth.getSession();
+  const session=r.data.session;
+  if(!session){window.location.href='login.html';return null;}
+
+  const pr=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
+  const profile=pr.data;
+  if(!profile){
+    document.getElementById('blocker-msg').textContent='Profile not found. Contact admin.';
+    return null;
+  }
+  if(profile.must_change_password===true){
+    window.location.href='login.html?action=change-password';
+    return null;
+  }
+  CURRENT_USER=profile;
+
+  const dr=await sb.from('director_campus_map').select('*').eq('email',profile.email).maybeSingle();
+  const dirRow=dr.data;
+  const isSuper=profile.role==='super_admin';
+
+  if(!dirRow){
+    if(!isSuper){
+      document.getElementById('blocker').querySelector('.blocker-h').textContent='Access denied';
+      document.getElementById('blocker-msg').textContent='You are not listed as a director for AY 2025-26. If this is incorrect, contact Girish.';
+      return null;
+    }
+    MY_CAMPUS='Bengaluru';
+    MY_DIRECTOR_NAME=profile.full_name||profile.email;
+  }else{
+    MY_CAMPUS=dirRow.campus;
+    MY_DIRECTOR_NAME=dirRow.name||profile.full_name||profile.email;
+  }
+
+  document.getElementById('blocker').style.display='none';
+  return true;
+}
+
+/* ---------- List ---------- */
+async function loadStaffList(){
+  const list=document.getElementById('fac-list');
+  list.innerHTML='<div class="fac-empty"><div class="fac-empty-icon">◇</div><span class="fac-empty-strong">Loading...</span></div>';
+
+  const res=await sb.from('staff_evaluations')
+    .select('*,staff_master:staff_master_id(id,staff_name,email,campus,level,function,is_active)')
+    .eq('academic_year',ACADEMIC_YEAR)
+    .in('workflow_status',['submitted','director_reviewed','complete']);
+  if(res.error){dlog('STAFF LIST',res.error);toast('Failed to load list: '+res.error.message,false);return;}
+
+  const inCampus=(res.data||[]).filter(function(e){
+    const sm=e.staff_master||{};
+    if(sm.campus!==MY_CAMPUS)return false;
+    if(sm.is_active===false)return false;
+    return true;
+  });
+
+  STAFF_LIST=inCampus.map(function(ev){
+    const seg=(ev.workflow_status==='complete')?'reviewed':'to_review';
+    return Object.assign({},ev,{seg:seg});
+  });
+
+  const counts={to_review:0,reviewed:0};
+  STAFF_LIST.forEach(function(f){counts[f.seg]++;});
+  document.getElementById('ct-to_review').textContent=counts.to_review;
+  document.getElementById('ct-reviewed').textContent=counts.reviewed;
+
+  renderList();
+}
+
+function switchSeg(seg){
+  SEG=seg;
+  const tabs=document.querySelectorAll('.seg-tab');
+  for(let i=0;i<tabs.length;i++){tabs[i].classList.toggle('active',tabs[i].dataset.seg===seg);}
+  renderList();
+}
+
+function onSearch(){
+  SEARCH=(document.getElementById('search').value||'').trim().toLowerCase();
+  renderList();
+}
+
+function renderList(){
+  const list=document.getElementById('fac-list');
+  let filtered=STAFF_LIST.filter(function(f){return f.seg===SEG;});
+  if(SEARCH){
+    filtered=filtered.filter(function(f){
+      const sm=f.staff_master||{};
+      const hay=((sm.staff_name||'')+' '+(sm.function||'')+' '+(sm.level||'')).toLowerCase();
+      return hay.indexOf(SEARCH)!==-1;
+    });
+  }
+  filtered.sort(function(a,b){
+    return ((a.staff_master&&a.staff_master.staff_name)||'').localeCompare((b.staff_master&&b.staff_master.staff_name)||'');
+  });
+
+  list.innerHTML='';
+  if(filtered.length===0){
+    const empty=document.createElement('div');
+    empty.className='fac-empty';
+    let msg='Nothing here yet';
+    if(SEARCH)msg='No staff match your search.';
+    else if(SEG==='to_review')msg='No staff awaiting your review.';
+    else msg='No staff reviews recorded yet.';
+    empty.innerHTML='<div class="fac-empty-icon">◇</div><span class="fac-empty-strong">'+escapeHtml(msg)+'</span><div>Submitted staff reviews appear here as they come in.</div>';
+    list.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(function(f){
+    const sm=f.staff_master||{};
+    const row=document.createElement('div');
+    row.className='fac-row';
+    row.onclick=function(){openDetail(f);};
+
+    let pillCls='pill-pending',pillTxt='Awaiting review';
+    if(f.workflow_status==='complete'){pillCls='pill-complete';pillTxt='Reviewed';}
+
+    const stampLabel=(f.workflow_status==='complete')?'Reviewed':'Submitted';
+    const stampAt=(f.workflow_status==='complete')?(f.director_reviewed_at||f.updated_at):(f.submitted_at||f.updated_at);
+
+    const metaBits=[];
+    if(sm.level)metaBits.push('<span class="fac-row-meta-item">'+escapeHtml(sm.level)+'</span>');
+    if(sm.function)metaBits.push('<span class="fac-row-meta-sep">·</span><span class="fac-row-meta-item">'+escapeHtml(sm.function)+'</span>');
+    if(sm.campus)metaBits.push('<span class="fac-row-meta-sep">·</span><span class="fac-row-meta-item">'+escapeHtml(sm.campus)+'</span>');
+
+    const ratingPill=(f.workflow_status==='complete'&&f.director_rating)
+      ? '<span class="pill pill-rating"><span class="pill-dot"></span>'+escapeHtml(f.director_rating)+'</span>'
+      : '';
+
+    row.innerHTML=
+      '<div class="fac-row-l">'+
+        '<div class="fac-row-name">'+escapeHtml(sm.staff_name||'(unknown)')+'</div>'+
+        '<div class="fac-row-meta">'+metaBits.join('')+'</div>'+
+      '</div>'+
+      '<div class="fac-row-r">'+
+        '<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">'+
+          '<span class="pill '+pillCls+'"><span class="pill-dot"></span>'+escapeHtml(pillTxt)+'</span>'+
+          ratingPill+
+          '<div class="fac-row-time"><span class="fac-row-time-l">'+escapeHtml(stampLabel)+'</span>'+formatDate(stampAt)+'</div>'+
+        '</div>'+
+        '<div class="fac-row-chev">›</div>'+
+      '</div>';
+    list.appendChild(row);
+  });
+}
+
+/* ---------- Detail ---------- */
+function openDetail(f){
+  CURRENT_EVAL=f;
+  CURRENT_STAFF=f.staff_master||{};
+
+  document.getElementById('d-name').textContent=CURRENT_STAFF.staff_name||'(unknown)';
+  const mbits=[CURRENT_STAFF.level,CURRENT_STAFF.function,CURRENT_STAFF.campus].filter(Boolean).join(' · ');
+  document.getElementById('d-meta').textContent=mbits+' · Submitted '+formatDate(f.submitted_at||f.updated_at);
+
+  const panel=document.getElementById('d-panel');panel._editing=false;
+  renderDetailContent(f);
+  renderPanel(f);
+
+  document.getElementById('detail').classList.add('open');
+  window.scrollTo(0,0);
+}
+
+function closeDetail(){
+  document.getElementById('detail').classList.remove('open');
+  CURRENT_EVAL=null;CURRENT_STAFF=null;SELECTED_RATING=null;
+  const panel=document.getElementById('d-panel');if(panel)panel._editing=false;
+  loadStaffList();
+}
+
+function renderDetailContent(f){
+  const c=document.getElementById('d-content');
+  c.innerHTML='';
+
+  const head=document.createElement('div');head.className='sub-head';
+  const hl=document.createElement('div');
+  const nm=document.createElement('div');nm.className='sub-name';nm.textContent=CURRENT_STAFF.staff_name||'(unknown)';
+  const sub=document.createElement('div');sub.className='sub-sub';
+  sub.textContent=[CURRENT_STAFF.level,CURRENT_STAFF.function,CURRENT_STAFF.campus].filter(Boolean).join('  ·  ');
+  hl.appendChild(nm);hl.appendChild(sub);
+  const ay=document.createElement('div');ay.className='sub-ay';ay.textContent='Staff Review · AY '+ACADEMIC_YEAR;
+  head.appendChild(hl);head.appendChild(ay);
+  c.appendChild(head);
+
+  FIELDS.forEach(function(fld){
+    const key=fld[0],num=fld[1],label=fld[2];
+    const val=(f[key]||'').trim();
+    const block=document.createElement('div');block.className='ans-block';
+    const n=document.createElement('div');n.className='ans-num';n.textContent=num;
+    const l=document.createElement('div');l.className='ans-label';l.textContent=label;
+    const t=document.createElement('div');t.className='ans-text'+(val?'':' empty');t.textContent=val?val:'Not filled in.';
+    block.appendChild(n);block.appendChild(l);block.appendChild(t);
+    c.appendChild(block);
+  });
+}
+
+/* ---------- Director recorder ---------- */
+function panelTextField(id,label,labelR,val,ph){
+  const cf=document.createElement('div');cf.className='panel-field';
+  const cl=document.createElement('div');cl.className='panel-field-l';
+  cl.innerHTML='<span>'+escapeHtml(label)+'</span><span class="panel-field-l-r">'+escapeHtml(labelR)+'</span>';
+  const ta=document.createElement('textarea');ta.className='panel-textarea';ta.id=id;ta.placeholder=ph||'';ta.value=val||'';
+  cf.appendChild(cl);cf.appendChild(ta);
+  return cf;
+}
+function appendReadonlyField(p,label,val){
+  if(!val)return;
+  const cf=document.createElement('div');cf.className='panel-field';
+  const cl=document.createElement('div');cl.className='panel-field-l';cl.innerHTML='<span>'+escapeHtml(label)+'</span>';
+  const t=document.createElement('div');t.className='ro-text';t.textContent=val;
+  cf.appendChild(cl);cf.appendChild(t);
+  p.appendChild(cf);
+}
+
+function renderPanel(f){
+  const p=document.getElementById('d-panel');
+  p.innerHTML='';
+  const reviewed=(f.workflow_status==='complete');
+  const editing=(p._editing===true);
+
+  const h=document.createElement('div');h.className='panel-h';h.textContent='Your Review';
+  p.appendChild(h);
+  const role=document.createElement('div');role.className='panel-role';
+  role.innerHTML='<span class="panel-role-dot"></span>Director · '+escapeHtml(MY_CAMPUS);
+  p.appendChild(role);
+
+  if(reviewed&&!editing){
+    const b=document.createElement('div');b.className='panel-banner complete';
+    b.innerHTML='<strong>Review recorded.</strong>'+(f.director_reviewed_at?('Recorded '+formatDateTime(f.director_reviewed_at)+'. '):'')+'The staff member can see your note, and the rating is in the President\u2019s summary.';
+    p.appendChild(b);
+    if(f.director_rating){
+      const rr=document.createElement('div');rr.className='ro-rating';
+      rr.innerHTML='<span class="ro-rating-l">Rating</span><span class="ro-rating-band">'+escapeHtml(f.director_rating)+'</span>';
+      p.appendChild(rr);
+    }
+    appendReadonlyField(p,'Your note to the staff member',f.director_comments);
+    const meta=document.createElement('div');meta.className='panel-recmeta';
+    meta.textContent=[f.director_reviewed_by?('Recorded by '+f.director_reviewed_by):'',f.director_reviewed_at?formatDateTime(f.director_reviewed_at):''].filter(Boolean).join(' · ');
+    p.appendChild(meta);
+    const edit=document.createElement('button');edit.className='panel-edit-btn';edit.textContent='Revise this review';
+    edit.onclick=function(){p._editing=true;renderPanel(f);};
+    p.appendChild(edit);
+    return;
+  }
+
+  const s=document.createElement('div');s.className='panel-s';
+  s.textContent=reviewed
+    ? 'Revise your recorded review. Saving updates the note the staff member sees and the rating in the President\u2019s summary.'
+    : 'Record your note and rating for this staff member. The note is shared with them; the rating goes to the President\u2019s summary.';
+  p.appendChild(s);
+
+  p.appendChild(panelTextField('dir-comments','Your note to the staff member','visible to staff',f.director_comments||'','A few honest, encouraging lines on their year.'));
+
+  SELECTED_RATING=f.director_rating||null;
+  const rf=document.createElement('div');rf.className='panel-field';
+  const rl=document.createElement('div');rl.className='panel-field-l';
+  rl.innerHTML='<span>Rating</span><span class="panel-field-l-r">agreed band</span>';
+  rf.appendChild(rl);
+  const row=document.createElement('div');row.className='rate-row';
+  RATING_BANDS.forEach(function(rb){
+    const band=rb[0],desc=rb[1];
+    const o=document.createElement('button');o.type='button';
+    o.className='rate-opt'+(SELECTED_RATING===band?' sel':'');
+    o.innerHTML='<span class="rate-opt-b">'+escapeHtml(band)+'</span><span class="rate-opt-d">'+escapeHtml(desc)+'</span>';
+    o.onclick=function(){
+      SELECTED_RATING=band;
+      const opts=row.querySelectorAll('.rate-opt');
+      for(let i=0;i<opts.length;i++){opts[i].classList.remove('sel');}
+      o.classList.add('sel');
+    };
+    row.appendChild(o);
+  });
+  rf.appendChild(row);
+  p.appendChild(rf);
+
+  const btn=document.createElement('button');btn.className='panel-record';btn.id='panel-record-btn';
+  btn.textContent=reviewed?'Update review':'Record review';
+  btn.onclick=recordReview;
+  p.appendChild(btn);
+
+  if(reviewed){
+    const cancel=document.createElement('button');cancel.className='panel-cancel';cancel.textContent='Cancel';
+    cancel.onclick=function(){p._editing=false;renderPanel(f);};
+    p.appendChild(cancel);
+  }
+}
+
+async function recordReview(){
+  if(!CURRENT_EVAL){return;}
+  const comments=(document.getElementById('dir-comments').value||'').trim();
+  const rating=SELECTED_RATING;
+
+  if(!rating){toast('Select a rating band before recording.',false);return;}
+  if(!comments){toast('Write your note to the staff member before recording.',false);return;}
+  if(!confirm('Record your review for '+(CURRENT_STAFF.staff_name||'this staff member')+'? Your note becomes visible to them.'))return;
+
+  const btn=document.getElementById('panel-record-btn');
+  const orig=btn.textContent;btn.textContent='Saving...';btn.disabled=true;
+
+  try{
+    const now=new Date().toISOString();
+    const payload={
+      director_comments:comments,
+      director_rating:rating,
+      director_reviewed_at:now,
+      director_reviewed_by:CURRENT_USER.email,
+      workflow_status:'complete',
+      updated_at:now
+    };
+    const res=await sb.from('staff_evaluations').update(payload).eq('id',CURRENT_EVAL.id);
+    if(res.error)throw res.error;
+
+    Object.assign(CURRENT_EVAL,payload);
+    const p=document.getElementById('d-panel');p._editing=false;
+    toast('Review recorded.');
+    renderPanel(CURRENT_EVAL);
+  }catch(e){
+    dlog('RECORD',e);
+    const code=e.code?(' ['+e.code+']'):'';
+    toast('Could not save'+code+': '+(e.message||'unknown')+'. Tell Girish.',false);
+    btn.textContent=orig;btn.disabled=false;
+  }
+}
+
+/* ---------- Init ---------- */
+async function init(){
+  const access=await resolveAccess();
+  if(!access)return;
+  document.getElementById('hero-t').innerHTML='Welcome, <em>'+escapeHtml(MY_DIRECTOR_NAME)+'</em>';
+  document.getElementById('hero-l').textContent='Director · '+MY_CAMPUS+' · AY 2025-26';
+  await loadStaffList();
+}
+
+init();
+</script>
+</body>
+</html>
