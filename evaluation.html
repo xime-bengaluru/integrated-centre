@@ -2493,8 +2493,8 @@ function g1EditBlocked(){return TEST_PHASE_LOCKS_OPEN?false:g1Locked();}
 
 function applyLocks(){
   const s=erec?.workflow_status||'draft';
-  const pm={draft:'sp-draft',mid_year_locked:'sp-locked',submitted_held:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked'};
-  const pl={draft:'Draft',mid_year_locked:'Submitted',submitted_held:'Submitted',mid_year_validated:'Dean Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested'};
+  const pm={draft:'sp-draft',mid_year_locked:'sp-locked',submitted_held:'sp-locked',mid_year_validated:'sp-done',annual_submitted:'sp-sub',dean_validated:'sp-done',director_forwarded:'sp-sub',president_review:'sp-sub',endorsed:'sp-done',returned_to_director:'sp-locked',faculty_input_requested:'sp-locked',complete:'sp-done'};
+  const pl={draft:'Draft',mid_year_locked:'Submitted',submitted_held:'Submitted',mid_year_validated:'Dean Validated',annual_submitted:'Submitted',dean_validated:'Dean Validated',director_forwarded:'With Director',president_review:'With President',endorsed:'Endorsed',returned_to_director:'Returned',faculty_input_requested:'Input Requested',complete:'Complete'};
   const pill=document.getElementById('spill');
   pill.className='spill '+(pm[s]||'sp-draft');
   pill.textContent=pl[s]||s;
@@ -2547,102 +2547,28 @@ async function loadGate1Remarks(){
   }
 }
 
-/* AY 2025-26 completion packet: read-only management feedback shown to faculty
-   when their evaluation has been finalized and released by Dean Academics. */
+/* AY 2025-26 completion packet: faculty now read their finalized panel
+   review on the standalone surface my-review.html. This block renders only a
+   slim banner that links there once the panel has released the review. It does
+   no table fetches and no panel_* rendering; that lives on my-review.html. */
 async function renderCompletionPacket(){
   if(!eid||!erec)return;
   if(erec.workflow_status!=='complete')return;
-
   const container=document.getElementById('completion-packet');
   if(!container)return;
-
-  /* Fetch the three dean reviews and the director review row in parallel */
-  const[deanRes,dirRes]=await Promise.all([
-    sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',eid),
-    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',eid).maybeSingle()
-  ]);
-  const deanReviews=(deanRes.data||[]).filter(r=>r.validated===true);
-  const dirReview=dirRes.data||null;
-
-  const fmtDate=s=>{if(!s)return '';try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});}catch(e){return s;}};
-  const esc=s=>(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const DEAN_LABELS={academics:'Dean Academics',research:'Dean Research',ep:'Dean EP'};
-
-  /* Build synthesis hero */
-  const synthText=erec.management_synthesis||'(No management synthesis recorded.)';
-  const synthBy=erec.management_synthesis_by||'';
-  const synthAt=erec.management_synthesis_at?fmtDate(erec.management_synthesis_at):'';
-  const releasedAt=erec.released_to_faculty_at?fmtDate(erec.released_to_faculty_at):'';
-
-  /* Build dean cards */
-  let deanCardsHtml='';
-  ['academics','research','ep'].forEach(role=>{
-    const r=deanReviews.find(x=>x.dean_role===role);
-    const name=r?(r.dean_name||r.dean_email||''):'(not recorded)';
-    const notes=r?.notes||'';
-    const validatedAt=r?.validated_at?fmtDate(r.validated_at):'';
-    deanCardsHtml+=`
-      <div class="cpkt-dean">
-        <div class="cpkt-dean-role">${esc(DEAN_LABELS[role]||role)}</div>
-        <div class="cpkt-dean-name">${esc(name)}</div>
-        <div class="cpkt-dean-notes${notes?'':' empty'}">${esc(notes||'(no notes recorded)')}</div>
-        <div class="cpkt-dean-foot">${esc(validatedAt)}</div>
-      </div>`;
-  });
-
-  /* Director verification block - find the latest verify action */
-  let dirHtml='';
-  let dirComments=null,dirName=null,dirActedAt=null;
-  if(dirReview){
-    const hist=Array.isArray(dirReview.action_history)?dirReview.action_history:[];
-    for(let i=hist.length-1;i>=0;i--){
-      if(hist[i].action==='verify'){
-        dirComments=hist[i].comments;
-        dirName=hist[i].director_name||hist[i].director_email;
-        dirActedAt=hist[i].acted_at;
-        break;
-      }
-    }
-    if(!dirActedAt&&dirReview.action==='verify'){
-      dirComments=dirReview.action_comments;
-      dirName=dirReview.director_name||dirReview.director_email;
-      dirActedAt=dirReview.acted_at;
-    }
-    dirHtml=`
-      <div class="cpkt-dir">
-        <div class="cpkt-dir-h">Director Verification <span class="cpkt-dir-h-name">· ${esc(dirName||'Director')} · ${esc(fmtDate(dirActedAt))}</span></div>
-        <div class="cpkt-dir-text${dirComments?'':' empty'}">${esc(dirComments||'(verified without specific comments)')}</div>
-      </div>`;
-  }
-
-  /* Revenue verification strip (from Dean EP review row) */
-  const epReview=deanReviews.find(r=>r.dean_role==='ep');
-  let revStripHtml='';
-  if(epReview?.revenue_verified===true){
-    revStripHtml='<div class="cpkt-rev-strip ok">✓ EP revenue verified by Dean EP with Finance</div>';
-  }else if(epReview?.revenue_verified===false){
-    revStripHtml='<div class="cpkt-rev-strip flag">! EP revenue discrepancy was flagged during review</div>';
-  }
-
-  container.innerHTML=`
-    <div class="cpkt">
-      <div class="cpkt-eyebrow">
-        <span>Annual Evaluation · Complete</span>
-        ${releasedAt?`<span class="cpkt-eyebrow-released">Released to you on ${esc(releasedAt)}</span>`:''}
-      </div>
-      <div class="cpkt-synth-h">Management Synthesis</div>
-      <div class="cpkt-synth-text">${esc(synthText)}</div>
-      <div class="cpkt-synth-by">From Dean Academics${synthBy?' · '+esc(synthBy):''}${synthAt?' · '+esc(synthAt):''}</div>
-
-      <div class="cpkt-trail">
-        <div class="cpkt-trail-h">Review Trail</div>
-        <div class="cpkt-trail-s">The institutional review chain that shaped this evaluation. Three deans reviewed across their domains, the Director verified institutional consistency, and Dean Academics wrote the management synthesis above.</div>
-        <div class="cpkt-deans">${deanCardsHtml}</div>
-        ${revStripHtml}
-        ${dirHtml}
-      </div>
-    </div>
-  `;
+  const ay=encodeURIComponent(erec.academic_year||ACADEMIC_YEAR);
+  container.innerHTML=
+    '<div class="cpkt">'+
+      '<div class="cpkt-eyebrow"><span>Annual Evaluation \u00B7 Complete</span></div>'+
+      '<div class="cpkt-synth-h">Your panel review is ready</div>'+
+      '<div class="cpkt-synth-text">The review panel has recorded and released your '+
+      'AY '+escapeHtml(erec.academic_year||ACADEMIC_YEAR)+' evaluation. Open your panel '+
+      'review to read the rating, the panel\'s written review, and dean comments.</div>'+
+      '<div style="margin-top:14px"><a href="my-review.html?ay='+ay+'" '+
+      'style="display:inline-block;background:var(--navy);color:#fff;text-decoration:none;'+
+      'font-size:13px;font-weight:500;padding:11px 22px;border-radius:6px">'+
+      'Open my panel review \u2192</a></div>'+
+    '</div>';
   container.style.display='block';
 }
 
