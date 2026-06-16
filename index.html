@@ -463,6 +463,17 @@
 
   <div class="modules-grid" id="modules-grid">
 
+    <!-- MY REVIEW -->
+    <div class="module-card dimmed" id="tile-my-review">
+      <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
+      <div class="card-body">
+        <div class="card-tag">Your Panel Review</div>
+        <div class="card-icon">&#9678;</div>
+        <div class="card-title">My Review</div>
+        <div class="card-desc">Read your finalised panel review once the panel has recorded and released it: the rating, the written review, and dean comments.</div>
+      </div>
+    </div>
+
     <!-- FACULTY DEVELOPMENT -->
     <div class="module-card dimmed">
       <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
@@ -511,10 +522,10 @@
     <div class="module-card dimmed" id="tile-director-review">
       <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
       <div class="card-body">
-        <div class="card-tag">Director Queue</div>
+        <div class="card-tag">Panel Decision</div>
         <div class="card-icon">&#9678;</div>
-        <div class="card-title">Director Review</div>
-        <div class="card-desc">Validate institutional consistency on evaluations completed by your three deans. Verify or return for re-review.</div>
+        <div class="card-title">Panel Review</div>
+        <div class="card-desc">Record the panel's decision for each faculty member in your campus. Browse and select a candidate, project the one-page summary, and capture the agreed rating and written review.</div>
       </div>
     </div>
 
@@ -756,6 +767,22 @@ async function initAuth() {
 const DEAN_LABELS = { academics: 'Dean Academics', research: 'Dean Research', ep: 'Dean EP' };
 
 function unlockReviewTiles(deanRows, dirRow, profile) {
+  /* My Review: faculty-facing panel result surface. Every faculty member who
+     reaches this function (admins and staff have already returned, and their
+     grid is hidden) gets it unlocked; my-review.html shows a 'not released yet'
+     state until the panel records and releases. */
+  const myRevTile = document.getElementById('tile-my-review');
+  if (myRevTile) {
+    myRevTile.classList.remove('dimmed');
+    myRevTile.classList.add('unlocked');
+    const myRevLock = myRevTile.querySelector('.locked-badge');
+    if (myRevLock) myRevLock.remove();
+    const myRevBadge = document.createElement('div');
+    myRevBadge.className = 'role-badge';
+    myRevBadge.innerHTML = '<span class="role-badge-dot"></span>Faculty';
+    myRevTile.appendChild(myRevBadge);
+    myRevTile.onclick = () => { window.location.href = '/my-review.html'; };
+  }
   if (deanRows && deanRows.length > 0) {
     const tile = document.getElementById('tile-dean-review');
     if (tile) {
