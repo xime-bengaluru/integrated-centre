@@ -8,19 +8,16 @@
 <script src="assets/js/supabase-js-2.105.4.umd.js"></script>
 <style>
 :root{
-  --navy:#0D1F35;--navy-dark:#0A1828;--navy-2:#1A3352;
-  --red:#C8102E;
-  --gold:#C9A84C;--gold-2:#A88828;--gold-l:#F0DFA0;--gold-d:#7A6118;
+  --navy:#0D1F35;--navy-dark:#0A1828;
+  --gold:#C9A84C;--gold-d:#7A6118;
   --paper:#FBFAF6;--cream:#F4F2EA;--parchment:#F8F6EE;
   --ink:#0F0F0E;--charcoal:#1F1F1F;--mute:#4A5568;--faint:#6B7280;
   --line:#D8D4C7;--border-g:rgba(201,168,76,.45);
-  --teal:#0D9268;--teal-d:#054C36;
   --r:10px;--rs:6px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:14px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
 
-/* Topbar */
 .topbar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:3px solid var(--gold)}
 .tb-l{display:flex;align-items:center;gap:14px;flex-shrink:0}
 .tb-logo{height:28px;width:auto;display:block;flex-shrink:0}
@@ -30,7 +27,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .tbtn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:var(--rs);cursor:pointer;transition:all .15s;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.75)}
 .tbtn:hover{background:rgba(255,255,255,.1);color:#fff}
 
-/* Preview banner */
 .preview-banner{background:rgba(239,159,39,.15);border-bottom:1px solid rgba(239,159,39,.4);padding:10px 24px;display:none;align-items:center;justify-content:space-between;gap:16px;font-size:12px;color:#4A2900;position:sticky;top:62px;z-index:150}
 .preview-banner.visible{display:flex}
 .preview-banner strong{font-weight:600}
@@ -39,7 +35,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .wrap{max-width:780px;margin:0 auto;padding:34px 28px 90px;width:100%}
 .blocking{padding:70px 24px;text-align:center;color:var(--faint);font-size:13px}
 
-/* Header block */
 .head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:8px;flex-wrap:wrap}
 .head-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--navy);line-height:1.1}
 .head-role{font-size:12.5px;color:var(--mute);margin-top:4px}
@@ -47,32 +42,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 .print-btn:hover{border-color:var(--gold);background:var(--parchment);color:var(--gold-d)}
 .print-btn-icon{font-size:15px;line-height:1;color:var(--gold-d)}
 
-/* Cycle switcher */
 .cycles{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0 4px}
 .cycle-chip{padding:6px 14px;font-size:11.5px;font-weight:500;background:#fff;border:1px solid var(--line);color:var(--mute);cursor:pointer;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.03em;transition:all .15s;text-decoration:none}
 .cycle-chip:hover{border-color:var(--gold-d);color:var(--gold-d)}
 .cycle-chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 
-/* Completion / panel packet */
 .cpkt{background:var(--parchment);border:1px solid var(--border-g);border-left:4px solid var(--gold);border-radius:var(--r);padding:28px 32px;margin-top:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .cpkt-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .cpkt-eyebrow-released{color:var(--mute);font-weight:400;letter-spacing:.06em;text-transform:none;font-size:10.5px}
-.rating-row{display:flex;align-items:center;gap:12px;margin:14px 0 18px;flex-wrap:wrap}
-.rating-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
-.rating-chip{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--navy);background:linear-gradient(150deg,#F7EDD0,rgba(201,168,76,.18));border:1px solid var(--gold);border-radius:9px;padding:4px 18px;line-height:1.15}
-.cpkt-h{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--navy);line-height:1.2;margin-bottom:14px}
-.cpkt-text{font-size:14.5px;color:var(--ink);line-height:1.75;white-space:pre-wrap;background:#fff;border:.5px solid var(--line);border-radius:var(--rs);padding:18px 20px;margin-bottom:10px}
-.cpkt-by{font-size:11px;color:var(--mute);font-family:'DM Mono',monospace;letter-spacing:.04em}
-.cpkt-dean{background:#fff;border:.5px solid var(--line);border-radius:var(--rs);padding:14px 16px;margin-top:16px}
-.cpkt-dean-h{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
-.cpkt-dean-text{font-size:13px;color:var(--charcoal);line-height:1.65;white-space:pre-wrap}
-.cpkt-present{font-size:11px;color:var(--mute);font-family:'DM Mono',monospace;letter-spacing:.04em;margin-top:12px}
+.cpkt-h{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--navy);line-height:1.2;margin-bottom:6px}
+.cpkt-lead{font-size:12.5px;color:var(--mute);margin-bottom:14px;line-height:1.6}
+.cpkt-text{font-size:14.5px;color:var(--ink);line-height:1.8;white-space:pre-wrap;background:#fff;border:.5px solid var(--line);border-radius:var(--rs);padding:20px 22px}
 
-/* Pending / empty states */
 .state-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:34px 32px;margin-top:18px;text-align:center}
 .state-icon{font-size:30px;color:var(--gold-d);margin-bottom:10px}
 .state-h{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--navy);margin-bottom:8px}
-.state-s{font-size:13px;color:var(--mute);line-height:1.7;max-width:460px;margin:0 auto}
+.state-s{font-size:13px;color:var(--mute);line-height:1.7;max-width:480px;margin:0 auto}
 .state-link{display:inline-block;margin-top:18px;background:var(--navy);color:#fff;text-decoration:none;font-size:12.5px;font-weight:500;padding:10px 20px;border-radius:var(--rs)}
 .state-link:hover{background:var(--gold);color:var(--navy-dark)}
 
@@ -81,13 +66,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
   .cpkt{padding:22px 18px}
   .head-name{font-size:25px}
 }
-
 @media print{
   .topbar,.preview-banner,.print-btn,.cycles,.tbtn{display:none !important}
   body{background:#fff}
   .wrap{padding:0;max-width:100%}
   .cpkt{box-shadow:none;border-left-width:3px}
-  .wrap::before{content:"XIME Faculty Panel Review";display:block;font-family:'Cormorant Garamond',serif;font-size:18pt;color:#0e1828;text-align:center;border-bottom:2px solid #c9a84c;padding-bottom:8pt;margin-bottom:14pt;font-weight:600}
+  .wrap::before{content:"XIME Faculty Performance Summary";display:block;font-family:'Cormorant Garamond',serif;font-size:18pt;color:#0e1828;text-align:center;border-bottom:2px solid #c9a84c;padding-bottom:8pt;margin-bottom:14pt;font-weight:600}
 }
 </style>
 </head>
@@ -106,7 +90,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);f
 </div>
 
 <div class="preview-banner" id="preview-banner">
-  <div><strong id="preview-who">Super Admin Preview</strong> · Viewing this faculty member's released review, read-only.</div>
+  <div><strong id="preview-who">Super Admin Preview</strong> · Viewing this faculty member's released summary, read-only.</div>
   <a onclick="exitPreview()">Exit preview &rarr;</a>
 </div>
 
@@ -133,17 +117,22 @@ const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
 const sb=supabase.createClient(SU,SK);
 
-/* Default cycle when no ?ay= is supplied. Bump this when the live cycle rolls
-   over (e.g. to '2026-27'); the page also auto-falls-back to the latest
-   released cycle the faculty actually has, so this is only a hint. */
+/* Default cycle when no ?ay= is supplied. The page also falls back to the
+   latest released cycle the faculty actually has. */
 const DEFAULT_AY='2025-26';
+
+/* Columns the faculty is allowed to see. Deliberately explicit: we never
+   select '*', so internal panel data (ratings, potential, promotion) never
+   reaches the browser. The ratings live in a separate table the database
+   does not serve to faculty at all. */
+const FACULTY_COLS='id,academic_year,workflow_status,panel_final_review,released_to_faculty_at';
 
 const DEBUG=false;
 function dlog(...a){if(DEBUG)console.error(...a);}
 
 let CURRENT_USER=null,USER_ROLE='',IS_PREVIEW=false;
 let fac=null;
-let COMPLETED=[];     /* all complete evaluations for this faculty, newest first */
+let COMPLETED=[];
 let SELECTED_AY=null;
 
 function esc(s){return(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -152,19 +141,15 @@ function fmtDate(s){if(!s)return '';try{return new Date(s).toLocaleDateString('e
 async function signOut(){await sb.auth.signOut();window.location.href='login.html';}
 function exitPreview(){const u=new URL(window.location.href);u.searchParams.delete('as');window.location.href='index.html';}
 
-/* ---------- Access resolution (mirrors evaluation.html H8 gate) ---------- */
 async function resolveAccess(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='login.html';return null;}
 
   const{data:authProfile}=await sb.from('user_profiles')
     .select('must_change_password').eq('id',session.user.id).maybeSingle();
-  if(authProfile?.must_change_password===true){
-    window.location.href='login.html?force_change=1';return null;
-  }
+  if(authProfile?.must_change_password===true){window.location.href='login.html?force_change=1';return null;}
 
-  const{data:profile}=await sb.from('user_profiles')
-    .select('*').eq('id',session.user.id).maybeSingle();
+  const{data:profile}=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
   if(!profile){window.location.href='login.html';return null;}
 
   CURRENT_USER=profile;USER_ROLE=profile.role;
@@ -199,7 +184,6 @@ function block(msg){
   document.getElementById('wrap').style.display='none';
 }
 
-/* ---------- Cycle switcher ---------- */
 function renderCycles(){
   const el=document.getElementById('cycles');
   if(COMPLETED.length<=1){el.style.display='none';return;}
@@ -215,7 +199,9 @@ function renderCycles(){
   });
 }
 
-/* ---------- Panel packet render (reads the panel_* contract only) ---------- */
+/* Faculty see only the written performance summary. No rating, no potential,
+   no promotion line, no dean comments. Those are recorded by the panel and
+   held internally, in a separate table this page never queries. */
 function renderSelected(){
   const content=document.getElementById('content');
   const printBtn=document.getElementById('print-btn');
@@ -226,9 +212,9 @@ function renderSelected(){
     content.innerHTML=
       '<div class="state-card">'+
         '<div class="state-icon">&#9201;</div>'+
-        '<div class="state-h">No released review yet</div>'+
-        '<div class="state-s">Your AY '+esc(SELECTED_AY||DEFAULT_AY)+' evaluation has not been reviewed and released by the panel yet. '+
-        'You will be able to read your panel review here once it is recorded and released. '+
+        '<div class="state-h">No summary released yet</div>'+
+        '<div class="state-s">Your AY '+esc(SELECTED_AY||DEFAULT_AY)+' performance summary has not been released yet. '+
+        'Once the review panel has met and the Director has written your summary, you will be able to read it here. '+
         'Your submitted record stays editable until the deadline on the X-Drive form.</div>'+
         '<a class="state-link" href="evaluation.html">Go to my X-Drive form &rarr;</a>'+
       '</div>';
@@ -237,41 +223,19 @@ function renderSelected(){
 
   printBtn.style.display='inline-flex';
 
-  const review=rec.panel_final_review||'(No panel review text was recorded.)';
-  const rating=rec.panel_rating||'';
-  const deanComments=rec.panel_dean_comments||'';
-  const members=rec.panel_members_present||'';
-  const recordedBy=rec.panel_recorded_by_name||'';
-  const recordedAt=rec.panel_recorded_at?fmtDate(rec.panel_recorded_at):'';
+  const summary=rec.panel_final_review||'(No summary was recorded.)';
   const releasedAt=rec.released_to_faculty_at?fmtDate(rec.released_to_faculty_at):'';
-
-  const ratingHtml=rating?
-    '<div class="rating-row"><span class="rating-lbl">Panel rating</span>'+
-    '<span class="rating-chip">'+esc(rating)+'</span></div>':'';
-
-  const byline=[recordedBy?('Recorded by '+esc(recordedBy)):'',recordedAt?esc(recordedAt):'']
-    .filter(Boolean).join(' \u00B7 ');
-
-  const deanHtml=deanComments?
-    '<div class="cpkt-dean"><div class="cpkt-dean-h">Dean comments</div>'+
-    '<div class="cpkt-dean-text">'+esc(deanComments)+'</div></div>':'';
-
-  const membersHtml=members?'<div class="cpkt-present">Panel present: '+esc(members)+'</div>':'';
 
   content.innerHTML=
     '<div class="cpkt">'+
       '<div class="cpkt-eyebrow"><span>Annual Evaluation \u00B7 AY '+esc(rec.academic_year||'')+' \u00B7 Complete</span>'+
       (releasedAt?'<span class="cpkt-eyebrow-released">Released to you on '+esc(releasedAt)+'</span>':'')+'</div>'+
-      ratingHtml+
-      '<div class="cpkt-h">Panel Review</div>'+
-      '<div class="cpkt-text">'+esc(review)+'</div>'+
-      (byline?'<div class="cpkt-by">'+byline+'</div>':'')+
-      deanHtml+
-      membersHtml+
+      '<div class="cpkt-h">Performance Summary</div>'+
+      '<div class="cpkt-lead">A summary of your year, written by the Director following the annual review panel.</div>'+
+      '<div class="cpkt-text">'+esc(summary)+'</div>'+
     '</div>';
 }
 
-/* ---------- Init ---------- */
 async function init(){
   const access=await resolveAccess();
   if(!access)return;
@@ -290,7 +254,7 @@ async function init(){
   }
 
   const{data,error}=await sb.from('faculty_evaluations')
-    .select('*')
+    .select(FACULTY_COLS)
     .eq('faculty_master_id',fac.id)
     .eq('workflow_status','complete')
     .order('academic_year',{ascending:false});
