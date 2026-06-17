@@ -213,17 +213,35 @@ function renderSelected(){
   const printBtn=document.getElementById('print-btn');
   const rec=COMPLETED.find(r=>r.academic_year===SELECTED_AY);
 
+  /* In super_admin preview an admin (e.g. the President) is reading this about
+     another faculty member, so the copy must not address them in the second
+     person, and the faculty-only "go edit your X-Drive form" action does not
+     belong to them. Switch to neutral, name-based wording and drop the button.
+     The faculty member viewing their own page sees the original first-person
+     copy unchanged. */
+  const who=esc(fac&&fac.name?fac.name:'This faculty member');
+
   if(!rec){
     printBtn.style.display='none';
-    content.innerHTML=
-      '<div class="state-card">'+
-        '<div class="state-icon">&#9201;</div>'+
-        '<div class="state-h">No summary released yet</div>'+
-        '<div class="state-s">Your AY '+esc(SELECTED_AY||DEFAULT_AY)+' performance summary has not been released yet. '+
-        'Once the review panel has met and the Director has written your summary, you will be able to read it here. '+
-        'Your submitted record stays editable until the deadline on the X-Drive form.</div>'+
-        '<a class="state-link" href="evaluation.html">Go to my X-Drive form &rarr;</a>'+
-      '</div>';
+    if(IS_PREVIEW){
+      content.innerHTML=
+        '<div class="state-card">'+
+          '<div class="state-icon">&#9201;</div>'+
+          '<div class="state-h">No summary released yet</div>'+
+          '<div class="state-s">'+who+'\u2019s AY '+esc(SELECTED_AY||DEFAULT_AY)+' performance summary has not been released yet. '+
+          'Once the review panel has met and the Director has written the summary, it will appear here.</div>'+
+        '</div>';
+    }else{
+      content.innerHTML=
+        '<div class="state-card">'+
+          '<div class="state-icon">&#9201;</div>'+
+          '<div class="state-h">No summary released yet</div>'+
+          '<div class="state-s">Your AY '+esc(SELECTED_AY||DEFAULT_AY)+' performance summary has not been released yet. '+
+          'Once the review panel has met and the Director has written your summary, you will be able to read it here. '+
+          'Your submitted record stays editable until the deadline on the X-Drive form.</div>'+
+          '<a class="state-link" href="evaluation.html">Go to my X-Drive form &rarr;</a>'+
+        '</div>';
+    }
     return;
   }
 
@@ -231,13 +249,17 @@ function renderSelected(){
 
   const summary=rec.panel_final_review||'(No summary was recorded.)';
   const releasedAt=rec.released_to_faculty_at?fmtDate(rec.released_to_faculty_at):'';
+  const releasedLabel=IS_PREVIEW?'Released on ':'Released to you on ';
+  const leadText=IS_PREVIEW
+    ?'A summary of the year, written by the Director following the annual review panel.'
+    :'A summary of your year, written by the Director following the annual review panel.';
 
   content.innerHTML=
     '<div class="cpkt">'+
       '<div class="cpkt-eyebrow"><span>Annual Evaluation \u00B7 AY '+esc(rec.academic_year||'')+' \u00B7 Complete</span>'+
-      (releasedAt?'<span class="cpkt-eyebrow-released">Released to you on '+esc(releasedAt)+'</span>':'')+'</div>'+
+      (releasedAt?'<span class="cpkt-eyebrow-released">'+releasedLabel+esc(releasedAt)+'</span>':'')+'</div>'+
       '<div class="cpkt-h">Performance Summary</div>'+
-      '<div class="cpkt-lead">A summary of your year, written by the Director following the annual review panel.</div>'+
+      '<div class="cpkt-lead">'+leadText+'</div>'+
       '<div class="cpkt-text">'+esc(summary)+'</div>'+
     '</div>';
 }
