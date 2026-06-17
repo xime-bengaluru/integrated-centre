@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub · Performance Oversight</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="assets/js/supabase-js-2.105.4.umd.js"></script>
+<style>
+  :root{
+    --navy:#0D1F35;--navy-dark:#0a1a2e;
+    --gold:#C9A84C;--gold-l:#E8C97A;--gold-d:#A88A2B;--gold-pale:#F7EDD0;
+    --cream:#FAF8F4;--parchment:#FBFAF6;--white:#FFFFFF;
+    --text:#0D1F35;--sub:#4A5D72;--muted:#5A6B82;--faint:#7a8699;
+    --line:#E5DFD2;--line-strong:#D8D2C5;
+    --red:#C8102E;--red-d:#7A1A1A;
+    --teal:#0D9268;--teal-d:#075B41;--amber:#D97706;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+  .topbar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.25)}
+  .tb-l{display:flex;align-items:center;gap:14px}
+  .tb-logo{height:26px;width:auto}
+  .tb-div{width:1px;height:22px;background:rgba(255,255,255,.15)}
+  .tb-title{font-size:13px;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.04em}
+  .tb-r{display:flex;align-items:center;gap:12px}
+  .tb-btn{font-size:12px;color:rgba(255,255,255,.6);background:transparent;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+  .tb-btn:hover{background:rgba(255,255,255,.05);color:white}
+
+  .hero{background:var(--navy);padding:30px 32px 32px;border-bottom:2px solid var(--gold)}
+  .hero-l{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+  .hero-t{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:white;line-height:1.15}
+  .hero-t em{color:var(--gold-l);font-style:italic}
+  .hero-s{font-size:13px;color:rgba(255,255,255,.55);max-width:720px;line-height:1.55;margin-top:6px}
+  .hero-conf{display:inline-flex;align-items:center;gap:8px;margin-top:13px;padding:5px 13px;background:rgba(200,16,46,.16);border:1px solid rgba(200,16,46,.4);border-radius:16px;font-size:11px;color:#F3B6BE;font-family:'DM Mono',monospace;letter-spacing:.05em}
+  .hero-conf-dot{width:5px;height:5px;border-radius:50%;background:#E06070}
+
+  .main{max-width:1280px;margin:0 auto;padding:26px 24px 64px}
+
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+  .filter{display:flex;gap:0;background:white;border:1px solid var(--line-strong);border-radius:9px;padding:4px;width:fit-content}
+  .filter button{padding:7px 14px;font-size:12.5px;font-weight:500;color:var(--sub);background:transparent;border:none;border-radius:6px;cursor:pointer;font-family:inherit}
+  .filter button.active{background:var(--navy);color:white}
+  .filter button:not(.active):hover{background:var(--cream)}
+
+  .sec{margin-bottom:34px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--navy)}
+  .sec-title{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:var(--navy)}
+  .sec-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold-d);letter-spacing:.04em}
+  .sec-sub{font-size:11.5px;color:var(--muted);margin-left:auto}
+
+  .table-wrap{overflow-x:auto;background:white;border:1px solid var(--line);border-radius:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{text-align:left;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);font-weight:600;padding:12px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--parchment)}
+  tbody td{padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tbody tr.data-row{cursor:pointer;transition:background .12s}
+  tbody tr.data-row:hover{background:var(--cream)}
+  tbody tr:last-child td{border-bottom:none}
+  .cell-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--navy);line-height:1.15}
+  .cell-sub{font-size:11px;color:var(--muted);margin-top:1px}
+  .cell-c{color:var(--sub);white-space:nowrap}
+
+  .band{display:inline-block;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:11px;white-space:nowrap;letter-spacing:.02em}
+  .band-Outstanding{background:rgba(201,168,76,.2);color:var(--gold-d);border:.5px solid var(--gold)}
+  .band-Exceeds{background:rgba(13,146,104,.12);color:var(--teal-d);border:.5px solid rgba(13,146,104,.4)}
+  .band-Meets{background:rgba(13,31,53,.07);color:var(--navy);border:.5px solid var(--line-strong)}
+  .band-Developing{background:rgba(217,119,6,.12);color:var(--amber);border:.5px solid rgba(217,119,6,.35)}
+  .band-empty{color:var(--faint);font-family:'DM Mono',monospace;font-size:12px}
+  .band-overall{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;padding:3px 12px}
+
+  .pot{font-family:'DM Mono',monospace;font-size:11px;color:var(--navy);font-weight:500;white-space:nowrap}
+  .promo-y{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--teal-d)}
+  .promo-n{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--muted)}
+
+  .status{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px;white-space:nowrap}
+  .status-dot{width:5px;height:5px;border-radius:50%}
+  .status-released{background:rgba(13,146,104,.1);color:var(--teal-d)}
+  .status-released .status-dot{background:var(--teal)}
+  .status-recorded{background:rgba(217,119,6,.1);color:var(--amber)}
+  .status-recorded .status-dot{background:var(--amber)}
+
+  .detail-row td{background:var(--parchment);padding:0}
+  .detail-inner{padding:16px 20px;border-bottom:1px solid var(--line)}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 28px}
+  .detail-blk-h{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
+  .detail-blk-t{font-size:12.5px;color:var(--text);line-height:1.6;white-space:pre-wrap}
+  .detail-blk-t.empty{color:var(--faint);font-style:italic}
+  .detail-blk.internal .detail-blk-t{background:var(--cream);border-left:2px solid var(--gold);border-radius:0 6px 6px 0;padding:8px 12px}
+  .detail-meta{grid-column:1/-1;font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);border-top:.5px dotted var(--line);padding-top:9px;margin-top:2px}
+
+  .empty-state{padding:40px 28px;text-align:center;color:var(--muted);font-size:13px}
+  .empty-state-i{font-size:28px;color:var(--faint);margin-bottom:8px}
+  .empty-state-s{display:block;color:var(--sub);font-weight:500;margin-bottom:3px;font-size:14px}
+
+  .blocker{display:none;padding:90px 32px;text-align:center;color:var(--muted);font-size:14px;max-width:560px;margin:0 auto;line-height:1.6}
+  .blocker-h{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--text);margin-bottom:12px;font-weight:500}
+
+  .print-only{display:none}
+
+  @media print{
+    .topbar,.hero,.controls,.tb-r,.expand-hint{display:none !important}
+    body{background:white}
+    .main{max-width:none;padding:0}
+    .print-only{display:block;margin-bottom:14px}
+    .print-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#000}
+    .print-meta{font-family:'DM Mono',monospace;font-size:10px;color:#444;letter-spacing:.05em;margin-top:3px}
+    .sec{margin-bottom:20px;page-break-inside:auto}
+    .table-wrap{overflow:visible;border:1px solid #999;border-radius:0}
+    .detail-row{display:none !important}
+    tbody tr.data-row{cursor:default}
+    thead th{color:#000;background:#eee}
+    .band,.pot,.promo-y,.promo-n,.status{border:none !important}
+    @page{size:landscape;margin:12mm}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="tb-div"></div>
+    <div class="tb-title">X-Hub · Performance Oversight</div>
+  </div>
+  <div class="tb-r">
+    <button class="tb-btn" onclick="window.print()">Print pack</button>
+    <button class="tb-btn" onclick="window.location.href='index.html'">Home</button>
+    <button class="tb-btn" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-l" id="hero-l">Performance Oversight · AY 2025-26</div>
+  <div class="hero-t" id="hero-t">Loading...</div>
+  <div class="hero-s">The internal record across both review cycles. Ratings, potential, and promotion are held here for leadership and HR, and never reach the individual.</div>
+  <div class="hero-conf"><span class="hero-conf-dot"></span>Internal · Confidential</div>
+</div>
+
+<div class="main" id="main" style="display:none">
+  <div class="print-only">
+    <div class="print-title">XIME Performance Oversight · AY 2025-26</div>
+    <div class="print-meta">Internal and confidential · for the panel, the President, the Chairman, and the Head of HR</div>
+  </div>
+
+  <div class="controls">
+    <div class="filter" id="campus-filter">
+      <button data-campus="all" class="active" onclick="setCampus('all')">All campuses</button>
+      <button data-campus="Bengaluru" onclick="setCampus('Bengaluru')">Bengaluru</button>
+      <button data-campus="Chennai" onclick="setCampus('Chennai')">Chennai</button>
+      <button data-campus="Kochi" onclick="setCampus('Kochi')">Kochi</button>
+    </div>
+    <div class="sec-sub expand-hint">Click any row for the written summary and comments</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-title">Faculty</div>
+      <div class="sec-count" id="fac-count">0 recorded</div>
+    </div>
+    <div class="table-wrap" id="fac-wrap"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-title">Staff</div>
+      <div class="sec-count" id="stf-count">0 recorded</div>
+    </div>
+    <div class="table-wrap" id="stf-wrap"></div>
+  </div>
+</div>
+
+<div class="blocker" id="blocker">
+  <div class="blocker-h">Loading...</div>
+  <div id="blocker-msg">Verifying access</div>
+</div>
+
+<script>
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+const ACADEMIC_YEAR='2025-26';
+
+let FAC=[];
+let STF=[];
+let CAMPUS='all';
+
+function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function formatDateTime(s){
+  if(!s)return '-';
+  try{return new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}
+  catch(e){return s;}
+}
+
+async function signOut(){await sb.auth.signOut();window.location.href='login.html';}
+
+function band(v){
+  if(!v)return '<span class="band-empty">-</span>';
+  return '<span class="band band-'+escapeHtml(v)+'">'+escapeHtml(v)+'</span>';
+}
+
+async function resolveAccess(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return false;}
+
+  const{data:profile}=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
+  if(!profile){document.getElementById('blocker-msg').textContent='Profile not found. Contact admin.';return false;}
+  if(profile.must_change_password===true){window.location.href='login.html?action=change-password';return false;}
+
+  const{data:isViewer,error}=await sb.rpc('is_panel_report_viewer');
+  if(error){document.getElementById('blocker-msg').textContent='Access check failed. Tell Girish.';return false;}
+  if(isViewer!==true){
+    document.getElementById('blocker').querySelector('.blocker-h').textContent='Access restricted';
+    document.getElementById('blocker-msg').textContent='This page is limited to the review panel, the President, and the Head of HR. If you believe you should have access, contact Girish.';
+    return false;
+  }
+
+  document.getElementById('hero-t').innerHTML='Welcome, <em>'+escapeHtml(profile.full_name||profile.email)+'</em>';
+  return true;
+}
+
+async function loadData(){
+  const[fac,stf]=await Promise.all([
+    sb.rpc('get_faculty_oversight'),
+    sb.rpc('get_staff_oversight')
+  ]);
+  if(fac.error){console.error('faculty',fac.error);}
+  if(stf.error){console.error('staff',stf.error);}
+  FAC=fac.data||[];
+  STF=stf.data||[];
+  render();
+}
+
+function setCampus(c){
+  CAMPUS=c;
+  document.querySelectorAll('#campus-filter button').forEach(b=>b.classList.toggle('active',b.dataset.campus===c));
+  render();
+}
+
+function inCampus(row){return CAMPUS==='all'||row.campus===CAMPUS;}
+
+function statusBadge(released){
+  if(released)return '<span class="status status-released"><span class="status-dot"></span>Released</span>';
+  return '<span class="status status-recorded"><span class="status-dot"></span>Recorded</span>';
+}
+
+function render(){
+  renderFaculty();
+  renderStaff();
+}
+
+function toggleDetail(id){
+  const r=document.getElementById(id);
+  if(r)r.style.display=(r.style.display==='none'||!r.style.display)?'table-row':'none';
+}
+
+function renderFaculty(){
+  const rows=FAC.filter(inCampus);
+  document.getElementById('fac-count').textContent=rows.length+' recorded';
+  const wrap=document.getElementById('fac-wrap');
+  if(rows.length===0){
+    wrap.innerHTML='<div class="empty-state"><div class="empty-state-i">&#9671;</div><span class="empty-state-s">No faculty panel reviews recorded yet</span><div>Recorded reviews appear here as each campus panel sits.</div></div>';
+    return;
+  }
+  let h='<table><thead><tr>'+
+    '<th>Faculty</th><th>Campus</th><th>Teaching</th><th>Research</th><th>Inst. Building</th><th>Ext. Programs</th><th>Overall</th><th>Potential</th><th>Promotion</th><th>Status</th>'+
+    '</tr></thead><tbody>';
+  rows.forEach((r,i)=>{
+    const did='facd-'+i;
+    const promo=(r.promotion_consider===true)?'<span class="promo-y">Yes</span>':(r.promotion_consider===false?'<span class="promo-n">No</span>':'<span class="band-empty">-</span>');
+    h+='<tr class="data-row" onclick="toggleDetail(\''+did+'\')">'+
+       '<td><div class="cell-name">'+escapeHtml(r.name||'(unknown)')+'</div><div class="cell-sub">'+escapeHtml(r.designation||'')+(r.subject_area?(' · '+escapeHtml(r.subject_area)):'')+'</div></td>'+
+       '<td class="cell-c">'+escapeHtml(r.campus||'')+'</td>'+
+       '<td>'+band(r.rating_teaching)+'</td>'+
+       '<td>'+band(r.rating_research)+'</td>'+
+       '<td>'+band(r.rating_ib)+'</td>'+
+       '<td>'+band(r.rating_ep)+'</td>'+
+       '<td>'+(r.rating_overall?'<span class="band band-overall band-'+escapeHtml(r.rating_overall)+'">'+escapeHtml(r.rating_overall)+'</span>':'<span class="band-empty">-</span>')+'</td>'+
+       '<td><span class="pot">'+escapeHtml(r.potential||'-')+'</span></td>'+
+       '<td>'+promo+'</td>'+
+       '<td>'+statusBadge(r.workflow_status==='complete')+'</td>'+
+       '</tr>';
+    h+='<tr class="detail-row" id="'+did+'" style="display:none"><td colspan="10"><div class="detail-inner"><div class="detail-grid">'+
+       '<div class="detail-blk"><div class="detail-blk-h">Performance summary (shared with faculty)</div><div class="detail-blk-t'+(r.panel_final_review?'':' empty')+'">'+escapeHtml(r.panel_final_review||'Not recorded')+'</div></div>'+
+       '<div class="detail-blk internal"><div class="detail-blk-h">Dean comments (internal)</div><div class="detail-blk-t'+(r.dean_comments?'':' empty')+'">'+escapeHtml(r.dean_comments||'None')+'</div></div>'+
+       '<div class="detail-meta">'+[r.recorded_by_name?('Recorded by '+escapeHtml(r.recorded_by_name)):'',r.recorded_at?formatDateTime(r.recorded_at):'',r.released_to_faculty_at?('Released '+formatDateTime(r.released_to_faculty_at)):''].filter(Boolean).join(' &nbsp;·&nbsp; ')+'</div>'+
+       '</div></div></td></tr>';
+  });
+  h+='</tbody></table>';
+  wrap.innerHTML=h;
+}
+
+function renderStaff(){
+  const rows=STF.filter(inCampus);
+  document.getElementById('stf-count').textContent=rows.length+' recorded';
+  const wrap=document.getElementById('stf-wrap');
+  if(rows.length===0){
+    wrap.innerHTML='<div class="empty-state"><div class="empty-state-i">&#9671;</div><span class="empty-state-s">No staff reviews recorded yet</span><div>Recorded staff reviews appear here as the director records each one.</div></div>';
+    return;
+  }
+  let h='<table><thead><tr>'+
+    '<th>Staff member</th><th>Department</th><th>Campus</th><th>Director rating</th><th>Status</th>'+
+    '</tr></thead><tbody>';
+  rows.forEach((r,i)=>{
+    const did='stfd-'+i;
+    h+='<tr class="data-row" onclick="toggleDetail(\''+did+'\')">'+
+       '<td><div class="cell-name">'+escapeHtml(r.staff_name||'(unknown)')+'</div><div class="cell-sub">'+escapeHtml(r.designation||'')+'</div></td>'+
+       '<td class="cell-c">'+escapeHtml(r.department||'')+'</td>'+
+       '<td class="cell-c">'+escapeHtml(r.campus||'')+'</td>'+
+       '<td>'+(r.director_rating?'<span class="band band-overall band-'+escapeHtml(r.director_rating)+'">'+escapeHtml(r.director_rating)+'</span>':'<span class="band-empty">-</span>')+'</td>'+
+       '<td>'+statusBadge(!!r.released_to_staff_at)+'</td>'+
+       '</tr>';
+    h+='<tr class="detail-row" id="'+did+'" style="display:none"><td colspan="5"><div class="detail-inner"><div class="detail-grid">'+
+       '<div class="detail-blk"><div class="detail-blk-h">Director comments (shared with staff)</div><div class="detail-blk-t'+(r.director_comments?'':' empty')+'">'+escapeHtml(r.director_comments||'Not recorded')+'</div></div>'+
+       '<div class="detail-blk internal"><div class="detail-blk-h">Functional head comments (internal)</div><div class="detail-blk-t'+(r.functional_head_comments?'':' empty')+'">'+escapeHtml(r.functional_head_comments||'None')+'</div></div>'+
+       '<div class="detail-meta">'+[r.recorded_by_name?('Recorded by '+escapeHtml(r.recorded_by_name)):'',r.recorded_at?formatDateTime(r.recorded_at):'',r.released_to_staff_at?('Released '+formatDateTime(r.released_to_staff_at)):''].filter(Boolean).join(' &nbsp;·&nbsp; ')+'</div>'+
+       '</div></div></td></tr>';
+  });
+  h+='</tbody></table>';
+  wrap.innerHTML=h;
+}
+
+async function init(){
+  document.getElementById('blocker').style.display='block';
+  const ok=await resolveAccess();
+  if(!ok)return;
+  document.getElementById('blocker').style.display='none';
+  document.getElementById('main').style.display='block';
+  await loadData();
+}
+
+init();
+</script>
+</body>
+</html>
