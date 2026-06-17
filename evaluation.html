@@ -2407,14 +2407,16 @@ async function resolveAccess(){
     const{data:row}=await sb.from('faculty_master')
       .select('*').eq('email',targetEmail).maybeSingle();
     if(!row){
-      const{data:firstPilot}=await sb.from('faculty_master')
-        .select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
-      if(!firstPilot){
-        document.getElementById('blocker').textContent='No faculty have been linked to the review system yet.';
-        document.getElementById('blocker').style.display='block';
-        return null;
+      /* Do NOT auto-pick a faculty member. An admin with no review of their own
+         (e.g. the President) was being dropped onto the alphabetically first
+         faculty. Require an explicit ?as= target. */
+      if(asEmail){
+        document.getElementById('blocker').textContent='No faculty found for '+asEmail+'. Check the email in the ?as= part of the web address.';
+      }else{
+        document.getElementById('blocker').textContent='Super admin preview. Add ?as=faculty@xime.org to the web address to open a specific faculty member\u2019s 3X.';
       }
-      return{faculty:firstPilot,isPreview:true};
+      document.getElementById('blocker').style.display='block';
+      return null;
     }
     return{faculty:row,isPreview:targetEmail!==profile.email};
   }
