@@ -165,13 +165,19 @@ async function resolveAccess(){
   }
 
   if(USER_ROLE==='super_admin'){
-    const{data:row}=await sb.from('faculty_master').select('*').eq('email',targetEmail).maybeSingle();
-    if(!row){
-      const{data:first}=await sb.from('faculty_master').select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
-      if(!first){block('No faculty have been linked to the review system yet.');return null;}
-      return{faculty:first,isPreview:true};
+    /* Explicit preview only. Never auto-pick a faculty member for an admin who
+       has no review of their own (e.g. the President). The old fallback picked
+       the alphabetically-first faculty, which dropped the President onto whoever
+       sorted first. */
+    if(!asEmail){
+      const{data:ownRow}=await sb.from('faculty_master').select('*').eq('email',profile.email).maybeSingle();
+      if(ownRow)return{faculty:ownRow,isPreview:false};
+      block('Super admin preview. Add ?as=faculty@xime.org to the web address to view a specific faculty member\u2019s released summary.');
+      return null;
     }
-    return{faculty:row,isPreview:targetEmail!==profile.email};
+    const{data:row}=await sb.from('faculty_master').select('*').eq('email',asEmail).maybeSingle();
+    if(!row){block('No faculty member found for '+asEmail+'.');return null;}
+    return{faculty:row,isPreview:asEmail!==profile.email};
   }
 
   window.location.href='index.html';
