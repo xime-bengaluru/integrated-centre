@@ -6,6 +6,7 @@
 <title>X-Hub · X-Impact · Teaching Effectiveness</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <script src="assets/js/supabase-js-2.105.4.umd.js"></script>
+<script src="assets/js/access.js"></script>
 <style>
 :root{
   --navy:#0D1F35;--navy-dark:#0A1828;--navy-2:#1A3352;
@@ -459,51 +460,12 @@ function exitPreview(){
 }
 
 async function resolveAccess(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='login.html';return null;}
-
-  const{data:profile}=await sb.from('user_profiles')
-    .select('*').eq('id',session.user.id).maybeSingle();
-  if(!profile){window.location.href='login.html';return null;}
-
-  if(profile.must_change_password){window.location.href='login.html?action=change-password';return null;}
-
-  CURRENT_USER=profile;
-  USER_ROLE=profile.role;
-
-  const urlParams=new URLSearchParams(window.location.search);
-  const asEmail=USER_ROLE==='super_admin'?urlParams.get('as'):null;
-  const targetEmail=asEmail||profile.email;
-
-  if(USER_ROLE==='fdp_user'||USER_ROLE==='dean'||USER_ROLE==='director'){
-    const{data:ownRow}=await sb.from('faculty_master')
-      .select('*').eq('email',profile.email).maybeSingle();
-    if(!ownRow){
-      document.getElementById('blocker').textContent='Your faculty profile is not linked to the review system yet. Please contact your Director.';
-      document.getElementById('blocker').style.display='block';
-      return null;
-    }
-    return{faculty:ownRow,isPreview:false};
-  }
-
-  if(USER_ROLE==='super_admin'){
-    const{data:row}=await sb.from('faculty_master')
-      .select('*').eq('email',targetEmail).maybeSingle();
-    if(!row){
-      const{data:firstPilot}=await sb.from('faculty_master')
-        .select('*').not('email','is',null).order('campus').order('name').limit(1).maybeSingle();
-      if(!firstPilot){
-        document.getElementById('blocker').textContent='No faculty linked to the review system yet.';
-        document.getElementById('blocker').style.display='block';
-        return null;
-      }
-      return{faculty:firstPilot,isPreview:true};
-    }
-    return{faculty:row,isPreview:targetEmail!==profile.email};
-  }
-
-  window.location.href='index.html';
-  return null;
+  const r=await window.XHubAccess.resolveFacultyAccess(sb,{
+    forceChangeUrl:'login.html?action=change-password',
+    noTargetMessage:'Super admin preview. Add ?as=faculty@xime.org to the web address to open a specific faculty member\u2019s X-Impact.'
+  });
+  if(r){CURRENT_USER=r.profile;USER_ROLE=r.role;}
+  return r?{faculty:r.faculty,isPreview:r.isPreview}:null;
 }
 
 function enterPreviewMode(faculty){
