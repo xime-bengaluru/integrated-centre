@@ -26,6 +26,10 @@
 
        opts:
          showBlocker(msg)   optional. Default sets #blocker text + shows it.
+         forceChangeUrl     optional. Where to send a user who must change
+                            their password. Default login.html?force_change=1.
+                            Pages that use a different param pass it here so
+                            their existing behavior is preserved exactly.
          noTargetMessage    optional. Shown to a super_admin with no ?as=
                             and no own faculty_master row (e.g. the President).
          notFoundMessage(e) optional. Shown when ?as= email does not resolve.
@@ -36,6 +40,7 @@
         var b = document.getElementById('blocker');
         if(b){ b.textContent = msg; b.style.display = 'block'; }
       };
+      var forceChangeUrl = opts.forceChangeUrl || 'login.html?force_change=1';
       var noTargetMessage = opts.noTargetMessage ||
         'Super admin preview. Add ?as=faculty@xime.org to the web address to open a specific faculty member.';
       var notFoundMessage = opts.notFoundMessage || function(email){
@@ -56,7 +61,7 @@
       var profile = pr ? pr.data : null;
       if(!profile){ window.location.href = 'login.html'; return null; }
       if(profile.must_change_password === true){
-        window.location.href = 'login.html?force_change=1'; return null;
+        window.location.href = forceChangeUrl; return null;
       }
 
       var role = profile.role;
