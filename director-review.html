@@ -154,9 +154,19 @@
   .op-high-list li::before{content:'·';position:absolute;left:2px;color:var(--gold-d);font-weight:700}
   .op-verdict{margin-top:4px;border-top:1px dashed var(--line-strong);padding-top:16px}
   .op-verdict.pending{font-size:12.5px;color:var(--faint);font-style:italic}
+  .op-internal-tag{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);background:rgba(201,168,76,.12);border:.5px solid rgba(201,168,76,.4);border-radius:11px;padding:3px 10px;margin-bottom:13px}
   .op-rating{display:flex;align-items:center;gap:12px;margin-bottom:13px}
   .op-rating-l{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
   .op-rating-band{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--navy);background:linear-gradient(150deg,var(--gold-pale),rgba(201,168,76,.18));border:1px solid var(--gold);border-radius:9px;padding:4px 18px;line-height:1.15}
+  .op-domains{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .op-dom{background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  .op-dom-k{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .op-dom-v{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--navy);line-height:1.1}
+  .op-meta-row{display:flex;gap:34px;flex-wrap:wrap;margin-bottom:14px}
+  .op-meta-k{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .op-meta-v{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--navy);line-height:1.1}
+  .op-meta-v.yes{color:var(--teal-d)}
+  .op-meta-v.no{color:var(--red-d)}
   .op-review{margin-bottom:11px}
   .op-review-h{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-d);margin-bottom:4px}
   .op-review-t{font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap}
@@ -175,6 +185,27 @@
   .rate-opt-d{font-size:10.5px;color:var(--muted);font-family:'DM Mono',monospace}
   .panel-input{width:100%;padding:10px 12px;border:1px solid var(--line-strong);border-radius:7px;font-family:inherit;font-size:12.5px;color:var(--text);background:var(--parchment)}
   .panel-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+
+  /* Domain rating selects */
+  .dom-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .dom-cell{display:flex;flex-direction:column;gap:4px}
+  .dom-cell-l{font-size:10px;font-weight:600;letter-spacing:.03em;color:var(--sub)}
+  .dom-cell select{width:100%;padding:8px 9px;border:1px solid var(--line-strong);border-radius:6px;font-family:inherit;font-size:12px;color:var(--text);background:var(--parchment)}
+  .dom-cell select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+
+  /* Potential */
+  .pot-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .pot-opt{padding:9px 4px;border:1px solid var(--line-strong);background:white;border-radius:7px;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;color:var(--sub);text-align:center;transition:all .15s;line-height:1.2}
+  .pot-opt:hover{border-color:var(--gold)}
+  .pot-opt.sel{border-color:var(--gold);background:linear-gradient(150deg,var(--gold-pale),rgba(201,168,76,.16));color:var(--navy);box-shadow:0 0 0 2px rgba(201,168,76,.16)}
+
+  /* Promotion toggle */
+  .promo-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .promo-opt{padding:11px;border:1px solid var(--line-strong);background:white;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--sub);text-align:center;transition:all .15s}
+  .promo-opt:hover{border-color:var(--gold)}
+  .promo-opt.sel-yes{border-color:var(--teal);background:rgba(13,146,104,.1);color:var(--teal-d);box-shadow:0 0 0 2px rgba(13,146,104,.15)}
+  .promo-opt.sel-no{border-color:var(--red);background:rgba(200,16,46,.07);color:var(--red-d);box-shadow:0 0 0 2px rgba(200,16,46,.12)}
+
   .panel-record{width:100%;margin-top:8px;padding:14px 18px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;letter-spacing:.02em;transition:background .15s}
   .panel-record:hover{background:var(--gold-l)}
   .panel-record:disabled{background:var(--line-strong);color:var(--faint);cursor:not-allowed}
@@ -185,6 +216,12 @@
   .ro-rating{display:flex;align-items:center;gap:10px;margin-bottom:10px}
   .ro-rating-l{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
   .ro-rating-band{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--navy);background:var(--gold-pale);border:1px solid var(--gold);border-radius:7px;padding:2px 14px}
+  .ro-dom{margin-bottom:12px}
+  .ro-dom-row{display:flex;justify-content:space-between;font-size:12px;border-bottom:.5px dotted var(--line);padding:4px 0;color:var(--sub)}
+  .ro-dom-row b{color:var(--navy);font-weight:600}
+  .ro-kv{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:12px}
+  .ro-kv-k{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .ro-kv-v{font-size:14px;font-weight:600;color:var(--navy)}
 
   @media (max-width:900px){
     .detail-layout{grid-template-columns:1fr}
@@ -194,6 +231,7 @@
     .main{padding:20px 16px 40px}
     .detail-content{padding:24px 18px}
     .op-tiles{grid-template-columns:repeat(2,1fr)}
+    .op-domains{grid-template-columns:repeat(2,1fr)}
     .op-high{grid-template-columns:1fr}
   }
 
@@ -217,7 +255,7 @@
     <div class="tb-title">X-Hub · Panel Review</div>
   </div>
   <div class="tb-r">
-    <button class="tb-back" onclick="window.location.href='index.html'">← Home</button>
+    <button class="tb-back" onclick="window.location.href='index.html'">&larr; Home</button>
     <button class="tb-signout" onclick="signOut()">Sign out</button>
   </div>
 </div>
@@ -225,7 +263,7 @@
 <div class="hero">
   <div class="hero-l" id="hero-l">Panel Review · AY 2025-26</div>
   <div class="hero-t" id="hero-t">Loading...</div>
-  <div class="hero-s" id="hero-s">Open a faculty member, project the one-page summary on the screen, and record the panel's agreed review and rating.</div>
+  <div class="hero-s" id="hero-s">Open a faculty member, project the one-page summary, and record the panel's decision. The performance summary is shared with the faculty member; the ratings, potential, and promotion view stay internal to the panel.</div>
   <div class="hero-tag"><div class="hero-tag-dot"></div>AY 2025-26 · Cycle Open</div>
 </div>
 
@@ -241,7 +279,7 @@
 
   <div class="fac-list" id="fac-list">
     <div class="fac-empty">
-      <div class="fac-empty-icon">◇</div>
+      <div class="fac-empty-icon">&#9671;</div>
       <span class="fac-empty-strong">Loading faculty list...</span>
     </div>
   </div>
@@ -250,10 +288,10 @@
 <div class="detail" id="detail">
   <div class="detail-bar">
     <div class="detail-bar-l">
-      <button class="detail-back" onclick="closeDetail()">← Back to list</button>
+      <button class="detail-back" onclick="closeDetail()">&larr; Back to list</button>
       <div>
-        <div class="detail-name" id="d-name">—</div>
-        <div class="detail-meta" id="d-meta">—</div>
+        <div class="detail-name" id="d-name">-</div>
+        <div class="detail-meta" id="d-meta">-</div>
       </div>
     </div>
     <div class="tb-r">
@@ -291,6 +329,10 @@ const RATING_BANDS=[
   ['Meets','on track'],
   ['Developing','support needed']
 ];
+/* Overall potential scale (President-approved) */
+const POTENTIAL_BANDS=['Very High','High','Medium','Low'];
+/* The four performance domains, rated on the same band scale. Internal only. */
+const DOMAINS=[['teaching','Teaching'],['research','Research'],['ib','Institution Building'],['ep','External Programs']];
 
 let CURRENT_USER=null;
 let MY_CAMPUS=null;
@@ -300,9 +342,13 @@ let SEG='to_review';
 let FACULTY_LIST=[];
 let CURRENT_EVAL=null;
 let CURRENT_FAC=null;
+let CURRENT_INTERNAL=null;
 let LAST_PUBS=[];
 let LAST_PROGS=[];
 let SELECTED_RATING=null;
+let SEL_DOMAIN={teaching:null,research:null,ib:null,ep:null};
+let SEL_POTENTIAL=null;
+let SEL_PROMO=null;
 
 function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -323,13 +369,13 @@ async function signOut(){
 }
 
 function formatDate(s){
-  if(!s)return '—';
+  if(!s)return '-';
   try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
   catch(e){return s;}
 }
 
 function formatDateTime(s){
-  if(!s)return '—';
+  if(!s)return '-';
   try{return new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}
   catch(e){return s;}
 }
@@ -381,7 +427,7 @@ async function resolveAccess(){
    any dean step. Deans no longer pre-review; comments are recorded live in the panel. */
 async function loadFacultyList(){
   const list=document.getElementById('fac-list');
-  list.innerHTML='<div class="fac-empty"><div class="fac-empty-icon">◇</div><span class="fac-empty-strong">Loading...</span></div>';
+  list.innerHTML='<div class="fac-empty"><div class="fac-empty-icon">&#9671;</div><span class="fac-empty-strong">Loading...</span></div>';
 
   const{data:evs,error}=await sb.from('faculty_evaluations')
     .select('*,faculty_master:faculty_master_id(id,name,email,campus,designation,subject_area)')
@@ -429,7 +475,7 @@ function renderList(){
     let msg='Nothing here yet';
     if(SEG==='to_review')msg='No faculty awaiting panel review.';
     else if(SEG==='released')msg='No panel reviews released yet.';
-    empty.innerHTML=`<div class="fac-empty-icon">◇</div><span class="fac-empty-strong">${escapeHtml(msg)}</span><div>Faculty submissions appear here for the panel as they come in.</div>`;
+    empty.innerHTML=`<div class="fac-empty-icon">&#9671;</div><span class="fac-empty-strong">${escapeHtml(msg)}</span><div>Faculty submissions appear here for the panel as they come in.</div>`;
     list.appendChild(empty);
     return;
   }
@@ -448,7 +494,7 @@ function renderList(){
     if(f.workflow_status==='complete'){pillCls='pill-complete';pillTxt='Released';}
 
     const stampLabel=(f.workflow_status==='complete')?'Released':'Submitted';
-    const stampAt=(f.workflow_status==='complete')?(f.released_to_faculty_at||f.panel_recorded_at):(f.gate1_submitted_at||f.submitted_at||f.updated_at);
+    const stampAt=(f.workflow_status==='complete')?(f.released_to_faculty_at):(f.gate1_submitted_at||f.submitted_at||f.updated_at);
 
     row.innerHTML=`
       <div class="fac-row-l">
@@ -474,7 +520,7 @@ function renderList(){
             ${formatDate(stampAt)}
           </div>
         </div>
-        <div class="fac-row-chev">›</div>
+        <div class="fac-row-chev">&rsaquo;</div>
       </div>
     `;
     list.appendChild(row);
@@ -486,12 +532,14 @@ async function openDetail(f){
   CURRENT_EVAL=f;
   CURRENT_FAC=f.faculty_master||{};
 
-  const[pubs,eps]=await Promise.all([
+  const[pubs,eps,intl]=await Promise.all([
     sb.from('faculty_publications').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('year',{ascending:false}),
-    sb.from('ep_programmes').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('date_conducted',{ascending:false})
+    sb.from('ep_programmes').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('date_conducted',{ascending:false}),
+    sb.from('panel_internal_assessments').select('*').eq('evaluation_id',f.id).maybeSingle()
   ]);
   LAST_PUBS=pubs.data||[];
   LAST_PROGS=eps.data||[];
+  CURRENT_INTERNAL=intl.data||null;
 
   document.getElementById('d-name').textContent=CURRENT_FAC.name||'(unknown)';
   document.getElementById('d-meta').textContent=`${CURRENT_FAC.designation||''} · ${CURRENT_FAC.campus||''} · Submitted ${formatDate(f.gate1_submitted_at||f.submitted_at||f.updated_at)}`;
@@ -507,7 +555,8 @@ async function openDetail(f){
 
 function closeDetail(){
   document.getElementById('detail').classList.remove('open');
-  CURRENT_EVAL=null;CURRENT_FAC=null;LAST_PUBS=[];LAST_PROGS=[];SELECTED_RATING=null;
+  CURRENT_EVAL=null;CURRENT_FAC=null;CURRENT_INTERNAL=null;LAST_PUBS=[];LAST_PROGS=[];
+  SELECTED_RATING=null;SEL_DOMAIN={teaching:null,research:null,ib:null,ep:null};SEL_POTENTIAL=null;SEL_PROMO=null;
   const panel=document.getElementById('d-panel');if(panel)panel._editing=false;
   loadFacultyList();
 }
@@ -591,44 +640,68 @@ function buildOnePager(f,publications,programmes){
     high.appendChild(opHighList('Publications', publications.slice(0,4).map(p=>(p.title||'(untitled)')+(p.year?(' ('+p.year+')'):''))));
   }
   if(programmes.length){
-    high.appendChild(opHighList('External programs', programmes.slice(0,4).map(p=>(p.title||'(untitled)')+(p.client?(' — '+p.client):''))));
+    high.appendChild(opHighList('External programs', programmes.slice(0,4).map(p=>(p.title||'(untitled)')+(p.client?(' - '+p.client):''))));
   }
   if(instEntries.length){
     high.appendChild(opHighList('Institution building', instEntries.slice(0,5).map(e=>e.category||e.description||'(entry)')));
   }
   if(srEntries.length){
-    high.appendChild(opHighList('Sponsored research', srEntries.slice(0,3).map(e=>(e.title||'(untitled)')+(e.agency?(' — '+e.agency):''))));
+    high.appendChild(opHighList('Sponsored research', srEntries.slice(0,3).map(e=>(e.title||'(untitled)')+(e.agency?(' - '+e.agency):''))));
   }
   if(high.children.length)wrap.appendChild(high);
 
-  /* Panel verdict (filled once recorded) */
+  /* Panel verdict (filled once recorded). Internal: from panel_internal_assessments. */
+  const ia=CURRENT_INTERNAL;
   const verdict=document.createElement('div');
-  if(f.panel_rating){
+  if(ia&&ia.rating_overall){
     verdict.className='op-verdict';
+
+    const tag=document.createElement('div');tag.className='op-internal-tag';
+    tag.textContent='Internal panel view';
+    verdict.appendChild(tag);
+
     const r=document.createElement('div');r.className='op-rating';
-    const rl=document.createElement('span');rl.className='op-rating-l';rl.textContent='Panel rating';
-    const rb=document.createElement('span');rb.className='op-rating-band';rb.textContent=f.panel_rating;
-    r.appendChild(rl);r.appendChild(rb);
+    r.innerHTML='<span class="op-rating-l">Overall rating</span><span class="op-rating-band">'+escapeHtml(ia.rating_overall)+'</span>';
     verdict.appendChild(r);
+
+    const dlabels={teaching:'Teaching',research:'Research',ib:'Institution Building',ep:'External Programs'};
+    const dom=document.createElement('div');dom.className='op-domains';
+    [['teaching',ia.rating_teaching],['research',ia.rating_research],['ib',ia.rating_ib],['ep',ia.rating_ep]].forEach(([k,v])=>{
+      const c=document.createElement('div');c.className='op-dom';
+      c.innerHTML='<div class="op-dom-k">'+dlabels[k]+'</div><div class="op-dom-v">'+escapeHtml(v||'-')+'</div>';
+      dom.appendChild(c);
+    });
+    verdict.appendChild(dom);
+
+    const mr=document.createElement('div');mr.className='op-meta-row';
+    const pot=document.createElement('div');
+    pot.innerHTML='<div class="op-meta-k">Overall potential</div><div class="op-meta-v">'+escapeHtml(ia.potential||'-')+'</div>';
+    mr.appendChild(pot);
+    const py=(ia.promotion_consider===true),pn=(ia.promotion_consider===false);
+    const promo=document.createElement('div');
+    promo.innerHTML='<div class="op-meta-k">Considered for promotion</div><div class="op-meta-v '+(py?'yes':(pn?'no':''))+'">'+(py?'Yes':(pn?'No':'-'))+'</div>';
+    mr.appendChild(promo);
+    verdict.appendChild(mr);
+
     if(f.panel_final_review){
       const fr=document.createElement('div');fr.className='op-review';
-      const h=document.createElement('div');h.className='op-review-h';h.textContent='Final panel review';
+      const h=document.createElement('div');h.className='op-review-h';h.textContent='Performance summary (shared with faculty)';
       const t=document.createElement('div');t.className='op-review-t';t.textContent=f.panel_final_review;
       fr.appendChild(h);fr.appendChild(t);verdict.appendChild(fr);
     }
-    if(f.panel_dean_comments){
+    if(ia.dean_comments){
       const dc=document.createElement('div');dc.className='op-review';
-      const h=document.createElement('div');h.className='op-review-h';h.textContent='Dean comments';
-      const t=document.createElement('div');t.className='op-review-t';t.textContent=f.panel_dean_comments;
+      const h=document.createElement('div');h.className='op-review-h';h.textContent='Dean comments (internal)';
+      const t=document.createElement('div');t.className='op-review-t';t.textContent=ia.dean_comments;
       dc.appendChild(h);dc.appendChild(t);verdict.appendChild(dc);
     }
-    if(f.panel_members_present){
-      const pm=document.createElement('div');pm.className='op-members';pm.textContent='Panel present: '+f.panel_members_present;
+    if(ia.panel_members_present){
+      const pm=document.createElement('div');pm.className='op-members';pm.textContent='Panel present: '+ia.panel_members_present;
       verdict.appendChild(pm);
     }
   }else{
     verdict.className='op-verdict pending';
-    verdict.textContent='Panel decision pending. Record the panel review in the side panel to release the result to the faculty member.';
+    verdict.textContent='Panel decision pending. Record the panel review in the side panel to release the summary to the faculty member.';
   }
   wrap.appendChild(verdict);
 
@@ -907,6 +980,7 @@ function appendReadonlyField(p,label,val){
 function renderPanel(f){
   const p=document.getElementById('d-panel');
   p.innerHTML='';
+  const ia=CURRENT_INTERNAL;
   const released=(f.workflow_status==='complete');
   const editing=(p._editing===true);
 
@@ -919,18 +993,35 @@ function renderPanel(f){
   /* Released, read-only view */
   if(released&&!editing){
     const b=document.createElement('div');b.className='panel-banner complete';
-    b.innerHTML='<strong>Released to faculty.</strong>'+(f.released_to_faculty_at?('Released '+formatDateTime(f.released_to_faculty_at)+'. '):'')+'The faculty member can see the panel result.';
+    b.innerHTML='<strong>Released to faculty.</strong>'+(f.released_to_faculty_at?('Released '+formatDateTime(f.released_to_faculty_at)+'. '):'')+'The faculty member can read the performance summary. Ratings remain internal to the panel.';
     p.appendChild(b);
-    if(f.panel_rating){
+
+    if(ia&&ia.rating_overall){
       const rr=document.createElement('div');rr.className='ro-rating';
-      rr.innerHTML='<span class="ro-rating-l">Rating</span><span class="ro-rating-band">'+escapeHtml(f.panel_rating)+'</span>';
+      rr.innerHTML='<span class="ro-rating-l">Overall</span><span class="ro-rating-band">'+escapeHtml(ia.rating_overall)+'</span>';
       p.appendChild(rr);
+
+      const dom=document.createElement('div');dom.className='ro-dom';
+      [['Teaching',ia.rating_teaching],['Research',ia.rating_research],['Institution Building',ia.rating_ib],['External Programs',ia.rating_ep]].forEach(([k,v])=>{
+        const row=document.createElement('div');row.className='ro-dom-row';
+        row.innerHTML='<span>'+k+'</span><b>'+escapeHtml(v||'-')+'</b>';
+        dom.appendChild(row);
+      });
+      p.appendChild(dom);
+
+      const py=(ia.promotion_consider===true),pn=(ia.promotion_consider===false);
+      const kv=document.createElement('div');kv.className='ro-kv';
+      kv.innerHTML='<div><div class="ro-kv-k">Potential</div><div class="ro-kv-v">'+escapeHtml(ia.potential||'-')+'</div></div>'+
+                   '<div><div class="ro-kv-k">Promotion</div><div class="ro-kv-v">'+(py?'Yes':(pn?'No':'-'))+'</div></div>';
+      p.appendChild(kv);
     }
-    appendReadonlyField(p,'Final panel review',f.panel_final_review);
-    appendReadonlyField(p,'Dean comments',f.panel_dean_comments);
-    appendReadonlyField(p,'Panel present',f.panel_members_present);
+    appendReadonlyField(p,'Performance summary (shared with faculty)',f.panel_final_review);
+    if(ia){
+      appendReadonlyField(p,'Dean comments (internal)',ia.dean_comments);
+      appendReadonlyField(p,'Panel present',ia.panel_members_present);
+    }
     const meta=document.createElement('div');meta.className='panel-recmeta';
-    meta.textContent=[f.panel_recorded_by_name?('Recorded by '+f.panel_recorded_by_name):'',f.panel_recorded_at?formatDateTime(f.panel_recorded_at):''].filter(Boolean).join(' · ');
+    meta.textContent=[ia&&ia.recorded_by_name?('Recorded by '+ia.recorded_by_name):'',ia&&ia.recorded_at?formatDateTime(ia.recorded_at):''].filter(Boolean).join(' · ');
     p.appendChild(meta);
     const edit=document.createElement('button');edit.className='panel-edit-btn';edit.textContent='Revise this review';
     edit.onclick=()=>{p._editing=true;renderPanel(f);};
@@ -941,18 +1032,43 @@ function renderPanel(f){
   /* Editable recorder */
   const s=document.createElement('div');s.className='panel-s';
   s.textContent=released
-    ? 'Revise the recorded panel review. Saving re-releases the updated result to the faculty member.'
-    : 'Record what the panel agrees, then release to the faculty member. This becomes their final panel-approved result.';
+    ? 'Revise the recorded panel review. Saving re-releases the updated summary to the faculty member. Ratings stay internal.'
+    : 'Record what the panel agrees. The summary is shared with the faculty member; the ratings, potential, and promotion view stay internal to the panel.';
   p.appendChild(s);
 
-  p.appendChild(panelTextField('panel-dean','Dean comments','Dean Academics',f.panel_dean_comments||"","The dean's read on the year, as agreed in the room."));
-  p.appendChild(panelTextField('panel-review','Final panel review','visible to faculty',f.panel_final_review||"",'The panel-approved verdict the faculty member will see.'));
+  /* Domain ratings (internal) */
+  SEL_DOMAIN={
+    teaching:(ia&&ia.rating_teaching)||null,
+    research:(ia&&ia.rating_research)||null,
+    ib:(ia&&ia.rating_ib)||null,
+    ep:(ia&&ia.rating_ep)||null
+  };
+  const df=document.createElement('div');df.className='panel-field';
+  const dl=document.createElement('div');dl.className='panel-field-l';
+  dl.innerHTML='<span>Domain ratings</span><span class="panel-field-l-r">internal</span>';
+  df.appendChild(dl);
+  const dg=document.createElement('div');dg.className='dom-grid';
+  DOMAINS.forEach(([key,label])=>{
+    const cell=document.createElement('div');cell.className='dom-cell';
+    const cl=document.createElement('div');cl.className='dom-cell-l';cl.textContent=label;
+    const sel=document.createElement('select');sel.id='dom-'+key;
+    const blank=document.createElement('option');blank.value='';blank.textContent='Select...';sel.appendChild(blank);
+    RATING_BANDS.forEach(([band])=>{
+      const o=document.createElement('option');o.value=band;o.textContent=band;
+      if(SEL_DOMAIN[key]===band)o.selected=true;
+      sel.appendChild(o);
+    });
+    sel.onchange=()=>{SEL_DOMAIN[key]=sel.value||null;};
+    cell.appendChild(cl);cell.appendChild(sel);dg.appendChild(cell);
+  });
+  df.appendChild(dg);
+  p.appendChild(df);
 
-  /* Rating band */
-  SELECTED_RATING=f.panel_rating||null;
+  /* Overall rating band (internal) */
+  SELECTED_RATING=(ia&&ia.rating_overall)||null;
   const rf=document.createElement('div');rf.className='panel-field';
   const rl=document.createElement('div');rl.className='panel-field-l';
-  rl.innerHTML='<span>Panel rating</span><span class="panel-field-l-r">agreed band</span>';
+  rl.innerHTML='<span>Overall rating</span><span class="panel-field-l-r">internal</span>';
   rf.appendChild(rl);
   const row=document.createElement('div');row.className='rate-row';
   RATING_BANDS.forEach(([band,desc])=>{
@@ -965,15 +1081,55 @@ function renderPanel(f){
   rf.appendChild(row);
   p.appendChild(rf);
 
-  /* Panel present (optional) */
+  /* Overall potential (internal) */
+  SEL_POTENTIAL=(ia&&ia.potential)||null;
+  const pf=document.createElement('div');pf.className='panel-field';
+  const pl=document.createElement('div');pl.className='panel-field-l';
+  pl.innerHTML='<span>Overall potential</span><span class="panel-field-l-r">internal</span>';
+  pf.appendChild(pl);
+  const prow=document.createElement('div');prow.className='pot-row';
+  POTENTIAL_BANDS.forEach(band=>{
+    const o=document.createElement('button');o.type='button';
+    o.className='pot-opt'+(SEL_POTENTIAL===band?' sel':'');
+    o.textContent=band;
+    o.onclick=()=>{SEL_POTENTIAL=band;prow.querySelectorAll('.pot-opt').forEach(x=>x.classList.remove('sel'));o.classList.add('sel');};
+    prow.appendChild(o);
+  });
+  pf.appendChild(prow);
+  p.appendChild(pf);
+
+  /* Considered for promotion Y/N (internal) */
+  SEL_PROMO=(ia&&typeof ia.promotion_consider==='boolean')?ia.promotion_consider:null;
   const mf=document.createElement('div');mf.className='panel-field';
   const ml=document.createElement('div');ml.className='panel-field-l';
-  ml.innerHTML='<span>Panel present</span><span class="panel-field-l-r">optional</span>';
+  ml.innerHTML='<span>Considered for promotion</span><span class="panel-field-l-r">internal</span>';
+  mf.appendChild(ml);
+  const mrow=document.createElement('div');mrow.className='promo-row';
+  const yes=document.createElement('button');yes.type='button';yes.textContent='Yes';
+  yes.className='promo-opt'+(SEL_PROMO===true?' sel-yes':'');
+  const no=document.createElement('button');no.type='button';no.textContent='No';
+  no.className='promo-opt'+(SEL_PROMO===false?' sel-no':'');
+  yes.onclick=()=>{SEL_PROMO=true;yes.className='promo-opt sel-yes';no.className='promo-opt';};
+  no.onclick=()=>{SEL_PROMO=false;no.className='promo-opt sel-no';yes.className='promo-opt';};
+  mrow.appendChild(yes);mrow.appendChild(no);
+  mf.appendChild(mrow);
+  p.appendChild(mf);
+
+  /* Dean comments (internal) */
+  p.appendChild(panelTextField('panel-dean','Dean comments','internal',(ia&&ia.dean_comments)||"","The dean's read on the year, as agreed in the room. Internal."));
+
+  /* Performance summary (faculty-facing) */
+  p.appendChild(panelTextField('panel-review','Performance summary','shared with faculty',f.panel_final_review||"",'The summary the faculty member will read. No ratings, no potential, no promotion.'));
+
+  /* Panel present (optional, internal) */
+  const mf2=document.createElement('div');mf2.className='panel-field';
+  const ml2=document.createElement('div');ml2.className='panel-field-l';
+  ml2.innerHTML='<span>Panel present</span><span class="panel-field-l-r">optional · internal</span>';
   const mi=document.createElement('input');mi.type='text';mi.className='panel-input';mi.id='panel-members';
   mi.placeholder='e.g. Dean Academics, Director, President, Chairman';
-  mi.value=f.panel_members_present||'';
-  mf.appendChild(ml);mf.appendChild(mi);
-  p.appendChild(mf);
+  mi.value=(ia&&ia.panel_members_present)||'';
+  mf2.appendChild(ml2);mf2.appendChild(mi);
+  p.appendChild(mf2);
 
   const btn=document.createElement('button');btn.className='panel-record';btn.id='panel-record-btn';
   btn.textContent=released?'Update and re-release':'Record panel review and release';
@@ -992,35 +1148,62 @@ async function recordPanelReview(){
   const dean=(document.getElementById('panel-dean').value||'').trim();
   const review=(document.getElementById('panel-review').value||'').trim();
   const members=(document.getElementById('panel-members').value||'').trim();
-  const rating=SELECTED_RATING;
+  const overall=SELECTED_RATING;
+  const dom=SEL_DOMAIN;
+  const potential=SEL_POTENTIAL;
+  const promo=SEL_PROMO;
 
-  if(!rating){toast('Select the panel rating band before releasing.',false);return;}
-  if(!review){toast('Write the final panel review before releasing.',false);return;}
-  if(!confirm('Release the panel review for '+(CURRENT_FAC.name||'this faculty member')+'? They will see this as their final panel-approved result.'))return;
+  if(!dom.teaching||!dom.research||!dom.ib||!dom.ep){toast('Rate all four domains before releasing.',false);return;}
+  if(!overall){toast('Select the overall rating band before releasing.',false);return;}
+  if(!potential){toast('Select the overall potential before releasing.',false);return;}
+  if(promo!==true&&promo!==false){toast('Set the promotion consideration, Yes or No.',false);return;}
+  if(!review){toast('Write the performance summary before releasing.',false);return;}
+  if(!confirm('Release the panel review for '+(CURRENT_FAC.name||'this faculty member')+'? The performance summary will be shared with them. Ratings, potential, and promotion stay internal.'))return;
 
   const btn=document.getElementById('panel-record-btn');
   const orig=btn.textContent;btn.textContent='Releasing...';btn.disabled=true;
 
   try{
     const now=new Date().toISOString();
-    const payload={
-      panel_dean_comments:dean||null,
-      panel_final_review:review,
-      panel_rating:rating,
+
+    /* 1. Internal assessment: ratings, potential, promotion, dean comments.
+          RLS-protected table the faculty cannot read. Write this first so the
+          faculty row is only marked complete once the internal record exists. */
+    const internalPayload={
+      evaluation_id:CURRENT_EVAL.id,
+      academic_year:ACADEMIC_YEAR,
+      rating_teaching:dom.teaching,
+      rating_research:dom.research,
+      rating_ib:dom.ib,
+      rating_ep:dom.ep,
+      rating_overall:overall,
+      potential:potential,
+      promotion_consider:promo,
+      dean_comments:dean||null,
       panel_members_present:members||null,
-      panel_recorded_by:CURRENT_USER.email,
-      panel_recorded_by_name:MY_DIRECTOR_NAME,
-      panel_recorded_at:now,
+      recorded_by:CURRENT_USER.email,
+      recorded_by_name:MY_DIRECTOR_NAME,
+      recorded_at:now,
+      updated_at:now
+    };
+    const{data:iaData,error:iaErr}=await sb.from('panel_internal_assessments')
+      .upsert(internalPayload,{onConflict:'evaluation_id'}).select().maybeSingle();
+    if(iaErr)throw iaErr;
+
+    /* 2. Faculty-facing row: summary + release only. No ratings live here. */
+    const facPayload={
+      panel_final_review:review,
       workflow_status:'complete',
       released_to_faculty_at:now,
       updated_at:now
     };
-    const{error}=await sb.from('faculty_evaluations').update(payload).eq('id',CURRENT_EVAL.id);
-    if(error)throw error;
+    const{error:facErr}=await sb.from('faculty_evaluations').update(facPayload).eq('id',CURRENT_EVAL.id);
+    if(facErr)throw facErr;
 
-    Object.assign(CURRENT_EVAL,payload);
+    CURRENT_INTERNAL=iaData||internalPayload;
+    Object.assign(CURRENT_EVAL,facPayload);
     const p=document.getElementById('d-panel');p._editing=false;
-    toast('Panel review released to faculty.');
+    toast('Panel review released. Summary shared with faculty, ratings held internal.');
     renderDetailContent(CURRENT_EVAL,LAST_PUBS,LAST_PROGS);
     renderPanel(CURRENT_EVAL);
   }catch(e){
