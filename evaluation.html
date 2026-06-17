@@ -6,6 +6,7 @@
 <title>X-Hub · 3X</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <script src="assets/js/supabase-js-2.105.4.umd.js"></script>
+<script src="assets/js/access.js"></script>
 <style>
 :root{
   --navy:#0D1F35;--navy-dark:#0A1828;--navy-2:#1A3352;
@@ -2363,66 +2364,11 @@ function exitPreview(){
 
 /* ---------- Access resolution (H8 must_change_password gate retained) ---------- */
 async function resolveAccess(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='login.html';return null;}
-
-  /* H8: Force password change before any access.
-     IMPORTANT: check user_profiles.must_change_password as the source of truth,
-     NOT session.user.user_metadata. Supabase user_metadata is set at user creation
-     and does NOT auto-clear when password is updated. user_profiles.must_change_password
-     is the column the password-change flow actually updates.
-     Caught 30 May 2026 when Dr Bhatta + Shimona both hit a flicker loop:
-     metadata still said true, profile said false, page redirected back to login,
-     login redirected back to evaluation, infinite ping-pong. */
-  const{data:authProfile}=await sb.from('user_profiles')
-    .select('must_change_password').eq('id',session.user.id).maybeSingle();
-  if(authProfile?.must_change_password===true){
-    window.location.href='login.html?force_change=1';
-    return null;
-  }
-
-  const{data:profile}=await sb.from('user_profiles')
-    .select('*').eq('id',session.user.id).maybeSingle();
-  if(!profile){window.location.href='login.html';return null;}
-
-  CURRENT_USER=profile;
-  USER_ROLE=profile.role;
-
-  const urlParams=new URLSearchParams(window.location.search);
-  const asEmail=USER_ROLE==='super_admin'?urlParams.get('as'):null;
-  const targetEmail=asEmail||profile.email;
-
-  if(USER_ROLE==='fdp_user'||USER_ROLE==='dean'||USER_ROLE==='director'){
-    const{data:ownRow}=await sb.from('faculty_master')
-      .select('*').eq('email',profile.email).maybeSingle();
-    if(!ownRow){
-      document.getElementById('blocker').textContent='Your faculty profile is not linked to the review system yet. Please contact your Director.';
-      document.getElementById('blocker').style.display='block';
-      return null;
-    }
-    return{faculty:ownRow,isPreview:false};
-  }
-
-  if(USER_ROLE==='super_admin'){
-    const{data:row}=await sb.from('faculty_master')
-      .select('*').eq('email',targetEmail).maybeSingle();
-    if(!row){
-      /* Do NOT auto-pick a faculty member. An admin with no review of their own
-         (e.g. the President) was being dropped onto the alphabetically first
-         faculty. Require an explicit ?as= target. */
-      if(asEmail){
-        document.getElementById('blocker').textContent='No faculty found for '+asEmail+'. Check the email in the ?as= part of the web address.';
-      }else{
-        document.getElementById('blocker').textContent='Super admin preview. Add ?as=faculty@xime.org to the web address to open a specific faculty member\u2019s 3X.';
-      }
-      document.getElementById('blocker').style.display='block';
-      return null;
-    }
-    return{faculty:row,isPreview:targetEmail!==profile.email};
-  }
-
-  window.location.href='index.html';
-  return null;
+  const r=await window.XHubAccess.resolveFacultyAccess(sb,{
+    noTargetMessage:'Super admin preview. Add ?as=faculty@xime.org to the web address to open a specific faculty member\u2019s 3X.'
+  });
+  if(r){CURRENT_USER=r.profile;USER_ROLE=r.role;}
+  return r?{faculty:r.faculty,isPreview:r.isPreview}:null;
 }
 
 function enterPreviewMode(faculty){
