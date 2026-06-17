@@ -385,6 +385,13 @@
         <div class="admin-tile-desc">Every staff member across the three campuses, their submission status, and the rating and note recorded by their campus Director. Search by name to open any one.</div>
         <div class="admin-tile-cta">Open Summary &rarr;</div>
       </div>
+      <div class="admin-tile" id="admin-tile-oversight" style="display:none" onclick="window.location.href='oversight.html'">
+        <div class="admin-tile-tag">Internal Report</div>
+        <div class="admin-tile-icon">&#9670;</div>
+        <div class="admin-tile-title">Performance Oversight</div>
+        <div class="admin-tile-desc">The internal record across both review cycles, faculty and staff. Ratings, potential, and promotion held for leadership and HR. Print the one-row-per-person pack for the Chairman.</div>
+        <div class="admin-tile-cta">Open Oversight &rarr;</div>
+      </div>
     </div>
   </div>
 
@@ -555,6 +562,17 @@
         <div class="card-icon">&#9670;</div>
         <div class="card-title">Adoption Dashboard</div>
         <div class="card-desc">Institutional view across all three campuses &middot; evaluation throughput, bottlenecks, and intervention triggers.</div>
+      </div>
+    </div>
+
+    <!-- OVERSIGHT -->
+    <div class="module-card dimmed" id="tile-oversight">
+      <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
+      <div class="card-body">
+        <div class="card-tag">Internal Report</div>
+        <div class="card-icon">&#9670;</div>
+        <div class="card-title">Performance Oversight</div>
+        <div class="card-desc">The internal record across faculty and staff &middot; ratings, potential, and promotion for leadership and HR. Print the Chairman's pack.</div>
       </div>
     </div>
 
@@ -740,6 +758,8 @@ async function initAuth() {
     /* Staff Evaluation Summary tile: visible to both the President and super_admin. */
     const staffSummaryTile = document.getElementById('admin-tile-staff-summary');
     if (staffSummaryTile) staffSummaryTile.style.display = 'flex';
+    const oversightTile = document.getElementById('admin-tile-oversight');
+    if (oversightTile) oversightTile.style.display = 'flex';
 
     if (isPresident) {
       /* Focused President view: staff summary only. Hide the faculty-funnel tiles
@@ -795,16 +815,17 @@ async function initAuth() {
 
   /* Resolve dean and director roles for tile unlocking. Both can be true for the same user
      (e.g., Alok at Kochi is Dean Academics AND Director). */
-  const [deanRes, dirRes] = await Promise.all([
+  const [deanRes, dirRes, viewerRes] = await Promise.all([
     db.from('dean_registry').select('email, name, role, campus').eq('email', profile.email),
-    db.from('director_campus_map').select('email, name, campus').eq('email', profile.email).maybeSingle()
+    db.from('director_campus_map').select('email, name, campus').eq('email', profile.email).maybeSingle(),
+    db.rpc('is_panel_report_viewer')
   ]);
-  unlockReviewTiles(deanRes.data || [], dirRes.data || null, profile);
+  unlockReviewTiles(deanRes.data || [], dirRes.data || null, profile, viewerRes.data === true);
 }
 
 const DEAN_LABELS = { academics: 'Dean Academics', research: 'Dean Research', ep: 'Dean EP' };
 
-function unlockReviewTiles(deanRows, dirRow, profile) {
+function unlockReviewTiles(deanRows, dirRow, profile, isViewer) {
   /* My Review: faculty-facing panel result surface. Every faculty member who
      reaches this function (admins and staff have already returned, and their
      grid is hidden) gets it unlocked; my-review.html shows a 'not released yet'
@@ -879,6 +900,22 @@ function unlockReviewTiles(deanRows, dirRow, profile) {
       badge.innerHTML = '<span class="role-badge-dot"></span>Institutional';
       tile.appendChild(badge);
       tile.onclick = () => { window.location.href = '/adoption-dashboard.html'; };
+    }
+  }
+
+  /* Oversight: any internal report viewer (President/super_admin, directors, HR allow-list). */
+  if (isViewer) {
+    const ovTile = document.getElementById('tile-oversight');
+    if (ovTile) {
+      ovTile.classList.remove('dimmed');
+      ovTile.classList.add('unlocked');
+      const ovLock = ovTile.querySelector('.locked-badge');
+      if (ovLock) ovLock.remove();
+      const ovBadge = document.createElement('div');
+      ovBadge.className = 'role-badge';
+      ovBadge.innerHTML = '<span class="role-badge-dot"></span>Internal';
+      ovTile.appendChild(ovBadge);
+      ovTile.onclick = () => { window.location.href = '/oversight.html'; };
     }
   }
 }
