@@ -814,7 +814,7 @@ async function initAuth() {
                 b.style.cssText='display:block;width:100%;text-align:left;background:#fff;border:1px solid #D8D4C7;border-radius:6px;padding:9px 12px;margin-bottom:6px;cursor:pointer;font-family:inherit';
                 b.innerHTML='<div style="font-size:13.5px;font-weight:600;color:#0D1F35">'+esc(x.name||'')+'</div>'+
                   '<div style="font-size:11.5px;color:#6B7280">'+esc(x.designation||'')+(x.campus?' \u00B7 '+esc(x.campus):'')+' \u00B7 '+esc(x.email||'')+'</div>';
-                b.onclick=function(){window.location.href='/evaluation.html?as='+encodeURIComponent((x.email||'').trim().toLowerCase());};
+                b.onclick=function(){window.location.href='/my-review.html?as='+encodeURIComponent((x.email||'').trim().toLowerCase());};
                 list.appendChild(b);
               });
             }
