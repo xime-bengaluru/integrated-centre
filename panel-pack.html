@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub · Panel Pack</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="assets/js/supabase-js-2.105.4.umd.js"></script>
+<style>
+:root{
+  --navy:#0D1F35;--navy-dark:#0A1828;
+  --gold:#C9A84C;--gold-d:#7A6118;
+  --paper:#FBFAF6;--cream:#F4F2EA;--parchment:#F8F6EE;
+  --ink:#0F0F0E;--charcoal:#1F1F1F;--mute:#4A5568;--faint:#6B7280;
+  --line:#D8D4C7;--border-g:rgba(201,168,76,.45);
+  --r:10px;--rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);font-size:14px;line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ---------- screen chrome (hidden on print) ---------- */
+.topbar{background:var(--navy);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:3px solid var(--gold)}
+.tb-l{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.tb-logo{height:28px;width:auto;display:block;flex-shrink:0}
+.sep{width:1px;height:22px;background:rgba(255,255,255,.18)}
+.ttl{font-size:11px;color:rgba(255,255,255,.55);font-weight:500;letter-spacing:.04em}
+.tb-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.tbtn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:var(--rs);cursor:pointer;transition:all .15s;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.75)}
+.tbtn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+.controls{max-width:900px;margin:0 auto;padding:22px 24px 6px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ctl-group{display:flex;align-items:center;gap:7px}
+.ctl-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.chip{padding:6px 14px;font-size:12px;font-weight:500;background:#fff;border:1px solid var(--line);color:var(--mute);cursor:pointer;border-radius:20px;font-family:'DM Mono',monospace;letter-spacing:.03em;transition:all .15s}
+.chip:hover{border-color:var(--gold-d);color:var(--gold-d)}
+.chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.count-line{max-width:900px;margin:0 auto;padding:2px 24px 0;font-size:12.5px;color:var(--mute)}
+.count-line strong{color:var(--navy);font-weight:600}
+.print-all{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--navy);border:none;border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12.5px;color:#fff;font-weight:500;transition:all .15s}
+.print-all:hover{background:var(--gold);color:var(--navy-dark)}
+.blocking{padding:70px 24px;text-align:center;color:var(--faint);font-size:13px}
+
+/* ---------- sheets ---------- */
+.stack{max-width:900px;margin:14px auto 90px;padding:0 24px}
+.sheet{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px 30px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+
+.sh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--gold);padding-bottom:10px;margin-bottom:14px}
+.sh-name{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:var(--navy);line-height:1.1}
+.sh-meta{font-size:11.5px;color:var(--mute);margin-top:3px}
+.sh-ay{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);text-align:right;white-space:nowrap;padding-top:4px}
+.sh-status{display:block;font-size:9.5px;color:var(--faint);margin-top:3px;letter-spacing:.06em}
+
+.sec{margin-bottom:12px;break-inside:avoid}
+.sec-h{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-d);border-bottom:.5px solid var(--line);padding-bottom:3px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:baseline}
+.sec-h .agg{color:var(--mute);font-size:10px;letter-spacing:.04em}
+.muted{color:var(--faint);font-style:italic;font-size:12px}
+
+table.courses{width:100%;border-collapse:collapse;font-size:12px}
+table.courses th{text-align:left;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:400;padding:2px 8px 4px 0;border-bottom:.5px solid var(--line)}
+table.courses td{padding:3px 8px 3px 0;border-bottom:.5px solid #EFEDE4;vertical-align:top;color:var(--charcoal)}
+table.courses td.eff{font-family:'DM Mono',monospace;text-align:right;white-space:nowrap}
+
+.methods{font-size:11.5px;color:var(--charcoal);margin-top:6px;line-height:1.5}
+.methods b{color:var(--navy);font-weight:600}
+
+.chips-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
+.mchip{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.02em;padding:2px 8px;border-radius:4px;background:var(--parchment);border:.5px solid var(--border-g);color:var(--charcoal)}
+.mchip b{color:var(--navy)}
+
+.entry{font-size:12px;color:var(--charcoal);line-height:1.55;margin-bottom:6px;padding-left:10px;border-left:2px solid var(--border-g)}
+.entry .role{font-weight:600;color:var(--navy)}
+.entry .sub{color:var(--faint);font-size:10.5px}
+
+.prose{font-size:12px;color:var(--charcoal);line-height:1.6;white-space:pre-wrap}
+
+.alloc{display:flex;gap:0;height:20px;border-radius:4px;overflow:hidden;border:.5px solid var(--line);font-family:'DM Mono',monospace;font-size:9.5px}
+.alloc span{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;min-width:0;overflow:hidden}
+.alloc .a-t{background:#2C4A6E}.alloc .a-r{background:#5B7A9A}.alloc .a-i{background:var(--gold-d)}.alloc .a-n{background:#8A6D3B}
+.alloc-key{font-size:10px;color:var(--faint);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.alloc-key i{font-style:normal;display:inline-flex;align-items:center;gap:4px}
+.alloc-key i::before{content:"";width:8px;height:8px;border-radius:2px;display:inline-block}
+.alloc-key .k-t::before{background:#2C4A6E}.alloc-key .k-r::before{background:#5B7A9A}.alloc-key .k-i::before{background:var(--gold-d)}.alloc-key .k-n::before{background:#8A6D3B}
+
+.ib-empty{font-size:11.5px;color:#9A3324;background:#FBEEEA;border:.5px solid #E9C4B8;border-radius:4px;padding:5px 10px;display:inline-block}
+
+.sh-foot{margin-top:14px;padding-top:8px;border-top:.5px solid var(--line);display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.06em;color:var(--faint)}
+
+@media(max-width:640px){.stack{padding:0 12px}.sheet{padding:20px 16px}}
+
+/* ---------- print ---------- */
+@media print{
+  @page{size:A4;margin:12mm 14mm}
+  body{background:#fff;font-size:9.5pt;line-height:1.4}
+  .topbar,.controls,.count-line,.print-all,.tbtn{display:none !important}
+  .stack{max-width:100%;margin:0;padding:0}
+  .sheet{border:none;border-radius:0;box-shadow:none;padding:0;margin:0;page-break-after:always;break-after:page}
+  .sheet:last-child{page-break-after:auto;break-after:auto}
+  .sh-name{font-size:17pt}
+  .sec-h{font-size:8pt}
+  table.courses{font-size:8.5pt}
+  .mchip,.alloc,.alloc-key{font-size:8pt}
+  .entry,.prose,.methods{font-size:8.5pt}
+  .sh-foot{font-size:7pt}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l">
+    <img src="assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="tb-logo">
+    <div class="sep"></div>
+    <div class="ttl">X-Hub · <strong>Panel Pack</strong></div>
+  </div>
+  <div class="tb-r">
+    <button class="tbtn" onclick="window.location.href='index.html'" style="opacity:.7">&larr; Home</button>
+    <button class="tbtn" onclick="signOut()" style="opacity:.7">Sign out</button>
+  </div>
+</div>
+
+<div id="blocker" class="blocking">Verifying access...</div>
+
+<div id="app" style="display:none">
+  <div class="controls">
+    <div class="ctl-group" id="campus-group" style="display:none">
+      <span class="ctl-label">Campus</span>
+      <div id="campus-chips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="ctl-group">
+      <span class="ctl-label">Cycle</span>
+      <div id="ay-chips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <button class="print-all" onclick="window.print()">
+      <span>&#128424;</span> Print all as one PDF
+    </button>
+  </div>
+  <div class="count-line" id="count-line"></div>
+  <div class="stack" id="stack"></div>
+</div>
+
+<script>
+const SU='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const sb=supabase.createClient(SU,SK);
+
+const DEFAULT_AY='2025-26';
+
+/* Panel-pack pulls the actual submission (input the panel reads), not the
+   released summary. Internal panel ratings are never selected here: they live
+   in panel_internal_assessments and are recorded after the sitting, not read
+   into it. This page shows what the panel judges, not the judgment. */
+const COLS=[
+ 'id','academic_year','workflow_status','submitted_at',
+ 'snap_name','snap_designation','snap_campus','snap_subject_area','snap_admin_role',
+ 'teaching_course_entries','teaching_effectiveness','pedagogical_methods','terms_taught',
+ 'publications_count','publications_details','abdc_a_star','abdc_a','abdc_b','abdc_c',
+ 'scopus_q1','scopus_q2','scopus_q3','scopus_q4','wos_q1','wos_q2','wos_q3','wos_q4',
+ 'h_index','gscholar_citations','conference_papers_count','ugc_care_count',
+ 'sponsored_research_entries','scholar_url','orcid_id','research_reflections',
+ 'industry_summary','mdp_count','mdp_revenue','mdp_details','consulting_delivered',
+ 'resource_person_summary','referrals_sent','referrals_converted',
+ 'institution_entries',
+ 'alloc_teaching','alloc_research','alloc_industry','alloc_institution',
+ 'year_end_achievements','xime_contribution',
+ 'purpose_share_with_reviewers','ikigai_statement','action_key_goal','next_year_objectives','ikigai_develop_areas'
+].join(',');
+
+let CURRENT_USER=null,USER_ROLE='',IS_SUPER=false;
+let ALL_ROWS=[],CAMPUSES=[],SELECTED_CAMPUS=null,SELECTED_AY=null,AYS=[];
+
+function esc(s){return(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtDate(s){if(!s)return '';try{return new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}catch(e){return s;}}
+function num(v){return(v==null||v==='')?0:(parseFloat(v)||0);}
+function arr(v){return(v&&Array.isArray(v))?v:[];}
+async function signOut(){await sb.auth.signOut();window.location.href='login.html';}
+function block(msg){const b=document.getElementById('blocker');b.textContent=msg;b.style.display='block';document.getElementById('app').style.display='none';}
+
+async function resolveAccess(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return false;}
+  const{data:profile}=await sb.from('user_profiles').select('*').eq('id',session.user.id).maybeSingle();
+  if(!profile){window.location.href='login.html';return false;}
+  CURRENT_USER=profile;USER_ROLE=profile.role;IS_SUPER=(USER_ROLE==='super_admin');
+  if(!['super_admin','director','dean','org_admin'].includes(USER_ROLE)){window.location.href='index.html';return false;}
+  return true;
+}
+
+/* Row-level security scopes what returns: a dean or director receives only
+   their own campus; a super_admin receives all and gets a campus picker. */
+async function load(){
+  const{data,error}=await sb.from('faculty_evaluations')
+    .select(COLS)
+    .in('workflow_status',['submitted','complete'])
+    .order('snap_name',{ascending:true});
+  if(error){block('Could not load submissions: '+error.message);return;}
+  ALL_ROWS=data||[];
+  AYS=[...new Set(ALL_ROWS.map(r=>r.academic_year).filter(Boolean))].sort().reverse();
+  if(AYS.length===0)AYS=[DEFAULT_AY];
+  SELECTED_AY=AYS.includes(DEFAULT_AY)?DEFAULT_AY:AYS[0];
+  CAMPUSES=[...new Set(ALL_ROWS.map(r=>r.snap_campus).filter(Boolean))].sort();
+  SELECTED_CAMPUS=IS_SUPER?(CAMPUSES[0]||null):(CURRENT_USER.campus||CAMPUSES[0]||null);
+  renderControls();
+  renderStack();
+}
+
+function renderControls(){
+  if(IS_SUPER&&CAMPUSES.length>1){
+    document.getElementById('campus-group').style.display='flex';
+    const c=document.getElementById('campus-chips');c.innerHTML='';
+    CAMPUSES.forEach(cm=>{
+      const b=document.createElement('button');
+      b.className='chip'+(cm===SELECTED_CAMPUS?' active':'');
+      b.textContent=cm;b.onclick=()=>{SELECTED_CAMPUS=cm;renderControls();renderStack();};
+      c.appendChild(b);
+    });
+  }
+  const a=document.getElementById('ay-chips');a.innerHTML='';
+  AYS.forEach(y=>{
+    const b=document.createElement('button');
+    b.className='chip'+(y===SELECTED_AY?' active':'');
+    b.textContent='AY '+y;b.onclick=()=>{SELECTED_AY=y;renderControls();renderStack();};
+    a.appendChild(b);
+  });
+}
+
+function currentRows(){
+  return ALL_ROWS.filter(r=>r.academic_year===SELECTED_AY&&(IS_SUPER?r.snap_campus===SELECTED_CAMPUS:true));
+}
+
+function renderStack(){
+  const rows=currentRows();
+  const label=(IS_SUPER?SELECTED_CAMPUS:(CURRENT_USER.campus||''));
+  document.getElementById('count-line').innerHTML=
+    '<strong>'+rows.length+'</strong> faculty · '+esc(label)+' · AY '+esc(SELECTED_AY)+
+    ' &nbsp;·&nbsp; one page each, page breaks between. Use your browser print dialog, save as PDF or send to printer.';
+  const stack=document.getElementById('stack');
+  if(rows.length===0){stack.innerHTML='<div class="blocking">No submitted evaluations for this selection.</div>';return;}
+  stack.innerHTML=rows.map(sheet).join('');
+}
+
+/* ---------- one faculty one-pager ---------- */
+function sheet(r){
+  const name=esc(r.snap_name||'(name not captured)');
+  const meta=[r.snap_designation,r.snap_subject_area,r.snap_campus].filter(Boolean).map(esc).join(' &middot; ');
+  const admin=r.snap_admin_role?'<div class="sh-meta">Admin role: '+esc(r.snap_admin_role)+'</div>':'';
+
+  let html='<div class="sheet">';
+  html+='<div class="sh-head"><div><div class="sh-name">'+name+'</div>'+
+        (meta?'<div class="sh-meta">'+meta+'</div>':'')+admin+'</div>'+
+        '<div class="sh-ay">AY '+esc(r.academic_year||'')+
+        '<span class="sh-status">'+esc((r.workflow_status||'').toUpperCase())+
+        (r.submitted_at?' &middot; '+esc(fmtDate(r.submitted_at)):'')+'</span></div></div>';
+
+  html+=teachingSec(r);
+  html+=researchSec(r);
+  html+=industrySec(r);
+  html+=institutionSec(r);
+  html+=allocSec(r);
+  html+=achievementsSec(r);
+  html+=purposeSec(r);
+
+  html+='<div class="sh-foot"><span>'+name+' &middot; AY '+esc(r.academic_year||'')+'</span>'+
+        '<span>XIME Confidential &middot; Panel Review</span></div>';
+  html+='</div>';
+  return html;
+}
+
+function teachingSec(r){
+  const courses=arr(r.teaching_course_entries);
+  const eff=r.teaching_effectiveness!=null?('Overall '+esc(r.teaching_effectiveness)):'';
+  let inner='';
+  if(courses.length){
+    inner+='<table class="courses"><thead><tr><th>Course</th><th>Term</th><th>Sec</th><th style="text-align:right">Effectiveness</th></tr></thead><tbody>';
+    inner+=courses.map(c=>'<tr><td>'+esc(c.course_name||'')+'</td><td>'+esc(c.term||'')+'</td><td>'+esc(c.section||'')+'</td><td class="eff">'+(c.effectiveness_score!=null?esc(c.effectiveness_score):'&mdash;').replace('&mdash;','-')+'</td></tr>').join('');
+    inner+='</tbody></table>';
+  }else{
+    inner+='<div class="muted">No course entries recorded.</div>';
+  }
+  const m=r.pedagogical_methods;
+  if(m&&typeof m==='object'){
+    const parts=[];
+    if(m.cases_hbp)parts.push('HBP cases: <b>'+esc(m.cases_hbp)+'</b>');
+    if(m.cases_other)parts.push('Other cases: <b>'+esc(m.cases_other)+'</b>');
+    if(m.sims_hbs)parts.push('HBS sims: <b>'+esc(m.sims_hbs)+'</b>');
+    if(m.sims_other)parts.push('Other sims: <b>'+esc(m.sims_other)+'</b>');
+    const alt=arr(m.alt_approaches).map(esc);
+    if(m.alt_other_text)alt.push(esc(m.alt_other_text));
+    if(alt.length)parts.push('Also: '+alt.join(', '));
+    if(parts.length)inner+='<div class="methods">'+parts.join(' &nbsp;|&nbsp; ')+'</div>';
+  }
+  return '<div class="sec"><div class="sec-h"><span>Teaching</span><span class="agg">'+eff+'</span></div>'+inner+'</div>';
+}
+
+function researchSec(r){
+  const chips=[];
+  const push=(lbl,v)=>{if(num(v)>0)chips.push('<span class="mchip"><b>'+esc(v)+'</b> '+lbl+'</span>');};
+  push('publications',r.publications_count);
+  push('ABDC A*',r.abdc_a_star);push('ABDC A',r.abdc_a);push('ABDC B',r.abdc_b);push('ABDC C',r.abdc_c);
+  const scopus=num(r.scopus_q1)+num(r.scopus_q2)+num(r.scopus_q3)+num(r.scopus_q4);
+  if(scopus>0)chips.push('<span class="mchip"><b>'+scopus+'</b> Scopus (Q1 '+num(r.scopus_q1)+' / Q2 '+num(r.scopus_q2)+' / Q3 '+num(r.scopus_q3)+' / Q4 '+num(r.scopus_q4)+')</span>');
+  const wos=num(r.wos_q1)+num(r.wos_q2)+num(r.wos_q3)+num(r.wos_q4);
+  if(wos>0)chips.push('<span class="mchip"><b>'+wos+'</b> WoS</span>');
+  push('UGC-CARE',r.ugc_care_count);
+  push('conf. papers',r.conference_papers_count);
+  if(num(r.h_index)>0)chips.push('<span class="mchip">h-index <b>'+num(r.h_index)+'</b></span>');
+  if(num(r.gscholar_citations)>0)chips.push('<span class="mchip"><b>'+num(r.gscholar_citations)+'</b> citations</span>');
+  const sr=arr(r.sponsored_research_entries);
+  let inner='';
+  if(chips.length)inner+='<div class="chips-row">'+chips.join('')+'</div>';
+  if(sr.length){
+    inner+=sr.map(s=>'<div class="entry"><span class="role">'+esc(s.title||'Untitled project')+'</span> '+
+      '<span class="sub">'+[s.role,s.agency,s.status].filter(Boolean).map(esc).join(' &middot; ')+'</span>'+
+      (s.description?'<div>'+esc(s.description)+'</div>':'')+'</div>').join('');
+  }
+  if(r.research_reflections)inner+='<div class="prose" style="margin-top:5px">'+esc(r.research_reflections)+'</div>';
+  if(!inner)inner='<div class="muted">No research output recorded.</div>';
+  return '<div class="sec"><div class="sec-h"><span>Research</span></div>'+inner+'</div>';
+}
+
+function industrySec(r){
+  const bits=[];
+  if(num(r.mdp_count)>0||num(r.mdp_revenue)>0){
+    let m='MDP / executive education: ';
+    if(num(r.mdp_count)>0)m+=num(r.mdp_count)+' programme(s)';
+    if(num(r.mdp_revenue)>0)m+=(num(r.mdp_count)>0?', ':'')+'Rs '+Number(r.mdp_revenue).toLocaleString('en-IN');
+    bits.push('<div class="prose">'+esc(m)+'</div>');
+  }
+  if(r.industry_summary)bits.push('<div class="prose">'+esc(r.industry_summary)+'</div>');
+  if(r.consulting_delivered)bits.push('<div class="prose"><b>Consulting:</b> '+esc(r.consulting_delivered)+'</div>');
+  if(r.resource_person_summary)bits.push('<div class="prose"><b>Resource person:</b> '+esc(r.resource_person_summary)+'</div>');
+  if(num(r.referrals_sent)>0||num(r.referrals_converted)>0)bits.push('<div class="prose">Referrals: '+num(r.referrals_sent)+' sent, '+num(r.referrals_converted)+' converted</div>');
+  if(!bits.length)return '';
+  return '<div class="sec"><div class="sec-h"><span>Industry &amp; External Engagement</span></div>'+bits.join('')+'</div>';
+}
+
+/* Institution Building: we show the faculty's first-person outcome (cleaner
+   than the AI-polished second-person description), and when the array is empty
+   we flag it in red rather than hiding it, because an empty IB on a senior
+   submission is exactly what the panel needs to see (and what the capture-trap
+   fix is about). */
+function institutionSec(r){
+  const ib=arr(r.institution_entries);
+  let inner='';
+  if(ib.length){
+    inner=ib.map(e=>{
+      const text=e.outcome||e.description||'';
+      return '<div class="entry"><span class="role">'+esc(e.role||e.category||'Contribution')+'</span>'+
+        (text?'<div>'+esc(text)+'</div>':'')+'</div>';
+    }).join('');
+  }else{
+    inner='<div class="ib-empty">No Institution Building entries recorded. Confirm before the sitting.</div>';
+  }
+  return '<div class="sec"><div class="sec-h"><span>Institution Building</span></div>'+inner+'</div>';
+}
+
+function allocSec(r){
+  const t=num(r.alloc_teaching),rs=num(r.alloc_research),i=num(r.alloc_industry),n=num(r.alloc_institution);
+  const tot=t+rs+i+n;
+  if(tot<=0)return '';
+  const pct=v=>Math.round(v/tot*100);
+  const bar='<div class="alloc">'+
+    (t>0?'<span class="a-t" style="flex:'+t+'">'+pct(t)+'%</span>':'')+
+    (rs>0?'<span class="a-r" style="flex:'+rs+'">'+pct(rs)+'%</span>':'')+
+    (i>0?'<span class="a-i" style="flex:'+i+'">'+pct(i)+'%</span>':'')+
+    (n>0?'<span class="a-n" style="flex:'+n+'">'+pct(n)+'%</span>':'')+'</div>'+
+    '<div class="alloc-key"><i class="k-t">Teaching</i><i class="k-r">Research</i><i class="k-i">Industry</i><i class="k-n">Institution</i></div>';
+  return '<div class="sec"><div class="sec-h"><span>Time Allocation</span></div>'+bar+'</div>';
+}
+
+function achievementsSec(r){
+  const bits=[];
+  if(r.year_end_achievements)bits.push('<div class="prose">'+esc(r.year_end_achievements)+'</div>');
+  if(r.xime_contribution)bits.push('<div class="prose">'+esc(r.xime_contribution)+'</div>');
+  if(!bits.length)return '';
+  return '<div class="sec"><div class="sec-h"><span>Year in the Faculty\u2019s Words</span></div>'+bits.join('')+'</div>';
+}
+
+/* Purpose / growth is only shown when the faculty member opted to share it with
+   reviewers. Respecting that flag keeps X-Purpose a safe reflective space. */
+function purposeSec(r){
+  if(r.purpose_share_with_reviewers!==true)return '';
+  const bits=[];
+  if(r.action_key_goal)bits.push('<div class="prose"><b>Key goal:</b> '+esc(r.action_key_goal)+'</div>');
+  if(r.next_year_objectives)bits.push('<div class="prose"><b>Next year:</b> '+esc(r.next_year_objectives)+'</div>');
+  if(r.ikigai_develop_areas)bits.push('<div class="prose"><b>Development focus:</b> '+esc(r.ikigai_develop_areas)+'</div>');
+  if(!bits.length)return '';
+  return '<div class="sec"><div class="sec-h"><span>Purpose &amp; Growth <span style="text-transform:none;letter-spacing:0;color:var(--faint)">(shared by faculty)</span></span></div>'+bits.join('')+'</div>';
+}
+
+async function init(){
+  if(!(await resolveAccess()))return;
+  document.getElementById('blocker').style.display='none';
+  document.getElementById('app').style.display='block';
+  await load();
+}
+init();
+</script>
+</body>
+</html>
