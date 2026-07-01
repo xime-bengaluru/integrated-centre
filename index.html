@@ -390,7 +390,14 @@
         <div class="admin-tile-icon">&#9670;</div>
         <div class="admin-tile-title">Performance Oversight</div>
         <div class="admin-tile-desc">The internal record across both review cycles, faculty and staff. Ratings, potential, and promotion held for leadership and HR. Print the one-row-per-person pack for the Chairman.</div>
-        <div class="admin-tile-cta">Open Oversight &rarr;</div>
+       <div class="admin-tile-cta">Open Oversight &rarr;</div>
+      </div>
+      <div class="admin-tile" id="admin-tile-panel-pack" onclick="window.location.href='panel-pack.html'">
+        <div class="admin-tile-tag">Panel Preparation</div>
+        <div class="admin-tile-icon">&#9635;</div>
+        <div class="admin-tile-title">Panel Pack</div>
+        <div class="admin-tile-desc">Print every submitted faculty member's one-page summary for a campus as a single batch, one sheet each, ready for the panel table. Pick the campus, print the stack.</div>
+        <div class="admin-tile-cta">Open Panel Pack &rarr;</div>
       </div>
     </div>
   </div>
@@ -540,6 +547,17 @@
         <div class="card-icon">&#9678;</div>
         <div class="card-title">Panel Review</div>
         <div class="card-desc">Record the panel's decision for each faculty member in your campus. Browse and select a candidate, project the one-page summary, and capture the agreed rating and written review.</div>
+      </div>
+    </div>
+
+    <!-- PANEL PACK -->
+    <div class="module-card dimmed" id="tile-panel-pack">
+      <div class="locked-badge"><span class="locked-badge-icon">&#128274;</span>Locked</div>
+      <div class="card-body">
+        <div class="card-tag">Panel Preparation</div>
+        <div class="card-icon">&#9635;</div>
+        <div class="card-title">Panel Pack</div>
+        <div class="card-desc">Print every submitted faculty member's one-page summary for your campus as a single batch, one sheet each, ready for the panel table.</div>
       </div>
     </div>
 
@@ -932,6 +950,27 @@ function unlockReviewTiles(deanRows, dirRow, profile, isViewer) {
       staffTile.onclick = () => { window.location.href = '/staff-director-review.html'; };
     }
   }
+  /* Panel Pack: batch-printable one-pagers for the panel table.
+     Unlocked for deans, directors, and super_admin. Deans and directors are
+     scoped to their own campus by row-level security; super_admin gets all
+     campuses with an in-page campus picker. */
+  if ((deanRows && deanRows.length > 0) || dirRow || (profile && profile.role === 'super_admin')) {
+    const ppTile = document.getElementById('tile-panel-pack');
+    if (ppTile) {
+      ppTile.classList.remove('dimmed');
+      ppTile.classList.add('unlocked');
+      const ppLock = ppTile.querySelector('.locked-badge');
+      if (ppLock) ppLock.remove();
+      const ppCampus = (deanRows && deanRows[0] && deanRows[0].campus)
+        || (dirRow && dirRow.campus) || 'Institutional';
+      const ppBadge = document.createElement('div');
+      ppBadge.className = 'role-badge';
+      ppBadge.innerHTML = '<span class="role-badge-dot"></span>' + ppCampus;
+      ppTile.appendChild(ppBadge);
+      ppTile.onclick = () => { window.location.href = '/panel-pack.html'; };
+    }
+  }
+
   /* Adoption Dashboard - super_admin only */
   if (profile && profile.role === 'super_admin') {
     const tile = document.getElementById('tile-adoption-dashboard');
