@@ -199,6 +199,26 @@
     .main{padding:20px 16px 40px}
     .detail-content{padding:24px 18px}
   }
+
+  /* Entry adjudication (a dean flags an entry invalid; reversible, panel-visible, non-destructive) */
+  .entry-card.flagged{opacity:.6;border-style:dashed;border-color:rgba(200,16,46,.55)}
+  .entry-card.flagged .entry-card-t{text-decoration:line-through;text-decoration-color:rgba(200,16,46,.6)}
+  .flag-reason{font-size:11.5px;color:var(--red);line-height:1.5;margin-top:6px;font-style:italic}
+  .flag-reason b{font-style:normal;font-weight:600}
+  .entry-flag-btn{background:transparent;border:.5px solid var(--line-strong);color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.03em;padding:3px 9px;border-radius:6px;cursor:pointer;transition:all .12s}
+  .entry-flag-btn:hover{border-color:var(--red);color:var(--red)}
+  .entry-flag-btn.on{border-color:var(--red);color:var(--red);background:rgba(200,16,46,.06)}
+  .flag-collapsed{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(200,16,46,.04);border:.5px dashed rgba(200,16,46,.35);border-radius:8px;padding:9px 13px;margin-bottom:8px;font-size:12px;color:var(--red)}
+  .flag-collapsed-toggle{background:transparent;border:none;color:var(--red);font-family:'DM Mono',monospace;font-size:10.5px;font-weight:600;cursor:pointer;letter-spacing:.03em;text-decoration:underline}
+  .flag-dialog-backdrop{position:fixed;inset:0;background:rgba(13,31,53,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .flag-dialog{background:var(--parchment);border:1px solid rgba(200,16,46,.3);border-radius:12px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
+  .flag-dialog-h{background:var(--navy);color:#fff;padding:16px 20px;font-family:'Cormorant Garamond',serif;font-size:19px}
+  .flag-dialog-b{padding:18px 20px}
+  .flag-dialog-b p{font-size:12.5px;color:var(--sub);line-height:1.55;margin-bottom:12px}
+  .flag-dialog-b textarea{width:100%;min-height:90px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:7px;font-family:inherit;font-size:13px;resize:vertical;background:#fff}
+  .flag-dialog-f{display:flex;gap:10px;justify-content:flex-end;padding:0 20px 18px}
+  .flag-dialog-btn{padding:9px 16px;border-radius:7px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--line-strong);background:#fff;color:var(--sub)}
+  .flag-dialog-btn.danger{background:var(--red);border-color:var(--red);color:#fff}
 </style>
 </head>
 <body>
@@ -299,6 +319,13 @@ const DEAN_FOCUS={
   ep:'You verify EP programmes brought in revenue (manual check with finance). Mark each programme verified.'
 };
 
+/* Which entry types each dean role may adjudicate. Mirrors DEAN_FOCUS remit; super_admin may flag any. */
+const FLAG_REMIT={
+  academics:['publication','sponsored_research','institution','ep_programme'],
+  research:['publication','sponsored_research'],
+  ep:['ep_programme']
+};
+
 let CURRENT_USER=null;
 let MY_CAMPUS=null;
 let MY_DEAN_ROLES=[];  /* may have multiple if same person holds two functions */
@@ -312,6 +339,10 @@ let CURRENT_FAC=null;  /* faculty_master row being viewed */
 let MY_REVIEW=null;    /* this dean's review row for current eval, if any */
 let ALL_REVIEWS=[];    /* all dean reviews for current eval */
 let DIRECTOR_REVIEW=null; /* evaluation_director_reviews row for current eval, if any (for re-review and finalize modes) */
+let ENTRY_FLAGS=[];     /* evaluation_entry_flags rows for the current eval (all deans) */
+let FLAGS_EXPANDED={};  /* per-section expand state for flagged entries, keyed by entry_type */
+let LAST_PUBS=[];       /* retained so a flag action can re-render detail content */
+let LAST_PROGRAMMES=[];
 
 function escapeHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -551,17 +582,22 @@ async function openDetail(f){
   CURRENT_FAC=f.faculty_master||{};
 
   /* Fetch publications, EP rows, all dean reviews, and the director review row (if any) */
-  const[pubs,eps,reviews,dirRev]=await Promise.all([
+  const[pubs,eps,reviews,dirRev,flags]=await Promise.all([
     sb.from('faculty_publications').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('year',{ascending:false}),
     sb.from('ep_programmes').select('*').eq('faculty_master_id',CURRENT_FAC.id).eq('academic_year',ACADEMIC_YEAR).order('date_conducted',{ascending:false}),
     sb.from('evaluation_dean_reviews').select('*').eq('evaluation_id',f.id),
-    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',f.id).maybeSingle()
+    sb.from('evaluation_director_reviews').select('*').eq('evaluation_id',f.id).maybeSingle(),
+    sb.from('evaluation_entry_flags').select('*').eq('evaluation_id',f.id)
   ]);
   const publications=pubs.data||[];
   const programmes=eps.data||[];
   ALL_REVIEWS=reviews.data||[];
   MY_REVIEW=ALL_REVIEWS.find(r=>r.dean_email===CURRENT_USER.email)||null;
   DIRECTOR_REVIEW=dirRev.data||null;
+  ENTRY_FLAGS=flags.data||[];
+  FLAGS_EXPANDED={};
+  LAST_PUBS=publications;
+  LAST_PROGRAMMES=programmes;
 
   document.getElementById('d-name').textContent=CURRENT_FAC.name||'(unknown)';
   document.getElementById('d-meta').textContent=`${CURRENT_FAC.designation||''} · ${CURRENT_FAC.campus||''} · Submitted ${formatDate(f.gate1_submitted_at||f.updated_at)}`;
@@ -765,10 +801,12 @@ function buildResearchSection(f,publications){
         meta.textContent=metaParts.join(' · ');
         card.appendChild(meta);
       }
+      decorateEntryCard(card,'publication',p.id,p.title);
       list.appendChild(card);
     });
     sec.appendChild(list);
   }
+  applyCollapse(sec,'publication');
   return sec;
 }
 
@@ -809,9 +847,11 @@ function buildSponsoredSection(f){
       desc.textContent=e.description;
       card.appendChild(desc);
     }
+    decorateEntryCard(card,'sponsored_research',e.id,e.title);
     list.appendChild(card);
   });
   sec.appendChild(list);
+  applyCollapse(sec,'sponsored_research');
   return sec;
 }
 
@@ -861,10 +901,12 @@ function buildEpSection(f,programmes){
         desc.textContent=p.notes;
         card.appendChild(desc);
       }
+      decorateEntryCard(card,'ep_programme',p.id,p.title);
       list.appendChild(card);
     });
     sec.appendChild(list);
   }
+  applyCollapse(sec,'ep_programme');
   return sec;
 }
 
@@ -897,9 +939,11 @@ function buildInstitutionSection(f){
       meta.textContent=e.date;
       card.appendChild(meta);
     }
+    decorateEntryCard(card,'institution',e.id,e.category);
     list.appendChild(card);
   });
   sec.appendChild(list);
+  applyCollapse(sec,'institution');
   return sec;
 }
 
@@ -933,6 +977,106 @@ function buildOtherReviewsBlock(){
     sec.appendChild(block);
   });
   return sec;
+}
+
+/* ---------- Entry adjudication (flags) ---------- */
+function canFlag(entryType){
+  if(CURRENT_USER&&CURRENT_USER.role==='super_admin')return true;
+  const remit=FLAG_REMIT[MY_ACTIVE_DEAN_ROLE]||[];
+  return remit.includes(entryType);
+}
+function myFlagFor(entryType,entryId){
+  return ENTRY_FLAGS.find(fl=>fl.entry_type===entryType&&String(fl.entry_id)===String(entryId)&&fl.flagged_by===CURRENT_USER.email)||null;
+}
+function anyFlagsFor(entryType,entryId){
+  return ENTRY_FLAGS.filter(fl=>fl.entry_type===entryType&&String(fl.entry_id)===String(entryId));
+}
+function decorateEntryCard(card,entryType,entryId,title){
+  const flags=anyFlagsFor(entryType,entryId);
+  if(flags.length>0){
+    card.classList.add('flagged');
+    flags.forEach(fl=>{
+      const r=document.createElement('div');r.className='flag-reason';
+      r.innerHTML='<b>Flagged invalid by '+escapeHtml(DEAN_LABELS[fl.flagged_by_role]||fl.flagged_by_role||'Dean')+':</b> '+escapeHtml(fl.reason||'(no reason given)');
+      card.appendChild(r);
+    });
+  }
+  if(canFlag(entryType)){
+    const mine=myFlagFor(entryType,entryId);
+    const btn=document.createElement('button');
+    btn.className='entry-flag-btn'+(mine?' on':'');
+    btn.textContent=mine?'Flagged \u00B7 undo':'Flag invalid';
+    btn.style.marginTop='8px';
+    btn.onclick=(ev)=>{ev.stopPropagation();mine?unflagEntry(mine):openFlagDialog(entryType,entryId,title);};
+    card.appendChild(btn);
+  }
+}
+function applyCollapse(sectionEl,entryType){
+  const cards=[...sectionEl.querySelectorAll('.entry-card.flagged')];
+  if(cards.length===0)return;
+  const expanded=FLAGS_EXPANDED[entryType]===true;
+  cards.forEach(c=>{c.style.display=expanded?'':'none';});
+  const list=sectionEl.querySelector('.entry-list');
+  if(!list)return;
+  const bar=document.createElement('div');bar.className='flag-collapsed';
+  const label=document.createElement('span');
+  label.textContent=cards.length+(cards.length===1?' entry flagged invalid':' entries flagged invalid');
+  const toggle=document.createElement('button');toggle.className='flag-collapsed-toggle';
+  toggle.textContent=expanded?'Hide':'Show';
+  toggle.onclick=(ev)=>{ev.stopPropagation();FLAGS_EXPANDED[entryType]=!expanded;renderDetailContent(CURRENT_EVAL,LAST_PUBS,LAST_PROGRAMMES);};
+  bar.appendChild(label);bar.appendChild(toggle);
+  list.parentNode.insertBefore(bar,list);
+}
+function openFlagDialog(entryType,entryId,title){
+  if(document.getElementById('flag-dialog-backdrop'))return;
+  const bd=document.createElement('div');bd.className='flag-dialog-backdrop';bd.id='flag-dialog-backdrop';
+  bd.innerHTML='<div class="flag-dialog">'+
+    '<div class="flag-dialog-h">Flag entry invalid</div>'+
+    '<div class="flag-dialog-b"><p>This does not delete the entry. It marks it invalid for the panel, records who flagged it and why, and can be undone. The faculty member\u2019s submission is unchanged.</p>'+
+    '<p style="color:var(--text);font-weight:500">'+escapeHtml(title||'')+'</p>'+
+    '<textarea id="flag-reason-input" placeholder="Reason (duplicate, miscategorised, not verifiable, and so on)"></textarea></div>'+
+    '<div class="flag-dialog-f"><button class="flag-dialog-btn" id="flag-cancel">Cancel</button>'+
+    '<button class="flag-dialog-btn danger" id="flag-confirm">Flag invalid</button></div></div>';
+  document.body.appendChild(bd);
+  const inp=document.getElementById('flag-reason-input');if(inp)inp.focus();
+  bd.addEventListener('click',e=>{if(e.target===bd)bd.remove();});
+  document.getElementById('flag-cancel').onclick=()=>bd.remove();
+  document.getElementById('flag-confirm').onclick=()=>{
+    const reason=document.getElementById('flag-reason-input').value.trim();
+    bd.remove();
+    flagEntry(entryType,entryId,reason);
+  };
+}
+async function flagEntry(entryType,entryId,reason){
+  if(!CURRENT_EVAL)return;
+  const payload={
+    evaluation_id:CURRENT_EVAL.id,
+    entry_type:entryType,
+    entry_id:String(entryId),
+    flag_type:'invalid',
+    reason:reason||null,
+    flagged_by:CURRENT_USER.email,
+    flagged_by_name:MY_DEAN_ROLES.find(d=>d.role===MY_ACTIVE_DEAN_ROLE)?.name||CURRENT_USER.full_name||CURRENT_USER.email,
+    flagged_by_role:MY_ACTIVE_DEAN_ROLE,
+    campus:MY_CAMPUS,
+    updated_at:new Date().toISOString()
+  };
+  const{data,error}=await sb.from('evaluation_entry_flags')
+    .upsert(payload,{onConflict:'evaluation_id,entry_type,entry_id,flagged_by'})
+    .select().maybeSingle();
+  if(error){dlog('FLAG',error);toast('Could not flag: '+(error.message||'unknown')+'. Tell Girish.',false);return;}
+  ENTRY_FLAGS=ENTRY_FLAGS.filter(fl=>!(fl.entry_type===entryType&&String(fl.entry_id)===String(entryId)&&fl.flagged_by===CURRENT_USER.email));
+  if(data)ENTRY_FLAGS.push(data);
+  FLAGS_EXPANDED[entryType]=true;
+  toast('Entry flagged invalid.');
+  renderDetailContent(CURRENT_EVAL,LAST_PUBS,LAST_PROGRAMMES);
+}
+async function unflagEntry(flagRow){
+  const{error}=await sb.from('evaluation_entry_flags').delete().eq('id',flagRow.id);
+  if(error){dlog('UNFLAG',error);toast('Could not undo: '+(error.message||'unknown')+'. Tell Girish.',false);return;}
+  ENTRY_FLAGS=ENTRY_FLAGS.filter(fl=>fl.id!==flagRow.id);
+  toast('Flag removed.');
+  renderDetailContent(CURRENT_EVAL,LAST_PUBS,LAST_PROGRAMMES);
 }
 
 /* ---------- Comments Panel ---------- */
