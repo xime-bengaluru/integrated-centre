@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub Checkpoint (Beta) | XIME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --navy:#0D1F35; --navy2:#1F2A3D; --gold:#C9A84C; --parchment:#FAF8F3;
+    --ink:#111827; --muted:#5b6472; --line:#e6e0d4; --card:#ffffff;
+    --good:#2f7d4f; --warn:#b5852a; --bad:#a23b3b; --amber:#f4ecd6; --amberline:#e4d3a1;
+    --shadow:0 1px 3px rgba(13,31,53,.08),0 8px 24px rgba(13,31,53,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'DM Sans',system-ui,sans-serif; font-size:17px; line-height:1.55;
+    color:var(--ink); background:var(--parchment);
+  }
+  h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif; font-weight:600; letter-spacing:.2px; margin:0}
+  .mono{font-family:'DM Mono',monospace}
+  a{color:var(--navy)}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 22px}
+
+  /* header */
+  header.top{background:var(--navy);color:#fff}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;gap:16px;flex-wrap:wrap}
+  .top img{height:30px;display:block}
+  .top .who{font-size:14px;color:#cfd6e0;text-align:right}
+  .top .who b{color:#fff;font-weight:600}
+  .badge-beta{display:inline-block;background:var(--gold);color:var(--navy);font-family:'DM Mono',monospace;
+    font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;letter-spacing:.5px;vertical-align:middle;margin-left:10px}
+
+  /* login */
+  .login{max-width:420px;margin:8vh auto;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);padding:34px 30px}
+  .login h1{font-size:30px;color:var(--navy);margin-bottom:4px}
+  .login p.sub{color:var(--muted);font-size:15px;margin:0 0 22px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin:14px 0 5px;letter-spacing:.2px}
+  input,select{width:100%;font-family:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line);
+    border-radius:9px;background:#fff;color:var(--ink)}
+  input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.18)}
+  button.primary{background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:inherit;font-weight:600;
+    font-size:16px;padding:12px 18px;cursor:pointer;width:100%;margin-top:20px}
+  button.primary:hover{background:#16283f}
+  button.primary:disabled{opacity:.55;cursor:default}
+  .err{color:var(--bad);font-size:14px;margin-top:12px;min-height:18px}
+
+  /* app shell */
+  #app{display:none}
+  .sub-head{background:#fff;border-bottom:1px solid var(--line)}
+  .sub-head .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;gap:14px;flex-wrap:wrap}
+  .sub-head h1{font-size:25px;color:var(--navy)}
+  .gatesel{display:flex;gap:6px;align-items:center}
+  .gatesel .g{font-family:'DM Mono',monospace;font-size:12px;padding:6px 12px;border:1px solid var(--line);
+    border-radius:999px;cursor:pointer;background:#fff;color:var(--muted)}
+  .gatesel .g.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  .layout{display:grid;grid-template-columns:1fr 340px;gap:26px;padding:26px 0 80px}
+  @media(max-width:940px){.layout{grid-template-columns:1fr}}
+
+  .domain{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);
+    margin-bottom:20px;overflow:hidden}
+  .domain > .dhead{display:flex;align-items:baseline;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--line)}
+  .domain > .dhead h2{font-size:23px;color:var(--navy)}
+  .domain > .dhead .dtot{font-family:'DM Mono',monospace;font-size:15px;color:var(--navy);font-weight:500}
+  .domain .body{padding:14px 20px 20px}
+  .hint{color:var(--muted);font-size:13.5px;margin:0 0 12px}
+
+  .entry{display:grid;gap:10px;align-items:end;padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fcfbf7}
+  .entry .fld{min-width:0}
+  .entry label{margin-top:0}
+  .entry .score{font-family:'DM Mono',monospace;font-weight:500;color:var(--navy);white-space:nowrap;font-size:15px}
+  .entry .row2{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .prov{display:inline-block;background:var(--amber);border:1px solid var(--amberline);color:var(--warn);
+    font-family:'DM Mono',monospace;font-size:10.5px;padding:1px 7px;border-radius:999px;letter-spacing:.3px;margin-left:8px}
+  .rm{background:none;border:none;color:var(--bad);cursor:pointer;font-size:13px;font-family:inherit;padding:4px}
+  .flag{background:none;border:1px solid var(--amberline);color:var(--warn);cursor:pointer;font-size:12px;
+    font-family:'DM Mono',monospace;padding:4px 9px;border-radius:7px}
+  .add{background:#fff;border:1px dashed var(--gold);color:var(--navy);border-radius:9px;font-family:inherit;
+    font-weight:600;font-size:14px;padding:9px 14px;cursor:pointer}
+  .add:hover{background:#fdfaf0}
+  .teach-grid{grid-template-columns:1fr 110px 150px 90px auto}
+  .res-grid{grid-template-columns:1.4fr 90px 90px auto}
+  .rev-grid{grid-template-columns:1.4fr 130px auto}
+  .inst-grid{grid-template-columns:1.8fr auto}
+  @media(max-width:720px){.teach-grid,.res-grid,.rev-grid,.inst-grid{grid-template-columns:1fr}}
+
+  .needs-ruling{background:var(--amber);border:1px solid var(--amberline);border-radius:9px;padding:11px 13px;margin-top:6px;font-size:13px;color:#6b5720}
+  .needs-ruling b{color:var(--warn)}
+
+  /* summary rail */
+  .rail{position:sticky;top:18px;align-self:start}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+  .card h3{font-size:20px;color:var(--navy);margin-bottom:12px}
+  .bignum{font-family:'DM Mono',monospace;font-size:42px;font-weight:500;color:var(--navy);line-height:1}
+  .bignum small{font-size:15px;color:var(--muted);font-weight:400}
+  .floor{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .floor:last-child{border-bottom:none}
+  .floor .lab{color:var(--muted)}
+  .floor .val{font-family:'DM Mono',monospace;font-weight:500}
+  .pill{font-family:'DM Mono',monospace;font-size:11px;padding:2px 8px;border-radius:999px;margin-left:8px}
+  .pill.ok{background:#e6f2ea;color:var(--good)}
+  .pill.no{background:#f6e9e9;color:var(--bad)}
+  .incentive{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+  .incentive b{font-family:'DM Mono',monospace;color:var(--good);font-size:18px}
+  .saverow{display:flex;gap:10px;align-items:center;margin-top:6px}
+  .saved{font-size:13px;color:var(--good)}
+  textarea{width:100%;font-family:inherit;font-size:15px;padding:10px;border:1px solid var(--line);border-radius:9px;min-height:70px;resize:vertical}
+  .fb-note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;
+    padding:11px 20px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+  .disclaim{font-size:12px;color:var(--muted);text-align:center;padding:0 0 40px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginView" class="login">
+  <h1>X-Hub Checkpoint</h1>
+  <p class="sub">AY 2026-27 beta. Sign in with your XIME email.</p>
+  <label for="email">Email</label>
+  <input id="email" type="email" autocomplete="username" placeholder="you@xime.org">
+  <label for="pass">Password</label>
+  <input id="pass" type="password" autocomplete="current-password" placeholder="Password">
+  <button id="loginBtn" class="primary">Sign in</button>
+  <div id="loginErr" class="err"></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="top">
+    <div class="wrap">
+      <div><img src="/assets/brand/xime-logo-wordmark-white.svg" alt="XIME"><span class="badge-beta">BETA</span></div>
+      <div class="who"><b id="whoName"></b><br><span id="whoMeta"></span> &middot; <a href="#" id="signout">Sign out</a></div>
+    </div>
+  </header>
+
+  <div class="sub-head">
+    <div class="wrap">
+      <h1>Performance Checkpoint <span class="mono" style="font-size:13px;color:var(--muted)">AY 2026-27</span></h1>
+      <div class="gatesel" id="gatesel">
+        <span class="g on" data-gate="plan">July Plan</span>
+        <span class="g" data-gate="interim">Dec Interim</span>
+        <span class="g" data-gate="final">Apr Final</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap layout">
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="domain">
+        <div class="dhead"><h2>Teaching</h2><div class="dtot mono" id="tot-teaching">0</div></div>
+        <div class="body">
+          <p class="hint">Base by course credit, times a teaching-effectiveness factor. Repeat sections of the same course count at half from the second instance.</p>
+          <div id="teach-list"></div>
+          <button class="add" data-add="teaching">+ Add course</button>
+        </div>
+      </div>
+
+      <div class="domain">
+        <div class="dhead"><h2>Research and Publications</h2><div class="dtot mono" id="tot-research">0</div></div>
+        <div class="body">
+          <p class="hint">Points by output type. For multi-author work, credit is split (60:40 for two authors, 50:25:25 for three).</p>
+          <div id="res-list"></div>
+          <button class="add" data-add="research">+ Add output</button>
+        </div>
+      </div>
+
+      <div class="domain">
+        <div class="dhead"><h2>Revenue (MDP / OBP / Consulting / Grant)</h2><div class="dtot mono" id="tot-revenue">0</div></div>
+        <div class="body">
+          <p class="hint">Credited per Rs 10,000 at the rate for each type. Enter the total amount you are credited for.</p>
+          <div id="rev-list"></div>
+          <button class="add" data-add="revenue">+ Add revenue item</button>
+        </div>
+      </div>
+
+      <div class="domain">
+        <div class="dhead"><h2>Institution Building</h2><div class="dtot mono" id="tot-institution">0</div></div>
+        <div class="body">
+          <p class="hint">Roles and contributions to institution building.</p>
+          <div id="inst-list"></div>
+          <button class="add" data-add="institution">+ Add role</button>
+          <div id="inst-ruling" class="needs-ruling" style="display:none"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RAIL -->
+    <div class="rail">
+      <div class="card">
+        <h3>Your year, so far</h3>
+        <div class="bignum" id="overall">0 <small>/ 300</small></div>
+        <div style="margin:14px 0 4px">
+          <div class="floor"><span class="lab">Teaching</span><span><span class="val" id="f-teaching">0</span> <span class="pill" id="p-teaching">min 135</span></span></div>
+          <div class="floor"><span class="lab">Research + Revenue</span><span><span class="val" id="f-other">0</span> <span class="pill" id="p-other">min 90</span></span></div>
+          <div class="floor"><span class="lab">Sub-floor (30 from one)</span><span><span class="val" id="f-sub">0</span> <span class="pill" id="p-sub">min 30</span></span></div>
+          <div class="floor"><span class="lab">Overall target</span><span><span class="val" id="f-overall">0</span> <span class="pill" id="p-overall">300</span></span></div>
+        </div>
+        <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b> <span style="font-size:12px">(Rs 1000 per point over 300)</span></div>
+      </div>
+
+      <div class="card">
+        <div class="saverow">
+          <button class="primary" id="saveBtn" style="width:auto;margin-top:0">Save checkpoint</button>
+          <span class="saved" id="savedMsg"></span>
+        </div>
+        <p class="fb-note" style="margin-top:14px">This is a beta. Numbers are read from the live scoring rules; anything marked <span class="prov">provisional</span> is not final. Tell us what is wrong or missing.</p>
+        <label for="fbGeneral" style="margin-top:6px">General feedback</label>
+        <textarea id="fbGeneral" placeholder="What felt off, what is missing, what confused you?"></textarea>
+        <button class="add" id="fbSend" style="margin-top:10px">Send feedback</button>
+      </div>
+    </div>
+  </div>
+  <p class="disclaim">X-Hub AY 2026-27 beta &middot; coefficients from XIME Faculty Handbook 2025, Annexure II &middot; for testing only</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
+const AY = "2026-27";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let RULES = [];      // scoring_rules rows for AY, non-superseded
+let FLOORS = {};     // floor_code -> points
+let USER = null;     // { email, name, campus, designation }
+let GATE = "plan";
+let STATE = { teaching:[], research:[], revenue:[], institution:[] };
+
+const $ = s => document.querySelector(s);
+const el = (tag, props={}, kids=[]) => {
+  const n = document.createElement(tag);
+  Object.entries(props).forEach(([k,v])=>{ if(k==="class") n.className=v; else if(k==="html") n.innerHTML=v; else n.setAttribute(k,v); });
+  kids.forEach(k=>n.appendChild(typeof k==="string"?document.createTextNode(k):k));
+  return n;
+};
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
+function rupee(n){ return "Rs " + Math.round(n).toLocaleString("en-IN"); }
+
+// rule lookups
+const rulesBy = d => RULES.filter(r=>r.domain===d);
+const ruleByCode = c => RULES.find(r=>r.rule_code===c);
+function pts(code){ const r=ruleByCode(code); return r && r.points!=null ? Number(r.points) : 0; }
+function isProvisional(code){ const r=ruleByCode(code); return !r || r.status!=="ratified" || r.points==null; }
+
+/* ---------- LOGIN ---------- */
+$("#loginBtn").addEventListener("click", doLogin);
+$("#pass").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
+async function doLogin(){
+  const email=$("#email").value.trim().toLowerCase(), pass=$("#pass").value;
+  const btn=$("#loginBtn"); $("#loginErr").textContent="";
+  if(!email||!pass){ $("#loginErr").textContent="Enter email and password."; return; }
+  btn.disabled=true; btn.textContent="Signing in...";
+  const { data, error } = await sb.auth.signInWithPassword({ email, password:pass });
+  if(error){ $("#loginErr").textContent=error.message; btn.disabled=false; btn.textContent="Sign in"; return; }
+  await boot(data.user.email);
+}
+$("#signout").addEventListener("click", async e=>{ e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+
+async function boot(email){
+  // resolve identity
+  const { data: fm } = await sb.from("faculty_master").select("name,campus,designation,band").eq("email",email).maybeSingle();
+  USER = { email, name: fm?.name || email, campus: fm?.campus || "", designation: fm?.designation || "" };
+  $("#whoName").textContent = USER.name;
+  $("#whoMeta").textContent = [USER.designation, USER.campus].filter(Boolean).join(" | ");
+
+  // load engine
+  const { data: rules, error: re } = await sb.from("scoring_rules").select("*").eq("academic_year",AY).neq("status","superseded");
+  if(re){ alert("Could not load scoring rules: "+re.message); return; }
+  RULES = rules || [];
+  const { data: floors } = await sb.from("scoring_floors").select("*").eq("academic_year",AY).eq("status","ratified");
+  FLOORS = {}; (floors||[]).forEach(f=>FLOORS[f.floor_code]=Number(f.points));
+
+  $("#loginView").style.display="none";
+  $("#app").style.display="block";
+
+  buildInstitutionRuling();
+  await loadCheckpoint();
+  renderAll();
+}
+
+// restore existing session on reload
+sb.auth.getSession().then(({data})=>{ if(data.session) boot(data.session.user.email); });
+
+/* ---------- GATE ---------- */
+document.querySelectorAll("#gatesel .g").forEach(g=>g.addEventListener("click", async ()=>{
+  document.querySelectorAll("#gatesel .g").forEach(x=>x.classList.remove("on"));
+  g.classList.add("on"); GATE=g.dataset.gate;
+  await loadCheckpoint(); renderAll();
+}));
+
+/* ---------- CHECKPOINT LOAD / SAVE ---------- */
+async function loadCheckpoint(){
+  STATE={ teaching:[], research:[], revenue:[], institution:[] };
+  const { data } = await sb.from("v2_checkpoints").select("entries").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate",GATE).maybeSingle();
+  if(data && data.entries){
+    const e=data.entries;
+    ["teaching","research","revenue","institution"].forEach(d=>{ if(Array.isArray(e[d])) STATE[d]=e[d]; });
+  }
+  $("#savedMsg").textContent="";
+}
+$("#saveBtn").addEventListener("click", async ()=>{
+  const totals=compute();
+  const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
+    entries:STATE, totals:totals, status:"draft", updated_at:new Date().toISOString() };
+  const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
+  if(error){ toast("Save failed: "+error.message); return; }
+  $("#savedMsg").textContent="Saved "+new Date().toLocaleTimeString();
+  toast("Checkpoint saved");
+});
+
+/* ---------- FEEDBACK ---------- */
+$("#fbSend").addEventListener("click", ()=>sendFeedback("general", $("#fbGeneral").value));
+async function sendFeedback(context, message){
+  if(!message || !message.trim()){ toast("Nothing to send"); return; }
+  const { error } = await sb.from("v2_feedback").insert({ faculty_email:USER.email, faculty_name:USER.name, academic_year:AY, context, message:message.trim() });
+  if(error){ toast("Feedback failed: "+error.message); return; }
+  if(context==="general") $("#fbGeneral").value="";
+  toast("Thank you, feedback sent");
+}
+function flagEntry(domain, label){
+  const msg = prompt("Flag this item for the build team. What is wrong or unclear?\n\n"+label);
+  if(msg) sendFeedback(domain+": "+label, msg);
+}
+
+/* ---------- ADD ENTRIES ---------- */
+document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click", ()=>{
+  const d=b.dataset.add;
+  if(d==="teaching") STATE.teaching.push({ name:"", credit:"3", eff:"100", repeat:false });
+  if(d==="research") STATE.research.push({ code:"", authors:"1", pos:"1" });
+  if(d==="revenue") STATE.revenue.push({ code:"", amount:0 });
+  if(d==="institution") STATE.institution.push({ code:"" });
+  renderAll();
+}));
+
+/* ---------- SCORING ---------- */
+function teachScore(e){
+  const base={ "3":30,"2":20,"1.5":15,"1":10 }[e.credit] ?? 0;
+  const eff=Number(e.eff)/100;
+  return base*eff*(e.repeat?0.5:1);
+}
+function authorShare(authors, pos){
+  const a=Number(authors), p=Number(pos);
+  if(a<=1) return 1;
+  if(a===2) return p===1?0.6:0.4;
+  if(a===3) return p===1?0.5:0.25;
+  return 1/a; // 4+ : equal split (assumption, flagged provisional)
+}
+function resScore(e){ return pts(e.code)*authorShare(e.authors,e.pos); }
+function revScore(e){ return (Number(e.amount)/10000)*pts(e.code); }
+function instScore(e){ return pts(e.code); }
+
+function compute(){
+  const t=STATE.teaching.reduce((s,e)=>s+teachScore(e),0);
+  const r=STATE.research.reduce((s,e)=>s+resScore(e),0);
+  const v=STATE.revenue.reduce((s,e)=>s+revScore(e),0);
+  const i=STATE.institution.reduce((s,e)=>s+instScore(e),0);
+  const other=r+v, overall=t+r+v+i;
+  return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
+    incentive: Math.max(0, overall-300)*1000 };
+}
+
+/* ---------- RENDER ---------- */
+function optionList(domainRules, selected){
+  return domainRules.map(r=>{
+    const p = r.points!=null ? r.points : "?";
+    const tag = r.status!=="ratified" ? " (provisional)" : "";
+    return `<option value="${r.rule_code}" ${r.rule_code===selected?"selected":""}>${r.label} - ${p}${tag}</option>`;
+  }).join("");
+}
+
+function renderTeaching(){
+  const list=$("#teach-list"); list.innerHTML="";
+  STATE.teaching.forEach((e,idx)=>{
+    const sc=teachScore(e);
+    const row=el("div",{class:"entry teach-grid"});
+    row.innerHTML=`
+      <div class="fld"><label>Course</label><input data-i="${idx}" data-k="name" value="${(e.name||"").replace(/"/g,'&quot;')}" placeholder="Course name"></div>
+      <div class="fld"><label>Credits</label><select data-i="${idx}" data-k="credit">
+        ${["3","2","1.5","1"].map(c=>`<option value="${c}" ${e.credit===c?"selected":""}>${c} credit</option>`).join("")}</select></div>
+      <div class="fld"><label>Effectiveness</label><select data-i="${idx}" data-k="eff">
+        <option value="100" ${e.eff==="100"?"selected":""}>Above 2.5 (100%)</option>
+        <option value="80" ${e.eff==="80"?"selected":""}>2.0 to 2.5 (80%)</option>
+        <option value="0" ${e.eff==="0"?"selected":""}>Below 2.0 (0%)</option></select></div>
+      <div class="fld"><label>Repeat</label><select data-i="${idx}" data-k="repeat">
+        <option value="no" ${!e.repeat?"selected":""}>No</option>
+        <option value="yes" ${e.repeat?"selected":""}>Yes 50%</option></select></div>
+      <div class="row2"><span class="score">${sc.toFixed(1)}</span><button class="rm" data-rm-t="${idx}">Remove</button></div>`;
+    list.appendChild(row);
+  });
+  $("#tot-teaching").textContent = STATE.teaching.reduce((s,e)=>s+teachScore(e),0).toFixed(1);
+}
+
+function renderResearch(){
+  const list=$("#res-list"); list.innerHTML="";
+  const rr=rulesBy("research").filter(r=>r.unit && r.unit!=="modifier");
+  STATE.research.forEach((e,idx)=>{
+    const sc=resScore(e), prov=e.code && isProvisional(e.code);
+    const row=el("div",{class:"entry res-grid"});
+    row.innerHTML=`
+      <div class="fld"><label>Output type</label><select data-i="${idx}" data-k="code">
+        <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
+      <div class="fld"><label>Authors</label><select data-i="${idx}" data-k="authors">
+        ${["1","2","3","4"].map(a=>`<option value="${a}" ${e.authors===a?"selected":""}>${a==="4"?"4+":a}</option>`).join("")}</select></div>
+      <div class="fld"><label>Your position</label><select data-i="${idx}" data-k="pos">
+        ${["1","2","3","4"].map(p=>`<option value="${p}" ${e.pos===p?"selected":""}>${p}</option>`).join("")}</select></div>
+      <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span>
+        <span><button class="flag" data-flag-d="research" data-flag-l="${(ruleByCode(e.code)?.label||'entry').replace(/"/g,'&quot;')}">flag</button>
+        <button class="rm" data-rm-r="${idx}">Remove</button></span></div>`;
+    list.appendChild(row);
+  });
+  $("#tot-research").textContent = STATE.research.reduce((s,e)=>s+resScore(e),0).toFixed(1);
+}
+
+function renderRevenue(){
+  const list=$("#rev-list"); list.innerHTML="";
+  const rr=rulesBy("revenue").filter(r=>r.unit==="per_10k");
+  STATE.revenue.forEach((e,idx)=>{
+    const sc=revScore(e), prov=e.code && isProvisional(e.code);
+    const row=el("div",{class:"entry rev-grid"});
+    row.innerHTML=`
+      <div class="fld"><label>Type</label><select data-i="${idx}" data-k="code">
+        <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
+      <div class="fld"><label>Amount (Rs)</label><input data-i="${idx}" data-k="amount" type="number" min="0" step="1000" value="${e.amount||0}"></div>
+      <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span><button class="rm" data-rm-v="${idx}">Remove</button></div>`;
+    list.appendChild(row);
+  });
+  $("#tot-revenue").textContent = STATE.revenue.reduce((s,e)=>s+revScore(e),0).toFixed(1);
+}
+
+function renderInstitution(){
+  const list=$("#inst-list"); list.innerHTML="";
+  const rr=rulesBy("institution").filter(r=>r.points!=null); // scorable roles only
+  STATE.institution.forEach((e,idx)=>{
+    const sc=instScore(e), prov=e.code && isProvisional(e.code);
+    const row=el("div",{class:"entry inst-grid"});
+    row.innerHTML=`
+      <div class="fld"><label>Role or contribution</label><select data-i="${idx}" data-k="code">
+        <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
+      <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span>
+        <span><button class="flag" data-flag-d="institution" data-flag-l="${(ruleByCode(e.code)?.label||'role').replace(/"/g,'&quot;')}">flag</button>
+        <button class="rm" data-rm-i="${idx}">Remove</button></span></div>`;
+    list.appendChild(row);
+  });
+  $("#tot-institution").textContent = STATE.institution.reduce((s,e)=>s+instScore(e),0).toFixed(1);
+}
+
+function buildInstitutionRuling(){
+  const noval = rulesBy("institution").filter(r=>r.points==null);
+  const box=$("#inst-ruling");
+  if(noval.length){
+    box.style.display="block";
+    box.innerHTML = "<b>Awaiting a ruling:</b> these roles have no Handbook value yet and cannot be scored: "
+      + noval.map(r=>r.label).join(", ")
+      + ". If one of these is yours, use Send feedback so the panel can set a value.";
+  } else box.style.display="none";
+}
+
+function renderSummary(){
+  const c=compute();
+  $("#overall").innerHTML = c.overall.toFixed(0) + ' <small>/ 300</small>';
+  const setFloor=(valId,pillId,val,min)=>{
+    $(valId).textContent=val.toFixed(0);
+    const p=$(pillId); const ok=val>=min;
+    p.className="pill "+(ok?"ok":"no"); p.textContent=ok?"met":("min "+min);
+  };
+  setFloor("#f-teaching","#p-teaching",c.teaching,FLOORS.FLR_TEACHING??135);
+  setFloor("#f-other","#p-other",c.other,FLOORS.FLR_RESEARCH_REVENUE??90);
+  const sub=Math.max(c.research,c.revenue);
+  setFloor("#f-sub","#p-sub",sub,FLOORS.FLR_OTHER_SUBFLOOR??30);
+  setFloor("#f-overall","#p-overall",c.overall,FLOORS.TGT_ANNUAL_PLAN??300);
+  $("#incentive").textContent = rupee(c.incentive);
+}
+
+function renderAll(){
+  renderTeaching(); renderResearch(); renderRevenue(); renderInstitution(); renderSummary();
+}
+
+/* ---------- EVENT DELEGATION ---------- */
+document.addEventListener("input", e=>{
+  const t=e.target; if(t.dataset.i===undefined) return;
+  const i=+t.dataset.i, k=t.dataset.k;
+  // which domain? infer from closest list
+  const listId=t.closest("[id$='-list']")?.id;
+  const map={ "teach-list":"teaching","res-list":"research","rev-list":"revenue","inst-list":"institution" };
+  const d=map[listId]; if(!d) return;
+  let v=t.value;
+  if(k==="repeat") v = (t.value==="yes");
+  if(k==="amount") v = Number(t.value)||0;
+  STATE[d][i][k]=v;
+  renderAll();
+});
+document.addEventListener("click", e=>{
+  const t=e.target;
+  const rm=(k,d)=>{ if(t.dataset[k]!==undefined){ STATE[d].splice(+t.dataset[k],1); renderAll(); } };
+  rm("rmT","teaching"); rm("rmR","research"); rm("rmV","revenue"); rm("rmI","institution");
+  if(t.dataset.flagD!==undefined) flagEntry(t.dataset.flagD, t.dataset.flagL);
+});
+</script>
+</body>
+</html>
