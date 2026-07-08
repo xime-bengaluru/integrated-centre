@@ -90,6 +90,16 @@
   .rev-grid{grid-template-columns:1.4fr 130px auto}
   .inst-grid{grid-template-columns:1.8fr auto}
   @media(max-width:720px){.teach-grid,.res-grid,.rev-grid,.inst-grid{grid-template-columns:1fr}}
+  .entry-block{display:block}
+  .teach-top{display:grid;grid-template-columns:1fr 110px 160px 90px auto;gap:10px;align-items:end}
+  @media(max-width:720px){.teach-top{grid-template-columns:1fr}}
+  .methods-panel{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .methods-title{font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:9px;letter-spacing:.2px}
+  .methods-title .mnote{font-weight:400;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;margin-left:8px}
+  .methods-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media(max-width:720px){.methods-grid{grid-template-columns:1fr 1fr}}
+  .mfld label{font-size:11px;color:var(--muted);margin:0 0 3px;font-weight:500}
+  .mfld select{font-size:13px;padding:7px 8px}
 
   .needs-ruling{background:var(--amber);border:1px solid var(--amberline);border-radius:9px;padding:11px 13px;margin-top:6px;font-size:13px;color:#6b5720}
   .needs-ruling b{color:var(--warn)}
@@ -340,7 +350,7 @@ function flagEntry(domain, label){
 /* ---------- ADD ENTRIES ---------- */
 document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click", ()=>{
   const d=b.dataset.add;
-  if(d==="teaching") STATE.teaching.push({ name:"", credit:"3", eff:"100", repeat:false });
+  if(d==="teaching") STATE.teaching.push({ name:"", credit:"3", eff:"100", repeat:false, methods:{case:"none",sim:"none",live:"none",role:"none",other:"none"} });
   if(d==="research") STATE.research.push({ code:"", authors:"1", pos:"1" });
   if(d==="revenue") STATE.revenue.push({ code:"", amount:0 });
   if(d==="institution") STATE.institution.push({ code:"" });
@@ -383,23 +393,36 @@ function optionList(domainRules, selected){
   }).join("");
 }
 
+const TEACH_METHODS=[["case","Case studies"],["sim","Simulations"],["live","Live projects"],["role","Role plays"],["other","Other methods"]];
+const TEACH_BANDS=[["none","None"],["1-5","1 to 5"],["5-10","5 to 10"],["10+","More than 10"]];
 function renderTeaching(){
   const list=$("#teach-list"); list.innerHTML="";
   STATE.teaching.forEach((e,idx)=>{
+    if(!e.methods) e.methods={case:"none",sim:"none",live:"none",role:"none",other:"none"};
     const sc=teachScore(e);
-    const row=el("div",{class:"entry teach-grid"});
+    const methodsHtml=TEACH_METHODS.map(([mk,ml])=>`
+      <div class="mfld"><label>${ml}</label><select data-i="${idx}" data-k="method" data-m="${mk}">
+        ${TEACH_BANDS.map(([bv,bl])=>`<option value="${bv}" ${((e.methods[mk]||"none")===bv)?"selected":""}>${bl}</option>`).join("")}
+      </select></div>`).join("");
+    const row=el("div",{class:"entry entry-block"});
     row.innerHTML=`
-      <div class="fld"><label>Course</label><input data-i="${idx}" data-k="name" value="${(e.name||"").replace(/"/g,'&quot;')}" placeholder="Course name"></div>
-      <div class="fld"><label>Credits</label><select data-i="${idx}" data-k="credit">
-        ${["3","2","1.5","1"].map(c=>`<option value="${c}" ${e.credit===c?"selected":""}>${c} credit</option>`).join("")}</select></div>
-      <div class="fld"><label>Effectiveness</label><select data-i="${idx}" data-k="eff">
-        <option value="100" ${e.eff==="100"?"selected":""}>Above 2.5 (100%)</option>
-        <option value="80" ${e.eff==="80"?"selected":""}>2.0 to 2.5 (80%)</option>
-        <option value="0" ${e.eff==="0"?"selected":""}>Below 2.0 (0%)</option></select></div>
-      <div class="fld"><label>Repeat</label><select data-i="${idx}" data-k="repeat">
-        <option value="no" ${!e.repeat?"selected":""}>No</option>
-        <option value="yes" ${e.repeat?"selected":""}>Yes 50%</option></select></div>
-      <div class="row2"><span class="score">${sc.toFixed(1)}</span><button class="rm" data-rm-t="${idx}">Remove</button></div>`;
+      <div class="teach-top">
+        <div class="fld"><label>Course</label><input data-i="${idx}" data-k="name" value="${(e.name||"").replace(/"/g,'&quot;')}" placeholder="Course name"></div>
+        <div class="fld"><label>Credits</label><select data-i="${idx}" data-k="credit">
+          ${["3","2","1.5","1"].map(c=>`<option value="${c}" ${e.credit===c?"selected":""}>${c} credit</option>`).join("")}</select></div>
+        <div class="fld"><label>Effectiveness</label><select data-i="${idx}" data-k="eff">
+          <option value="100" ${e.eff==="100"?"selected":""}>Above 2.5 (100%)</option>
+          <option value="80" ${e.eff==="80"?"selected":""}>2.0 to 2.5 (80%)</option>
+          <option value="0" ${e.eff==="0"?"selected":""}>Below 2.0 (0%)</option></select></div>
+        <div class="fld"><label>Repeat</label><select data-i="${idx}" data-k="repeat">
+          <option value="no" ${!e.repeat?"selected":""}>No</option>
+          <option value="yes" ${e.repeat?"selected":""}>Yes 50%</option></select></div>
+        <div class="row2"><span class="score">${sc.toFixed(1)}</span><button class="rm" data-rm-t="${idx}">Remove</button></div>
+      </div>
+      <div class="methods-panel">
+        <div class="methods-title">Methods used in this course <span class="mnote">for accreditation, not scored</span></div>
+        <div class="methods-grid">${methodsHtml}</div>
+      </div>`;
     list.appendChild(row);
   });
   $("#tot-teaching").textContent = STATE.teaching.reduce((s,e)=>s+teachScore(e),0).toFixed(1);
@@ -498,12 +521,32 @@ document.addEventListener("input", e=>{
   const listId=t.closest("[id$='-list']")?.id;
   const map={ "teach-list":"teaching","res-list":"research","rev-list":"revenue","inst-list":"institution" };
   const d=map[listId]; if(!d) return;
+
+  // per-course pedagogy bands: attribute on the entry, no score impact, no rebuild
+  if(k==="method"){ if(!STATE[d][i].methods) STATE[d][i].methods={}; STATE[d][i].methods[t.dataset.m]=t.value; return; }
+
   let v=t.value;
   if(k==="repeat") v = (t.value==="yes");
   if(k==="amount") v = Number(t.value)||0;
   STATE[d][i][k]=v;
+
+  // Typed fields (course name, amount) must not trigger a list rebuild, or the field loses focus mid-typing.
+  if(t.tagName==="INPUT" && t.type!=="checkbox"){ liveUpdate(d, i, t); return; }
   renderAll();
 });
+
+function liveUpdate(d, i, t){
+  const scoreFn = d==="teaching"?teachScore : d==="research"?resScore : d==="revenue"?revScore : instScore;
+  const entry=t.closest(".entry");
+  const scoreEl=entry ? entry.querySelector(".score") : null;
+  if(scoreEl){
+    const prov=scoreEl.querySelector(".prov");
+    scoreEl.textContent = scoreFn(STATE[d][i]).toFixed(1);
+    if(prov) scoreEl.appendChild(prov);
+  }
+  $("#tot-"+d).textContent = STATE[d].reduce((s,e)=>s+scoreFn(e),0).toFixed(1);
+  renderSummary();
+}
 document.addEventListener("click", e=>{
   const t=e.target;
   const rm=(k,d)=>{ if(t.dataset[k]!==undefined){ STATE[d].splice(+t.dataset[k],1); renderAll(); } };
