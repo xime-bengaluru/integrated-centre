@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub Validate (Beta) | XIME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --navy:#0D1F35; --gold:#C9A84C; --parchment:#FAF8F3;
+    --ink:#111827; --muted:#5b6472; --line:#e6e0d4; --card:#ffffff;
+    --good:#2f7d4f; --warn:#b5852a; --bad:#a23b3b; --amber:#f4ecd6; --amberline:#e4d3a1;
+    --shadow:0 1px 3px rgba(13,31,53,.08),0 8px 24px rgba(13,31,53,.06);
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;font-size:17px;line-height:1.55;color:var(--ink);background:var(--parchment)}
+  h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0}
+  .mono{font-family:'DM Mono',monospace}
+  a{color:var(--navy)}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 22px}
+  header.top{background:var(--navy);color:#fff}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;gap:16px;flex-wrap:wrap}
+  .top .wordmark{height:30px;width:auto;display:block}
+  .badge-beta{display:inline-block;background:var(--gold);color:var(--navy);font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;letter-spacing:.5px;vertical-align:middle;margin-left:10px}
+  .top .who{font-size:14px;color:#cfd6e0;text-align:right}
+  .top .who b{color:#fff;font-weight:600}
+  .login{max-width:420px;margin:8vh auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:34px 30px}
+  .login h1{font-size:30px;color:var(--navy);margin-bottom:4px}
+  .login p.sub{color:var(--muted);font-size:15px;margin:0 0 22px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin:14px 0 5px}
+  input{width:100%;font-family:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink)}
+  input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.18)}
+  button.primary{background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:inherit;font-weight:600;font-size:16px;padding:12px 18px;cursor:pointer;width:100%;margin-top:20px}
+  button.primary:hover{background:#16283f}
+  button.primary:disabled{opacity:.55;cursor:default}
+  .err{color:var(--bad);font-size:14px;margin-top:12px;min-height:18px}
+  #app{display:none}
+  .sub-head{background:#fff;border-bottom:1px solid var(--line)}
+  .sub-head .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;gap:14px;flex-wrap:wrap}
+  .sub-head h1{font-size:25px;color:var(--navy)}
+  .gatesel{display:flex;gap:6px;align-items:center}
+  .gatesel .g{font-family:'DM Mono',monospace;font-size:12px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;cursor:pointer;background:#fff;color:var(--muted)}
+  .gatesel .g.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .gatesel .g.locked{opacity:.5}
+  .content{padding:26px 0 80px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+  table.roster{width:100%;border-collapse:collapse;font-size:15px}
+  .roster th{font-size:12px;color:var(--muted);text-align:left;font-weight:600;letter-spacing:.3px;padding:8px 10px;border-bottom:1px solid var(--line)}
+  .roster td{padding:11px 10px;border-bottom:1px solid var(--line)}
+  .roster tr.frow{cursor:pointer}
+  .roster tr.frow:hover td{background:#fcfaf4}
+  .roster .nm{font-weight:600;color:var(--navy)}
+  .roster .dg{color:var(--muted);font-size:13px}
+  .chip{font-family:'DM Mono',monospace;font-size:11px;padding:2px 9px;border-radius:999px}
+  .chip.none{background:#eef1f4;color:var(--muted)}
+  .chip.draft{background:var(--amber);color:var(--warn)}
+  .chip.submitted{background:#e6f2ea;color:var(--good)}
+  .chip.flags{background:#f6e9e9;color:var(--bad);margin-left:6px}
+  .num{font-family:'DM Mono',monospace}
+  .back{display:inline-block;margin-bottom:14px;font-size:14px;cursor:pointer;color:var(--navy);text-decoration:underline}
+  .layout{display:grid;grid-template-columns:1fr 340px;gap:26px}
+  @media(max-width:940px){.layout{grid-template-columns:1fr}}
+  .domain{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden}
+  .domain > .dhead{display:flex;align-items:baseline;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--line)}
+  .domain > .dhead h2{font-size:23px;color:var(--navy)}
+  .domain > .dhead .dtot{font-family:'DM Mono',monospace;font-size:15px;color:var(--navy)}
+  .domain .body{padding:14px 20px 20px}
+  .empty{color:var(--muted);font-size:14px;font-style:italic}
+  .ventry{border:1px solid var(--line);border-radius:10px;background:#fcfbf7;padding:11px 13px;margin-bottom:10px}
+  .ventry .r1{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .ventry .lbl{font-size:15px;color:var(--ink)}
+  .ventry .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .ventry .score{font-family:'DM Mono',monospace;color:var(--navy);white-space:nowrap}
+  .flagbtn{background:none;border:1px solid var(--amberline);color:var(--warn);cursor:pointer;font-size:12px;font-family:'DM Mono',monospace;padding:3px 9px;border-radius:7px;margin-left:10px}
+  .flagline{margin-top:8px;background:#f6e9e9;border:1px solid #ecd3d3;border-radius:8px;padding:7px 10px;font-size:12.5px;color:#7c3333}
+  .flagline .who{font-weight:600}
+  .flagline .retract{margin-left:8px;background:none;border:none;color:#7c3333;text-decoration:underline;cursor:pointer;font-size:12px;padding:0}
+  .orphan{margin-top:8px;background:#f4ecd6;border:1px solid var(--amberline);border-radius:8px;padding:7px 10px;font-size:12.5px;color:#6b5720}
+  .rail{position:sticky;top:18px;align-self:start}
+  .bignum{font-family:'DM Mono',monospace;font-size:42px;font-weight:500;color:var(--navy);line-height:1}
+  .bignum small{font-size:15px;color:var(--muted);font-weight:400}
+  .floor{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .floor:last-child{border-bottom:none}
+  .floor .lab{color:var(--muted)}
+  .floor .val{font-family:'DM Mono',monospace;font-weight:500}
+  .pill{font-family:'DM Mono',monospace;font-size:11px;padding:2px 8px;border-radius:999px;margin-left:8px}
+  .pill.ok{background:#e6f2ea;color:var(--good)}
+  .pill.no{background:#f6e9e9;color:var(--bad)}
+  .incentive{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+  .incentive b{font-family:'DM Mono',monospace;color:var(--good);font-size:18px}
+  .statusbar{border-radius:10px;padding:11px 14px;font-size:14px;margin-bottom:14px}
+  .statusbar.submitted{background:#e6f2ea;border:1px solid #cfe3d6;color:var(--good)}
+  .statusbar.draft{background:var(--amber);border:1px solid var(--amberline);color:#6b5720}
+  .statusbar.none{background:#eef1f4;border:1px solid #d7dce2;color:#3d4756}
+  button.reopen{background:#fff;border:1px solid var(--bad);color:var(--bad);border-radius:9px;font-family:inherit;font-weight:600;font-size:14px;padding:9px 14px;cursor:pointer;width:100%;margin-top:12px}
+  .rights{font-size:12.5px;color:var(--muted);margin-top:10px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+  .disclaim{font-size:12px;color:var(--muted);text-align:center;padding:0 0 40px}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="login">
+  <h1>X-Hub Validate</h1>
+  <p class="sub">Dean validation, AY 2026-27 beta. Sign in with your XIME email.</p>
+  <label for="email">Email</label>
+  <input id="email" type="email" autocomplete="username" placeholder="you@xime.org">
+  <label for="pass">Password</label>
+  <input id="pass" type="password" autocomplete="current-password" placeholder="Password">
+  <button id="loginBtn" class="primary">Sign in</button>
+  <div id="loginErr" class="err"></div>
+</div>
+
+<div id="app">
+  <header class="top">
+    <div class="wrap">
+      <div><svg class="wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="150 85 1325 406" preserveAspectRatio="xMidYMid meet" role="img" aria-label="XIME">
+  <path fill="#ffffff" d="M155.07,424.69c4.7-.4,9.4-1.13,14.1-1.14,7.32-.01,13.75-2.47,19.99-5.94,4.85-2.7,8.85-6.38,12.76-10.24,7.29-7.2,14.88-14.11,21.98-21.5,5.82-6.06,11.1-12.63,16.62-18.98,1.73-1.98,3.42-4,5.23-5.91,5.09-5.36,10.21-10.69,15.35-16,6.83-7.07,13.7-14.09,20.51-21.17,3.22-3.34,6.43-6.69,9.51-10.17,5.72-6.45,11.35-12.98,16.98-19.51,2.61-3.02,2.83-5.32.31-8.45-3.36-4.16-6.36-8.68-10.86-11.8-.48-.34-.74-1-1.11-1.5-5.42-7.35-10.74-14.77-16.29-22.02-6.82-8.92-13.78-17.73-20.79-26.51-4.98-6.24-10.09-12.38-15.24-18.47-7.13-8.41-14.1-16.93-20.8-25.71-4.27-5.59-8.77-11.03-13.82-16-6.29-6.2-13.79-9.48-22.45-10.27-6.07-.55-12.16-.86-18.23-1.31-.82-.06-1.62-.41-2.44-.54-1.3-.21-1.77-.98-1.72-2.22.03-.74,0-1.48,0-2.22,0-15.99.03-31.97-.03-47.96,0-2.44.29-4.64,2.69-6.64h2.58c21.6,0,43.21-.54,64.79.13,29.51.91,59.03-.27,88.52.66,15.23.48,30.43.12,45.65.48.53.01,1.05.07,1.79.12.12.68.33,1.37.34,2.06.03,4.13.39,8.3-.06,12.38-1.07,9.71-.21,19.43-.58,29.14-.18,4.72-.59,9.43-.93,14.55-2.35.23-4.81.61-7.28.69-7.8.28-15.61.43-23.41.68-2.15.07-2.46.51-2.67,2.66-.28,2.85,1.01,5.18,2.54,7.3,3.32,4.6,6.8,9.08,10.31,13.55,3.37,4.3,6.84,8.52,10.3,12.75,3.27,3.99,6.69,7.85,9.85,11.92,3.34,4.3,6.44,8.78,9.93,13.56.13-.03.91-.02,1.41-.4,1.59-1.21,3.16-2.48,4.58-3.88,4.38-4.3,8.82-8.56,13.01-13.04,5.83-6.23,11.53-12.59,17.15-19.02,4.29-4.91,8.4-9.99,12.49-15.07,1.18-1.46,2.19-3.12,2.99-4.83,1.12-2.41.39-4.47-2.06-5.42-2.33-.89-4.8-1.72-7.26-1.87-3.66-.23-7.36.18-11.04.28-2.96.08-5.92.25-8.87.1-1.97-.1-2.7-1.11-2.71-3.17-.04-6.46-.5-12.96.1-19.36.88-9.31.15-18.59.54-27.87.12-2.92.55-5.83.85-8.91h458.5c4.25,15.13,8.48,30.26,12.77,45.37,2.99,10.52,6.11,21,9.09,31.51,3.79,13.35,7.47,26.73,11.24,40.08,2.97,10.52,6.02,21.03,9.04,31.54,3.02,10.51,6.1,21,9.01,31.55.69,2.51.61,5.22,1.17,7.78,1.15,5.23,2.53,10.41,3.77,15.62,1.46,6.12,2.85,12.25,4.31,18.36.22.9.61,1.77.93,2.68,1.78.35,2.24-.67,2.59-2.03,1.19-4.56,2.45-9.1,3.69-13.65.41-1.52.86-3.02,1.28-4.54,3.36-12.37,6.66-24.75,10.09-37.1,3.91-14.08,7.88-28.14,11.93-42.18,2.88-10.01,5.93-19.97,8.89-29.95,3.19-10.79,6.32-21.6,9.56-32.38,1.72-5.74,3.66-11.42,5.42-17.15,3.27-10.64,6.48-21.29,9.75-31.93,1.42-4.62,2.91-9.22,4.39-13.82.19-.58.57-1.11.96-1.85h3.46c136.78,0,273.56.02,410.34-.06,5.95,0,8.27,2.42,9.67,7.1.48,1.6.93,3.24,1.14,4.89.22,1.7-.38,3.59,1.77,4.58.34.16.41.94.58,1.43,2.64,7.54,5.23,15.09,7.93,22.61,3.88,10.8,7.86,21.57,11.76,32.36,1.72,4.76,3.3,9.56,4.98,14.34,3.57,10.14,7.11,20.29,10.79,30.39.94,2.58,1.05,5.15.94,7.79-.1,2.42-1.07,3.52-3.51,4.11-6.79,1.64-13.12,4.49-19.43,7.38-8.05,3.7-16.45,6.41-24.92,8.91-1.19.35-2.46.39-3.91.61-.26-.62-.55-1.26-.8-1.91-2.28-6-4.86-11.85-8.03-17.46-2.64-4.67-4.81-9.61-8.06-13.93-1.13-1.51-2.18-3.11-3.46-4.49-1.95-2.11-2.99-4.74-4.47-7.12-3.56-5.74-8.46-10.13-13.87-14-8.8-6.3-18.45-11.03-28.67-14.48-7.27-2.45-14.72-4.02-22.54-3.96-22.97.16-45.95.06-68.92.06-1.35,0-2.7,0-3.95,0-.72,2.75-.84,84.66-.18,88.44,1.05.06,2.18.17,3.3.17,10.9.01,21.81-.06,32.71.04,3.99.04,7.19-1.58,9.95-4.15,4.31-4.02,6.98-8.92,7.34-14.93.16-2.62.49-5.23.59-7.85.26-7.17.42-14.34.69-21.51.05-1.24.27-2.56.76-3.69.92-2.14,2.87-2.54,5.02-2.54,14.4.02,28.8.01,43.19.01.42,0,.85.01,1.27.01,1.44-.01,2.14.69,2.11,2.14-.02.85,0,1.69,0,2.54,0,22.87-.54,45.75.14,68.6.85,28.46.11,56.91.52,85.36.02,1.14.35,2.27.48,3.41.22,1.89.29,3.73-.63,5.55-1.2,2.37-2.68,3.49-5.61,3.45-14.18-.19-28.37-.08-42.56-.09-4.08,0-4.7-.63-4.73-4.83-.02-3.07.07-6.14-.02-9.21-.17-6.22-.12-12.47-.72-18.65-.53-5.42-1.51-10.86-4.89-15.48-2.81-3.84-6.49-6.32-11.19-7.07-2.48-.4-5.02-.62-7.53-.64-8.89-.07-17.79-.03-26.68-.03-1.15,0-2.3,0-3.64,0-.12,1.08-.29,1.89-.29,2.71-.01,32.19-.02,64.37,0,96.56,0,3.91,1.91,5.78,5.7,5.91,1.03.03,2.05.34,3.09.47,3.95.49,7.9,1.3,11.86,1.36,11.85.18,23.71.13,35.57.04,5.79-.05,11.61-.13,17.37-.7,4.45-.45,8.9-1.43,13.23-2.63,11.56-3.22,22.74-7.52,33.51-12.84,4.18-2.06,7.98-4.72,11.47-7.74,3.98-3.46,7.89-7.03,11.49-10.88,3.36-3.6,6.38-7.54,9.34-11.49,3.46-4.61,6.74-9.37,10.03-14.11,5.88-8.46,9.81-17.82,12.79-27.64.91-3,2.21-5.91,3.56-8.74,1.41-2.95,3.07-3.62,6.2-2.65,2.1.66,4.13,1.55,6.16,2.41,4.75,2.02,9.58,3.73,14.75,4.33.39.04,1.01.19,1.1.43.75,2.1,2.78,2.08,4.38,2.66,6.12,2.23,12.28,4.33,18.41,6.53,2.43.87,2.65,1.5,2.34,4.2-1.05,9.07-4.21,17.55-7.16,26.11-3.05,8.86-5.88,17.79-8.81,26.69-1.78,5.41-3.51,10.83-5.4,16.2-2.34,6.66-4.82,13.27-7.25,19.9-1.38,3.76-2.81,7.5-4.14,11.28-.66,1.88-1.09,3.84-1.72,5.74-3.19,9.57-6.42,19.13-9.63,28.7-1.17,3.49-2.35,6.98-3.55,10.46-1,2.9-1.05,2.94-3.98,2.97-1.27.01-2.54,0-3.81,0-128.1,0-256.2-.09-384.3.14-12.77.02-25.56.48-38.34.43-3.32-.01-6.69-.63-9.95-1.34-3.49-.76-4.39-2.2-4.39-5.9,0-16.52-.01-33.03,0-49.55,0-3.88,1.02-4.74,4.88-4.69,6.14.08,12.29.29,18.42-.06,4.36-.25,8.73-1.12,12.84-2.81,1.88-.77,3.54-1.79,4.61-3.66.51-.89,1.26-1.78,2.12-2.33,2.07-1.32,2.26-3.18,2.26-5.4-.05-38.22.52-76.45-.2-114.66-.66-35.02-.08-70.04-.48-105.05-.01-.94-.1-1.87-.74-2.95-.7,2.29-1.46,4.56-2.11,6.86-2.32,8.27-4.62,16.55-6.9,24.83-3.01,10.91-5.99,21.83-9.02,32.73-2.02,7.27-4.13,14.51-6.18,21.77-1.51,5.35-2.98,10.7-4.49,16.05-2.13,7.56-4.26,15.13-6.42,22.68-4.06,14.21-8.18,28.4-12.2,42.62-4.4,15.53-8.77,31.06-13.05,46.62-3.76,13.64-7.44,27.3-11.06,40.97-3.44,12.96-6.76,25.95-10.13,38.93-.78,3-1.59,3.76-4.51,3.76-17.57.02-35.15,0-52.72,0-.31,0-.62-.1-.54-.09-.53-2.39-.93-4.62-1.54-6.8-2.82-10.1-5.67-20.19-8.57-30.27-2.67-9.27-5.46-18.51-8.11-27.79-3.26-11.4-6.43-22.82-9.67-34.22-2.73-9.59-5.53-19.15-8.27-28.74-3.2-11.2-6.32-22.41-9.54-33.6-3.1-10.79-6.34-21.54-9.42-32.34-2.62-9.17-5.09-18.39-7.64-27.58-2.3-8.28-4.64-16.56-6.93-24.84-2.57-9.3-5.12-18.6-7.68-27.9-1.16-4.25-2.3-8.5-3.48-12.74-.13-.46-.46-.86-1.07-1.98-.1,1.75-.2,2.75-.2,3.75,0,68.61-.01,137.22,0,205.82,0,4.53,1.26,8.75,4.01,12.38,2.5,3.3,6.22,4.63,10.09,5.35,2.67.49,5.43.62,8.15.67,5.5.1,11.01.05,16.51.02,1.35,0,2.71-.18,4.37-.3,1.34,1.91,1.89,4.41,1.91,6.87.1,15.88.06,31.76.02,47.64,0,1.13-.29,2.3-.65,3.38-.82,2.51-1.78,3.18-4.38,3.29-.74.03-1.48,0-2.22,0-151.81,0-303.63,0-455.44,0-.64,0-1.27,0-1.91,0-3.09-.02-4.16-.76-4.79-3.8-.59-2.87-1.13-5.78-1.32-8.7-.37-5.68-.71-11.38-.64-17.06.13-9.81.58-19.62.9-29.64,2.57-1.85,5.67-2.38,9-2.34,8.05.08,16.09.03,24.14.03,1.15,0,2.3,0,3.63,0,.63-3.48.98-6.71-1.09-9.59-4.66-6.5-9.33-13-14.16-19.38-3.87-5.12-7.81-10.19-12-15.04-3.28-3.79-6.23-7.9-10.61-10.74-2.02-1.31-3.31-3.77-4.84-5.78-4.21-5.52-8.37-11.08-12.57-16.61-.23-.3-.66-.45-1.04-.71-2.19,2.27-4.35,4.39-6.37,6.64-2.74,3.05-5.33,6.24-8.08,9.28-3.11,3.44-6.37,6.76-9.5,10.19-4.12,4.51-8.1,9.16-12.31,13.59-3.19,3.36-6.69,6.43-9.95,9.72-2.9,2.92-5.62,6.01-8.5,8.95-2.69,2.75-4.85,5.85-6.49,9.3-1.1,2.31-1.69,4.73-.62,7.26.8,1.91,1.96,3.01,4.3,2.97,7.83-.12,15.67-.05,23.5-.05.74,0,1.49-.03,2.22.03,1.48.11,2.31.93,2.38,2.43.04.74.02,1.48.02,2.22,0,17.36,0,34.73,0,52.09,0,.85.14,1.74-.09,2.52-.17.59-.74,1.25-1.29,1.49-.95.4-2.02.64-3.05.7-4.94.27-9.89.46-14.83.67-5.05.22-10.14.91-15.15.54-14.05-1.03-28.13.13-42.15-.64-19.03-1.04-38.06-.57-57.08-.36-8.53.1-17.09.38-25.64.38-3.42,0-6.84-.75-10.25-1.16,0-19.91,0-39.81,0-59.72ZM652.38,289.34c0,39.79.04,79.59-.06,119.38-.01,3.8.87,7.05,3.18,9.96,2.23,2.81,4.96,4.79,8.74,4.79,17.46,0,34.92,0,52.38,0,.83,0,1.73.02,2.49-.27,6.13-2.3,11.78-8.94,11.78-16.43-.06-76.1-.04-152.19-.04-228.29,0-.85,0-1.7-.07-2.54-.38-4.18-.97-8.35-1.12-12.53-.07-2.07-.8-3.65-1.99-5.14-.72-.9-1.54-1.76-2.45-2.48-3.16-2.51-6.53-4.87-10.71-4.9-16.3-.11-32.6-.13-48.89,0-4.51.04-8,2.38-10.27,6.33-2.1,3.64-2.97,7.59-2.97,11.78,0,40.11,0,80.22,0,120.34ZM554.03,290.26c0-36.94.02-73.87-.03-110.81,0-3.88-.13-7.81-.7-11.64-.5-3.4-1.47-6.77-2.66-10-.9-2.43-2.57-4.07-5.76-3.88-3.81.23-7.35,1.09-10.38,3.27-4.86,3.5-9.49,7.3-14.24,10.96-1.33,1.02-2.59,2.45-4.09,2.83-1.86.46-2.96,1.58-4.01,2.85-4.48,5.43-8.71,11.07-13.36,16.34-5.64,6.41-11.61,12.53-17.42,18.78-2.44,2.62-4.86,5.26-7.28,7.91-5.55,6.06-11.02,12.2-16.65,18.19-5.78,6.16-11.7,12.19-17.59,18.25-2.28,2.35-4.68,4.6-6.94,6.98-2.32,2.44-4.61,4.92-6.8,7.48-1.77,2.08-1.7,2.82-.23,5.31,4.92,8.38,11.51,15.48,17.59,22.96,3.11,3.83,6.47,7.48,9.3,11.5,3.34,4.75,7.04,9.15,11.05,13.32,2.56,2.65,5.02,5.37,6.42,8.89.38.96,1.06,1.82,1.7,2.65,5.66,7.3,11.33,14.59,17.02,21.86,3.49,4.47,6.99,8.92,10.53,13.35,3.8,4.76,7.64,9.49,11.5,14.21,2.86,3.49,5.73,6.98,8.68,10.4,2.2,2.55,4.69,4.87,6.76,7.52,4.6,5.87,10.22,10.59,16.27,14.84,1.71,1.2,3.66,2.11,5.59,2.94,1.78.76,3.34.24,3.69-1.21.88-3.65,2.11-7.18,2.1-11.09-.1-38.31-.06-76.63-.06-114.94ZM1116.52,288.94c0,39.27.02,78.54-.04,117.81,0,2.73.54,5.29,1.65,7.64,1.93,4.11,4.63,7.4,9.95,6.56.62-.1,1.27-.05,1.9,0,2.76.19,4.61-1.16,5.92-3.44,2.47-4.28,3.77-8.94,3.77-13.83.04-78.12.03-156.23.02-234.35,0-4.17-1.57-7.81-4.33-10.88-3.91-4.36-9.4-4.53-13.54-.4-3.51,3.49-5.29,7.81-5.29,12.77-.02,39.38,0,78.75-.01,118.13Z"/>
+</svg><span class="badge-beta">BETA</span></div>
+      <div class="who"><b id="whoName"></b><br><span id="whoMeta"></span> &middot; <a href="#" id="signout">Sign out</a></div>
+    </div>
+  </header>
+
+  <div class="sub-head">
+    <div class="wrap">
+      <h1>Validation <span class="mono" style="font-size:13px;color:var(--muted)" id="campusTag"></span></h1>
+      <div class="gatesel" id="gatesel">
+        <span class="g" data-gate="plan">July Plan</span>
+        <span class="g on" data-gate="interim">Dec Interim</span>
+        <span class="g" data-gate="final">Apr Final</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap content">
+    <div id="rosterView">
+      <div class="card">
+        <table class="roster">
+          <thead><tr><th>Faculty</th><th>Status</th><th style="text-align:right">Overall</th><th style="text-align:right">Last updated</th></tr></thead>
+          <tbody id="rosterBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="detailView" style="display:none">
+      <span class="back" id="backBtn">&larr; Back to roster</span>
+      <div class="layout">
+        <div class="main">
+          <div id="detStatus"></div>
+          <div id="detDomains"></div>
+        </div>
+        <div class="rail">
+          <div class="card">
+            <h3 id="detName" style="font-size:20px;color:var(--navy);margin-bottom:2px"></h3>
+            <div id="detDesig" style="font-size:13px;color:var(--muted);margin-bottom:12px"></div>
+            <div class="bignum" id="overall">0 <small>/ 300</small></div>
+            <div style="margin:14px 0 4px">
+              <div class="floor"><span class="lab">Teaching</span><span><span class="val" id="f-teaching">0</span> <span class="pill" id="p-teaching">min 135</span></span></div>
+              <div class="floor"><span class="lab">Research + Revenue</span><span><span class="val" id="f-other">0</span> <span class="pill" id="p-other">min 90</span></span></div>
+              <div class="floor"><span class="lab">Sub-floor (30 from one)</span><span><span class="val" id="f-sub">0</span> <span class="pill" id="p-sub">min 30</span></span></div>
+              <div class="floor"><span class="lab">Overall target</span><span><span class="val" id="f-overall">0</span> <span class="pill" id="p-overall">300</span></span></div>
+            </div>
+            <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b><div id="incNote" style="font-size:12px;color:var(--warn);margin-top:4px"></div></div>
+            <button class="reopen" id="reopenBtn" style="display:none">Reopen for editing</button>
+            <div class="rights" id="rightsNote"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="disclaim">X-Hub AY 2026-27 beta &middot; dean validation surface &middot; entries are read-only here; flags notify the record owner and the panel</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
+const AY = "2026-27";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let DEAN=null, RULES=[], FLOORS={}, GATES={}, ROSTER=[], CPS={}, FLAGS=[];
+let GATE="interim", CURRENT=null, CSTATE=null, CSTATUS="draft", CSUB=null;
+const GATE_ORDER=["plan","interim","final"];
+const GATE_LABEL={ plan:"July plan", interim:"December interim", final:"April final" };
+const DOMAIN_RIGHTS={ academics:["teaching","institution"], research:["research","institution"], ep:["revenue","institution"] };
+const DOMAINS=[["teaching","Teaching"],["research","Research and Publications"],["revenue","Revenue (MDP / OBP / Consulting / Grant)"],["institution","Institution Building"]];
+
+const $=s=>document.querySelector(s);
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
+function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function rupee(n){ return "Rs " + Math.round(n).toLocaleString("en-IN"); }
+function fmtDate(d){ if(!d) return ""; const dt=new Date(d); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
+
+const rulesBy=d=>RULES.filter(r=>r.domain===d);
+const ruleByCode=c=>RULES.find(r=>r.rule_code===c);
+function pts(code){ const r=ruleByCode(code); return r && r.points!=null ? Number(r.points) : 0; }
+function ptsOr(code, fb){ const r=ruleByCode(code); return r && r.points!=null ? Number(r.points) : fb; }
+function gateOpen(g){
+  const c=GATES[g];
+  if(!c) return true;
+  const today=new Date().toISOString().slice(0,10);
+  return !!c.is_open && (!c.opens_on || today>=c.opens_on) && (!c.closes_on || today<=c.closes_on);
+}
+
+const CREDIT_CODE={ "3":"TCH_BASE_3CR","2":"TCH_BASE_2CR","1.5":"TCH_BASE_1_5CR","1":"TCH_BASE_1CR" };
+function teachScore(e){
+  const fb={ "3":30,"2":20,"1.5":15,"1":10 }[e.credit] ?? 0;
+  const base=ptsOr(CREDIT_CODE[e.credit]||"", fb);
+  const effPct = e.eff==="100" ? ptsOr("TCH_EFF_ABOVE_2_5",100) : e.eff==="80" ? ptsOr("TCH_EFF_2_TO_2_5",80) : 0;
+  const rep = e.repeat ? ptsOr("TCH_REPEAT_SECTION",50)/100 : 1;
+  return base*(effPct/100)*rep;
+}
+function authorShare(authors,pos){
+  const a=Number(authors), p=Number(pos);
+  if(a<=1) return 1;
+  if(a===2) return p===1?0.6:0.4;
+  if(a===3) return p===1?0.5:0.25;
+  return 1/a;
+}
+function resScore(e){ return pts(e.code)*authorShare(e.authors,e.pos); }
+function revScore(e){ return (Number(e.amount)/10000)*pts(e.code); }
+function instScore(e){ return pts(e.code); }
+const SCORER={ teaching:teachScore, research:resScore, revenue:revScore, institution:instScore };
+
+function compute(st){
+  const t=st.teaching.reduce((s,e)=>s+teachScore(e),0);
+  const r=st.research.reduce((s,e)=>s+resScore(e),0);
+  const v=st.revenue.reduce((s,e)=>s+revScore(e),0);
+  const i=st.institution.reduce((s,e)=>s+instScore(e),0);
+  const other=r+v, overall=t+r+v+i;
+  const target=FLOORS.TGT_ANNUAL_PLAN??300;
+  const rateRule=RULES.find(x=>x.domain==="incentive"&&x.points!=null);
+  const rate=rateRule?Number(rateRule.points):1000;
+  const floors={ teaching:t>=(FLOORS.FLR_TEACHING??135), other:other>=(FLOORS.FLR_RESEARCH_REVENUE??90), sub:Math.max(r,v)>=(FLOORS.FLR_OTHER_SUBFLOOR??30) };
+  const floorsMet=floors.teaching&&floors.other&&floors.sub;
+  const gross=Math.max(0, overall-target)*rate;
+  return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
+    target:target, rate:rate, floors:floors, floorsMet:floorsMet, incentiveGross:gross, incentive: floorsMet?gross:0 };
+}
+
+/* ---------- LOGIN ---------- */
+$("#loginBtn").addEventListener("click", doLogin);
+$("#pass").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
+async function doLogin(){
+  const email=$("#email").value.trim().toLowerCase(), pass=$("#pass").value;
+  const btn=$("#loginBtn"); $("#loginErr").textContent="";
+  if(!email||!pass){ $("#loginErr").textContent="Enter email and password."; return; }
+  btn.disabled=true; btn.textContent="Signing in...";
+  const { data, error } = await sb.auth.signInWithPassword({ email, password:pass });
+  if(error){ $("#loginErr").textContent=error.message; btn.disabled=false; btn.textContent="Sign in"; return; }
+  await boot(data.user.email);
+}
+$("#signout").addEventListener("click", async e=>{ e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+sb.auth.getSession().then(({data})=>{ if(data.session) boot(data.session.user.email); });
+
+async function boot(email){
+  const { data: dr } = await sb.from("dean_registry").select("*").eq("email",email).maybeSingle();
+  if(!dr){
+    $("#loginErr").textContent="This surface is for campus deans. Your email is not in the dean registry.";
+    const btn=$("#loginBtn"); btn.disabled=false; btn.textContent="Sign in";
+    await sb.auth.signOut();
+    return;
+  }
+  DEAN=dr;
+  $("#whoName").textContent=DEAN.name;
+  $("#whoMeta").textContent="Dean, "+DEAN.role+" | "+DEAN.campus;
+  $("#campusTag").textContent=DEAN.campus+" · AY "+AY;
+
+  const { data: rules } = await sb.from("scoring_rules").select("*").eq("academic_year",AY).neq("status","superseded");
+  RULES=rules||[];
+  const { data: floors } = await sb.from("scoring_floors").select("*").eq("academic_year",AY).eq("status","ratified");
+  FLOORS={}; (floors||[]).forEach(f=>FLOORS[f.floor_code]=Number(f.points));
+  const { data: gc } = await sb.from("evaluation_gate_config").select("gate,opens_on,closes_on,is_open").eq("academic_year",AY);
+  GATES={}; (gc||[]).forEach(g=>{ if(GATE_ORDER.indexOf(g.gate)>=0) GATES[g.gate]=g; });
+
+  const { data: fac } = await sb.from("faculty_master").select("name,email,designation").eq("campus",DEAN.campus).eq("active",true).order("name");
+  ROSTER=fac||[];
+
+  await loadCycle();
+  $("#loginView").style.display="none";
+  $("#app").style.display="block";
+  updatePills(); renderRoster();
+}
+
+async function loadCycle(){
+  const { data: cps } = await sb.from("v2_checkpoints").select("faculty_email,gate,status,totals,updated_at,submitted_at").eq("academic_year",AY);
+  CPS={}; (cps||[]).forEach(c=>{ CPS[c.faculty_email+"|"+c.gate]=c; });
+  const { data: fl } = await sb.from("v2_entry_flags").select("*").eq("academic_year",AY).is("retracted_at",null);
+  FLAGS=fl||[];
+}
+const flagsFor=(email,gate)=>FLAGS.filter(f=>f.faculty_email===email&&f.gate===gate);
+
+function updatePills(){
+  document.querySelectorAll("#gatesel .g").forEach(p=>{
+    p.classList.toggle("on", p.dataset.gate===GATE);
+    p.classList.toggle("locked", !gateOpen(p.dataset.gate));
+    p.title=gateOpen(p.dataset.gate)?"":"This gate is closed to faculty edits";
+  });
+}
+document.querySelectorAll("#gatesel .g").forEach(g=>g.addEventListener("click", ()=>{
+  if(g.dataset.gate===GATE) return;
+  GATE=g.dataset.gate; updatePills();
+  if(CURRENT) openDetail(CURRENT); else renderRoster();
+}));
+
+/* ---------- ROSTER ---------- */
+function renderRoster(){
+  $("#rosterView").style.display="block"; $("#detailView").style.display="none"; CURRENT=null;
+  const tb=$("#rosterBody"); tb.innerHTML="";
+  ROSTER.forEach(f=>{
+    const cp=CPS[f.email+"|"+GATE];
+    const st=cp?(cp.status||"draft"):"none";
+    const ov=cp&&cp.totals&&cp.totals.overall!=null?Number(cp.totals.overall).toFixed(0):"";
+    const up=cp?fmtDate(cp.updated_at):"";
+    const nfl=flagsFor(f.email,GATE).length;
+    const tr=document.createElement("tr");
+    tr.className="frow"; tr.dataset.email=f.email;
+    tr.innerHTML='<td><span class="nm">'+esc(f.name)+'</span><br><span class="dg">'+esc(f.designation||"")+'</span></td>'+
+      '<td><span class="chip '+st+'">'+(st==="none"?"no record":st)+'</span>'+(nfl?'<span class="chip flags">'+nfl+' flag'+(nfl>1?"s":"")+'</span>':'')+'</td>'+
+      '<td class="num" style="text-align:right">'+ov+'</td>'+
+      '<td style="text-align:right;font-size:13px;color:var(--muted)">'+up+'</td>';
+    tb.appendChild(tr);
+  });
+  if(!ROSTER.length) tb.innerHTML='<tr><td colspan="4" class="empty">No active faculty found for '+esc(DEAN.campus)+'.</td></tr>';
+}
+document.addEventListener("click", e=>{
+  const row=e.target.closest("tr.frow");
+  if(row){ openDetail(row.dataset.email); }
+});
+
+/* ---------- DETAIL ---------- */
+function entryLabel(d,e){
+  if(d==="teaching"){
+    const effTxt=e.eff==="100"?"above 2.5":e.eff==="80"?"2.0 to 2.5":"below 2.0";
+    return { l:(e.name||"Untitled course"), m:e.credit+" credit · effectiveness "+effTxt+(e.repeat?" · repeat section":"") };
+  }
+  const r=ruleByCode(e.code);
+  const lbl=r?r.label:(e.code||"Not selected");
+  if(d==="research") return { l:lbl, m:e.authors+" author(s), position "+e.pos };
+  if(d==="revenue") return { l:lbl, m:"Amount "+rupee(Number(e.amount)||0) };
+  return { l:lbl, m:"" };
+}
+
+async function openDetail(email){
+  CURRENT=email;
+  const f=ROSTER.find(x=>x.email===email)||{name:email,designation:""};
+  $("#detName").textContent=f.name; $("#detDesig").textContent=f.designation||"";
+  const { data: cp } = await sb.from("v2_checkpoints").select("entries,status,submitted_at,updated_at").eq("faculty_email",email).eq("academic_year",AY).eq("gate",GATE).maybeSingle();
+  CSTATE={ teaching:[],research:[],revenue:[],institution:[] };
+  CSTATUS="none"; CSUB=null;
+  if(cp){
+    CSTATUS=cp.status||"draft"; CSUB=cp.submitted_at||null;
+    if(cp.entries){ DOMAINS.forEach(([d])=>{ if(Array.isArray(cp.entries[d])) CSTATE[d]=cp.entries[d]; }); }
+  }
+  renderDetail();
+  $("#rosterView").style.display="none"; $("#detailView").style.display="block";
+  window.scrollTo(0,0);
+}
+$("#backBtn").addEventListener("click", async ()=>{ await loadCycle(); renderRoster(); });
+
+function renderDetail(){
+  const sb2=$("#detStatus");
+  if(CSTATUS==="submitted") sb2.innerHTML='<div class="statusbar submitted">Submitted'+(CSUB?(' on '+fmtDate(CSUB)):'')+'. Frozen for the faculty member.</div>';
+  else if(CSTATUS==="draft") sb2.innerHTML='<div class="statusbar draft">Draft in progress. The faculty member can still edit; entries below reflect the last save.</div>';
+  else sb2.innerHTML='<div class="statusbar none">No '+ (GATE_LABEL[GATE]||GATE) +' checkpoint recorded yet.</div>';
+
+  const rights=DOMAIN_RIGHTS[DEAN.role]||[];
+  const flags=flagsFor(CURRENT,GATE);
+  const mount=$("#detDomains"); mount.innerHTML="";
+  DOMAINS.forEach(([d,title])=>{
+    const list=CSTATE[d]||[];
+    const tot=list.reduce((s,e)=>s+SCORER[d](e),0);
+    const canFlag=rights.indexOf(d)>=0;
+    let inner="";
+    if(!list.length) inner='<p class="empty">No entries.</p>';
+    list.forEach(e=>{
+      const { l, m }=entryLabel(d,e);
+      const efl=flags.filter(x=>x.domain===d && x.entry_id && x.entry_id===e.id);
+      let fh="";
+      efl.forEach(x=>{
+        const mine=x.flagged_by===DEAN.email;
+        fh+='<div class="flagline"><span class="who">'+esc(x.flagged_by_name||x.flagged_by)+'</span> ('+esc(x.flagged_by_role||"")+') on '+fmtDate(x.created_at)+': '+esc(x.reason)+
+          (mine?'<button class="retract" data-retract="'+esc(x.id)+'">retract</button>':'')+'</div>';
+      });
+      inner+='<div class="ventry"><div class="r1"><div><div class="lbl">'+esc(l)+'</div>'+(m?'<div class="meta">'+esc(m)+'</div>':'')+'</div>'+
+        '<div><span class="score">'+SCORER[d](e).toFixed(1)+'</span>'+
+        (canFlag?'<button class="flagbtn" data-flag-d="'+d+'" data-flag-id="'+esc(e.id||"")+'">flag invalid</button>':'')+
+        '</div></div>'+fh+'</div>';
+    });
+    const orphans=flags.filter(x=>x.domain===d && (!x.entry_id || !list.some(e=>e.id===x.entry_id)));
+    orphans.forEach(x=>{
+      const snap=x.entry_snapshot?entryLabel(d,x.entry_snapshot).l:"an entry";
+      inner+='<div class="orphan">A flag by '+esc(x.flagged_by_name||x.flagged_by)+' refers to '+esc(snap)+', which has since been removed or changed: '+esc(x.reason)+'</div>';
+    });
+    const card=document.createElement("div");
+    card.className="domain";
+    card.innerHTML='<div class="dhead"><h2>'+title+'</h2><div class="dtot">'+tot.toFixed(1)+'</div></div><div class="body">'+inner+'</div>';
+    mount.appendChild(card);
+  });
+
+  const c=compute(CSTATE);
+  $("#overall").innerHTML=c.overall.toFixed(0)+' <small>/ '+c.target+'</small>';
+  const setFloor=(valId,pillId,val,min)=>{
+    $(valId).textContent=val.toFixed(0);
+    const p=$(pillId); const ok=val>=min;
+    p.className="pill "+(ok?"ok":"no"); p.textContent=ok?"met":("min "+min);
+  };
+  setFloor("#f-teaching","#p-teaching",c.teaching,FLOORS.FLR_TEACHING??135);
+  setFloor("#f-other","#p-other",c.other,FLOORS.FLR_RESEARCH_REVENUE??90);
+  setFloor("#f-sub","#p-sub",Math.max(c.research,c.revenue),FLOORS.FLR_OTHER_SUBFLOOR??30);
+  setFloor("#f-overall","#p-overall",c.overall,c.target);
+  $("#incentive").textContent=rupee(c.incentive);
+  const note=$("#incNote");
+  if(!c.floorsMet && c.incentiveGross>0){
+    const miss=[];
+    if(!c.floors.teaching) miss.push("Teaching "+c.teaching.toFixed(0)+" of "+(FLOORS.FLR_TEACHING??135));
+    if(!c.floors.other) miss.push("Research + Revenue "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
+    if(!c.floors.sub) miss.push("Sub-floor "+Math.max(c.research,c.revenue).toFixed(0)+" of "+(FLOORS.FLR_OTHER_SUBFLOOR??30));
+    note.textContent="Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.";
+  } else note.textContent="";
+
+  $("#reopenBtn").style.display = CSTATUS==="submitted" ? "block" : "none";
+  const rightsList=(DOMAIN_RIGHTS[DEAN.role]||[]).join(", ");
+  $("#rightsNote").textContent="You can read everything and flag entries in: "+rightsList+".";
+}
+
+/* ---------- FLAG / RETRACT / REOPEN ---------- */
+document.addEventListener("click", async e=>{
+  const t=e.target;
+  if(t.dataset.flagD!==undefined){
+    const d=t.dataset.flagD, eid=t.dataset.flagId||null;
+    const entry=(CSTATE[d]||[]).find(x=>x.id===eid)||null;
+    const reason=prompt("Flag this entry as invalid. Give the reason the faculty member and panel will see:");
+    if(!reason||!reason.trim()) return;
+    const { error } = await sb.from("v2_entry_flags").insert({
+      faculty_email:CURRENT, academic_year:AY, gate:GATE, domain:d,
+      entry_id:eid, entry_snapshot:entry, reason:reason.trim(),
+      flagged_by:DEAN.email, flagged_by_name:DEAN.name, flagged_by_role:DEAN.role });
+    if(error){ toast("Flag failed: "+error.message); return; }
+    const { data: fl } = await sb.from("v2_entry_flags").select("*").eq("academic_year",AY).is("retracted_at",null);
+    FLAGS=fl||[];
+    renderDetail(); toast("Entry flagged");
+  }
+  if(t.dataset.retract!==undefined){
+    if(!confirm("Retract this flag?")) return;
+    const { error } = await sb.from("v2_entry_flags").update({ retracted_at:new Date().toISOString() }).eq("id",t.dataset.retract);
+    if(error){ toast("Retract failed: "+error.message); return; }
+    const { data: fl } = await sb.from("v2_entry_flags").select("*").eq("academic_year",AY).is("retracted_at",null);
+    FLAGS=fl||[];
+    renderDetail(); toast("Flag retracted");
+  }
+});
+$("#reopenBtn").addEventListener("click", async ()=>{
+  const f=ROSTER.find(x=>x.email===CURRENT)||{name:CURRENT};
+  if(!confirm("Reopen the "+(GATE_LABEL[GATE]||GATE)+" checkpoint for "+f.name+"? They will be able to edit and must submit again.")) return;
+  const { error } = await sb.from("v2_checkpoints").update({ status:"draft", submitted_at:null, updated_at:new Date().toISOString() })
+    .eq("faculty_email",CURRENT).eq("academic_year",AY).eq("gate",GATE);
+  if(error){ toast("Reopen failed: "+error.message); return; }
+  CSTATUS="draft"; CSUB=null;
+  renderDetail(); toast("Checkpoint reopened");
+});
+</script>
+</body>
+</html>
