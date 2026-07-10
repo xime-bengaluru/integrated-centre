@@ -286,6 +286,7 @@ function gateOpen(g){
   return !!c.is_open && (!c.opens_on || today>=c.opens_on) && (!c.closes_on || today<=c.closes_on);
 }
 function fmtDate(d){ if(!d) return ""; const dt=new Date(d+"T00:00:00"); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
+function uid(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
 function isProvisional(code){ const r=ruleByCode(code); return !r || r.status!=="ratified" || r.points==null; }
 
 /* ---------- LOGIN ---------- */
@@ -364,6 +365,7 @@ async function loadCheckpoint(){
       }
     }
   }
+  ["teaching","research","revenue","institution"].forEach(d=>STATE[d].forEach(en=>{ if(!en.id) en.id=uid(); }));
   EDITABLE = gateOpen(GATE) && STATUS!=="submitted";
   $("#savedMsg").textContent="";
   updateGateUI();
@@ -436,10 +438,10 @@ document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click
   if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
   const d=b.dataset.add;
   DIRTY=true;
-  if(d==="teaching") STATE.teaching.push({ name:"", credit:"3", eff:"100", repeat:false, methods:{case:"none",sim:"none",live:"none",role:"none",other:"none"} });
-  if(d==="research") STATE.research.push({ code:"", authors:"1", pos:"1" });
-  if(d==="revenue") STATE.revenue.push({ code:"", amount:0 });
-  if(d==="institution") STATE.institution.push({ code:"" });
+  if(d==="teaching") STATE.teaching.push({ id:uid(), name:"", credit:"3", eff:"100", repeat:false, methods:{case:"none",sim:"none",live:"none",role:"none",other:"none"} });
+  if(d==="research") STATE.research.push({ id:uid(), code:"", authors:"1", pos:"1" });
+  if(d==="revenue") STATE.revenue.push({ id:uid(), code:"", amount:0 });
+  if(d==="institution") STATE.institution.push({ id:uid(), code:"" });
   renderAll();
 }));
 
