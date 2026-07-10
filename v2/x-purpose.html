@@ -201,12 +201,16 @@ function hasIkigai(p){ if(!p) return false;
   return (p.ikigai_passion||"")!=="" || (p.ikigai_statement||"")!=="" || p.ikigai_strength_teaching!=null || (p.action_start||"")!=="" || (p.ikigai_contribution||"")!==""; }
 
 async function boot(email){
-  const { data: fm }=await sb.from("faculty_master").select("name,campus,designation").eq("email",email).maybeSingle();
+  const { data: fm }=await sb.from("faculty_master").select("id,name,campus,designation").eq("email",email).maybeSingle();
   USER={ email, name: fm&&fm.name?fm.name:email, campus: fm?fm.campus:"", designation: fm?fm.designation:"" };
   $("#whoName").textContent=USER.name;
   $("#whoMeta").textContent=[USER.designation, USER.campus].filter(Boolean).join(" | ");
 
-  const { data: rows }=await sb.from("faculty_evaluations").select("*").eq("academic_year",PRIOR_YEAR).limit(1);
+  let rows=null;
+  if(fm&&fm.id){
+    const r=await sb.from("faculty_evaluations").select("*").eq("academic_year",PRIOR_YEAR).eq("faculty_master_id",fm.id).limit(1);
+    rows=r.data;
+  }
   PRIOR=rows&&rows.length?rows[0]:null;
 
   const { data: entry }=await sb.from("v2_purpose_entries").select("*").eq("faculty_email",email).eq("academic_year",AY).maybeSingle();
