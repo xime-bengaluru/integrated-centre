@@ -127,6 +127,12 @@
     padding:11px 20px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
   .toast.show{opacity:1}
   .disclaim{font-size:12px;color:var(--muted);text-align:center;padding:0 0 40px}
+  .g.locked{opacity:.5}
+  .gatebanner{margin:16px 0 0;background:var(--amber);border:1px solid var(--amberline);border-radius:10px;padding:11px 15px;font-size:14px;color:#6b5720}
+  .gatebanner.frozen{background:#eef1f4;border-color:#d7dce2;color:#3d4756}
+  .gatebanner.seed{background:#e9f2ec;border-color:#cfe3d6;color:var(--good)}
+  body.ro .main input, body.ro .main select{pointer-events:none;background:#f1efe8;color:var(--muted)}
+  body.ro .main .add, body.ro .main .rm, body.ro .main .flag{display:none}
 </style>
 </head>
 <body>
@@ -164,6 +170,8 @@
       </div>
     </div>
   </div>
+
+  <div class="wrap"><div id="gateBanner" class="gatebanner" style="display:none"></div></div>
 
   <div class="wrap layout">
     <!-- MAIN -->
@@ -219,12 +227,13 @@
           <div class="floor"><span class="lab">Sub-floor (30 from one)</span><span><span class="val" id="f-sub">0</span> <span class="pill" id="p-sub">min 30</span></span></div>
           <div class="floor"><span class="lab">Overall target</span><span><span class="val" id="f-overall">0</span> <span class="pill" id="p-overall">300</span></span></div>
         </div>
-        <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b> <span style="font-size:12px">(Rs 1000 per point over 300)</span></div>
+        <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b> <span style="font-size:12px" id="incRate">(Rs 1000 per point over 300, floors apply)</span><div id="incNote" style="font-size:12px;color:var(--warn);margin-top:4px"></div></div>
       </div>
 
       <div class="card">
         <div class="saverow">
           <button class="primary" id="saveBtn" style="width:auto;margin-top:0">Save checkpoint</button>
+          <button class="primary" id="submitBtn" style="width:auto;margin-top:0;background:var(--gold);color:var(--navy)">Submit</button>
           <span class="saved" id="savedMsg"></span>
         </div>
         <p class="fb-note" style="margin-top:14px">This is a beta. Numbers are read from the live scoring rules; anything marked <span class="prov">provisional</span> is not final. Tell us what is wrong or missing.</p>
@@ -250,6 +259,10 @@ let FLOORS = {};     // floor_code -> points
 let USER = null;     // { email, name, campus, designation }
 let GATE = "plan";
 let STATE = { teaching:[], research:[], revenue:[], institution:[] };
+let GATES = {};
+let STATUS = "draft", SUBMITTED_AT = null, EDITABLE = true, SEEDED = null, DIRTY = false;
+const GATE_ORDER = ["plan","interim","final"];
+const GATE_LABEL = { plan:"July plan", interim:"December interim", final:"April final" };
 
 const $ = s => document.querySelector(s);
 const el = (tag, props={}, kids=[]) => {
@@ -265,6 +278,14 @@ function rupee(n){ return "Rs " + Math.round(n).toLocaleString("en-IN"); }
 const rulesBy = d => RULES.filter(r=>r.domain===d);
 const ruleByCode = c => RULES.find(r=>r.rule_code===c);
 function pts(code){ const r=ruleByCode(code); return r && r.points!=null ? Number(r.points) : 0; }
+function ptsOr(code, fb){ const r=ruleByCode(code); return r && r.points!=null ? Number(r.points) : fb; }
+function gateOpen(g){
+  const c=GATES[g];
+  if(!c) return true;
+  const today=new Date().toISOString().slice(0,10);
+  return !!c.is_open && (!c.opens_on || today>=c.opens_on) && (!c.closes_on || today<=c.closes_on);
+}
+function fmtDate(d){ if(!d) return ""; const dt=new Date(d+"T00:00:00"); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
 function isProvisional(code){ const r=ruleByCode(code); return !r || r.status!=="ratified" || r.points==null; }
 
 /* ---------- LOGIN ---------- */
@@ -294,6 +315,8 @@ async function boot(email){
   RULES = rules || [];
   const { data: floors } = await sb.from("scoring_floors").select("*").eq("academic_year",AY).eq("status","ratified");
   FLOORS = {}; (floors||[]).forEach(f=>FLOORS[f.floor_code]=Number(f.points));
+  const { data: gc } = await sb.from("evaluation_gate_config").select("gate,opens_on,closes_on,is_open").eq("academic_year",AY);
+  GATES = {}; (gc||[]).forEach(g=>{ if(GATE_ORDER.indexOf(g.gate)>=0) GATES[g.gate]=g; });
 
   $("#loginView").style.display="none";
   $("#app").style.display="block";
@@ -308,6 +331,8 @@ sb.auth.getSession().then(({data})=>{ if(data.session) boot(data.session.user.em
 
 /* ---------- GATE ---------- */
 document.querySelectorAll("#gatesel .g").forEach(g=>g.addEventListener("click", async ()=>{
+  if(g.dataset.gate===GATE) return;
+  if(DIRTY && EDITABLE && !confirm("You have unsaved changes on this checkpoint. Discard them and switch?")) return;
   document.querySelectorAll("#gatesel .g").forEach(x=>x.classList.remove("on"));
   g.classList.add("on"); GATE=g.dataset.gate;
   await loadCheckpoint(); renderAll();
@@ -316,21 +341,80 @@ document.querySelectorAll("#gatesel .g").forEach(g=>g.addEventListener("click", 
 /* ---------- CHECKPOINT LOAD / SAVE ---------- */
 async function loadCheckpoint(){
   STATE={ teaching:[], research:[], revenue:[], institution:[] };
-  const { data } = await sb.from("v2_checkpoints").select("entries").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate",GATE).maybeSingle();
-  if(data && data.entries){
-    const e=data.entries;
-    ["teaching","research","revenue","institution"].forEach(d=>{ if(Array.isArray(e[d])) STATE[d]=e[d]; });
+  STATUS="draft"; SUBMITTED_AT=null; SEEDED=null; DIRTY=false;
+  const { data } = await sb.from("v2_checkpoints").select("entries,status,submitted_at").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate",GATE).maybeSingle();
+  if(data){
+    STATUS=data.status||"draft"; SUBMITTED_AT=data.submitted_at||null;
+    if(data.entries){
+      const e=data.entries;
+      ["teaching","research","revenue","institution"].forEach(d=>{ if(Array.isArray(e[d])) STATE[d]=e[d]; });
+    }
+  } else {
+    const idx=GATE_ORDER.indexOf(GATE);
+    if(idx>0){
+      const { data: prev } = await sb.from("v2_checkpoints").select("gate,entries").eq("faculty_email",USER.email).eq("academic_year",AY).in("gate",GATE_ORDER.slice(0,idx));
+      if(prev && prev.length){
+        prev.sort((a,b)=>GATE_ORDER.indexOf(b.gate)-GATE_ORDER.indexOf(a.gate));
+        const s=prev[0];
+        if(s.entries){
+          const e=s.entries;
+          ["teaching","research","revenue","institution"].forEach(d=>{ if(Array.isArray(e[d])) STATE[d]=JSON.parse(JSON.stringify(e[d])); });
+          SEEDED=GATE_LABEL[s.gate]||s.gate;
+        }
+      }
+    }
   }
+  EDITABLE = gateOpen(GATE) && STATUS!=="submitted";
   $("#savedMsg").textContent="";
+  updateGateUI();
+}
+function updateGateUI(){
+  document.querySelectorAll("#gatesel .g").forEach(p=>{
+    const open=gateOpen(p.dataset.gate);
+    p.classList.toggle("locked", !open);
+    p.title = open ? "" : "This gate is closed";
+  });
+  document.body.classList.toggle("ro", !EDITABLE);
+  $("#saveBtn").style.display = EDITABLE ? "" : "none";
+  $("#submitBtn").style.display = EDITABLE ? "" : "none";
+  const b=$("#gateBanner"); const c=GATES[GATE]||{};
+  if(STATUS==="submitted"){
+    b.className="gatebanner frozen"; b.style.display="block";
+    b.textContent="Submitted"+(SUBMITTED_AT?(" on "+fmtDate(String(SUBMITTED_AT).slice(0,10))):"")+". This checkpoint is frozen. Contact your campus dean if it needs to be reopened.";
+  } else if(!gateOpen(GATE)){
+    const today=new Date().toISOString().slice(0,10);
+    b.className="gatebanner frozen"; b.style.display="block";
+    if(c.opens_on && today<c.opens_on) b.textContent="This gate opens on "+fmtDate(c.opens_on)+". You can view but not edit yet.";
+    else b.textContent="This gate closed"+(c.closes_on?(" on "+fmtDate(c.closes_on)):"")+". Entries are frozen as recorded.";
+  } else if(SEEDED){
+    b.className="gatebanner seed"; b.style.display="block";
+    b.textContent="Pre-filled from your "+SEEDED+" checkpoint. Review, adjust, then save.";
+  } else { b.style.display="none"; }
 }
 $("#saveBtn").addEventListener("click", async ()=>{
+  if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
   const totals=compute();
   const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
     entries:STATE, totals:totals, status:"draft", updated_at:new Date().toISOString() };
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
   if(error){ toast("Save failed: "+error.message); return; }
+  DIRTY=false;
+  if(SEEDED){ SEEDED=null; updateGateUI(); }
   $("#savedMsg").textContent="Saved "+new Date().toLocaleTimeString();
   toast("Checkpoint saved");
+});
+$("#submitBtn").addEventListener("click", async ()=>{
+  if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
+  const label=GATE_LABEL[GATE]||GATE;
+  if(!confirm("Submit your "+label+" checkpoint? After submitting you cannot edit it without your dean reopening it.")) return;
+  const totals=compute();
+  const now=new Date().toISOString();
+  const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
+    entries:STATE, totals:totals, status:"submitted", submitted_at:now, updated_at:now };
+  const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
+  if(error){ toast("Submit failed: "+error.message); return; }
+  STATUS="submitted"; SUBMITTED_AT=now; EDITABLE=false; DIRTY=false; SEEDED=null;
+  updateGateUI(); toast("Checkpoint submitted");
 });
 
 /* ---------- FEEDBACK ---------- */
@@ -349,7 +433,9 @@ function flagEntry(domain, label){
 
 /* ---------- ADD ENTRIES ---------- */
 document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click", ()=>{
+  if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
   const d=b.dataset.add;
+  DIRTY=true;
   if(d==="teaching") STATE.teaching.push({ name:"", credit:"3", eff:"100", repeat:false, methods:{case:"none",sim:"none",live:"none",role:"none",other:"none"} });
   if(d==="research") STATE.research.push({ code:"", authors:"1", pos:"1" });
   if(d==="revenue") STATE.revenue.push({ code:"", amount:0 });
@@ -358,10 +444,13 @@ document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click
 }));
 
 /* ---------- SCORING ---------- */
+const CREDIT_CODE={ "3":"TCH_BASE_3CR","2":"TCH_BASE_2CR","1.5":"TCH_BASE_1_5CR","1":"TCH_BASE_1CR" };
 function teachScore(e){
-  const base={ "3":30,"2":20,"1.5":15,"1":10 }[e.credit] ?? 0;
-  const eff=Number(e.eff)/100;
-  return base*eff*(e.repeat?0.5:1);
+  const fb={ "3":30,"2":20,"1.5":15,"1":10 }[e.credit] ?? 0;
+  const base=ptsOr(CREDIT_CODE[e.credit]||"", fb);
+  const effPct = e.eff==="100" ? ptsOr("TCH_EFF_ABOVE_2_5",100) : e.eff==="80" ? ptsOr("TCH_EFF_2_TO_2_5",80) : 0;
+  const rep = e.repeat ? ptsOr("TCH_REPEAT_SECTION",50)/100 : 1;
+  return base*(effPct/100)*rep;
 }
 function authorShare(authors, pos){
   const a=Number(authors), p=Number(pos);
@@ -380,8 +469,19 @@ function compute(){
   const v=STATE.revenue.reduce((s,e)=>s+revScore(e),0);
   const i=STATE.institution.reduce((s,e)=>s+instScore(e),0);
   const other=r+v, overall=t+r+v+i;
+  const target=FLOORS.TGT_ANNUAL_PLAN??300;
+  const rateRule=RULES.find(x=>x.domain==="incentive"&&x.points!=null);
+  const rate=rateRule?Number(rateRule.points):1000;
+  const floors={
+    teaching: t>=(FLOORS.FLR_TEACHING??135),
+    other: other>=(FLOORS.FLR_RESEARCH_REVENUE??90),
+    sub: Math.max(r,v)>=(FLOORS.FLR_OTHER_SUBFLOOR??30)
+  };
+  const floorsMet=floors.teaching&&floors.other&&floors.sub;
+  const gross=Math.max(0, overall-target)*rate;
   return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
-    incentive: Math.max(0, overall-300)*1000 };
+    target:target, rate:rate, floors:floors, floorsMet:floorsMet,
+    incentiveGross:gross, incentive: floorsMet?gross:0 };
 }
 
 /* ---------- RENDER ---------- */
@@ -506,7 +606,16 @@ function renderSummary(){
   const sub=Math.max(c.research,c.revenue);
   setFloor("#f-sub","#p-sub",sub,FLOORS.FLR_OTHER_SUBFLOOR??30);
   setFloor("#f-overall","#p-overall",c.overall,FLOORS.TGT_ANNUAL_PLAN??300);
+  $("#incRate").textContent = "(Rs "+c.rate.toLocaleString("en-IN")+" per point over "+c.target+", floors apply)";
+  const note=$("#incNote");
   $("#incentive").textContent = rupee(c.incentive);
+  if(!c.floorsMet && c.incentiveGross>0){
+    const miss=[];
+    if(!c.floors.teaching) miss.push("Teaching "+c.teaching.toFixed(0)+" of "+(FLOORS.FLR_TEACHING??135));
+    if(!c.floors.other) miss.push("Research + Revenue "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
+    if(!c.floors.sub) miss.push("Sub-floor "+Math.max(c.research,c.revenue).toFixed(0)+" of "+(FLOORS.FLR_OTHER_SUBFLOOR??30));
+    note.textContent="Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.";
+  } else { note.textContent=""; }
 }
 
 function renderAll(){
@@ -523,12 +632,14 @@ document.addEventListener("input", e=>{
   const d=map[listId]; if(!d) return;
 
   // per-course pedagogy bands: attribute on the entry, no score impact, no rebuild
-  if(k==="method"){ if(!STATE[d][i].methods) STATE[d][i].methods={}; STATE[d][i].methods[t.dataset.m]=t.value; return; }
+  if(!EDITABLE) return;
+  if(k==="method"){ if(!STATE[d][i].methods) STATE[d][i].methods={}; STATE[d][i].methods[t.dataset.m]=t.value; DIRTY=true; return; }
 
   let v=t.value;
   if(k==="repeat") v = (t.value==="yes");
   if(k==="amount") v = Number(t.value)||0;
   STATE[d][i][k]=v;
+  DIRTY=true;
 
   // Typed fields (course name, amount) must not trigger a list rebuild, or the field loses focus mid-typing.
   if(t.tagName==="INPUT" && t.type!=="checkbox"){ liveUpdate(d, i, t); return; }
@@ -549,10 +660,11 @@ function liveUpdate(d, i, t){
 }
 document.addEventListener("click", e=>{
   const t=e.target;
-  const rm=(k,d)=>{ if(t.dataset[k]!==undefined){ STATE[d].splice(+t.dataset[k],1); renderAll(); } };
+  const rm=(k,d)=>{ if(t.dataset[k]!==undefined){ if(!EDITABLE) return; STATE[d].splice(+t.dataset[k],1); DIRTY=true; renderAll(); } };
   rm("rmT","teaching"); rm("rmR","research"); rm("rmV","revenue"); rm("rmI","institution");
   if(t.dataset.flagD!==undefined) flagEntry(t.dataset.flagD, t.dataset.flagL);
 });
+window.addEventListener("beforeunload", e=>{ if(DIRTY && EDITABLE){ e.preventDefault(); e.returnValue=""; } });
 </script>
 </body>
 </html>
