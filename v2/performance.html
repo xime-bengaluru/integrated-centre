@@ -150,6 +150,14 @@
   .gchip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
   .gro{font-size:14px;padding:2px 0;color:var(--ink)}
   .gro b{color:var(--navy)}
+  .gcard textarea{width:100%;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;resize:vertical;min-height:52px}
+  .gcard textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.18)}
+  .gcount{font-size:11px;color:var(--muted);text-align:right;margin-top:2px;font-family:'DM Mono',monospace}
+  .gcount.warn{color:var(--bad)}
+  .gstream{display:flex;gap:8px;align-items:center;margin-top:7px}
+  .gstream .sl{font-family:'DM Mono',monospace;font-size:12px;flex:0 0 86px;color:var(--navy)}
+  .gstream input[type=number]{flex:0 0 78px;font-size:13px;padding:7px 8px}
+  .gstream input[type=text]{flex:1;font-size:13px;padding:7px 8px}
   .gro .gnote{color:var(--muted);font-size:13px}
   body.ro .main .add, body.ro .main .rm, body.ro .main .flag{display:none}
 </style>
@@ -309,12 +317,18 @@ function gateOpen(g){
 function fmtDate(d){ if(!d) return ""; const dt=new Date(d+"T00:00:00"); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
 function uid(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
 function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function cleanTxt(s){ return String(s==null?"":s).trim().replace(/[.;,\s]+$/,""); }
+const EP_LABELS={ mdp:"MDP", obp:"OBP", consulting:"Consulting", grants:"Grants", programmes:"Programmes" };
 function normGoals(g){
   g=g||{};
+  const eOld=g.ep||{};
+  const mk=k=>Object.assign({on:false,days:"",what:""}, (eOld.streams&&eOld.streams[k])||{});
+  const streams={ mdp:mk("mdp"), obp:mk("obp"), consulting:mk("consulting"), grants:mk("grants"), programmes:mk("programmes") };
+  if(!eOld.streams){ ["mdp","obp","consulting","grants"].forEach(k=>{ if(eOld[k]===true) streams[k].on=true; }); }
   return {
     teaching: Object.assign({courses:"",credits:"",note:""}, g.teaching||{}),
     research: Object.assign({areas:"",outputs:"",level:"",note:""}, g.research||{}),
-    ep: Object.assign({mdp:false,obp:false,consulting:false,grants:false,days:"",note:""}, g.ep||{}),
+    ep: { streams:streams, days:eOld.days||"", note:eOld.note||"" },
     institution: Object.assign({what:"",terms:[],note:""}, g.institution||{}),
     other: Object.assign({note:""}, g.other||{})
   };
@@ -326,29 +340,33 @@ function buildSummary(g, name){
   if(t.credits||t.courses){
     let s="teach";
     if(t.credits) s+=" "+t.credits+" credits";
-    if(t.courses) s+=(t.credits?" across ":" ")+t.courses;
+    if(t.courses) s+=(t.credits?" across ":" ")+cleanTxt(t.courses);
     p.push(s);
   }
   const r=g.research||{};
   if(r.areas||r.outputs){
     let s="pursue research";
-    if(r.areas) s+=" in "+r.areas;
+    if(r.areas) s+=" in "+cleanTxt(r.areas);
     if(r.outputs) s+=", targeting "+r.outputs+" output"+(Number(r.outputs)>1?"s":"")+(r.level?" at "+r.level+" level":"");
     p.push(s);
   }
-  const e=g.ep||{};
-  const mixMap={mdp:"MDP",obp:"OBP",consulting:"Consulting",grants:"Grants"};
-  const mix=Object.keys(mixMap).filter(k=>e[k]).map(k=>mixMap[k]);
-  if(mix.length||e.days){
-    let s="contribute to EP";
-    if(mix.length) s+=" through "+mix.join(", ");
-    if(e.days) s+=" ("+e.days+" days)";
+  const e=g.ep||{streams:{}};
+  const eParts=Object.keys(EP_LABELS).filter(k=>e.streams&&e.streams[k]&&e.streams[k].on).map(k=>{
+    const st=e.streams[k]; const bits=[];
+    if(st.days) bits.push(st.days+" days");
+    if(st.what) bits.push(cleanTxt(st.what));
+    return EP_LABELS[k]+(bits.length?" ("+bits.join(": ")+")":"");
+  });
+  const anyStreamDays=Object.keys(EP_LABELS).some(k=>e.streams&&e.streams[k]&&e.streams[k].on&&e.streams[k].days);
+  if(eParts.length){
+    let s="contribute to EP through "+eParts.join(", ");
+    if(e.days && !anyStreamDays) s+=" ("+e.days+" days overall)";
     p.push(s);
-  }
+  } else if(e.days) p.push("contribute to EP ("+e.days+" days)");
   const i=g.institution||{};
-  if(i.what) p.push("take up "+i.what+(i.terms&&i.terms.length?" in "+i.terms.join(", "):""));
+  if(i.what) p.push("take up "+cleanTxt(i.what)+(i.terms&&i.terms.length?" in "+i.terms.join(", "):""));
   const o=g.other||{};
-  if(o.note) p.push("beyond these areas, "+o.note);
+  if(o.note) p.push("beyond these areas, "+cleanTxt(o.note));
   if(!p.length) return "";
   return "In AY "+AY+", "+name+" plans to "+p.join("; ")+".";
 }
@@ -696,7 +714,7 @@ function renderSummary(){
 }
 
 const GOAL_TERM_CHIPS=["Term I","Term II","Term III"];
-function goalsEmpty(g){ return !buildSummary(g,"x") && !(g&&(g.teaching.note||g.research.note||g.ep.note||g.institution.note)); }
+function counterFor(val,cap){ return '<div class="gcount'+(String(val).length>=cap?' warn':'')+'">'+String(val).length+'/'+cap+'</div>'; }
 function renderGoals(){
   const w=document.getElementById("goalsWrap");
   if(!w) return;
@@ -710,36 +728,38 @@ function renderGoals(){
     h+='<div class="gcard"><h3>Teaching</h3>'+
       '<label>Courses you would like to teach</label><input type="text" maxlength="160" data-gd="teaching" data-gk="courses" value="'+esc(g.teaching.courses)+'" placeholder="e.g. Marketing Management, FRM">'+
       '<div class="grow"><div><label>Total credits</label><input type="number" min="0" step="0.5" data-gd="teaching" data-gk="credits" value="'+esc(g.teaching.credits)+'"></div></div>'+
-      '<label>What you want to try or improve (one line)</label><input type="text" maxlength="200" data-gd="teaching" data-gk="note" value="'+esc(g.teaching.note)+'"></div>';
+      '<label>What you want to try or improve (one line)</label><input type="text" maxlength="200" data-gd="teaching" data-gk="note" value="'+esc(g.teaching.note)+'">'+counterFor(g.teaching.note,200)+'</div>';
     h+='<div class="gcard"><h3>Research</h3>'+
       '<label>Focus areas</label><input type="text" maxlength="160" data-gd="research" data-gk="areas" value="'+esc(g.research.areas)+'" placeholder="e.g. consumer behaviour, pricing">'+
       '<div class="grow"><div><label>Target outputs</label><input type="number" min="0" data-gd="research" data-gk="outputs" value="'+esc(g.research.outputs)+'"></div>'+
       '<div><label>Aspiration</label><select data-gd="research" data-gk="level">'+
       ["","ABDC A*","ABDC A","ABDC B","ABDC C","Scopus","WoS","Case"].map(o=>'<option value="'+o+'"'+(g.research.level===o?" selected":"")+'>'+(o||"Any")+'</option>').join("")+
       '</select></div></div>'+
-      '<label>One line on direction</label><input type="text" maxlength="200" data-gd="research" data-gk="note" value="'+esc(g.research.note)+'"></div>';
+      '<label>One line on direction</label><input type="text" maxlength="200" data-gd="research" data-gk="note" value="'+esc(g.research.note)+'">'+counterFor(g.research.note,200)+'</div>';
     h+='<div class="gcard"><h3>External Programs</h3>'+
       '<label>Where you would like to focus</label><div class="gmix">'+
-      [["mdp","MDP"],["obp","OBP"],["consulting","Consulting"],["grants","Grants"]].map(([k,l])=>'<span class="gchip'+(g.ep[k]?" on":"")+'" data-gmix="'+k+'">'+l+'</span>').join("")+'</div>'+
-      '<div class="grow"><div><label>Intended days</label><input type="number" min="0" data-gd="ep" data-gk="days" value="'+esc(g.ep.days)+'"></div></div>'+
-      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="ep" data-gk="note" value="'+esc(g.ep.note)+'"></div>';
+      Object.keys(EP_LABELS).map(k=>'<span class="gchip'+(g.ep.streams[k].on?" on":"")+'" data-gmix="'+k+'">'+EP_LABELS[k]+'</span>').join("")+'</div>'+
+      Object.keys(EP_LABELS).filter(k=>g.ep.streams[k].on).map(k=>
+        '<div class="gstream"><span class="sl">'+EP_LABELS[k]+'</span>'+
+        '<input type="number" min="0" placeholder="days" data-gsd="'+k+'" value="'+esc(g.ep.streams[k].days)+'">'+
+        '<input type="text" maxlength="120" placeholder="what, for whom" data-gsw="'+k+'" value="'+esc(g.ep.streams[k].what)+'"></div>').join("")+
+      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="ep" data-gk="note" value="'+esc(g.ep.note)+'">'+counterFor(g.ep.note,200)+'</div>';
     h+='<div class="gcard"><h3>Institution Building</h3>'+
-      '<label>What you would like to take up</label><input type="text" maxlength="160" data-gd="institution" data-gk="what" value="'+esc(g.institution.what)+'" placeholder="e.g. batch induction, accreditation support">'+
+      '<label>What you would like to take up</label><textarea maxlength="300" rows="2" data-gd="institution" data-gk="what" placeholder="e.g. batch induction, accreditation support, workflow automation">'+esc(g.institution.what)+'</textarea>'+counterFor(g.institution.what,300)+
       '<label>When</label><div class="gmix">'+
       GOAL_TERM_CHIPS.map(t=>'<span class="gchip'+((g.institution.terms||[]).indexOf(t)>=0?" on":"")+'" data-gterm="'+t+'">'+t+'</span>').join("")+'</div>'+
-      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="institution" data-gk="note" value="'+esc(g.institution.note)+'"></div>';
+      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="institution" data-gk="note" value="'+esc(g.institution.note)+'">'+counterFor(g.institution.note,200)+'</div>';
     h+='<div class="gcard" style="grid-column:1 / -1"><h3>Other Areas</h3>'+
       '<label>Anything beyond these areas you would like to take charge of this year</label>'+
-      '<input type="text" maxlength="240" data-gd="other" data-gk="note" value="'+esc(g.other.note)+'" placeholder="e.g. automate a workflow, mentor a student club, build a lab"></div>';
+      '<textarea maxlength="300" rows="2" data-gd="other" data-gk="note" placeholder="e.g. automate a workflow, mentor a student club, build a lab">'+esc(g.other.note)+'</textarea>'+counterFor(g.other.note,300)+'</div>';
     h+='</div>';
   } else {
     const g=GOALS, rows=[];
     if(g){
       if(g.teaching.courses||g.teaching.credits||g.teaching.note) rows.push('<div class="gro"><b>Teaching:</b> '+esc([g.teaching.courses,g.teaching.credits?g.teaching.credits+" credits":""].filter(Boolean).join(" · "))+(g.teaching.note?' <span class="gnote">'+esc(g.teaching.note)+'</span>':'')+'</div>');
       if(g.research.areas||g.research.outputs||g.research.note) rows.push('<div class="gro"><b>Research:</b> '+esc([g.research.areas,g.research.outputs?g.research.outputs+" outputs":"",g.research.level].filter(Boolean).join(" · "))+(g.research.note?' <span class="gnote">'+esc(g.research.note)+'</span>':'')+'</div>');
-      const mixMap={mdp:"MDP",obp:"OBP",consulting:"Consulting",grants:"Grants"};
-      const mix=Object.keys(mixMap).filter(k=>g.ep[k]).map(k=>mixMap[k]).join(", ");
-      if(mix||g.ep.days||g.ep.note) rows.push('<div class="gro"><b>External Programs:</b> '+esc([mix,g.ep.days?g.ep.days+" days":""].filter(Boolean).join(" · "))+(g.ep.note?' <span class="gnote">'+esc(g.ep.note)+'</span>':'')+'</div>');
+      const stR=Object.keys(EP_LABELS).filter(k=>g.ep.streams[k].on).map(k=>{const st=g.ep.streams[k];return EP_LABELS[k]+(st.days?" "+st.days+" days":"")+(st.what?": "+st.what:"");}).join(" · ");
+      if(stR||g.ep.days||g.ep.note) rows.push('<div class="gro"><b>External Programs:</b> '+esc(stR||(g.ep.days?g.ep.days+" days":""))+(g.ep.note?' <span class="gnote">'+esc(g.ep.note)+'</span>':'')+'</div>');
       if(g.institution.what||g.institution.note) rows.push('<div class="gro"><b>Institution Building:</b> '+esc([g.institution.what,(g.institution.terms||[]).join(", ")].filter(Boolean).join(" · "))+(g.institution.note?' <span class="gnote">'+esc(g.institution.note)+'</span>':'')+'</div>');
       if(g.other.note) rows.push('<div class="gro"><b>Other Areas:</b> '+esc(g.other.note)+'</div>');
     }
@@ -796,26 +816,37 @@ document.addEventListener("click", e=>{
   rm("rmT","teaching"); rm("rmR","research"); rm("rmV","revenue"); rm("rmI","institution");
   if(t.dataset.flagD!==undefined) flagEntry(t.dataset.flagD, t.dataset.flagL);
 });
-document.addEventListener("input", e=>{
-  const t=e.target;
-  if(!t.dataset || t.dataset.gd===undefined) return;
-  if(!GOALS_EDITABLE) return;
-  GOALS[t.dataset.gd][t.dataset.gk] = t.type==="checkbox" ? t.checked : t.value;
-  DIRTY=true;
+function refreshGoalSummary(){
   const s=buildSummary(GOALS, USER.name);
   const box=document.getElementById("gsumBox");
   if(box){ document.getElementById("gsumText").textContent=s; box.style.display=s?"":"none"; }
+}
+function refreshCount(t){
+  const n=t.nextElementSibling;
+  if(n && n.classList && n.classList.contains("gcount")){
+    n.textContent=t.value.length+"/"+t.maxLength;
+    n.classList.toggle("warn", t.value.length>=t.maxLength);
+  }
+}
+document.addEventListener("input", e=>{
+  const t=e.target;
+  if(!GOALS_EDITABLE) return;
+  if(t.dataset && t.dataset.gsd!==undefined){ GOALS.ep.streams[t.dataset.gsd].days=t.value; DIRTY=true; refreshGoalSummary(); return; }
+  if(t.dataset && t.dataset.gsw!==undefined){ GOALS.ep.streams[t.dataset.gsw].what=t.value; DIRTY=true; refreshCount(t); refreshGoalSummary(); return; }
+  if(!t.dataset || t.dataset.gd===undefined) return;
+  GOALS[t.dataset.gd][t.dataset.gk] = t.type==="checkbox" ? t.checked : t.value;
+  DIRTY=true;
+  refreshCount(t);
+  refreshGoalSummary();
 });
 document.addEventListener("click", e=>{
   const t=e.target;
   if(!GOALS_EDITABLE) return;
   if(t.dataset && t.dataset.gmix!==undefined){
-    GOALS.ep[t.dataset.gmix]=!GOALS.ep[t.dataset.gmix];
-    t.classList.toggle("on", GOALS.ep[t.dataset.gmix]);
+    const k=t.dataset.gmix;
+    GOALS.ep.streams[k].on=!GOALS.ep.streams[k].on;
     DIRTY=true;
-    const s=buildSummary(GOALS, USER.name);
-    const box=document.getElementById("gsumBox");
-    if(box){ document.getElementById("gsumText").textContent=s; box.style.display=s?"":"none"; }
+    renderGoals();
   }
   if(t.dataset && t.dataset.gterm!==undefined){
     const arr=GOALS.institution.terms||[]; const ix=arr.indexOf(t.dataset.gterm);
