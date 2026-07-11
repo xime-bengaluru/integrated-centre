@@ -132,6 +132,25 @@
   .gatebanner.frozen{background:#eef1f4;border-color:#d7dce2;color:#3d4756}
   .gatebanner.seed{background:#e9f2ec;border-color:#cfe3d6;color:var(--good)}
   body.ro .main input, body.ro .main select{pointer-events:none;background:#f1efe8;color:var(--muted)}
+  .gstrip{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden}
+  .gstrip .ghead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px 10px;border-bottom:1px solid var(--line)}
+  .gstrip .ghead h2{font-size:23px;color:var(--navy)}
+  .gstrip .gsub{font-size:12.5px;color:var(--muted)}
+  .gsummary{margin:14px 20px 4px;background:var(--parchment);border-left:3px solid var(--gold);border-radius:0 9px 9px 0;padding:12px 15px;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.5;color:var(--navy)}
+  .gcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px 20px 20px}
+  @media(max-width:760px){.gcards{grid-template-columns:1fr}}
+  .gcard{border:1px solid var(--line);border-radius:10px;background:#fcfbf7;padding:12px 14px}
+  .gcard h3{font-size:16px;color:var(--navy);font-family:'DM Sans',sans-serif;font-weight:600;margin:0 0 8px}
+  .gcard label{margin:8px 0 3px;font-size:12px}
+  .gcard input[type=text],.gcard input[type=number],.gcard select{font-size:14px;padding:8px 10px}
+  .grow{display:flex;gap:10px}
+  .grow > div{flex:1}
+  .gmix{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .gchip{font-family:'DM Mono',monospace;font-size:12px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;cursor:pointer;background:#fff;color:var(--muted);user-select:none}
+  .gchip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .gro{font-size:14px;padding:2px 0;color:var(--ink)}
+  .gro b{color:var(--navy)}
+  .gro .gnote{color:var(--muted);font-size:13px}
   body.ro .main .add, body.ro .main .rm, body.ro .main .flag{display:none}
 </style>
 </head>
@@ -176,6 +195,7 @@
   <div class="wrap layout">
     <!-- MAIN -->
     <div class="main">
+      <div id="goalsWrap"></div>
 
       <div class="domain">
         <div class="dhead"><h2>Teaching</h2><div class="dtot mono" id="tot-teaching">0</div></div>
@@ -261,6 +281,7 @@ let GATE = "plan";
 let STATE = { teaching:[], research:[], revenue:[], institution:[] };
 let GATES = {};
 let STATUS = "draft", SUBMITTED_AT = null, EDITABLE = true, SEEDED = null, DIRTY = false;
+let GOALS = null, GOALS_EDITABLE = false;
 const GATE_ORDER = ["plan","interim","final"];
 const GATE_LABEL = { plan:"July plan", interim:"December interim", final:"April final" };
 
@@ -287,6 +308,49 @@ function gateOpen(g){
 }
 function fmtDate(d){ if(!d) return ""; const dt=new Date(d+"T00:00:00"); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
 function uid(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+function normGoals(g){
+  g=g||{};
+  return {
+    teaching: Object.assign({courses:"",credits:"",note:""}, g.teaching||{}),
+    research: Object.assign({areas:"",outputs:"",level:"",note:""}, g.research||{}),
+    ep: Object.assign({mdp:false,obp:false,consulting:false,grants:false,days:"",note:""}, g.ep||{}),
+    institution: Object.assign({what:"",terms:[],note:""}, g.institution||{}),
+    other: Object.assign({note:""}, g.other||{})
+  };
+}
+function buildSummary(g, name){
+  if(!g) return "";
+  const p=[];
+  const t=g.teaching||{};
+  if(t.credits||t.courses){
+    let s="teach";
+    if(t.credits) s+=" "+t.credits+" credits";
+    if(t.courses) s+=(t.credits?" across ":" ")+t.courses;
+    p.push(s);
+  }
+  const r=g.research||{};
+  if(r.areas||r.outputs){
+    let s="pursue research";
+    if(r.areas) s+=" in "+r.areas;
+    if(r.outputs) s+=", targeting "+r.outputs+" output"+(Number(r.outputs)>1?"s":"")+(r.level?" at "+r.level+" level":"");
+    p.push(s);
+  }
+  const e=g.ep||{};
+  const mixMap={mdp:"MDP",obp:"OBP",consulting:"Consulting",grants:"Grants"};
+  const mix=Object.keys(mixMap).filter(k=>e[k]).map(k=>mixMap[k]);
+  if(mix.length||e.days){
+    let s="contribute to EP";
+    if(mix.length) s+=" through "+mix.join(", ");
+    if(e.days) s+=" ("+e.days+" days)";
+    p.push(s);
+  }
+  const i=g.institution||{};
+  if(i.what) p.push("take up "+i.what+(i.terms&&i.terms.length?" in "+i.terms.join(", "):""));
+  const o=g.other||{};
+  if(o.note) p.push("beyond these areas, "+o.note);
+  if(!p.length) return "";
+  return "In AY "+AY+", "+name+" plans to "+p.join("; ")+".";
+}
 function isProvisional(code){ const r=ruleByCode(code); return !r || r.status!=="ratified" || r.points==null; }
 
 /* ---------- LOGIN ---------- */
@@ -343,7 +407,7 @@ document.querySelectorAll("#gatesel .g").forEach(g=>g.addEventListener("click", 
 async function loadCheckpoint(){
   STATE={ teaching:[], research:[], revenue:[], institution:[] };
   STATUS="draft"; SUBMITTED_AT=null; SEEDED=null; DIRTY=false;
-  const { data } = await sb.from("v2_checkpoints").select("entries,status,submitted_at").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate",GATE).maybeSingle();
+  const { data } = await sb.from("v2_checkpoints").select("entries,status,submitted_at,goals").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate",GATE).maybeSingle();
   if(data){
     STATUS=data.status||"draft"; SUBMITTED_AT=data.submitted_at||null;
     if(data.entries){
@@ -367,6 +431,14 @@ async function loadCheckpoint(){
   }
   ["teaching","research","revenue","institution"].forEach(d=>STATE[d].forEach(en=>{ if(!en.id) en.id=uid(); }));
   EDITABLE = gateOpen(GATE) && STATUS!=="submitted";
+  if(GATE==="plan"){
+    GOALS=normGoals(data?data.goals:null);
+    GOALS_EDITABLE=EDITABLE;
+  } else {
+    const { data: pr } = await sb.from("v2_checkpoints").select("goals").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate","plan").maybeSingle();
+    GOALS=normGoals(pr?pr.goals:null);
+    GOALS_EDITABLE=false;
+  }
   $("#savedMsg").textContent="";
   updateGateUI();
 }
@@ -398,6 +470,7 @@ $("#saveBtn").addEventListener("click", async ()=>{
   const totals=compute();
   const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
     entries:STATE, totals:totals, status:"draft", updated_at:new Date().toISOString() };
+  if(GATE==="plan") row.goals=GOALS;
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
   if(error){ toast("Save failed: "+error.message); return; }
   DIRTY=false;
@@ -413,6 +486,7 @@ $("#submitBtn").addEventListener("click", async ()=>{
   const now=new Date().toISOString();
   const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
     entries:STATE, totals:totals, status:"submitted", submitted_at:now, updated_at:now };
+  if(GATE==="plan") row.goals=GOALS;
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
   if(error){ toast("Submit failed: "+error.message); return; }
   STATUS="submitted"; SUBMITTED_AT=now; EDITABLE=false; DIRTY=false; SEEDED=null;
@@ -620,7 +694,62 @@ function renderSummary(){
   } else { note.textContent=""; }
 }
 
+const GOAL_TERM_CHIPS=["Term I","Term II","Term III"];
+function goalsEmpty(g){ return !buildSummary(g,"x") && !(g&&(g.teaching.note||g.research.note||g.ep.note||g.institution.note)); }
+function renderGoals(){
+  const w=document.getElementById("goalsWrap");
+  if(!w) return;
+  const sum=buildSummary(GOALS, USER.name);
+  let h='<div class="gstrip"><div class="ghead"><h2>Plan of Intent</h2><span class="gsub">'+
+    (GOALS_EDITABLE?"What you would like to do this year. Freezes when the plan gate closes.":"Recorded at the July plan gate.")+'</span></div>';
+  h+='<div class="gsummary" id="gsumBox"'+(sum?"":' style="display:none"')+'><span id="gsumText">'+esc(sum)+'</span></div>';
+  if(GOALS_EDITABLE){
+    const g=GOALS;
+    h+='<div class="gcards">';
+    h+='<div class="gcard"><h3>Teaching</h3>'+
+      '<label>Courses you would like to teach</label><input type="text" maxlength="160" data-gd="teaching" data-gk="courses" value="'+esc(g.teaching.courses)+'" placeholder="e.g. Marketing Management, FRM">'+
+      '<div class="grow"><div><label>Total credits</label><input type="number" min="0" step="0.5" data-gd="teaching" data-gk="credits" value="'+esc(g.teaching.credits)+'"></div></div>'+
+      '<label>What you want to try or improve (one line)</label><input type="text" maxlength="200" data-gd="teaching" data-gk="note" value="'+esc(g.teaching.note)+'"></div>';
+    h+='<div class="gcard"><h3>Research</h3>'+
+      '<label>Focus areas</label><input type="text" maxlength="160" data-gd="research" data-gk="areas" value="'+esc(g.research.areas)+'" placeholder="e.g. consumer behaviour, pricing">'+
+      '<div class="grow"><div><label>Target outputs</label><input type="number" min="0" data-gd="research" data-gk="outputs" value="'+esc(g.research.outputs)+'"></div>'+
+      '<div><label>Aspiration</label><select data-gd="research" data-gk="level">'+
+      ["","ABDC A*","ABDC A","ABDC B","ABDC C","Scopus","WoS","Case"].map(o=>'<option value="'+o+'"'+(g.research.level===o?" selected":"")+'>'+(o||"Any")+'</option>').join("")+
+      '</select></div></div>'+
+      '<label>One line on direction</label><input type="text" maxlength="200" data-gd="research" data-gk="note" value="'+esc(g.research.note)+'"></div>';
+    h+='<div class="gcard"><h3>External Programs</h3>'+
+      '<label>Where you would like to focus</label><div class="gmix">'+
+      [["mdp","MDP"],["obp","OBP"],["consulting","Consulting"],["grants","Grants"]].map(([k,l])=>'<span class="gchip'+(g.ep[k]?" on":"")+'" data-gmix="'+k+'">'+l+'</span>').join("")+'</div>'+
+      '<div class="grow"><div><label>Intended days</label><input type="number" min="0" data-gd="ep" data-gk="days" value="'+esc(g.ep.days)+'"></div></div>'+
+      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="ep" data-gk="note" value="'+esc(g.ep.note)+'"></div>';
+    h+='<div class="gcard"><h3>Institution Building</h3>'+
+      '<label>What you would like to take up</label><input type="text" maxlength="160" data-gd="institution" data-gk="what" value="'+esc(g.institution.what)+'" placeholder="e.g. batch induction, accreditation support">'+
+      '<label>When</label><div class="gmix">'+
+      GOAL_TERM_CHIPS.map(t=>'<span class="gchip'+((g.institution.terms||[]).indexOf(t)>=0?" on":"")+'" data-gterm="'+t+'">'+t+'</span>').join("")+'</div>'+
+      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="institution" data-gk="note" value="'+esc(g.institution.note)+'"></div>';
+    h+='<div class="gcard" style="grid-column:1 / -1"><h3>Other Areas</h3>'+
+      '<label>Anything beyond these areas you would like to take charge of this year</label>'+
+      '<input type="text" maxlength="240" data-gd="other" data-gk="note" value="'+esc(g.other.note)+'" placeholder="e.g. automate a workflow, mentor a student club, build a lab"></div>';
+    h+='</div>';
+  } else {
+    const g=GOALS, rows=[];
+    if(g){
+      if(g.teaching.courses||g.teaching.credits||g.teaching.note) rows.push('<div class="gro"><b>Teaching:</b> '+esc([g.teaching.courses,g.teaching.credits?g.teaching.credits+" credits":""].filter(Boolean).join(" · "))+(g.teaching.note?' <span class="gnote">'+esc(g.teaching.note)+'</span>':'')+'</div>');
+      if(g.research.areas||g.research.outputs||g.research.note) rows.push('<div class="gro"><b>Research:</b> '+esc([g.research.areas,g.research.outputs?g.research.outputs+" outputs":"",g.research.level].filter(Boolean).join(" · "))+(g.research.note?' <span class="gnote">'+esc(g.research.note)+'</span>':'')+'</div>');
+      const mixMap={mdp:"MDP",obp:"OBP",consulting:"Consulting",grants:"Grants"};
+      const mix=Object.keys(mixMap).filter(k=>g.ep[k]).map(k=>mixMap[k]).join(", ");
+      if(mix||g.ep.days||g.ep.note) rows.push('<div class="gro"><b>External Programs:</b> '+esc([mix,g.ep.days?g.ep.days+" days":""].filter(Boolean).join(" · "))+(g.ep.note?' <span class="gnote">'+esc(g.ep.note)+'</span>':'')+'</div>');
+      if(g.institution.what||g.institution.note) rows.push('<div class="gro"><b>Institution Building:</b> '+esc([g.institution.what,(g.institution.terms||[]).join(", ")].filter(Boolean).join(" · "))+(g.institution.note?' <span class="gnote">'+esc(g.institution.note)+'</span>':'')+'</div>');
+      if(g.other.note) rows.push('<div class="gro"><b>Other Areas:</b> '+esc(g.other.note)+'</div>');
+    }
+    if(rows.length) h+='<div style="padding:12px 20px 18px">'+rows.join("")+'</div>';
+    else h+='<div style="padding:12px 20px 18px" class="gro"><span class="gnote">No plan of intent recorded'+(gateOpen("plan")?" yet. Switch to the July Plan gate to record it.":" for this year.")+'</span></div>';
+  }
+  h+='</div>';
+  w.innerHTML=h;
+}
 function renderAll(){
+  renderGoals();
   renderTeaching(); renderResearch(); renderRevenue(); renderInstitution(); renderSummary();
 }
 
@@ -665,6 +794,38 @@ document.addEventListener("click", e=>{
   const rm=(k,d)=>{ if(t.dataset[k]!==undefined){ if(!EDITABLE) return; STATE[d].splice(+t.dataset[k],1); DIRTY=true; renderAll(); } };
   rm("rmT","teaching"); rm("rmR","research"); rm("rmV","revenue"); rm("rmI","institution");
   if(t.dataset.flagD!==undefined) flagEntry(t.dataset.flagD, t.dataset.flagL);
+});
+document.addEventListener("input", e=>{
+  const t=e.target;
+  if(!t.dataset || t.dataset.gd===undefined) return;
+  if(!GOALS_EDITABLE) return;
+  GOALS[t.dataset.gd][t.dataset.gk] = t.type==="checkbox" ? t.checked : t.value;
+  DIRTY=true;
+  const s=buildSummary(GOALS, USER.name);
+  const box=document.getElementById("gsumBox");
+  if(box){ document.getElementById("gsumText").textContent=s; box.style.display=s?"":"none"; }
+});
+document.addEventListener("click", e=>{
+  const t=e.target;
+  if(!GOALS_EDITABLE) return;
+  if(t.dataset && t.dataset.gmix!==undefined){
+    GOALS.ep[t.dataset.gmix]=!GOALS.ep[t.dataset.gmix];
+    t.classList.toggle("on", GOALS.ep[t.dataset.gmix]);
+    DIRTY=true;
+    const s=buildSummary(GOALS, USER.name);
+    const box=document.getElementById("gsumBox");
+    if(box){ document.getElementById("gsumText").textContent=s; box.style.display=s?"":"none"; }
+  }
+  if(t.dataset && t.dataset.gterm!==undefined){
+    const arr=GOALS.institution.terms||[]; const ix=arr.indexOf(t.dataset.gterm);
+    if(ix>=0) arr.splice(ix,1); else arr.push(t.dataset.gterm);
+    GOALS.institution.terms=arr;
+    t.classList.toggle("on", ix<0);
+    DIRTY=true;
+    const s=buildSummary(GOALS, USER.name);
+    const box=document.getElementById("gsumBox");
+    if(box){ document.getElementById("gsumText").textContent=s; box.style.display=s?"":"none"; }
+  }
 });
 window.addEventListener("beforeunload", e=>{ if(DIRTY && EDITABLE){ e.preventDefault(); e.returnValue=""; } });
 </script>

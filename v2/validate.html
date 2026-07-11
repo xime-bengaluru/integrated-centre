@@ -99,6 +99,10 @@
   .rights{font-size:12.5px;color:var(--muted);margin-top:10px}
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
   .toast.show{opacity:1}
+  .plansum{background:var(--parchment);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:13px 16px;margin-bottom:14px}
+  .plansum .ps-main{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.5;color:var(--navy)}
+  .plansum .ps-notes{margin-top:8px;font-size:13px;color:var(--muted)}
+  .plansum .ps-notes b{color:var(--navy)}
   .disclaim{font-size:12px;color:var(--muted);text-align:center;padding:0 0 40px}
 </style>
 </head>
@@ -150,6 +154,7 @@
       <span class="back" id="backBtn">&larr; Back to roster</span>
       <div class="layout">
         <div class="main">
+          <div id="planSummary"></div>
           <div id="detStatus"></div>
           <div id="detDomains"></div>
         </div>
@@ -195,6 +200,66 @@ function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show")
 function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function rupee(n){ return "Rs " + Math.round(n).toLocaleString("en-IN"); }
 function fmtDate(d){ if(!d) return ""; const dt=new Date(d); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
+function normGoals(g){
+  g=g||{};
+  return {
+    teaching: Object.assign({courses:"",credits:"",note:""}, g.teaching||{}),
+    research: Object.assign({areas:"",outputs:"",level:"",note:""}, g.research||{}),
+    ep: Object.assign({mdp:false,obp:false,consulting:false,grants:false,days:"",note:""}, g.ep||{}),
+    institution: Object.assign({what:"",terms:[],note:""}, g.institution||{}),
+    other: Object.assign({note:""}, g.other||{})
+  };
+}
+function buildSummary(g, name){
+  if(!g) return "";
+  const p=[];
+  const t=g.teaching||{};
+  if(t.credits||t.courses){
+    let s="teach";
+    if(t.credits) s+=" "+t.credits+" credits";
+    if(t.courses) s+=(t.credits?" across ":" ")+t.courses;
+    p.push(s);
+  }
+  const r=g.research||{};
+  if(r.areas||r.outputs){
+    let s="pursue research";
+    if(r.areas) s+=" in "+r.areas;
+    if(r.outputs) s+=", targeting "+r.outputs+" output"+(Number(r.outputs)>1?"s":"")+(r.level?" at "+r.level+" level":"");
+    p.push(s);
+  }
+  const e=g.ep||{};
+  const mixMap={mdp:"MDP",obp:"OBP",consulting:"Consulting",grants:"Grants"};
+  const mix=Object.keys(mixMap).filter(k=>e[k]).map(k=>mixMap[k]);
+  if(mix.length||e.days){
+    let s="contribute to EP";
+    if(mix.length) s+=" through "+mix.join(", ");
+    if(e.days) s+=" ("+e.days+" days)";
+    p.push(s);
+  }
+  const i=g.institution||{};
+  if(i.what) p.push("take up "+i.what+(i.terms&&i.terms.length?" in "+i.terms.join(", "):""));
+  const o=g.other||{};
+  if(o.note) p.push("beyond these areas, "+o.note);
+  if(!p.length) return "";
+  return "In AY "+AY+", "+name+" plans to "+p.join("; ")+".";
+}
+function renderPlanSummary(goals, name){
+  const m=document.getElementById("planSummary");
+  if(!m) return;
+  if(!goals){ m.innerHTML=""; return; }
+  const g=normGoals(goals);
+  const sum=buildSummary(g,name);
+  const rows=[];
+  if(g.teaching.note) rows.push("<b>Teaching:</b> "+esc(g.teaching.note));
+  if(g.research.note) rows.push("<b>Research:</b> "+esc(g.research.note));
+  if(g.ep.note) rows.push("<b>EP:</b> "+esc(g.ep.note));
+  if(g.institution.note) rows.push("<b>IB:</b> "+esc(g.institution.note));
+  if(g.other.note) rows.push("<b>Other:</b> "+esc(g.other.note));
+  if(!sum && !rows.length){ m.innerHTML=""; return; }
+  m.innerHTML='<div class="plansum">'+(sum?'<div class="ps-main">'+esc(sum)+'</div>':'')+
+    (rows.length?'<div class="ps-notes">'+rows.map(r=>'<div>'+r+'</div>').join("")+'</div>':'')+'</div>';
+}
+
 
 const rulesBy=d=>RULES.filter(r=>r.domain===d);
 const ruleByCode=c=>RULES.find(r=>r.rule_code===c);
@@ -351,6 +416,8 @@ async function openDetail(email){
   const f=ROSTER.find(x=>x.email===email)||{name:email,designation:""};
   $("#detName").textContent=f.name; $("#detDesig").textContent=f.designation||"";
   const { data: cp } = await sb.from("v2_checkpoints").select("entries,status,submitted_at,updated_at").eq("faculty_email",email).eq("academic_year",AY).eq("gate",GATE).maybeSingle();
+  const { data: pg } = await sb.from("v2_checkpoints").select("goals").eq("faculty_email",email).eq("academic_year",AY).eq("gate","plan").maybeSingle();
+  renderPlanSummary(pg?pg.goals:null, f.name);
   CSTATE={ teaching:[],research:[],revenue:[],institution:[] };
   CSTATUS="none"; CSUB=null;
   if(cp){
