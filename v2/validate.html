@@ -200,12 +200,18 @@ function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show")
 function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function rupee(n){ return "Rs " + Math.round(n).toLocaleString("en-IN"); }
 function fmtDate(d){ if(!d) return ""; const dt=new Date(d); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
+function cleanTxt(s){ return String(s==null?"":s).trim().replace(/[.;,\s]+$/,""); }
+const EP_LABELS={ mdp:"MDP", obp:"OBP", consulting:"Consulting", grants:"Grants", programmes:"Programmes" };
 function normGoals(g){
   g=g||{};
+  const eOld=g.ep||{};
+  const mk=k=>Object.assign({on:false,days:"",what:""}, (eOld.streams&&eOld.streams[k])||{});
+  const streams={ mdp:mk("mdp"), obp:mk("obp"), consulting:mk("consulting"), grants:mk("grants"), programmes:mk("programmes") };
+  if(!eOld.streams){ ["mdp","obp","consulting","grants"].forEach(k=>{ if(eOld[k]===true) streams[k].on=true; }); }
   return {
     teaching: Object.assign({courses:"",credits:"",note:""}, g.teaching||{}),
     research: Object.assign({areas:"",outputs:"",level:"",note:""}, g.research||{}),
-    ep: Object.assign({mdp:false,obp:false,consulting:false,grants:false,days:"",note:""}, g.ep||{}),
+    ep: { streams:streams, days:eOld.days||"", note:eOld.note||"" },
     institution: Object.assign({what:"",terms:[],note:""}, g.institution||{}),
     other: Object.assign({note:""}, g.other||{})
   };
@@ -217,29 +223,33 @@ function buildSummary(g, name){
   if(t.credits||t.courses){
     let s="teach";
     if(t.credits) s+=" "+t.credits+" credits";
-    if(t.courses) s+=(t.credits?" across ":" ")+t.courses;
+    if(t.courses) s+=(t.credits?" across ":" ")+cleanTxt(t.courses);
     p.push(s);
   }
   const r=g.research||{};
   if(r.areas||r.outputs){
     let s="pursue research";
-    if(r.areas) s+=" in "+r.areas;
+    if(r.areas) s+=" in "+cleanTxt(r.areas);
     if(r.outputs) s+=", targeting "+r.outputs+" output"+(Number(r.outputs)>1?"s":"")+(r.level?" at "+r.level+" level":"");
     p.push(s);
   }
-  const e=g.ep||{};
-  const mixMap={mdp:"MDP",obp:"OBP",consulting:"Consulting",grants:"Grants"};
-  const mix=Object.keys(mixMap).filter(k=>e[k]).map(k=>mixMap[k]);
-  if(mix.length||e.days){
-    let s="contribute to EP";
-    if(mix.length) s+=" through "+mix.join(", ");
-    if(e.days) s+=" ("+e.days+" days)";
+  const e=g.ep||{streams:{}};
+  const eParts=Object.keys(EP_LABELS).filter(k=>e.streams&&e.streams[k]&&e.streams[k].on).map(k=>{
+    const st=e.streams[k]; const bits=[];
+    if(st.days) bits.push(st.days+" days");
+    if(st.what) bits.push(cleanTxt(st.what));
+    return EP_LABELS[k]+(bits.length?" ("+bits.join(": ")+")":"");
+  });
+  const anyStreamDays=Object.keys(EP_LABELS).some(k=>e.streams&&e.streams[k]&&e.streams[k].on&&e.streams[k].days);
+  if(eParts.length){
+    let s="contribute to EP through "+eParts.join(", ");
+    if(e.days && !anyStreamDays) s+=" ("+e.days+" days overall)";
     p.push(s);
-  }
+  } else if(e.days) p.push("contribute to EP ("+e.days+" days)");
   const i=g.institution||{};
-  if(i.what) p.push("take up "+i.what+(i.terms&&i.terms.length?" in "+i.terms.join(", "):""));
+  if(i.what) p.push("take up "+cleanTxt(i.what)+(i.terms&&i.terms.length?" in "+i.terms.join(", "):""));
   const o=g.other||{};
-  if(o.note) p.push("beyond these areas, "+o.note);
+  if(o.note) p.push("beyond these areas, "+cleanTxt(o.note));
   if(!p.length) return "";
   return "In AY "+AY+", "+name+" plans to "+p.join("; ")+".";
 }
