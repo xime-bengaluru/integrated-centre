@@ -335,15 +335,23 @@ sb.auth.getSession().then(({data})=>{ if(data.session) boot(data.session.user.em
 
 async function boot(email){
   const { data: dr } = await sb.from("director_campus_map").select("*").eq("email",email).maybeSingle();
-  if(!dr){
-    $("#loginErr").textContent="This surface is for campus directors. Your email is not in the director registry.";
-    const btn=$("#loginBtn"); btn.disabled=false; btn.textContent="Sign in";
-    await sb.auth.signOut();
-    return;
+  if(dr){
+    DEAN=dr;
+    $("#whoMeta").textContent="Director | "+DEAN.campus;
+  } else {
+    const { data: up } = await sb.from("user_profiles").select("full_name,role").eq("email",email).maybeSingle();
+    if(!up || up.role!=="super_admin"){
+      $("#loginErr").textContent="This surface is for campus directors. Your email is not in the director registry.";
+      const btn=$("#loginBtn"); btn.disabled=false; btn.textContent="Sign in";
+      await sb.auth.signOut();
+      return;
+    }
+    const pick=(prompt("Super admin access. Which campus? (Bengaluru / Chennai / Kochi)","Bengaluru")||"Bengaluru").trim();
+    const campus=["Bengaluru","Chennai","Kochi"].find(c=>c.toLowerCase()===pick.toLowerCase())||"Bengaluru";
+    DEAN={ email:email, name:up.full_name||email, campus:campus };
+    $("#whoMeta").textContent="Super Admin (viewing "+campus+") | Director Review";
   }
-  DEAN=dr;
   $("#whoName").textContent=DEAN.name;
-  $("#whoMeta").textContent="Director | "+DEAN.campus;
   $("#campusTag").textContent=DEAN.campus+" · AY "+AY;
 
   const { data: rules } = await sb.from("scoring_rules").select("*").eq("academic_year",AY).neq("status","superseded");
