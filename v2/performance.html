@@ -533,8 +533,8 @@ document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click
   DIRTY=true;
   if(d==="teaching") STATE.teaching.push({ id:uid(), name:"", credit:"3", eff:"100", repeat:false, methods:{case:"none",sim:"none",live:"none",role:"none",other:"none"} });
   if(d==="research") STATE.research.push({ id:uid(), code:"", authors:"1", pos:"1" });
-  if(d==="revenue") STATE.revenue.push({ id:uid(), code:"", amount:0 });
-  if(d==="institution") STATE.institution.push({ id:uid(), code:"" });
+  if(d==="revenue") STATE.revenue.push({ id:uid(), code:"", amount:0, detail:"" });
+  if(d==="institution") STATE.institution.push({ id:uid(), code:"", detail:"" });
   renderAll();
 }));
 
@@ -654,6 +654,7 @@ function renderRevenue(){
       <div class="fld"><label>Type</label><select data-i="${idx}" data-k="code">
         <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
       <div class="fld"><label>Amount (Rs)</label><input data-i="${idx}" data-k="amount" type="number" min="0" step="1000" value="${e.amount||0}"></div>
+      <div class="fld" style="grid-column:1 / -1"><label>Brief description (programme, client, event)</label><input data-i="${idx}" data-k="detail" type="text" maxlength="140" value="${esc(e.detail||"")}" placeholder="e.g. EssilorLuxottica MDP batch 2, HR conclave sponsorships"></div>
       <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span><button class="rm" data-rm-v="${idx}">Remove</button></div>`;
     list.appendChild(row);
   });
@@ -662,13 +663,14 @@ function renderRevenue(){
 
 function renderInstitution(){
   const list=$("#inst-list"); list.innerHTML="";
-  const rr=rulesBy("institution").filter(r=>r.points!=null); // scorable roles only
+  const rr=rulesBy("institution"); // all roles, including pending ones awaiting a value
   STATE.institution.forEach((e,idx)=>{
     const sc=instScore(e), prov=e.code && isProvisional(e.code);
     const row=el("div",{class:"entry inst-grid"});
     row.innerHTML=`
       <div class="fld"><label>Role or contribution</label><select data-i="${idx}" data-k="code">
         <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
+      <div class="fld" style="grid-column:1 / -1"><label>Brief description (what, for whom)</label><input data-i="${idx}" data-k="detail" type="text" maxlength="140" value="${esc(e.detail||"")}" placeholder="e.g. automated asset tracking workflow, Digii and Meritto integration"></div>
       <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span>
         <span><button class="flag" data-flag-d="institution" data-flag-l="${(ruleByCode(e.code)?.label||'role').replace(/"/g,'&quot;')}">flag</button>
         <button class="rm" data-rm-i="${idx}">Remove</button></span></div>`;
@@ -682,9 +684,8 @@ function buildInstitutionRuling(){
   const box=$("#inst-ruling");
   if(noval.length){
     box.style.display="block";
-    box.innerHTML = "<b>Awaiting a ruling:</b> these roles have no Handbook value yet and cannot be scored: "
-      + noval.map(r=>r.label).join(", ")
-      + ". If one of these is yours, use Send feedback so the panel can set a value.";
+    box.innerHTML = "<b>Awaiting a ruling:</b> these entries can be recorded now and show as provisional at 0 points until the panel sets a value: "
+      + noval.map(r=>r.label).join(", ") + ".";
   } else box.style.display="none";
 }
 
