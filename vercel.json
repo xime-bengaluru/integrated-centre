@@ -3,7 +3,7 @@
     { "source": "/hrms", "destination": "/recruitment-pilot-live.html" },
     { "source": "/fdp", "destination": "/faculty-self-assessment.html" },
     { "source": "/hub", "destination": "/index.html" },
-    { "source": "/login", "destination": "/login.html" }
+    { "source": "/xhub", "destination": "/v2/", "permanent": false }
   ],
   "headers": [
     {
