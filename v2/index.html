@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Hub | AY 2026-27</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --navy:       #0D1F35;
+    --navy-mid:   #1A3352;
+    --navy-l:     #243D5C;
+    --gold:       #C9A84C;
+    --gold-l:     #E8C97A;
+    --gold-d:     #8A6F2A;
+    --cream:      #FAF8F3;
+    --text:       #0D1F35;
+    --muted:      #5A6B82;
+    --border:     #D8D2C5;
+    --teal:       #0D9268;
+    --teal-l:     #6FCDA8;
+    --red:        #C8102E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: var(--navy); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(201,168,76,0.25); }
+  .header-left { display: flex; align-items: center; gap: 22px; }
+  .header-logo { height: 28px; width: auto; display: block; }
+  .header-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.32); }
+  .header-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.82); letter-spacing: 0.08em; }
+  .header-ay { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold-l); letter-spacing: 0.1em; padding: 3px 10px; border: 1px solid rgba(201,168,76,0.4); border-radius: 12px; }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .header-date { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; }
+  .header-user { font-size: 12px; color: rgba(255,255,255,0.65); }
+  .header-user a { color: var(--gold-l); text-decoration: none; margin-left: 10px; font-size: 11.5px; }
+  .header-user a:hover { text-decoration: underline; }
+
+  /* HERO */
+  .hero { background: var(--navy); padding: 52px 32px 60px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%); pointer-events: none; }
+  .hero-greeting { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; opacity: 0; animation: fadeUp 0.5s ease forwards; }
+  .hero-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 5vw, 44px); font-weight: 500; color: white; line-height: 1.15; margin-bottom: 8px; opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards; }
+  .hero-name em { color: var(--gold-l); font-style: italic; }
+  .hero-sub { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 30px; opacity: 0; animation: fadeUp 0.5s ease 0.15s forwards; max-width: 640px; line-height: 1.6; }
+  .focus-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.4); border-radius: 20px; font-size: 11.5px; color: var(--gold-l); font-weight: 500; letter-spacing: 0.04em; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
+  .focus-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .modules-section { padding: 44px 32px 60px; max-width: 1100px; margin: 0 auto; }
+
+  /* HERO TILE : Performance */
+  .hero-tile {
+    background: linear-gradient(135deg, #1F1A2E 0%, #2D1F3D 100%);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 22px;
+    border: 1px solid rgba(201,168,76,0.35);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.25s forwards;
+    position: relative;
+  }
+  .hero-tile:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+  .hero-tile-body { padding: 34px 38px 28px; position: relative; overflow: hidden; }
+  .hero-tile-body::before { content: ''; position: absolute; top: -80px; right: -80px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%); pointer-events: none; }
+  .hero-tile-tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 12px; border-radius: 12px; background: rgba(201,168,76,0.18); color: var(--gold); width: fit-content; margin-bottom: 18px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .hero-tile-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  .hero-tile-icon { font-size: 30px; margin-bottom: 14px; line-height: 1; color: var(--gold-l); }
+  .hero-tile-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; color: white; line-height: 1.15; margin-bottom: 10px; }
+  .hero-tile-desc { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.65; max-width: 620px; margin-bottom: 24px; }
+  .hero-tile-desc strong { color: rgba(255,255,255,0.9); }
+
+  /* Gate chips */
+  .status-chips { display: flex; gap: 12px; margin-bottom: 26px; flex-wrap: wrap; }
+  .status-chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px 16px;
+    min-width: 160px;
+    flex: 1 1 160px;
+    max-width: 220px;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+  }
+  .status-chip:hover { border-color: rgba(201,168,76,0.45); background: rgba(255,255,255,0.07); transform: translateY(-2px); }
+  .status-chip-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; color: var(--gold-l); line-height: 1; margin-bottom: 4px; letter-spacing: 0.01em; }
+  .status-chip-sub { font-size: 10.5px; color: rgba(255,255,255,0.5); letter-spacing: 0.02em; margin-bottom: 10px; line-height: 1.4; }
+  .status-chip-state { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 10px; letter-spacing: 0.04em; font-family: 'DM Mono', monospace; }
+  .status-chip-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .state-open { background: rgba(201,168,76,0.15); color: var(--gold-l); border: 0.5px solid rgba(201,168,76,0.3); }
+  .state-open .status-chip-dot { background: var(--gold); }
+  .state-submitted { background: rgba(13,146,104,0.15); color: var(--teal-l); border: 0.5px solid rgba(13,146,104,0.3); }
+  .state-submitted .status-chip-dot { background: var(--teal); }
+  .state-locked { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.45); border: 0.5px solid rgba(255,255,255,0.1); }
+  .state-locked .status-chip-dot { background: rgba(255,255,255,0.3); }
+
+  .hero-tile-cta { padding: 14px 28px; background: var(--gold); color: var(--navy); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 10px; letter-spacing: 0.02em; }
+  .hero-tile-cta:hover { background: var(--gold-l); transform: translateX(2px); }
+  .hero-tile-footer { padding: 13px 38px; background: rgba(201,168,76,0.06); border-top: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .hero-tile-footer-left { font-size: 11px; color: rgba(255,255,255,0.45); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+  .hero-tile-footer-right { font-size: 10.5px; padding: 4px 12px; border-radius: 12px; background: rgba(201,168,76,0.18); color: var(--gold-l); font-weight: 600; letter-spacing: 0.04em; }
+
+  /* Deadline notice */
+  .gate-notice {
+    background: rgba(201,168,76,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 0 0 34px;
+    display: flex; gap: 12px; align-items: flex-start;
+    opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards;
+  }
+  .gate-notice-icon { color: var(--gold); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .gate-notice-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .gate-notice-text strong { font-weight: 600; color: var(--navy); }
+
+  /* Section label */
+  .other-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+  .other-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .modules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 38px; }
+  @media (max-width: 700px) { .modules-grid { grid-template-columns: 1fr; } }
+
+  .module-card {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; position: relative;
+    opacity: 0; animation: fadeUp 0.5s ease forwards;
+  }
+  .module-card:nth-child(1){ animation-delay: 0.4s; }
+  .module-card:nth-child(2){ animation-delay: 0.45s; }
+  .module-card:nth-child(3){ animation-delay: 0.5s; }
+  .module-card:nth-child(4){ animation-delay: 0.55s; }
+  .module-card .card-body { padding: 22px 22px 18px; min-height: 158px; display: flex; flex-direction: column; }
+  .module-card .card-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 9px; border-radius: 10px; width: fit-content; margin-bottom: 14px; font-weight: 600; }
+  .module-card .card-icon { font-size: 23px; margin-bottom: 10px; line-height: 1; }
+  .module-card .card-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 500; color: var(--text); line-height: 1.2; margin-bottom: 6px; }
+  .module-card .card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.55; flex: 1; }
+
+  .module-card.unlocked { border-left: 3px solid var(--gold); cursor: pointer; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; }
+  .module-card.unlocked:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.08); border-color: var(--gold); }
+  .module-card.unlocked .card-tag { background: rgba(201,168,76,0.15); color: var(--gold-d); }
+  .module-card.unlocked .card-icon { color: var(--gold); }
+
+  .module-card.dimmed { cursor: not-allowed; opacity: 0.55; filter: saturate(0.5); }
+  .module-card.dimmed .card-tag { background: rgba(0,0,0,0.05); color: var(--muted); }
+  .module-card.dimmed .card-icon { color: var(--muted); }
+
+  .corner-badge {
+    position: absolute; top: 12px; right: 12px;
+    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 12px; font-weight: 500; z-index: 2;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .corner-badge.role { background: var(--navy); color: var(--gold-l); border: 1px solid rgba(201,168,76,0.3); }
+  .corner-badge.role .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+  .corner-badge.locked { background: rgba(13,31,53,0.85); color: white; }
+  .corner-badge.parked { background: rgba(13,31,53,0.08); color: var(--muted); border: 1px solid var(--border); }
+
+  /* FOOTER */
+  .footer { background: var(--navy); border-top: 1px solid rgba(201,168,76,0.15); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .footer-left { display: flex; align-items: center; gap: 12px; }
+  .footer-logo { height: 22px; width: auto; display: block; }
+  .footer-text { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .footer-right { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+
+  @media (max-width: 700px) {
+    .header { padding: 0 16px; } .header-date { display: none; }
+    .hero { padding: 38px 16px 44px; }
+    .modules-section { padding: 30px 16px 40px; }
+    .hero-tile-body { padding: 24px 22px 20px; }
+    .hero-tile-footer { padding: 13px 22px; }
+    .status-chips { gap: 8px; }
+    .status-chip { min-width: 0; max-width: none; flex: 1 1 100%; padding: 10px 14px; }
+    .footer { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <img src="/assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="header-logo">
+    <div class="header-divider"></div>
+    <div class="header-title">X-Hub</div>
+    <div class="header-ay">AY 2026-27</div>
+  </div>
+  <div class="header-right">
+    <div class="header-date" id="live-date"></div>
+    <div class="header-user" id="header-user"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-greeting" id="hero-greeting">Welcome</div>
+  <div class="hero-name" id="hero-name">Welcome to X-Hub</div>
+  <div class="hero-sub" id="hero-sub">Your year at XIME in three checkpoints: plan it in July, take stock in December, close it in April. Record as you go, in your own words and numbers.</div>
+  <div class="focus-badge"><div class="focus-dot"></div><span id="focus-text">Live &middot; AY 2026-27</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="modules-section">
+
+  <!-- PERFORMANCE HERO TILE -->
+  <div class="hero-tile" id="hero-tile-perf" onclick="window.location.href='performance.html'">
+    <div class="hero-tile-body">
+      <div class="hero-tile-tag"><div class="hero-tile-tag-dot"></div><span id="perf-tag">Active &middot; AY 2026-27</span></div>
+      <div class="hero-tile-icon">&#9670;</div>
+      <div class="hero-tile-title">Performance</div>
+      <div class="hero-tile-desc">One page for your whole year: <strong>Teaching</strong>, <strong>Research</strong>, <strong>Revenue</strong>, and <strong>Institution Building</strong>, scored live against the Handbook rules. Open with your <strong>Plan of Intent</strong> in July, refine at the December interim, and close at the April final. Anything without a ruled value still records, provisionally, so nothing you did goes unrecorded.</div>
+
+      <div class="status-chips" id="gate-chips">
+        <a class="status-chip" href="performance.html" onclick="event.stopPropagation()">
+          <div class="status-chip-name">July Plan</div>
+          <div class="status-chip-sub">Intent and early record</div>
+          <div class="status-chip-state state-locked" id="state-plan"><div class="status-chip-dot"></div><span>Loading</span></div>
+        </a>
+        <a class="status-chip" href="performance.html" onclick="event.stopPropagation()">
+          <div class="status-chip-name">Dec Interim</div>
+          <div class="status-chip-sub">Mid-year stocktake</div>
+          <div class="status-chip-state state-locked" id="state-interim"><div class="status-chip-dot"></div><span>Loading</span></div>
+        </a>
+        <a class="status-chip" href="performance.html" onclick="event.stopPropagation()">
+          <div class="status-chip-name">Apr Final</div>
+          <div class="status-chip-sub">Year close</div>
+          <div class="status-chip-state state-locked" id="state-final"><div class="status-chip-dot"></div><span>Loading</span></div>
+        </a>
+      </div>
+
+      <button class="hero-tile-cta">Open Performance &rarr;</button>
+    </div>
+    <div class="hero-tile-footer">
+      <div class="hero-tile-footer-left">centre.xime.org/v2 &middot; X-Hub &middot; AY 2026-27</div>
+      <div class="hero-tile-footer-right">Live &middot; Beta</div>
+    </div>
+  </div>
+
+  <!-- GATE NOTICE -->
+  <div class="gate-notice" id="gate-notice" style="display:none">
+    <div class="gate-notice-icon">&#9432;</div>
+    <div class="gate-notice-text" id="gate-notice-text"></div>
+  </div>
+
+  <!-- 3X SURFACES -->
+  <div class="other-section-label">The 3X Surfaces</div>
+  <div class="modules-grid">
+    <div class="module-card unlocked" onclick="window.location.href='x-purpose.html'">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body">
+        <div class="card-tag">Growth &amp; Purpose</div>
+        <div class="card-icon">&#9678;</div>
+        <div class="card-title">X-Purpose</div>
+        <div class="card-desc">Your IKIGAI for the year: passion, strengths, contribution, and where they converge. Last year's reflection is there to build on. Complete it alongside your July plan.</div>
+      </div>
+    </div>
+    <div class="module-card dimmed">
+      <div class="corner-badge parked">Returning</div>
+      <div class="card-body">
+        <div class="card-tag">Teaching Effectiveness</div>
+        <div class="card-icon">&#9673;</div>
+        <div class="card-title">X-Impact</div>
+        <div class="card-desc">How students experienced your teaching. For AY 2026-27, teaching effectiveness feeds directly into your Performance score; this surface returns in a later phase.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW SURFACES -->
+  <div class="other-section-label">Review Surfaces</div>
+  <div class="modules-grid">
+    <div class="module-card dimmed" id="tile-validate">
+      <div class="corner-badge locked" id="badge-validate">&#128274; Deans</div>
+      <div class="card-body">
+        <div class="card-tag">Dean Validation</div>
+        <div class="card-icon">&#9678;</div>
+        <div class="card-title">Validate</div>
+        <div class="card-desc">The campus roster gate by gate. Open any record in full with its live score, flag entries that need a second look, and reopen a submitted checkpoint when a colleague needs to correct it.</div>
+      </div>
+    </div>
+    <div class="module-card dimmed" id="tile-review">
+      <div class="corner-badge locked" id="badge-review">&#128274; Directors</div>
+      <div class="card-body">
+        <div class="card-tag">Director Review</div>
+        <div class="card-icon">&#9670;</div>
+        <div class="card-title">Review</div>
+        <div class="card-desc">Everything the deans see, plus their flags. Mark each record as reviewed with an optional note, visible to deans as the campus record moves toward the panel.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">
+    <img src="/assets/logo/XIME_LOGO_WHITE.svg" alt="XIME" class="footer-logo">
+    <div class="footer-text">X-Hub &middot; AY 2026-27 &middot; Beta</div>
+  </div>
+  <div class="footer-right">centre.xime.org/v2 &middot; X-Hub v2</div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
+const AY = "2026-27";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const GATE_ORDER = ["plan", "interim", "final"];
+let GATES = {};
+
+function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fmtDate(d){ if(!d) return ""; const dt=new Date(d+"T00:00:00"); return dt.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function gateOpen(g){
+  const c = GATES[g];
+  if(!c) return false;
+  const today = todayStr();
+  return !!c.is_open && (!c.opens_on || today >= c.opens_on) && (!c.closes_on || today <= c.closes_on);
+}
+function timeOfDayGreeting(){
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+}
+function firstName(fullName){
+  const clean = (fullName || "").replace(/\b(Dr\.?|Prof\.?|Mr\.?|Mrs\.?|Ms\.?)\s+/gi, "").trim();
+  const parts = clean.split(/\s+/).filter(Boolean);
+  return parts.length ? parts[0] : "";
+}
+
+/* Decide the label and css class for one gate chip.
+   checkpoint: the v2_checkpoints row for this gate (or null). */
+function chipState(gate, checkpoint){
+  if (checkpoint && checkpoint.status === "submitted") return { label: "Submitted", cls: "state-submitted" };
+  const c = GATES[gate] || {};
+  const today = todayStr();
+  if (gateOpen(gate)) {
+    if (checkpoint) return { label: "Draft", cls: "state-open" };
+    return { label: "Open", cls: "state-open" };
+  }
+  if (c.opens_on && today < c.opens_on) return { label: "Opens " + fmtDate(c.opens_on), cls: "state-locked" };
+  return { label: "Closed", cls: "state-locked" };
+}
+
+function renderChip(elId, state){
+  const host = document.getElementById(elId);
+  if (!host) return;
+  host.className = "status-chip-state " + state.cls;
+  host.innerHTML = "";
+  const dot = document.createElement("div");
+  dot.className = "status-chip-dot";
+  const span = document.createElement("span");
+  span.textContent = state.label;
+  host.appendChild(dot);
+  host.appendChild(span);
+}
+
+function renderNotice(){
+  const box = document.getElementById("gate-notice");
+  const txt = document.getElementById("gate-notice-text");
+  if (!box || !txt) return;
+  const plan = GATES.plan;
+  if (plan && gateOpen("plan") && plan.closes_on) {
+    txt.innerHTML = "<strong>The July Plan is open.</strong> Record your Plan of Intent and your year so far, then submit. The plan window closes on <strong>" + esc(fmtDate(plan.closes_on)) + "</strong>. The December interim stays open until " + esc(fmtDate((GATES.interim||{}).closes_on) || "mid December") + ".";
+    box.style.display = "flex";
+    return;
+  }
+  const interim = GATES.interim;
+  if (interim && gateOpen("interim") && interim.closes_on) {
+    txt.innerHTML = "<strong>The December interim is open.</strong> Update your record and submit by <strong>" + esc(fmtDate(interim.closes_on)) + "</strong>.";
+    box.style.display = "flex";
+    return;
+  }
+  box.style.display = "none";
+}
+
+function unlockCard(tileId, badgeId, badgeText, href){
+  const tile = document.getElementById(tileId);
+  const badge = document.getElementById(badgeId);
+  if (!tile) return;
+  tile.classList.remove("dimmed");
+  tile.classList.add("unlocked");
+  tile.onclick = function(){ window.location.href = href; };
+  if (badge) {
+    badge.className = "corner-badge role";
+    badge.innerHTML = "";
+    const dot = document.createElement("span");
+    dot.className = "badge-dot";
+    badge.appendChild(dot);
+    badge.appendChild(document.createTextNode(badgeText));
+  }
+}
+
+async function loadGates(){
+  try {
+    const { data } = await sb.from("evaluation_gate_config")
+      .select("gate,opens_on,closes_on,is_open")
+      .eq("academic_year", AY);
+    GATES = {};
+    (data || []).forEach(function(g){ if (GATE_ORDER.indexOf(g.gate) >= 0) GATES[g.gate] = g; });
+  } catch (e) { GATES = {}; }
+}
+
+async function personalize(session){
+  const email = (session.user.email || "").toLowerCase();
+
+  const results = await Promise.all([
+    sb.from("faculty_master").select("name,campus,designation").eq("email", email).maybeSingle(),
+    sb.from("v2_checkpoints").select("gate,status").eq("faculty_email", email).eq("academic_year", AY),
+    sb.from("dean_registry").select("role,campus").eq("email", email),
+    sb.from("director_campus_map").select("campus").eq("email", email).maybeSingle()
+  ]);
+  const fm = results[0].data;
+  const cps = results[1].data || [];
+  const deanRows = results[2].data || [];
+  const dirRow = results[3].data;
+
+  const displayName = (fm && fm.name) ? fm.name : email;
+  document.getElementById("hero-greeting").textContent = timeOfDayGreeting();
+  const heroName = document.getElementById("hero-name");
+  heroName.textContent = "Welcome back, ";
+  const em = document.createElement("em");
+  em.textContent = firstName(displayName) || displayName;
+  heroName.appendChild(em);
+
+  const hu = document.getElementById("header-user");
+  hu.textContent = displayName;
+  const so = document.createElement("a");
+  so.href = "#";
+  so.textContent = "Sign out";
+  so.onclick = async function(ev){ ev.preventDefault(); await sb.auth.signOut(); location.reload(); };
+  hu.appendChild(so);
+
+  const byGate = {};
+  cps.forEach(function(c){ byGate[c.gate] = c; });
+  GATE_ORDER.forEach(function(g){ renderChip("state-" + g, chipState(g, byGate[g] || null)); });
+
+  const DEAN_LABELS = { academics: "Dean Academics", research: "Dean Research", ep: "Dean EP" };
+  if (deanRows.length > 0) {
+    const first = deanRows[0];
+    const label = (DEAN_LABELS[first.role] || "Dean") + (first.campus ? " \u00B7 " + first.campus : "");
+    unlockCard("tile-validate", "badge-validate", label, "validate.html");
+  }
+  if (dirRow) {
+    unlockCard("tile-review", "badge-review", "Director" + (dirRow.campus ? " \u00B7 " + dirRow.campus : ""), "review.html");
+  }
+}
+
+function renderLoggedOut(){
+  GATE_ORDER.forEach(function(g){
+    renderChip("state-" + g, GATES[g] ? chipState(g, null) : { label: "Sign in to view", cls: "state-locked" });
+  });
+  const hu = document.getElementById("header-user");
+  hu.textContent = "";
+  const si = document.createElement("a");
+  si.href = "performance.html";
+  si.textContent = "Sign in";
+  hu.appendChild(si);
+}
+
+async function init(){
+  const d = new Date();
+  document.getElementById("live-date").textContent =
+    d.toLocaleDateString("en-IN", { weekday:"short", day:"numeric", month:"short", year:"numeric" }).toUpperCase();
+
+  await loadGates();
+  renderNotice();
+
+  const { data } = await sb.auth.getSession();
+  if (data && data.session) {
+    await personalize(data.session);
+  } else {
+    renderLoggedOut();
+  }
+}
+init();
+</script>
+</body>
+</html>
