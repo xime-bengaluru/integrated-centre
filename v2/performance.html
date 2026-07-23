@@ -18,7 +18,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    font-family:'DM Sans',system-ui,sans-serif; font-size:17px; line-height:1.55;
+    font-family:'DM Sans',system-ui,sans-serif; font-size:20px; line-height:1.55;
     color:var(--ink); background:var(--parchment);
   }
   h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif; font-weight:600; letter-spacing:.2px; margin:0}
@@ -43,7 +43,7 @@
     box-shadow:var(--shadow);padding:34px 30px}
   .login h1{font-size:30px;color:var(--navy);margin-bottom:4px}
   .login p.sub{color:var(--muted);font-size:15px;margin:0 0 22px}
-  label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin:14px 0 5px;letter-spacing:.2px}
+  label{display:block;font-size:15px;font-weight:600;color:var(--navy);margin:14px 0 5px;letter-spacing:.2px}
   input,select{width:100%;font-family:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line);
     border-radius:9px;background:#fff;color:var(--ink)}
   input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.18)}
@@ -72,7 +72,7 @@
   .domain > .dhead h2{font-size:23px;color:var(--navy)}
   .domain > .dhead .dtot{font-family:'DM Mono',monospace;font-size:15px;color:var(--navy);font-weight:500}
   .domain .body{padding:14px 20px 20px}
-  .hint{color:var(--muted);font-size:13.5px;margin:0 0 12px}
+  .hint{color:var(--muted);font-size:15px;margin:0 0 12px}
 
   .entry{display:grid;gap:10px;align-items:end;padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fcfbf7}
   .entry .fld{min-width:0}
@@ -96,6 +96,17 @@
   .teach-top{display:grid;grid-template-columns:1fr 110px 160px 90px auto;gap:10px;align-items:end}
   @media(max-width:720px){.teach-top{grid-template-columns:1fr}}
   .methods-panel{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .tsec{margin-top:13px;padding-top:11px;border-top:1px dashed var(--line)}
+  .tsec-title{font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:9px;letter-spacing:.2px}
+  .tsec-title .mnote{font-weight:400;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;margin-left:8px}
+  .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:720px){.tgrid{grid-template-columns:1fr 1fr}}
+  .tgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:720px){.tgrid2{grid-template-columns:1fr}}
+  .tfld label{font-size:11px;color:var(--muted);margin:0 0 3px;font-weight:500}
+  .tfld input,.tfld select{font-size:13px;padding:7px 8px}
+  .tfull{grid-column:1 / -1}
+  .libnote{font-size:11.5px;color:var(--muted);font-style:italic;margin-top:7px}
   .methods-title{font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:9px;letter-spacing:.2px}
   .methods-title .mnote{font-weight:400;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;margin-left:8px}
   .methods-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
@@ -137,24 +148,36 @@
   .gstrip{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden}
   .gstrip .ghead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px 10px;border-bottom:1px solid var(--line)}
   .gstrip .ghead h2{font-size:23px;color:var(--navy)}
-  .gstrip .gsub{font-size:12.5px;color:var(--muted)}
-  .gsummary{margin:14px 20px 4px;background:var(--parchment);border-left:3px solid var(--gold);border-radius:0 9px 9px 0;padding:12px 15px;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.5;color:var(--navy)}
+  .gstrip .gsub{font-size:14px;color:var(--muted)}
+  .gsummary{margin:14px 20px 4px;background:var(--parchment);border-left:3px solid var(--gold);border-radius:0 9px 9px 0;padding:14px 17px;font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;line-height:1.5;color:var(--navy)}
   .gcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px 20px 20px}
   @media(max-width:760px){.gcards{grid-template-columns:1fr}}
   .gcard{border:1px solid var(--line);border-radius:10px;background:#fcfbf7;padding:12px 14px}
-  .gcard h3{font-size:16px;color:var(--navy);font-family:'DM Sans',sans-serif;font-weight:600;margin:0 0 8px}
-  .gcard label{margin:8px 0 3px;font-size:12px}
-  .gcard input[type=text],.gcard input[type=number],.gcard select{font-size:14px;padding:8px 10px}
+  .gcard h3{font-size:18px;color:var(--navy);font-family:'DM Sans',sans-serif;font-weight:600;margin:0 0 8px}
+  .gcard label{margin:8px 0 3px;font-size:14px}
+  .gcard input[type=text],.gcard input[type=number],.gcard select{font-size:16px;padding:9px 11px}
   .grow{display:flex;gap:10px}
   .grow > div{flex:1}
   .gmix{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
   .gchip{font-family:'DM Mono',monospace;font-size:12px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;cursor:pointer;background:#fff;color:var(--muted);user-select:none}
   .gchip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
-  .gro{font-size:14px;padding:2px 0;color:var(--ink)}
+  .gro{font-size:16px;padding:3px 0;color:var(--ink)}
   .gro b{color:var(--navy)}
-  .gcard textarea{width:100%;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;resize:vertical;min-height:52px}
+  .gcard textarea{width:100%;font-family:inherit;font-size:16px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;resize:vertical;min-height:52px}
   .gcard textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.18)}
-  .gcount{font-size:11px;color:var(--muted);text-align:right;margin-top:2px;font-family:'DM Mono',monospace}
+  .gdeadline{display:flex;gap:10px;align-items:flex-start;margin:0;padding:14px 20px;background:var(--amber);border-top:1px solid var(--amberline);border-bottom:1px solid var(--amberline);font-size:16px;line-height:1.5;color:#6b5720}
+  .gdeadline b{color:#8a6a1c}
+  .gdl-dot{flex:0 0 9px;width:9px;height:9px;border-radius:50%;background:var(--gold);margin-top:6px}
+  .growlist{margin:2px 0 4px}
+  .growrow{display:flex;gap:8px;align-items:flex-start;margin-bottom:7px}
+  .growrow .rn{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-d,#8A6F2A);flex:0 0 20px;padding-top:10px;text-align:right}
+  .growrow .rf{flex:1;display:flex;gap:8px;flex-wrap:wrap}
+  .growrow .rf input,.growrow .rf select{font-size:16px;padding:9px 11px}
+  .growrow .rf .grow-main{flex:1 1 100%}
+  .growrow .rmrow{background:none;border:none;color:var(--bad);cursor:pointer;font-size:18px;line-height:1;padding:8px 4px;font-family:inherit}
+  .addrow{background:#fff;border:1px dashed var(--gold);color:var(--navy);border-radius:8px;font-family:inherit;font-weight:600;font-size:14px;padding:7px 13px;cursor:pointer;margin-top:2px}
+  .addrow:hover{background:#fdfaf0}
+  .gcount{font-size:12.5px;color:var(--muted);text-align:right;margin-top:2px;font-family:'DM Mono',monospace}
   .gcount.warn{color:var(--bad)}
   .gstream{display:flex;gap:8px;align-items:center;margin-top:7px}
   .gstream .sl{font-family:'DM Mono',monospace;font-size:12px;flex:0 0 86px;color:var(--navy)}
@@ -162,6 +185,8 @@
   .gstream input[type=text]{flex:1;font-size:13px;padding:7px 8px}
   .gro .gnote{color:var(--muted);font-size:13px}
   body.ro .main .add, body.ro .main .rm, body.ro .main .flag{display:none}
+  body.planmode .main .domain{display:none}
+  body.planmode #scoreCard{display:none}
 </style>
 </head>
 <body>
@@ -210,7 +235,7 @@
       <div class="domain">
         <div class="dhead"><h2>Teaching</h2><div class="dtot mono" id="tot-teaching">0</div></div>
         <div class="body">
-          <p class="hint">Base by course credit, times a teaching-effectiveness factor. Repeat sections of the same course count at half from the second instance.</p>
+          <p class="hint">Base by course credit, times your CRAZY score factor. Repeat sections of the same course count at half from the second instance.</p>
           <div id="teach-list"></div>
           <button class="add" data-add="teaching">+ Add course</button>
         </div>
@@ -248,7 +273,7 @@
 
     <!-- RAIL -->
     <div class="rail">
-      <div class="card">
+      <div class="card" id="scoreCard">
         <h3>Your year, so far</h3>
         <div class="bignum" id="overall">0 <small>/ 300</small></div>
         <div style="margin:14px 0 4px">
@@ -282,6 +307,7 @@
 const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
 const AY = "2026-27";
+const PLAN_ONLY_MODE = false; // beta shows the full form; set true at production to show goals only during the plan gate
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let RULES = [];      // scoring_rules rows for AY, non-superseded
@@ -320,55 +346,110 @@ function fmtDate(d){ if(!d) return ""; const dt=new Date(d+"T00:00:00"); return 
 function uid(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
 function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function cleanTxt(s){ return String(s==null?"":s).trim().replace(/[.;,\s]+$/,""); }
-const EP_LABELS={ mdp:"MDP", obp:"OBP", consulting:"Consulting", grants:"Grants", programmes:"Programmes" };
+function trunc(s,n){ s=cleanTxt(s); return s.length>n ? s.slice(0,n-3)+"..." : s; }
+function gid(){ return Math.random().toString(36).slice(2,8); }
+function upconvertGoals(g){
+  const L={ mdp:"MDP", obp:"OBP", consulting:"Consulting", grants:"Grants", programmes:"Programmes" };
+  const eOld=g.ep||{}; const parts=[];
+  if(eOld.streams){ Object.keys(L).forEach(k=>{ const st=eOld.streams[k]; if(st&&st.on){ const b=[]; if(st.days)b.push(st.days+" days"); if(st.what)b.push(st.what); parts.push(L[k]+(b.length?" ("+b.join(": ")+")":"")); } }); }
+  let prog=parts.join("; ");
+  if(eOld.note) prog=prog?prog+". "+eOld.note:eOld.note;
+  if(eOld.days && !prog) prog=eOld.days+" days";
+  const inst=g.institution||{}, oth=g.other||{}, t=g.teaching||{}, r=g.research||{};
+  return {
+    teaching:{ domains:t.domains||"", courses:t.courses||"", credits:t.credits||"", improve:t.note||t.improve||"" },
+    research:{ areas:r.areas||"", outputs:(r.outputs==null?"":String(r.outputs)), level:r.level||"", abdc:r.abdc||"", quartile:r.quartile||"", improve:r.note||r.improve||"" },
+    ep:{ programmes:prog },
+    ib:{ role:(inst.what||"")+((inst.terms&&inst.terms.length)?" ("+inst.terms.join(", ")+")":""), success:inst.note||"" },
+    idp:{ develop:oth.note||"" }
+  };
+}
+/* Split a legacy comma or semicolon separated line into row objects. */
+function splitToRows(line, mapper){
+  const s=(line==null?"":String(line)).trim();
+  if(!s) return [];
+  return s.split(/[;,]+/).map(x=>x.trim()).filter(Boolean).map(mapper);
+}
 function normGoals(g){
   g=g||{};
-  const eOld=g.ep||{};
-  const mk=k=>Object.assign({on:false,days:"",what:""}, (eOld.streams&&eOld.streams[k])||{});
-  const streams={ mdp:mk("mdp"), obp:mk("obp"), consulting:mk("consulting"), grants:mk("grants"), programmes:mk("programmes") };
-  if(!eOld.streams){ ["mdp","obp","consulting","grants"].forEach(k=>{ if(eOld[k]===true) streams[k].on=true; }); }
+  if(!g.ib && !g.idp && (g.institution || g.other || (g.ep&&g.ep.streams) || (g.teaching&&g.teaching.note!==undefined))) g=upconvertGoals(g);
+  const t=g.teaching||{}, r=g.research||{}, ib=g.ib||{};
+
+  /* Teaching: courseRows [{id,name}], keep domains + credits + improve */
+  let courseRows = Array.isArray(t.courseRows) ? t.courseRows.slice() : null;
+  if(!courseRows) courseRows = splitToRows(t.courses, x=>({id:gid(), name:x}));
+  courseRows = courseRows.map(x=>({id:x.id||gid(), name:x.name||""}));
+
+  /* Research: areaRows [{id,area,abdc,quartile}] */
+  let areaRows = Array.isArray(r.areaRows) ? r.areaRows.slice() : null;
+  if(!areaRows){
+    let lv=r.level||"", abdc=r.abdc||"", quartile=r.quartile||"";
+    if(lv && !abdc && !quartile){ if(lv.indexOf("ABDC ")===0) abdc=lv.slice(5); else if(/^Q[1-4]$/.test(lv)) quartile=lv; }
+    areaRows = splitToRows(r.areas, x=>({id:gid(), area:x, abdc:"", quartile:""}));
+    if(areaRows.length){ areaRows[0].abdc=abdc; areaRows[0].quartile=quartile; }
+    else if(abdc||quartile) areaRows=[{id:gid(), area:"", abdc:abdc, quartile:quartile}];
+  }
+  areaRows = areaRows.map(x=>({id:x.id||gid(), area:x.area||"", abdc:x.abdc||"", quartile:x.quartile||""}));
+
+  /* IB: roleRows [{id,role,success}] */
+  let roleRows = Array.isArray(ib.roleRows) ? ib.roleRows.slice() : null;
+  if(!roleRows){
+    if(ib.role||ib.success) roleRows=[{id:gid(), role:ib.role||"", success:ib.success||""}];
+    else roleRows=[];
+  }
+  roleRows = roleRows.map(x=>({id:x.id||gid(), role:x.role||"", success:x.success||""}));
+
   return {
-    teaching: Object.assign({courses:"",credits:"",note:""}, g.teaching||{}),
-    research: Object.assign({areas:"",outputs:"",level:"",note:""}, g.research||{}),
-    ep: { streams:streams, days:eOld.days||"", note:eOld.note||"" },
-    institution: Object.assign({what:"",terms:[],note:""}, g.institution||{}),
-    other: Object.assign({note:""}, g.other||{})
+    teaching: { domains:t.domains||"", courseRows:courseRows, credits:t.credits||"", improve:t.improve||"" },
+    research: { areaRows:areaRows, outputs:(r.outputs==null?"":String(r.outputs)), improve:r.improve||"" },
+    ep: { programmes:(g.ep&&g.ep.programmes)||"" },
+    ib: { roleRows:roleRows },
+    idp: { develop:(g.idp&&g.idp.develop)||"" }
   };
+}
+function goalHighlights(g){
+  const rows=[];
+  if(g.teaching.improve) rows.push({label:"Teaching focus", text:g.teaching.improve});
+  if(g.research.improve) rows.push({label:"Research focus", text:g.research.improve});
+  (g.ib.roleRows||[]).forEach(r=>{ if(r.success) rows.push({label:"IB success", text:(r.role?r.role+": ":"")+r.success}); });
+  if(g.idp.develop) rows.push({label:"Development", text:g.idp.develop});
+  return rows;
 }
 function buildSummary(g, name){
   if(!g) return "";
   const p=[];
-  const t=g.teaching||{};
-  if(t.credits||t.courses){
+  const t=g.teaching;
+  const courses=(t.courseRows||[]).map(c=>cleanTxt(c.name)).filter(Boolean);
+  if(t.credits||courses.length||t.domains){
     let s="teach";
     if(t.credits) s+=" "+t.credits+" credits";
-    if(t.courses) s+=(t.credits?" across ":" ")+cleanTxt(t.courses);
+    if(courses.length) s+=(t.credits?" across ":" ")+courses.join(", ");
+    if(t.domains) s+=" in "+cleanTxt(t.domains);
     p.push(s);
   }
-  const r=g.research||{};
-  if(r.areas||r.outputs){
+  const r=g.research;
+  const areas=(r.areaRows||[]).filter(a=>a.area||a.abdc||a.quartile);
+  if(areas.length||r.outputs){
     let s="pursue research";
-    if(r.areas) s+=" in "+cleanTxt(r.areas);
-    if(r.outputs) s+=", targeting "+r.outputs+" output"+(Number(r.outputs)>1?"s":"")+(r.level?" at "+r.level+" level":"");
+    const areaTxt=areas.map(a=>{
+      const asp=[a.abdc?("ABDC "+a.abdc):"", a.quartile?("Scopus "+a.quartile):""].filter(Boolean).join("/");
+      return cleanTxt(a.area)+(asp?" ("+asp+")":"");
+    }).filter(Boolean);
+    if(areaTxt.length) s+=" in "+areaTxt.join(", ");
+    if(r.outputs) s+=", targeting "+cleanTxt(r.outputs);
     p.push(s);
   }
-  const e=g.ep||{streams:{}};
-  const eParts=Object.keys(EP_LABELS).filter(k=>e.streams&&e.streams[k]&&e.streams[k].on).map(k=>{
-    const st=e.streams[k]; const bits=[];
-    if(st.days) bits.push(st.days+" days");
-    if(st.what) bits.push(cleanTxt(st.what));
-    return EP_LABELS[k]+(bits.length?" ("+bits.join(": ")+")":"");
-  });
-  const anyStreamDays=Object.keys(EP_LABELS).some(k=>e.streams&&e.streams[k]&&e.streams[k].on&&e.streams[k].days);
-  if(eParts.length){
-    let s="contribute to EP through "+eParts.join(", ");
-    if(e.days && !anyStreamDays) s+=" ("+e.days+" days overall)";
-    p.push(s);
-  } else if(e.days) p.push("contribute to EP ("+e.days+" days)");
-  const i=g.institution||{};
-  if(i.what) p.push("take up "+cleanTxt(i.what)+(i.terms&&i.terms.length?" in "+i.terms.join(", "):""));
-  const o=g.other||{};
-  if(o.note) p.push("beyond these areas, "+cleanTxt(o.note));
+  if(g.ep.programmes) p.push("run "+trunc(g.ep.programmes,120));
+  const roles=(g.ib.roleRows||[]).filter(x=>x.role||x.success);
+  if(roles.length){
+    const rt=roles.map(x=>{
+      let s=cleanTxt(x.role)||"a service role";
+      if(x.success) s+=" (success: "+trunc(x.success,80)+")";
+      return s;
+    });
+    p.push("serve as "+rt.join(", "));
+  }
+  if(g.idp.develop) p.push("develop "+trunc(g.idp.develop,100));
   if(!p.length) return "";
   return "In AY "+AY+", "+name+" plans to "+p.join("; ")+".";
 }
@@ -451,6 +532,7 @@ async function loadCheckpoint(){
     }
   }
   ["teaching","research","revenue","institution"].forEach(d=>STATE[d].forEach(en=>{ if(!en.id) en.id=uid(); }));
+  STATE.teaching = STATE.teaching.map(normTeach);
   EDITABLE = gateOpen(GATE) && STATUS!=="submitted";
   if(GATE==="plan"){
     GOALS=normGoals(data?data.goals:null);
@@ -464,6 +546,7 @@ async function loadCheckpoint(){
   updateGateUI();
 }
 function updateGateUI(){
+  document.body.classList.toggle("planmode", PLAN_ONLY_MODE && GATE==="plan");
   document.querySelectorAll("#gatesel .g").forEach(p=>{
     const open=gateOpen(p.dataset.gate);
     p.classList.toggle("locked", !open);
@@ -491,7 +574,7 @@ $("#saveBtn").addEventListener("click", async ()=>{
   const totals=compute();
   const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
     entries:STATE, totals:totals, status:"draft", updated_at:new Date().toISOString() };
-  if(GATE==="plan") row.goals=GOALS;
+  if(GATE==="plan"){ GOALS.summary_text=buildSummary(GOALS,USER.name); GOALS.highlight_rows=goalHighlights(GOALS); row.goals=GOALS; }
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
   if(error){ toast("Save failed: "+error.message); return; }
   DIRTY=false;
@@ -507,7 +590,7 @@ $("#submitBtn").addEventListener("click", async ()=>{
   const now=new Date().toISOString();
   const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
     entries:STATE, totals:totals, status:"submitted", submitted_at:now, updated_at:now };
-  if(GATE==="plan") row.goals=GOALS;
+  if(GATE==="plan"){ GOALS.summary_text=buildSummary(GOALS,USER.name); GOALS.highlight_rows=goalHighlights(GOALS); row.goals=GOALS; }
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
   if(error){ toast("Submit failed: "+error.message); return; }
   STATUS="submitted"; SUBMITTED_AT=now; EDITABLE=false; DIRTY=false; SEEDED=null;
@@ -533,7 +616,7 @@ document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click
   if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
   const d=b.dataset.add;
   DIRTY=true;
-  if(d==="teaching") STATE.teaching.push({ id:uid(), name:"", credit:"3", eff:"100", repeat:false, methods:{case:"none",sim:"none",live:"none",role:"none",other:"none"} });
+  if(d==="teaching") STATE.teaching.push(normTeach({ id:uid() }));
   if(d==="research") STATE.research.push({ id:uid(), code:"", authors:"1", pos:"1" });
   if(d==="revenue") STATE.revenue.push({ id:uid(), code:"", amount:0, detail:"" });
   if(d==="institution") STATE.institution.push({ id:uid(), code:"", detail:"" });
@@ -541,6 +624,18 @@ document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click
 }));
 
 /* ---------- SCORING ---------- */
+function normTeach(e){
+  e=e||{};
+  const c=e.cases||{};
+  return Object.assign({}, e, {
+    id: e.id||uid(), name: e.name||"", credit: e.credit||"3", eff: e.eff||"100", repeat: !!e.repeat,
+    term: e.term||"", anchor: e.anchor||"no",
+    cases: { hbi: c.hbi==null?"":String(c.hbi), other: c.other==null?"":String(c.other),
+             sources: c.sources||"", own: c.own==null?"":String(c.own) },
+    mode: e.mode||"none", project: e.project||"",
+    innov: e.innov||"", innovLink: e.innovLink||""
+  });
+}
 const CREDIT_CODE={ "3":"TCH_BASE_3CR","2":"TCH_BASE_2CR","1.5":"TCH_BASE_1_5CR","1":"TCH_BASE_1CR" };
 function teachScore(e){
   const fb={ "3":30,"2":20,"1.5":15,"1":10 }[e.credit] ?? 0;
@@ -590,35 +685,62 @@ function optionList(domainRules, selected){
   }).join("");
 }
 
-const TEACH_METHODS=[["case","Case studies"],["sim","Simulations"],["live","Live projects"],["role","Role plays"],["other","Other methods"]];
-const TEACH_BANDS=[["none","None"],["1-5","1 to 5"],["5-10","5 to 10"],["10+","More than 10"]];
+const TEACH_TERMS=["","Term I","Term II","Term III","Term IV","Term V","Term VI"];
+const CRAZY_BANDS=[["100","Above 10 of 20 (100%)"],["80","8 to 10 of 20 (80%)"],["0","Below 8 of 20 (0%)"]];
 function renderTeaching(){
   const list=$("#teach-list"); list.innerHTML="";
-  STATE.teaching.forEach((e,idx)=>{
-    if(!e.methods) e.methods={case:"none",sim:"none",live:"none",role:"none",other:"none"};
+  STATE.teaching.forEach((raw,idx)=>{
+    const e=normTeach(raw); STATE.teaching[idx]=e;
     const sc=teachScore(e);
-    const methodsHtml=TEACH_METHODS.map(([mk,ml])=>`
-      <div class="mfld"><label>${ml}</label><select data-i="${idx}" data-k="method" data-m="${mk}">
-        ${TEACH_BANDS.map(([bv,bl])=>`<option value="${bv}" ${((e.methods[mk]||"none")===bv)?"selected":""}>${bl}</option>`).join("")}
-      </select></div>`).join("");
     const row=el("div",{class:"entry entry-block"});
     row.innerHTML=`
       <div class="teach-top">
-        <div class="fld"><label>Course</label><input data-i="${idx}" data-k="name" value="${(e.name||"").replace(/"/g,'&quot;')}" placeholder="Course name"></div>
+        <div class="fld"><label>Course</label><input data-i="${idx}" data-k="name" value="${esc(e.name)}" placeholder="Course name"></div>
         <div class="fld"><label>Credits</label><select data-i="${idx}" data-k="credit">
           ${["3","2","1.5","1"].map(c=>`<option value="${c}" ${e.credit===c?"selected":""}>${c} credit</option>`).join("")}</select></div>
-        <div class="fld"><label>Effectiveness</label><select data-i="${idx}" data-k="eff">
-          <option value="100" ${e.eff==="100"?"selected":""}>Above 2.5 (100%)</option>
-          <option value="80" ${e.eff==="80"?"selected":""}>2.0 to 2.5 (80%)</option>
-          <option value="0" ${e.eff==="0"?"selected":""}>Below 2.0 (0%)</option></select></div>
+        <div class="fld"><label>CRAZY score</label><select data-i="${idx}" data-k="eff">
+          ${CRAZY_BANDS.map(([bv,bl])=>`<option value="${bv}" ${e.eff===bv?"selected":""}>${bl}</option>`).join("")}</select></div>
         <div class="fld"><label>Repeat</label><select data-i="${idx}" data-k="repeat">
           <option value="no" ${!e.repeat?"selected":""}>No</option>
           <option value="yes" ${e.repeat?"selected":""}>Yes 50%</option></select></div>
         <div class="row2"><span class="score">${sc.toFixed(1)}</span><button class="rm" data-rm-t="${idx}">Remove</button></div>
       </div>
-      <div class="methods-panel">
-        <div class="methods-title">Methods used in this course <span class="mnote">for accreditation, not scored</span></div>
-        <div class="methods-grid">${methodsHtml}</div>
+
+      <div class="tsec">
+        <div class="tsec-title">When and how you hold this course</div>
+        <div class="tgrid">
+          <div class="tfld"><label>Term</label><select data-i="${idx}" data-k="term">
+            ${TEACH_TERMS.map(t=>`<option value="${t}" ${e.term===t?"selected":""}>${t||"Select"}</option>`).join("")}</select></div>
+          <div class="tfld"><label>Anchor faculty</label><select data-i="${idx}" data-k="anchor">
+            <option value="no" ${e.anchor!=="yes"?"selected":""}>No</option>
+            <option value="yes" ${e.anchor==="yes"?"selected":""}>Yes</option></select></div>
+          <div class="tfld"><label>Project or assignment based</label><select data-i="${idx}" data-k="mode">
+            <option value="none" ${e.mode==="none"?"selected":""}>Neither</option>
+            <option value="project" ${e.mode==="project"?"selected":""}>Project</option>
+            <option value="assignment" ${e.mode==="assignment"?"selected":""}>Assignment</option></select></div>
+        </div>
+        ${e.mode==="project"?`<div class="tfld tfull" style="margin-top:10px"><label>Describe the project concept</label>
+          <input data-i="${idx}" data-k="project" type="text" maxlength="200" value="${esc(e.project)}" placeholder="what students build or solve, for whom, over what period"></div>`:""}
+      </div>
+
+      <div class="tsec">
+        <div class="tsec-title">Case studies used <span class="mnote">actual numbers, not bands</span></div>
+        <div class="tgrid">
+          <div class="tfld"><label>HBI cases used</label><input data-i="${idx}" data-k="cases.hbi" type="number" min="0" step="1" value="${esc(e.cases.hbi)}" placeholder="0"></div>
+          <div class="tfld"><label>Other cases used</label><input data-i="${idx}" data-k="cases.other" type="number" min="0" step="1" value="${esc(e.cases.other)}" placeholder="0"></div>
+          <div class="tfld"><label>Own cases created</label><input data-i="${idx}" data-k="cases.own" type="number" min="0" step="1" value="${esc(e.cases.own)}" placeholder="0"></div>
+        </div>
+        <div class="tfld tfull" style="margin-top:10px"><label>Sources of the other cases</label>
+          <input data-i="${idx}" data-k="cases.sources" type="text" maxlength="160" value="${esc(e.cases.sources)}" placeholder="e.g. Ivey, IIM Ahmedabad, The Case Centre"></div>
+        <div class="libnote">If you write your own case, please mail it with the teaching note to the library so colleagues can reuse it.</div>
+      </div>
+
+      <div class="tsec">
+        <div class="tsec-title">Innovation in pedagogy</div>
+        <div class="tgrid2">
+          <div class="tfld"><label>What you are trying</label><input data-i="${idx}" data-k="innov" type="text" maxlength="200" value="${esc(e.innov)}" placeholder="describe briefly"></div>
+          <div class="tfld"><label>Link to the material</label><input data-i="${idx}" data-k="innovLink" type="text" maxlength="300" value="${esc(e.innovLink)}" placeholder="Drive or web link, no file upload"></div>
+        </div>
       </div>`;
     list.appendChild(row);
   });
@@ -716,58 +838,71 @@ function renderSummary(){
   } else { note.textContent=""; }
 }
 
-const GOAL_TERM_CHIPS=["Term I","Term II","Term III"];
 function counterFor(val,cap){ return '<div class="gcount'+(String(val).length>=cap?' warn':'')+'">'+String(val).length+'/'+cap+'</div>'; }
 function renderGoals(){
   const w=document.getElementById("goalsWrap");
   if(!w) return;
   const sum=buildSummary(GOALS, USER.name);
-  let h='<div class="gstrip"><div class="ghead"><h2>Plan of Intent</h2><span class="gsub">'+
-    (GOALS_EDITABLE?"What you would like to do this year. Freezes when the plan gate closes.":"Recorded at the July plan gate.")+'</span></div>';
+  let h='<div class="gstrip"><div class="ghead"><h2>My Goals for the Year</h2><span class="gsub">'+
+    (GOALS_EDITABLE?"What you plan for AY "+AY+". Locks when goal setting closes.":"Recorded when goals were set for AY "+AY+".")+'</span></div>';
+  if(GATE==="plan"){
+    const pc=(GATES.plan||{}).closes_on, io=(GATES.interim||{}).opens_on;
+    h+='<div class="gdeadline"><span class="gdl-dot"></span><span><b>Goal setting closes on '+(pc?esc(fmtDate(pc)):"the announced date")+'.</b> Please complete your goals and submit before then. Performance capture (Teaching, Research, Revenue, Institution Building) opens'+(io?(" on "+esc(fmtDate(io))):" in September")+'.</span></div>';
+  }
   h+='<div class="gsummary" id="gsumBox"'+(sum?"":' style="display:none"')+'><span id="gsumText">'+esc(sum)+'</span></div>';
   if(GOALS_EDITABLE){
     const g=GOALS;
     h+='<div class="gcards">';
     h+='<div class="gcard"><h3>Teaching</h3>'+
-      '<label>Courses you would like to teach</label><input type="text" maxlength="160" data-gd="teaching" data-gk="courses" value="'+esc(g.teaching.courses)+'" placeholder="e.g. Marketing Management, FRM">'+
-      '<div class="grow"><div><label>Total credits</label><input type="number" min="0" step="0.5" data-gd="teaching" data-gk="credits" value="'+esc(g.teaching.credits)+'"></div></div>'+
-      '<label>What you want to try or improve (one line)</label><input type="text" maxlength="200" data-gd="teaching" data-gk="note" value="'+esc(g.teaching.note)+'">'+counterFor(g.teaching.note,200)+'</div>';
+      '<label>Domains of teaching, in priority order</label><input type="text" maxlength="160" data-gd="teaching" data-gk="domains" value="'+esc(g.teaching.domains)+'" placeholder="e.g. Marketing, Operations, GM">'+
+      '<label>Courses you would like to teach, in priority order</label>'+
+      '<div class="growlist" data-rowlist="course">'+
+        g.teaching.courseRows.map((c,ix)=>'<div class="growrow"><span class="rn">'+(ix+1)+'</span><div class="rf"><input class="grow-main" type="text" maxlength="120" data-row="course" data-id="'+c.id+'" data-rk="name" value="'+esc(c.name)+'" placeholder="course name"></div>'+(g.teaching.courseRows.length>1?'<button class="rmrow" data-rmrow="course" data-id="'+c.id+'" title="Remove">&times;</button>':'<span style="flex:0 0 20px"></span>')+'</div>').join("")+
+      '</div>'+
+      '<button class="addrow" data-addrow="course">+ Add course</button>'+
+      '<div class="grow" style="margin-top:10px"><div><label>Total credits planned</label><input type="number" min="0" step="0.5" data-gd="teaching" data-gk="credits" value="'+esc(g.teaching.credits)+'" placeholder="e.g. 18"></div></div>'+
+      '<label>What you want to improve</label><input type="text" maxlength="200" data-gd="teaching" data-gk="improve" value="'+esc(g.teaching.improve)+'" placeholder="e.g. more app based pedagogy, lift my student score to 3.25">'+counterFor(g.teaching.improve,200)+'</div>';
     h+='<div class="gcard"><h3>Research</h3>'+
-      '<label>Focus areas</label><input type="text" maxlength="160" data-gd="research" data-gk="areas" value="'+esc(g.research.areas)+'" placeholder="e.g. consumer behaviour, pricing">'+
-      '<div class="grow"><div><label>Target outputs</label><input type="number" min="0" data-gd="research" data-gk="outputs" value="'+esc(g.research.outputs)+'"></div>'+
-      '<div><label>Aspiration</label><select data-gd="research" data-gk="level">'+
-      ["","ABDC A*","ABDC A","ABDC B","ABDC C","Scopus","WoS","Case"].map(o=>'<option value="'+o+'"'+(g.research.level===o?" selected":"")+'>'+(o||"Any")+'</option>').join("")+
-      '</select></div></div>'+
-      '<label>One line on direction</label><input type="text" maxlength="200" data-gd="research" data-gk="note" value="'+esc(g.research.note)+'">'+counterFor(g.research.note,200)+'</div>';
+      '<label>Focus areas, in priority order</label>'+
+      '<div class="growlist" data-rowlist="area">'+
+        g.research.areaRows.map((a,ix)=>'<div class="growrow"><span class="rn">'+(ix+1)+'</span><div class="rf">'+
+          '<input class="grow-main" type="text" maxlength="120" data-row="area" data-id="'+a.id+'" data-rk="area" value="'+esc(a.area)+'" placeholder="e.g. Consumer Behaviour">'+
+          '<select data-row="area" data-id="'+a.id+'" data-rk="abdc" style="flex:1 1 46%">'+["","A*","A","B","C"].map(o=>'<option value="'+o+'"'+(a.abdc===o?" selected":"")+'>'+(o?"ABDC "+o:"ABDC any")+'</option>').join("")+'</select>'+
+          '<select data-row="area" data-id="'+a.id+'" data-rk="quartile" style="flex:1 1 46%">'+["","Q1","Q2","Q3","Q4"].map(o=>'<option value="'+o+'"'+(a.quartile===o?" selected":"")+'>'+(o?"Scopus "+o:"Scopus any")+'</option>').join("")+'</select>'+
+          '</div>'+(g.research.areaRows.length>1?'<button class="rmrow" data-rmrow="area" data-id="'+a.id+'" title="Remove">&times;</button>':'<span style="flex:0 0 20px"></span>')+'</div>').join("")+
+      '</div>'+
+      '<button class="addrow" data-addrow="area">+ Add focus area</button>'+
+      '<div class="grow" style="margin-top:10px"><div><label>Publications you plan</label><input type="text" maxlength="80" data-gd="research" data-gk="outputs" value="'+esc(g.research.outputs)+'" placeholder="e.g. 4 papers, 1 case study"></div></div>'+
+      '<label>What you want to improve</label><input type="text" maxlength="200" data-gd="research" data-gk="improve" value="'+esc(g.research.improve)+'" placeholder="e.g. build an international collaboration">'+counterFor(g.research.improve,200)+'</div>';
     h+='<div class="gcard"><h3>External Programs</h3>'+
-      '<label>Where you would like to focus</label><div class="gmix">'+
-      Object.keys(EP_LABELS).map(k=>'<span class="gchip'+(g.ep.streams[k].on?" on":"")+'" data-gmix="'+k+'">'+EP_LABELS[k]+'</span>').join("")+'</div>'+
-      Object.keys(EP_LABELS).filter(k=>g.ep.streams[k].on).map(k=>
-        '<div class="gstream"><span class="sl">'+EP_LABELS[k]+'</span>'+
-        '<input type="number" min="0" placeholder="days" data-gsd="'+k+'" value="'+esc(g.ep.streams[k].days)+'">'+
-        '<input type="text" maxlength="120" placeholder="what, for whom" data-gsw="'+k+'" value="'+esc(g.ep.streams[k].what)+'"></div>').join("")+
-      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="ep" data-gk="note" value="'+esc(g.ep.note)+'">'+counterFor(g.ep.note,200)+'</div>';
-    h+='<div class="gcard"><h3>Institution Building</h3>'+
-      '<label>What you would like to take up</label><textarea maxlength="300" rows="2" data-gd="institution" data-gk="what" placeholder="e.g. batch induction, accreditation support, workflow automation">'+esc(g.institution.what)+'</textarea>'+counterFor(g.institution.what,300)+
-      '<label>When</label><div class="gmix">'+
-      GOAL_TERM_CHIPS.map(t=>'<span class="gchip'+((g.institution.terms||[]).indexOf(t)>=0?" on":"")+'" data-gterm="'+t+'">'+t+'</span>').join("")+'</div>'+
-      '<label>One line on intent</label><input type="text" maxlength="200" data-gd="institution" data-gk="note" value="'+esc(g.institution.note)+'">'+counterFor(g.institution.note,200)+'</div>';
-    h+='<div class="gcard" style="grid-column:1 / -1"><h3>Other Areas</h3>'+
-      '<label>Anything beyond these areas you would like to take charge of this year</label>'+
-      '<textarea maxlength="300" rows="2" data-gd="other" data-gk="note" placeholder="e.g. automate a workflow, mentor a student club, build a lab">'+esc(g.other.note)+'</textarea>'+counterFor(g.other.note,300)+'</div>';
+      '<label>Programmes you would like to run</label><textarea maxlength="300" rows="3" data-gd="ep" data-gk="programmes" placeholder="e.g. run one MDP or OBP end to end in the area of ..., move from consulting to public MDPs">'+esc(g.ep.programmes)+'</textarea>'+counterFor(g.ep.programmes,300)+'</div>';
+    h+='<div class="gcard"><h3>Institution Building / Service</h3>'+
+      '<label>Roles you have identified</label>'+
+      '<div class="growlist" data-rowlist="role">'+
+        g.ib.roleRows.map((r,ix)=>'<div class="growrow"><span class="rn">'+(ix+1)+'</span><div class="rf">'+
+          '<input class="grow-main" type="text" maxlength="120" data-row="role" data-id="'+r.id+'" data-rk="role" value="'+esc(r.role)+'" placeholder="e.g. Dean EP, accreditation lead">'+
+          '<input class="grow-main" type="text" maxlength="200" data-row="role" data-id="'+r.id+'" data-rk="success" value="'+esc(r.success)+'" placeholder="what success in this role would mean">'+
+          '</div>'+(g.ib.roleRows.length>1?'<button class="rmrow" data-rmrow="role" data-id="'+r.id+'" title="Remove">&times;</button>':'<span style="flex:0 0 20px"></span>')+'</div>').join("")+
+      '</div>'+
+      '<button class="addrow" data-addrow="role">+ Add role</button></div>';
+    h+='<div class="gcard" style="grid-column:1 / -1"><h3>Individual Development Plan</h3>'+
+      '<label>What would you like to develop this year</label>'+
+      '<textarea maxlength="300" rows="2" data-gd="idp" data-gk="develop" placeholder="e.g. a certification, improve my case delivery, move from pure academics to industry consulting">'+esc(g.idp.develop)+'</textarea>'+counterFor(g.idp.develop,300)+'</div>';
     h+='</div>';
   } else {
     const g=GOALS, rows=[];
     if(g){
-      if(g.teaching.courses||g.teaching.credits||g.teaching.note) rows.push('<div class="gro"><b>Teaching:</b> '+esc([g.teaching.courses,g.teaching.credits?g.teaching.credits+" credits":""].filter(Boolean).join(" · "))+(g.teaching.note?' <span class="gnote">'+esc(g.teaching.note)+'</span>':'')+'</div>');
-      if(g.research.areas||g.research.outputs||g.research.note) rows.push('<div class="gro"><b>Research:</b> '+esc([g.research.areas,g.research.outputs?g.research.outputs+" outputs":"",g.research.level].filter(Boolean).join(" · "))+(g.research.note?' <span class="gnote">'+esc(g.research.note)+'</span>':'')+'</div>');
-      const stR=Object.keys(EP_LABELS).filter(k=>g.ep.streams[k].on).map(k=>{const st=g.ep.streams[k];return EP_LABELS[k]+(st.days?" "+st.days+" days":"")+(st.what?": "+st.what:"");}).join(" · ");
-      if(stR||g.ep.days||g.ep.note) rows.push('<div class="gro"><b>External Programs:</b> '+esc(stR||(g.ep.days?g.ep.days+" days":""))+(g.ep.note?' <span class="gnote">'+esc(g.ep.note)+'</span>':'')+'</div>');
-      if(g.institution.what||g.institution.note) rows.push('<div class="gro"><b>Institution Building:</b> '+esc([g.institution.what,(g.institution.terms||[]).join(", ")].filter(Boolean).join(" · "))+(g.institution.note?' <span class="gnote">'+esc(g.institution.note)+'</span>':'')+'</div>');
-      if(g.other.note) rows.push('<div class="gro"><b>Other Areas:</b> '+esc(g.other.note)+'</div>');
+      const cNames=(g.teaching.courseRows||[]).map(c=>c.name).filter(Boolean).join(", ");
+      if(g.teaching.domains||cNames||g.teaching.credits||g.teaching.improve) rows.push('<div class="gro"><b>Teaching:</b> '+esc([g.teaching.domains,cNames,g.teaching.credits?g.teaching.credits+" credits":""].filter(Boolean).join(" \u00B7 "))+(g.teaching.improve?' <span class="gnote">'+esc(g.teaching.improve)+'</span>':'')+'</div>');
+      const aTxt=(g.research.areaRows||[]).filter(a=>a.area||a.abdc||a.quartile).map(a=>{const asp=[a.abdc?"ABDC "+a.abdc:"",a.quartile?"Scopus "+a.quartile:""].filter(Boolean).join("/");return a.area+(asp?" ("+asp+")":"");}).join(", ");
+      if(aTxt||g.research.outputs||g.research.improve) rows.push('<div class="gro"><b>Research:</b> '+esc([aTxt,g.research.outputs].filter(Boolean).join(" \u00B7 "))+(g.research.improve?' <span class="gnote">'+esc(g.research.improve)+'</span>':'')+'</div>');
+      if(g.ep.programmes) rows.push('<div class="gro"><b>External Programs:</b> '+esc(g.ep.programmes)+'</div>');
+      const rTxt=(g.ib.roleRows||[]).filter(r=>r.role||r.success).map(r=>esc(r.role)+(r.success?' <span class="gnote">'+esc(r.success)+'</span>':'')).join("; ");
+      if(rTxt) rows.push('<div class="gro"><b>IB / Service:</b> '+rTxt+'</div>');
+      if(g.idp.develop) rows.push('<div class="gro"><b>Development:</b> '+esc(g.idp.develop)+'</div>');
     }
     if(rows.length) h+='<div style="padding:12px 20px 18px">'+rows.join("")+'</div>';
-    else h+='<div style="padding:12px 20px 18px" class="gro"><span class="gnote">No plan of intent recorded'+(gateOpen("plan")?" yet. Switch to the July Plan gate to record it.":" for this year.")+'</span></div>';
+    else h+='<div style="padding:12px 20px 18px" class="gro"><span class="gnote">No goals recorded'+(gateOpen("plan")?" yet. Switch to the July Plan gate to record them.":" for this year.")+'</span></div>';
   }
   h+='</div>';
   w.innerHTML=h;
@@ -788,12 +923,12 @@ document.addEventListener("input", e=>{
 
   // per-course pedagogy bands: attribute on the entry, no score impact, no rebuild
   if(!EDITABLE) return;
-  if(k==="method"){ if(!STATE[d][i].methods) STATE[d][i].methods={}; STATE[d][i].methods[t.dataset.m]=t.value; DIRTY=true; return; }
 
   let v=t.value;
   if(k==="repeat") v = (t.value==="yes");
   if(k==="amount") v = Number(t.value)||0;
-  STATE[d][i][k]=v;
+  if(k.indexOf(".")>0){ const parts=k.split("."); if(!STATE[d][i][parts[0]]) STATE[d][i][parts[0]]={}; STATE[d][i][parts[0]][parts[1]]=v; }
+  else STATE[d][i][k]=v;
   DIRTY=true;
 
   // Typed fields (course name, amount) must not trigger a list rebuild, or the field loses focus mid-typing.
@@ -831,37 +966,55 @@ function refreshCount(t){
     n.classList.toggle("warn", t.value.length>=t.maxLength);
   }
 }
+const ROW_MAP={ course:["teaching","courseRows"], area:["research","areaRows"], role:["ib","roleRows"] };
+function findRow(kind, id){
+  const m=ROW_MAP[kind]; if(!m) return null;
+  const arr=GOALS[m[0]][m[1]]||[];
+  return arr.find(x=>x.id===id)||null;
+}
 document.addEventListener("input", e=>{
   const t=e.target;
   if(!GOALS_EDITABLE) return;
-  if(t.dataset && t.dataset.gsd!==undefined){ GOALS.ep.streams[t.dataset.gsd].days=t.value; DIRTY=true; refreshGoalSummary(); return; }
-  if(t.dataset && t.dataset.gsw!==undefined){ GOALS.ep.streams[t.dataset.gsw].what=t.value; DIRTY=true; refreshCount(t); refreshGoalSummary(); return; }
+  if(t.dataset && t.dataset.row!==undefined){
+    const row=findRow(t.dataset.row, t.dataset.id);
+    if(row){ row[t.dataset.rk]=t.value; DIRTY=true; refreshGoalSummary(); }
+    return;
+  }
   if(!t.dataset || t.dataset.gd===undefined) return;
   GOALS[t.dataset.gd][t.dataset.gk] = t.type==="checkbox" ? t.checked : t.value;
   DIRTY=true;
   refreshCount(t);
   refreshGoalSummary();
 });
+document.addEventListener("change", e=>{
+  const t=e.target;
+  if(!GOALS_EDITABLE) return;
+  if(t.dataset && t.dataset.row!==undefined && t.tagName==="SELECT"){
+    const row=findRow(t.dataset.row, t.dataset.id);
+    if(row){ row[t.dataset.rk]=t.value; DIRTY=true; refreshGoalSummary(); }
+  }
+});
 document.addEventListener("click", e=>{
   const t=e.target;
   if(!GOALS_EDITABLE) return;
-  if(t.dataset && t.dataset.gmix!==undefined){
-    const k=t.dataset.gmix;
-    GOALS.ep.streams[k].on=!GOALS.ep.streams[k].on;
-    DIRTY=true;
-    renderGoals();
+  if(t.dataset && t.dataset.addrow!==undefined){
+    const m=ROW_MAP[t.dataset.addrow]; if(!m) return;
+    const arr=GOALS[m[0]][m[1]];
+    if(t.dataset.addrow==="course") arr.push({id:gid(),name:""});
+    else if(t.dataset.addrow==="area") arr.push({id:gid(),area:"",abdc:"",quartile:""});
+    else if(t.dataset.addrow==="role") arr.push({id:gid(),role:"",success:""});
+    DIRTY=true; renderGoals();
+    return;
   }
-  if(t.dataset && t.dataset.gterm!==undefined){
-    const arr=GOALS.institution.terms||[]; const ix=arr.indexOf(t.dataset.gterm);
-    if(ix>=0) arr.splice(ix,1); else arr.push(t.dataset.gterm);
-    GOALS.institution.terms=arr;
-    t.classList.toggle("on", ix<0);
-    DIRTY=true;
-    const s=buildSummary(GOALS, USER.name);
-    const box=document.getElementById("gsumBox");
-    if(box){ document.getElementById("gsumText").textContent=s; box.style.display=s?"":"none"; }
+  if(t.dataset && t.dataset.rmrow!==undefined){
+    const m=ROW_MAP[t.dataset.rmrow]; if(!m) return;
+    const arr=GOALS[m[0]][m[1]];
+    const ix=arr.findIndex(x=>x.id===t.dataset.id);
+    if(ix>=0 && arr.length>1){ arr.splice(ix,1); DIRTY=true; renderGoals(); }
+    return;
   }
 });
+
 window.addEventListener("beforeunload", e=>{ if(DIRTY && EDITABLE){ e.preventDefault(); e.returnValue=""; } });
 </script>
 </body>
