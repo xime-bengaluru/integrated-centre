@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X-Pedagogy - Institute view</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+  :root{
+    --navy:#0D1F35;--navy2:#1F2A3D;--gold:#C9A84C;--parch:#FAF8F3;
+    --ink:#0D1F35;--muted:#5b6472;--line:#e4ded1;--card:#ffffff;--good:#2f7d4f;--bad:#b23b3b;
+    --hbi:#2f6f8f;--oth:#5b7fa6;--own:#c9a84c;--sim:#8f5f2f;--scn:#6a5f8f;--prj:#2f7d4f;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--parch);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;font-size:18px;line-height:1.5}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+  .top{background:var(--navy);color:#fff}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:76px}
+  .brand{display:flex;align-items:center;gap:16px}
+  .brand svg{height:34px;width:auto;display:block}
+  .brand .rule{width:1px;height:30px;background:rgba(255,255,255,.25)}
+  .brand .name{font-family:"Cormorant Garamond",serif;font-size:27px;font-weight:600}
+  .who{font-family:"DM Mono",monospace;font-size:13px;color:rgba(255,255,255,.7)}
+  .who a{color:var(--gold);text-decoration:none;margin-left:14px}
+
+  .login{max-width:420px;margin:12vh auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:40px 34px;box-shadow:0 12px 40px rgba(13,31,53,.08)}
+  .login h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:34px;margin:0 0 6px}
+  .login p.sub{margin:0 0 26px;color:var(--muted);font-size:16px}
+  .oauth{width:100%;background:#fff;color:#3c4043;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-weight:600;font-size:16px;padding:12px 18px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+  .oauth:hover{background:#f7f7f7}.oauth:disabled{opacity:.55;cursor:default}.oauth svg{width:19px;height:19px}
+  .err{color:var(--bad);font-size:14px;margin-top:14px;min-height:18px}
+
+  .intro{padding:30px 0 6px}
+  .eyebrow{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+  .intro h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:38px;line-height:1.05;margin:0 0 8px}
+  .intro p{margin:0;color:var(--muted);font-size:17px;max-width:66ch}
+
+  /* stat band */
+  .band{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;padding:22px 0 8px}
+  @media(max-width:900px){.band{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:520px){.band{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px}
+  .stat .n{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:40px;line-height:1;color:var(--navy)}
+  .stat .l{font-size:13px;color:var(--muted);margin-top:6px}
+  .stat .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+
+  .controls{display:flex;align-items:center;gap:10px;padding:14px 0 0;flex-wrap:wrap}
+  .seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg button{border:0;background:transparent;font-family:inherit;font-size:15px;padding:9px 16px;cursor:pointer;color:var(--muted)}
+  .seg button.on{background:var(--navy);color:#fff}
+  .spacer{flex:1}
+  .sort{font-family:"DM Mono",monospace;font-size:13px;color:var(--muted)}
+  .sort select{font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+
+  /* trend */
+  .trend{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0 4px}
+  .trend h3{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:22px;margin:0 0 4px}
+  .trend .sub{font-size:14px;color:var(--muted);margin:0 0 12px}
+  .trend svg{width:100%;height:180px;display:block}
+
+  /* table */
+  .tbl{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:16px 0 60px}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:right;padding:14px 14px;font-variant-numeric:tabular-nums}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:500;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+  thead th .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+  tbody tr{border-bottom:1px solid var(--line);cursor:pointer}
+  tbody tr:last-child{border-bottom:0}
+  tbody tr:hover{background:#fdfbf6}
+  .fac{font-weight:600;font-size:17px}
+  .facsub{font-size:13px;color:var(--muted);font-weight:400}
+  .tot{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:22px;color:var(--navy)}
+  .campus-tag{display:inline-block;font-family:"DM Mono",monospace;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--parch);border:1px solid var(--line);color:var(--muted);margin-left:8px}
+  .zero{color:#c9c2b4}
+  tfoot td{font-weight:700;border-top:2px solid var(--navy);font-family:"DM Mono",monospace;font-size:14px;color:var(--navy)}
+  .drill{background:#fbf9f3}
+  .drill td{padding:0}
+  .drill .inner{padding:8px 22px 16px}
+  .drill table{width:auto;min-width:520px}
+  .drill th,.drill td{padding:8px 16px;font-size:14px}
+  .stale{color:var(--muted);font-family:"DM Mono",monospace;font-size:12px}
+  .empty{text-align:center;color:var(--muted);padding:70px 20px;font-size:18px}
+  .hidden{display:none}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);padding:6px 0 0}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+</style>
+</head>
+<body>
+
+<div id="loginView">
+  <div class="login">
+    <h1>X-Pedagogy</h1>
+    <p class="sub">Institute view. Sign in to continue.</p>
+    <button id="googleBtn" class="oauth" type="button">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <div id="loginErr" class="err"></div>
+  </div>
+</div>
+
+<div id="appView" class="hidden">
+  <div class="top"><div class="wrap">
+    <div class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="150 85 1325 406" preserveAspectRatio="xMidYMid meet" role="img" aria-label="XIME">
+  <path fill="#ffffff" d="M155.07,424.69c4.7-.4,9.4-1.13,14.1-1.14,7.32-.01,13.75-2.47,19.99-5.94,4.85-2.7,8.85-6.38,12.76-10.24,7.29-7.2,14.88-14.11,21.98-21.5,5.82-6.06,11.1-12.63,16.62-18.98,1.73-1.98,3.42-4,5.23-5.91,5.09-5.36,10.21-10.69,15.35-16,6.83-7.07,13.7-14.09,20.51-21.17,3.22-3.34,6.43-6.69,9.51-10.17,5.72-6.45,11.35-12.98,16.98-19.51,2.61-3.02,2.83-5.32.31-8.45-3.36-4.16-6.36-8.68-10.86-11.8-.48-.34-.74-1-1.11-1.5-5.42-7.35-10.74-14.77-16.29-22.02-6.82-8.92-13.78-17.73-20.79-26.51-4.98-6.24-10.09-12.38-15.24-18.47-7.13-8.41-14.1-16.93-20.8-25.71-4.27-5.59-8.77-11.03-13.82-16-6.29-6.2-13.79-9.48-22.45-10.27-6.07-.55-12.16-.86-18.23-1.31-.82-.06-1.62-.41-2.44-.54-1.3-.21-1.77-.98-1.72-2.22.03-.74,0-1.48,0-2.22,0-15.99.03-31.97-.03-47.96,0-2.44.29-4.64,2.69-6.64h2.58c21.6,0,43.21-.54,64.79.13,29.51.91,59.03-.27,88.52.66,15.23.48,30.43.12,45.65.48.53.01,1.05.07,1.79.12.12.68.33,1.37.34,2.06.03,4.13.39,8.3-.06,12.38-1.07,9.71-.21,19.43-.58,29.14-.18,4.72-.59,9.43-.93,14.55-2.35.23-4.81.61-7.28.69-7.8.28-15.61.43-23.41.68-2.15.07-2.46.51-2.67,2.66-.28,2.85,1.01,5.18,2.54,7.3,3.32,4.6,6.8,9.08,10.31,13.55,3.37,4.3,6.84,8.52,10.3,12.75,3.27,3.99,6.69,7.85,9.85,11.92,3.34,4.3,6.44,8.78,9.93,13.56.13-.03.91-.02,1.41-.4,1.59-1.21,3.16-2.48,4.58-3.88,4.38-4.3,8.82-8.56,13.01-13.04,5.83-6.23,11.53-12.59,17.15-19.02,4.29-4.91,8.4-9.99,12.49-15.07,1.18-1.46,2.19-3.12,2.99-4.83,1.12-2.41.39-4.47-2.06-5.42-2.33-.89-4.8-1.72-7.26-1.87-3.66-.23-7.36.18-11.04.28-2.96.08-5.92.25-8.87.1-1.97-.1-2.7-1.11-2.71-3.17-.04-6.46-.5-12.96.1-19.36.88-9.31.15-18.59.54-27.87.12-2.92.55-5.83.85-8.91h458.5c4.25,15.13,8.48,30.26,12.77,45.37,2.99,10.52,6.11,21,9.09,31.51,3.79,13.35,7.47,26.73,11.24,40.08,2.97,10.52,6.02,21.03,9.04,31.54,3.02,10.51,6.1,21,9.01,31.55.69,2.51.61,5.22,1.17,7.78,1.15,5.23,2.53,10.41,3.77,15.62,1.46,6.12,2.85,12.25,4.31,18.36.22.9.61,1.77.93,2.68,1.78.35,2.24-.67,2.59-2.03,1.19-4.56,2.45-9.1,3.69-13.65.41-1.52.86-3.02,1.28-4.54,3.36-12.37,6.66-24.75,10.09-37.1,3.91-14.08,7.88-28.14,11.93-42.18,2.88-10.01,5.93-19.97,8.89-29.95,3.19-10.79,6.32-21.6,9.56-32.38,1.72-5.74,3.66-11.42,5.42-17.15,3.27-10.64,6.48-21.29,9.75-31.93,1.42-4.62,2.91-9.22,4.39-13.82.19-.58.57-1.11.96-1.85h3.46c136.78,0,273.56.02,410.34-.06,5.95,0,8.27,2.42,9.67,7.1.48,1.6.93,3.24,1.14,4.89.22,1.7-.38,3.59,1.77,4.58.34.16.41.94.58,1.43,2.64,7.54,5.23,15.09,7.93,22.61,3.88,10.8,7.86,21.57,11.76,32.36,1.72,4.76,3.3,9.56,4.98,14.34,3.57,10.14,7.11,20.29,10.79,30.39.94,2.58,1.05,5.15.94,7.79-.1,2.42-1.07,3.52-3.51,4.11-6.79,1.64-13.12,4.49-19.43,7.38-8.05,3.7-16.45,6.41-24.92,8.91-1.19.35-2.46.39-3.91.61-.26-.62-.55-1.26-.8-1.91-2.28-6-4.86-11.85-8.03-17.46-2.64-4.67-4.81-9.61-8.06-13.93-1.13-1.51-2.18-3.11-3.46-4.49-1.95-2.11-2.99-4.74-4.47-7.12-3.56-5.74-8.46-10.13-13.87-14-8.8-6.3-18.45-11.03-28.67-14.48-7.27-2.45-14.72-4.02-22.54-3.96-22.97.16-45.95.06-68.92.06-1.35,0-2.7,0-3.95,0-.72,2.75-.84,84.66-.18,88.44,1.05.06,2.18.17,3.3.17,10.9.01,21.81-.06,32.71.04,3.99.04,7.19-1.58,9.95-4.15,4.31-4.02,6.98-8.92,7.34-14.93.16-2.62.49-5.23.59-7.85.26-7.17.42-14.34.69-21.51.05-1.24.27-2.56.76-3.69.92-2.14,2.87-2.54,5.02-2.54,14.4.02,28.8.01,43.19.01.42,0,.85.01,1.27.01,1.44-.01,2.14.69,2.11,2.14-.02.85,0,1.69,0,2.54,0,22.87-.54,45.75.14,68.6.85,28.46.11,56.91.52,85.36.02,1.14.35,2.27.48,3.41.22,1.89.29,3.73-.63,5.55-1.2,2.37-2.68,3.49-5.61,3.45-14.18-.19-28.37-.08-42.56-.09-4.08,0-4.7-.63-4.73-4.83-.02-3.07.07-6.14-.02-9.21-.17-6.22-.12-12.47-.72-18.65-.53-5.42-1.51-10.86-4.89-15.48-2.81-3.84-6.49-6.32-11.19-7.07-2.48-.4-5.02-.62-7.53-.64-8.89-.07-17.79-.03-26.68-.03-1.15,0-2.3,0-3.64,0-.12,1.08-.29,1.89-.29,2.71-.01,32.19-.02,64.37,0,96.56,0,3.91,1.91,5.78,5.7,5.91,1.03.03,2.05.34,3.09.47,3.95.49,7.9,1.3,11.86,1.36,11.85.18,23.71.13,35.57.04,5.79-.05,11.61-.13,17.37-.7,4.45-.45,8.9-1.43,13.23-2.63,11.56-3.22,22.74-7.52,33.51-12.84,4.18-2.06,7.98-4.72,11.47-7.74,3.98-3.46,7.89-7.03,11.49-10.88,3.36-3.6,6.38-7.54,9.34-11.49,3.46-4.61,6.74-9.37,10.03-14.11,5.88-8.46,9.81-17.82,12.79-27.64.91-3,2.21-5.91,3.56-8.74,1.41-2.95,3.07-3.62,6.2-2.65,2.1.66,4.13,1.55,6.16,2.41,4.75,2.02,9.58,3.73,14.75,4.33.39.04,1.01.19,1.1.43.75,2.1,2.78,2.08,4.38,2.66,6.12,2.23,12.28,4.33,18.41,6.53,2.43.87,2.65,1.5,2.34,4.2-1.05,9.07-4.21,17.55-7.16,26.11-3.05,8.86-5.88,17.79-8.81,26.69-1.78,5.41-3.51,10.83-5.4,16.2-2.34,6.66-4.82,13.27-7.25,19.9-1.38,3.76-2.81,7.5-4.14,11.28-.66,1.88-1.09,3.84-1.72,5.74-3.19,9.57-6.42,19.13-9.63,28.7-1.17,3.49-2.35,6.98-3.55,10.46-1,2.9-1.05,2.94-3.98,2.97-1.27.01-2.54,0-3.81,0-128.1,0-256.2-.09-384.3.14-12.77.02-25.56.48-38.34.43-3.32-.01-6.69-.63-9.95-1.34-3.49-.76-4.39-2.2-4.39-5.9,0-16.52-.01-33.03,0-49.55,0-3.88,1.02-4.74,4.88-4.69,6.14.08,12.29.29,18.42-.06,4.36-.25,8.73-1.12,12.84-2.81,1.88-.77,3.54-1.79,4.61-3.66.51-.89,1.26-1.78,2.12-2.33,2.07-1.32,2.26-3.18,2.26-5.4-.05-38.22.52-76.45-.2-114.66-.66-35.02-.08-70.04-.48-105.05-.01-.94-.1-1.87-.74-2.95-.7,2.29-1.46,4.56-2.11,6.86-2.32,8.27-4.62,16.55-6.9,24.83-3.01,10.91-5.99,21.83-9.02,32.73-2.02,7.27-4.13,14.51-6.18,21.77-1.51,5.35-2.98,10.7-4.49,16.05-2.13,7.56-4.26,15.13-6.42,22.68-4.06,14.21-8.18,28.4-12.2,42.62-4.4,15.53-8.77,31.06-13.05,46.62-3.76,13.64-7.44,27.3-11.06,40.97-3.44,12.96-6.76,25.95-10.13,38.93-.78,3-1.59,3.76-4.51,3.76-17.57.02-35.15,0-52.72,0-.31,0-.62-.1-.54-.09-.53-2.39-.93-4.62-1.54-6.8-2.82-10.1-5.67-20.19-8.57-30.27-2.67-9.27-5.46-18.51-8.11-27.79-3.26-11.4-6.43-22.82-9.67-34.22-2.73-9.59-5.53-19.15-8.27-28.74-3.2-11.2-6.32-22.41-9.54-33.6-3.1-10.79-6.34-21.54-9.42-32.34-2.62-9.17-5.09-18.39-7.64-27.58-2.3-8.28-4.64-16.56-6.93-24.84-2.57-9.3-5.12-18.6-7.68-27.9-1.16-4.25-2.3-8.5-3.48-12.74-.13-.46-.46-.86-1.07-1.98-.1,1.75-.2,2.75-.2,3.75,0,68.61-.01,137.22,0,205.82,0,4.53,1.26,8.75,4.01,12.38,2.5,3.3,6.22,4.63,10.09,5.35,2.67.49,5.43.62,8.15.67,5.5.1,11.01.05,16.51.02,1.35,0,2.71-.18,4.37-.3,1.34,1.91,1.89,4.41,1.91,6.87.1,15.88.06,31.76.02,47.64,0,1.13-.29,2.3-.65,3.38-.82,2.51-1.78,3.18-4.38,3.29-.74.03-1.48,0-2.22,0-151.81,0-303.63,0-455.44,0-.64,0-1.27,0-1.91,0-3.09-.02-4.16-.76-4.79-3.8-.59-2.87-1.13-5.78-1.32-8.7-.37-5.68-.71-11.38-.64-17.06.13-9.81.58-19.62.9-29.64,2.57-1.85,5.67-2.38,9-2.34,8.05.08,16.09.03,24.14.03,1.15,0,2.3,0,3.63,0,.63-3.48.98-6.71-1.09-9.59-4.66-6.5-9.33-13-14.16-19.38-3.87-5.12-7.81-10.19-12-15.04-3.28-3.79-6.23-7.9-10.61-10.74-2.02-1.31-3.31-3.77-4.84-5.78-4.21-5.52-8.37-11.08-12.57-16.61-.23-.3-.66-.45-1.04-.71-2.19,2.27-4.35,4.39-6.37,6.64-2.74,3.05-5.33,6.24-8.08,9.28-3.11,3.44-6.37,6.76-9.5,10.19-4.12,4.51-8.1,9.16-12.31,13.59-3.19,3.36-6.69,6.43-9.95,9.72-2.9,2.92-5.62,6.01-8.5,8.95-2.69,2.75-4.85,5.85-6.49,9.3-1.1,2.31-1.69,4.73-.62,7.26.8,1.91,1.96,3.01,4.3,2.97,7.83-.12,15.67-.05,23.5-.05.74,0,1.49-.03,2.22.03,1.48.11,2.31.93,2.38,2.43.04.74.02,1.48.02,2.22,0,17.36,0,34.73,0,52.09,0,.85.14,1.74-.09,2.52-.17.59-.74,1.25-1.29,1.49-.95.4-2.02.64-3.05.7-4.94.27-9.89.46-14.83.67-5.05.22-10.14.91-15.15.54-14.05-1.03-28.13.13-42.15-.64-19.03-1.04-38.06-.57-57.08-.36-8.53.1-17.09.38-25.64.38-3.42,0-6.84-.75-10.25-1.16,0-19.91,0-39.81,0-59.72ZM652.38,289.34c0,39.79.04,79.59-.06,119.38-.01,3.8.87,7.05,3.18,9.96,2.23,2.81,4.96,4.79,8.74,4.79,17.46,0,34.92,0,52.38,0,.83,0,1.73.02,2.49-.27,6.13-2.3,11.78-8.94,11.78-16.43-.06-76.1-.04-152.19-.04-228.29,0-.85,0-1.7-.07-2.54-.38-4.18-.97-8.35-1.12-12.53-.07-2.07-.8-3.65-1.99-5.14-.72-.9-1.54-1.76-2.45-2.48-3.16-2.51-6.53-4.87-10.71-4.9-16.3-.11-32.6-.13-48.89,0-4.51.04-8,2.38-10.27,6.33-2.1,3.64-2.97,7.59-2.97,11.78,0,40.11,0,80.22,0,120.34ZM554.03,290.26c0-36.94.02-73.87-.03-110.81,0-3.88-.13-7.81-.7-11.64-.5-3.4-1.47-6.77-2.66-10-.9-2.43-2.57-4.07-5.76-3.88-3.81.23-7.35,1.09-10.38,3.27-4.86,3.5-9.49,7.3-14.24,10.96-1.33,1.02-2.59,2.45-4.09,2.83-1.86.46-2.96,1.58-4.01,2.85-4.48,5.43-8.71,11.07-13.36,16.34-5.64,6.41-11.61,12.53-17.42,18.78-2.44,2.62-4.86,5.26-7.28,7.91-5.55,6.06-11.02,12.2-16.65,18.19-5.78,6.16-11.7,12.19-17.59,18.25-2.28,2.35-4.68,4.6-6.94,6.98-2.32,2.44-4.61,4.92-6.8,7.48-1.77,2.08-1.7,2.82-.23,5.31,4.92,8.38,11.51,15.48,17.59,22.96,3.11,3.83,6.47,7.48,9.3,11.5,3.34,4.75,7.04,9.15,11.05,13.32,2.56,2.65,5.02,5.37,6.42,8.89.38.96,1.06,1.82,1.7,2.65,5.66,7.3,11.33,14.59,17.02,21.86,3.49,4.47,6.99,8.92,10.53,13.35,3.8,4.76,7.64,9.49,11.5,14.21,2.86,3.49,5.73,6.98,8.68,10.4,2.2,2.55,4.69,4.87,6.76,7.52,4.6,5.87,10.22,10.59,16.27,14.84,1.71,1.2,3.66,2.11,5.59,2.94,1.78.76,3.34.24,3.69-1.21.88-3.65,2.11-7.18,2.1-11.09-.1-38.31-.06-76.63-.06-114.94ZM1116.52,288.94c0,39.27.02,78.54-.04,117.81,0,2.73.54,5.29,1.65,7.64,1.93,4.11,4.63,7.4,9.95,6.56.62-.1,1.27-.05,1.9,0,2.76.19,4.61-1.16,5.92-3.44,2.47-4.28,3.77-8.94,3.77-13.83.04-78.12.03-156.23.02-234.35,0-4.17-1.57-7.81-4.33-10.88-3.91-4.36-9.4-4.53-13.54-.4-3.51,3.49-5.29,7.81-5.29,12.77-.02,39.38,0,78.75-.01,118.13Z"/>
+</svg><span class="rule"></span><span class="name">X-Pedagogy</span></div>
+    <div class="who"><span id="whoName"></span><a href="#" id="signout">Sign out</a></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="intro">
+      <p class="eyebrow">Institute view</p>
+      <h1>How the faculty are teaching</h1>
+      <p>A live count of the methods faculty are using across their courses this year: cases, simulations, scenarios and live projects. Updated by each faculty member, month by month.</p>
+    </div>
+
+    <div class="controls">
+      <div class="seg" id="campusSeg">
+        <button data-c="all" class="on">All campuses</button>
+        <button data-c="Bengaluru">Bengaluru</button>
+        <button data-c="Chennai">Chennai</button>
+        <button data-c="Kochi">Kochi</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="sort">Sort by
+        <select id="sortSel">
+          <option value="total_methods">Total methods</option>
+          <option value="scenarios">Scenarios</option>
+          <option value="simulations">Simulations</option>
+          <option value="cases_own">Own cases made</option>
+          <option value="cases_hbi">HBP cases</option>
+          <option value="courses">Courses</option>
+          <option value="name">Name</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="band" id="statBand"></div>
+
+    <div class="trend">
+      <h3>Methods used across the institute, by month</h3>
+      <p class="sub" id="trendSub">Cumulative totals reported each month</p>
+      <svg id="trendChart" viewBox="0 0 1000 200" preserveAspectRatio="none" role="img" aria-label="Monthly methods trend"></svg>
+      <div class="legend">
+        <span><i style="background:var(--hbi)"></i>HBP cases</span>
+        <span><i style="background:var(--oth)"></i>Other cases</span>
+        <span><i style="background:var(--own)"></i>Own cases</span>
+        <span><i style="background:var(--sim)"></i>Simulations</span>
+        <span><i style="background:var(--scn)"></i>Scenarios</span>
+        <span><i style="background:var(--prj)"></i>Live projects</span>
+      </div>
+    </div>
+
+    <div class="tbl">
+      <table id="facTable">
+        <thead><tr>
+          <th data-s="name">Faculty</th>
+          <th data-s="courses">Courses</th>
+          <th data-s="cases_hbi"><span class="dot" style="background:var(--hbi)"></span>HBP</th>
+          <th data-s="cases_other"><span class="dot" style="background:var(--oth)"></span>Other</th>
+          <th data-s="cases_own"><span class="dot" style="background:var(--own)"></span>Own</th>
+          <th data-s="simulations"><span class="dot" style="background:var(--sim)"></span>Sims</th>
+          <th data-s="scenarios"><span class="dot" style="background:var(--scn)"></span>Scenarios</th>
+          <th data-s="live_projects"><span class="dot" style="background:var(--prj)"></span>Projects</th>
+          <th data-s="total_methods">Total</th>
+        </tr></thead>
+        <tbody id="facBody"></tbody>
+        <tfoot id="facFoot"></tfoot>
+      </table>
+      <div id="emptyState" class="empty hidden">No pedagogy entries yet for this year. Faculty rows will appear here as soon as they record their first month.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL="https://qcufrukhfcmyfvwwoqjo.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
+const AY="2026-27";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let ROWS=[], TREND=[], CAMPUS="all", SORT="total_methods", OPEN=null;
+const M=[["cases_hbi","HBP","--hbi"],["cases_other","Other","--oth"],["cases_own","Own","--own"],
+         ["simulations","Sims","--sim"],["scenarios","Scenarios","--scn"],["live_projects","Projects","--prj"]];
+
+$("#googleBtn").addEventListener("click",async()=>{
+  const gb=$("#googleBtn");$("#loginErr").textContent="";gb.disabled=true;
+  const {error}=await sb.auth.signInWithOAuth({provider:"google",
+    options:{redirectTo:window.location.origin+window.location.pathname,queryParams:{hd:"xime.org",prompt:"select_account"}}});
+  if(error){$("#loginErr").textContent=error.message;gb.disabled=false;}
+});
+$("#signout").addEventListener("click",async e=>{e.preventDefault();await sb.auth.signOut();location.reload();});
+sb.auth.getSession().then(({data})=>{if(data.session)boot(data.session.user.email);});
+
+async function boot(email){
+  const {data:fm}=await sb.from("faculty_master").select("name,campus,designation").eq("email",email).maybeSingle();
+  const {data:canView}=await sb.rpc("xp_can_view_institute");
+  if(!canView){
+    $("#loginErr").textContent="Signed in as "+email+". This view is for the President, directors, deans and HR. Your own entry page is at centre.xime.org/xpedagogy.html";
+    await sb.auth.signOut(); return;
+  }
+  $("#loginView").classList.add("hidden");$("#appView").classList.remove("hidden");
+  $("#whoName").textContent=(fm&&fm.name)||email;
+  await loadAll();
+}
+
+async function loadAll(){
+  const [{data:roll},{data:trend}]=await Promise.all([
+    sb.rpc("xp_faculty_rollup",{p_academic_year:AY}),
+    sb.rpc("xp_monthly_trend",{p_academic_year:AY})
+  ]);
+  ROWS=roll||[]; TREND=trend||[];
+  render();
+}
+
+$("#campusSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  CAMPUS=b.dataset.c; OPEN=null;
+  [...$("#campusSeg").children].forEach(x=>x.classList.toggle("on",x===b));
+  render();
+});
+$("#sortSel").addEventListener("change",e=>{SORT=e.target.value;render();});
+document.querySelectorAll("#facTable thead th").forEach(th=>th.addEventListener("click",()=>{
+  SORT=th.dataset.s; $("#sortSel").value=SORT; render();
+}));
+
+function filtered(){ return CAMPUS==="all"?ROWS:ROWS.filter(r=>r.campus===CAMPUS); }
+
+function render(){
+  const rows=filtered().slice().sort((a,b)=>
+    SORT==="name" ? a.faculty_name.localeCompare(b.faculty_name) : (b[SORT]||0)-(a[SORT]||0));
+
+  // stat band
+  const sum=k=>rows.reduce((s,r)=>s+(r[k]||0),0);
+  const facCount=rows.length;
+  const band=[
+    [facCount,"faculty reporting","--navy"],
+    [sum("cases_hbi")+sum("cases_other")+sum("cases_own"),"cases in use","--hbi"],
+    [sum("cases_own"),"own cases created","--own"],
+    [sum("simulations"),"simulations","--sim"],
+    [sum("scenarios"),"scenarios","--scn"],
+    [sum("live_projects"),"live projects","--prj"]
+  ];
+  $("#statBand").innerHTML=band.map(([n,l,c])=>
+    `<div class="stat"><div class="n"><span class="dot" style="background:var(${c})"></span>${n}</div><div class="l">${l}</div></div>`).join("");
+
+  // table
+  const body=$("#facBody"); const foot=$("#facFoot");
+  if(!rows.length){ $("#facTable").classList.add("hidden"); $("#emptyState").classList.remove("hidden"); drawTrend(); return; }
+  $("#facTable").classList.remove("hidden"); $("#emptyState").classList.add("hidden");
+
+  body.innerHTML=rows.map(r=>{
+    const cell=k=>{const v=r[k]||0;return `<td class="${v?'':'zero'}">${v}</td>`;};
+    const stale = r.last_updated ? staleFlag(r.last_updated) : "";
+    const main=`<tr data-email="${esc(r.faculty_email)}">
+      <td><span class="fac">${esc(r.faculty_name)}</span><span class="campus-tag">${esc(r.campus)}</span>
+          <div class="facsub">${esc(r.designation||"")}${stale}</div></td>
+      <td>${r.courses}</td>
+      ${cell("cases_hbi")}${cell("cases_other")}${cell("cases_own")}${cell("simulations")}${cell("scenarios")}${cell("live_projects")}
+      <td><span class="tot">${r.total_methods}</span></td></tr>`;
+    const drill = OPEN===r.faculty_email ? drillRow(r.faculty_email) : "";
+    return main+drill;
+  }).join("");
+
+  foot.innerHTML=`<tr><td>Total, ${rows.length} faculty</td><td>${sum("courses")}</td>
+    <td>${sum("cases_hbi")}</td><td>${sum("cases_other")}</td><td>${sum("cases_own")}</td>
+    <td>${sum("simulations")}</td><td>${sum("scenarios")}</td><td>${sum("live_projects")}</td>
+    <td>${sum("total_methods")}</td></tr>`;
+
+  body.querySelectorAll("tr[data-email]").forEach(tr=>tr.addEventListener("click",async()=>{
+    const em=tr.dataset.email;
+    OPEN = OPEN===em ? null : em;
+    if(OPEN) await ensureCourses(em);
+    render();
+  }));
+  drawTrend();
+}
+
+function staleFlag(iso){
+  const d=new Date(iso), now=new Date();
+  const days=(now-d)/86400000;
+  if(days>40) return ` &middot; <span class="stale">last updated ${d.toLocaleDateString("en-GB",{month:"short",year:"numeric"})}</span>`;
+  return "";
+}
+
+const COURSE_CACHE={};
+async function ensureCourses(email){
+  if(COURSE_CACHE[email])return;
+  const {data}=await sb.rpc("xp_faculty_courses",{p_academic_year:AY,p_email:email});
+  COURSE_CACHE[email]=data||[];
+}
+function drillRow(email){
+  const rows=COURSE_CACHE[email]||[];
+  // latest snapshot per course
+  const latest={};
+  rows.forEach(r=>{ if(!latest[r.course_name]||r.as_of_month>latest[r.course_name].as_of_month) latest[r.course_name]=r; });
+  const list=Object.values(latest);
+  if(!list.length) return `<tr class="drill"><td colspan="9"><div class="inner">No course detail yet.</div></td></tr>`;
+  const head=`<tr><th>Course</th><th>Term</th><th>HBP</th><th>Other</th><th>Own</th><th>Sims</th><th>Scenarios</th><th>Projects</th><th>Sources</th></tr>`;
+  const body=list.map(c=>`<tr><td style="text-align:left">${esc(c.course_name)}</td><td style="text-align:left">${esc(c.term||"-")}</td>
+    <td>${c.cases_hbi}</td><td>${c.cases_other}</td><td>${c.cases_own}</td><td>${c.simulations}</td><td>${c.scenarios}</td><td>${c.live_projects}</td>
+    <td style="text-align:left">${esc(c.cases_sources||"-")}</td></tr>`).join("");
+  return `<tr class="drill"><td colspan="9"><div class="inner"><table><thead>${head}</thead><tbody>${body}</tbody></table></div></td></tr>`;
+}
+
+function drawTrend(){
+  const svg=$("#trendChart"); const W=1000,H=200,pad=28;
+  const months=TREND.map(t=>t.as_of_month);
+  if(months.length<1){ svg.innerHTML=`<text x="500" y="100" text-anchor="middle" fill="#9a9484" font-size="16">Trend appears once two or more months are recorded</text>`; return; }
+  const keys=["cases_hbi","cases_other","cases_own","simulations","scenarios","live_projects"];
+  const colors={cases_hbi:"#2f6f8f",cases_other:"#5b7fa6",cases_own:"#c9a84c",simulations:"#8f5f2f",scenarios:"#6a5f8f",live_projects:"#2f7d4f"};
+  const max=Math.max(1,...TREND.map(t=>Math.max(...keys.map(k=>t[k]||0))));
+  const n=TREND.length;
+  const x=i=> n===1 ? W/2 : pad + i*(W-2*pad)/(n-1);
+  const y=v=> H-pad - (v/max)*(H-2*pad);
+  let out="";
+  // gridlines
+  for(let g=0;g<=2;g++){ const yy=pad+g*(H-2*pad)/2; out+=`<line x1="${pad}" y1="${yy}" x2="${W-pad}" y2="${yy}" stroke="#eee6d6" stroke-width="1"/>`; }
+  keys.forEach(k=>{
+    const pts=TREND.map((t,i)=>`${x(i)},${y(t[k]||0)}`).join(" ");
+    if(n===1){ out+=`<circle cx="${x(0)}" cy="${y(TREND[0][k]||0)}" r="4" fill="${colors[k]}"/>`; }
+    else out+=`<polyline points="${pts}" fill="none" stroke="${colors[k]}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  });
+  // month labels
+  TREND.forEach((t,i)=>{ const d=new Date(t.as_of_month+"T00:00:00Z");
+    out+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" fill="#9a9484" font-size="12" font-family="DM Mono,monospace">${d.toLocaleDateString("en-GB",{month:"short",timeZone:"UTC"})}</text>`; });
+  svg.innerHTML=out;
+  $("#trendSub").textContent = n===1 ? "One month recorded so far. The trend line grows as faculty report each month." : `${n} months recorded, cumulative totals`;
+}
+</script>
+</body>
+</html>
