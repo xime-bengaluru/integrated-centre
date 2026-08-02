@@ -654,14 +654,32 @@ function updateGateUI(){
     b.textContent="Pre-filled from your "+SEEDED+" checkpoint. Review, adjust, then save.";
   } else { b.style.display="none"; }
 }
+async function ensureSession(){
+  let s=(await sb.auth.getSession()).data.session;
+  const expMs=s?((s.expires_at||0)*1000):0;
+  if(!s || (expMs && expMs-Date.now()<60000)){
+    const r=await sb.auth.refreshSession();
+    s=(r.data && r.data.session) ? r.data.session : null;
+  }
+  if(!s || !s.user || !s.user.email) return false;
+  if(USER && USER.email!==s.user.email) USER.email=s.user.email;
+  return true;
+}
+function writeErrMsg(error){
+  const m=(error && error.message)||"Unknown error";
+  if(/row-level security|row level security|JWT|not authenticated|expired|no api key|permission/i.test(m))
+    return "Your sign-in has expired. Please sign out, sign in again, then try once more.";
+  return m;
+}
 $("#saveBtn").addEventListener("click", async ()=>{
   if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
+  if(!(await ensureSession())){ toast("Your sign-in has expired. Please sign out and sign in again."); return; }
   const totals=compute();
   const row={ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:GATE,
     entries:STATE, totals:totals, status:"draft", updated_at:new Date().toISOString() };
   if(GATE==="plan"){ GOALS.summary_text=buildSummary(GOALS,USER.name); GOALS.highlight_rows=goalHighlights(GOALS); row.goals=GOALS; }
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
-  if(error){ toast("Save failed: "+error.message); return; }
+  if(error){ toast("Save failed: "+writeErrMsg(error)); return; }
   DIRTY=false;
   if(SEEDED){ SEEDED=null; updateGateUI(); }
   $("#savedMsg").textContent="Saved "+new Date().toLocaleTimeString();
@@ -669,6 +687,7 @@ $("#saveBtn").addEventListener("click", async ()=>{
 });
 $("#submitBtn").addEventListener("click", async ()=>{
   if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
+  if(!(await ensureSession())){ toast("Your sign-in has expired. Please sign out and sign in again."); return; }
   const label=GATE_LABEL[GATE]||GATE;
   if(!confirm("Submit your "+label+" checkpoint? After submitting you cannot edit it without your dean reopening it.")) return;
   const totals=compute();
@@ -677,7 +696,7 @@ $("#submitBtn").addEventListener("click", async ()=>{
     entries:STATE, totals:totals, status:"submitted", submitted_at:now, updated_at:now };
   if(GATE==="plan"){ GOALS.summary_text=buildSummary(GOALS,USER.name); GOALS.highlight_rows=goalHighlights(GOALS); row.goals=GOALS; }
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
-  if(error){ toast("Submit failed: "+error.message); return; }
+  if(error){ toast("Submit failed: "+writeErrMsg(error)); return; }
   STATUS="submitted"; SUBMITTED_AT=now; EDITABLE=false; DIRTY=false; SEEDED=null;
   updateGateUI(); toast("Checkpoint submitted");
 });
