@@ -346,7 +346,7 @@
           <div class="floor"><span class="lab">Sub-floor (30 from one)</span><span><span class="val" id="f-sub">0</span> <span class="pill" id="p-sub">min 30</span></span></div>
           <div class="floor"><span class="lab">Overall target</span><span><span class="val" id="f-overall">0</span> <span class="pill" id="p-overall">300</span></span></div>
         </div>
-        <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b> <span style="font-size:12px" id="incRate">(Rs 1000 per point over 300, floors apply)</span><div id="incNote" style="font-size:12px;color:var(--warn);margin-top:4px"></div></div>
+        <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b> <span style="font-size:12px" id="incRate">(Rs 2000 per point over 300, capped at 450, floors apply)</span><div id="incNote" style="font-size:12px;color:var(--warn);margin-top:4px"></div></div>
       </div>
 
       <div class="card">
@@ -768,15 +768,17 @@ function compute(){
   const target=FLOORS.TGT_ANNUAL_PLAN??300;
   const rateRule=RULES.find(x=>x.domain==="incentive"&&x.points!=null);
   const rate=rateRule?Number(rateRule.points):1000;
+  const cap=FLOORS.FLR_INCENTIVE_CAP??450;
   const floors={
     teaching: t>=(FLOORS.FLR_TEACHING??135),
     other: other>=(FLOORS.FLR_RESEARCH_REVENUE??90),
     sub: Math.max(r,v)>=(FLOORS.FLR_OTHER_SUBFLOOR??30)
   };
   const floorsMet=floors.teaching&&floors.other&&floors.sub;
-  const gross=Math.max(0, overall-target)*rate;
+  const eligible=Math.max(0, Math.min(overall, cap)-target);
+  const gross=eligible*rate;
   return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
-    target:target, rate:rate, floors:floors, floorsMet:floorsMet,
+    target:target, rate:rate, cap:cap, floors:floors, floorsMet:floorsMet,
     incentiveGross:gross, incentive: floorsMet?gross:0 };
 }
 
@@ -930,7 +932,7 @@ function renderSummary(){
   const sub=Math.max(c.research,c.revenue);
   setFloor("#f-sub","#p-sub",sub,FLOORS.FLR_OTHER_SUBFLOOR??30);
   setFloor("#f-overall","#p-overall",c.overall,FLOORS.TGT_ANNUAL_PLAN??300);
-  $("#incRate").textContent = "(Rs "+c.rate.toLocaleString("en-IN")+" per point over "+c.target+", floors apply)";
+  $("#incRate").textContent = "(Rs "+c.rate.toLocaleString("en-IN")+" per point over "+c.target+", capped at "+c.cap+", floors apply)";
   const note=$("#incNote");
   $("#incentive").textContent = rupee(c.incentive);
   if(!c.floorsMet && c.incentiveGross>0){
