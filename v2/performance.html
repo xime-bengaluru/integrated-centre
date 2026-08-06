@@ -299,7 +299,7 @@
       <div class="domain">
         <div class="dhead"><h2>Teaching</h2><div class="dtot mono" id="tot-teaching">0</div></div>
         <div class="body">
-          <p class="hint">Base by course credit, times your CRAZY score factor. Repeat sections of the same course count at half from the second instance.</p>
+          <p class="hint">Base by course credit, adjusted by your teaching effectiveness score. Repeat sections of the same course count at half from the second instance onward.</p>
           <div id="teach-list"></div>
           <button class="add" data-add="teaching">+ Add course</button>
         </div>
@@ -570,6 +570,13 @@ async function boot(email){
   const { data: gc } = await sb.from("evaluation_gate_config").select("gate,opens_on,closes_on,is_open").eq("academic_year",AY);
   GATES = {}; (gc||[]).forEach(g=>{ if(GATE_ORDER.indexOf(g.gate)>=0) GATES[g.gate]=g; });
 
+  // land on the first gate that is open, so users are not stranded on a closed one
+  const firstOpen = GATE_ORDER.find(g=>GATES[g] && gateOpen(g));
+  if(firstOpen){
+    GATE=firstOpen;
+    document.querySelectorAll("#gatesel .g").forEach(x=>x.classList.toggle("on", x.dataset.gate===firstOpen));
+  }
+
   $("#loginView").style.display="none";
   $("#app").style.display="block";
 
@@ -792,7 +799,7 @@ function optionList(domainRules, selected){
 }
 
 const TEACH_TERMS=["","Term I","Term II","Term III","Term IV","Term V","Term VI"];
-const CRAZY_BANDS=[["100","Above 10 of 20 (100%)"],["80","8 to 10 of 20 (80%)"],["0","Below 8 of 20 (0%)"]];
+const EFF_BANDS=[["100","Above 10 of 20 (100%)"],["80","8 to 10 of 20 (80%)"],["0","Below 8 of 20 (0%)"]];
 function renderTeaching(){
   const list=$("#teach-list"); list.innerHTML="";
   STATE.teaching.forEach((raw,idx)=>{
@@ -804,8 +811,8 @@ function renderTeaching(){
         <div class="fld"><label>Course</label><input data-i="${idx}" data-k="name" value="${esc(e.name)}" placeholder="Course name"></div>
         <div class="fld"><label>Credits</label><select data-i="${idx}" data-k="credit">
           ${["3","2","1.5","1"].map(c=>`<option value="${c}" ${e.credit===c?"selected":""}>${c} credit</option>`).join("")}</select></div>
-        <div class="fld"><label>CRAZY score</label><select data-i="${idx}" data-k="eff">
-          ${CRAZY_BANDS.map(([bv,bl])=>`<option value="${bv}" ${e.eff===bv?"selected":""}>${bl}</option>`).join("")}</select></div>
+        <div class="fld"><label>Teaching effectiveness</label><select data-i="${idx}" data-k="eff">
+          ${EFF_BANDS.map(([bv,bl])=>`<option value="${bv}" ${e.eff===bv?"selected":""}>${bl}</option>`).join("")}</select></div>
         <div class="fld"><label>Repeat</label><select data-i="${idx}" data-k="repeat">
           <option value="no" ${!e.repeat?"selected":""}>No</option>
           <option value="yes" ${e.repeat?"selected":""}>Yes 50%</option></select></div>
