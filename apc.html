@@ -36,7 +36,6 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
 .b-dean_review,.b-director_review,.b-president_review{background:#fdf6e3;color:var(--warn);border-color:#e8d9a8}
 .b-approved{background:#eaf3ec;color:var(--good);border-color:#bfe0c8}
 .b-rejected{background:#f7e9e9;color:var(--bad);border-color:#e6bcbc}
-
 .b-cope_review{background:#fdf6e3;color:var(--warn);border-color:#e8d9a8}
 .b-cope_approved,.b-accepted{background:#eaf3ec;color:var(--good);border-color:#bfe0c8}
 .b-cope_rejected{background:#f7e9e9;color:var(--bad);border-color:#e6bcbc}
@@ -53,13 +52,48 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
 .kv{display:grid;grid-template-columns:180px 1fr;gap:6px 16px;font-size:15px;margin:10px 0}
 .kv .k{color:var(--muted)}
 .kv a{color:var(--navy);text-decoration:underline}
-.timeline{border-left:2px solid var(--line);margin:12px 0 0;padding:0 0 0 16px}
-.timeline .ev{margin:0 0 10px;font-size:14px}
-.timeline .ev .t{font-family:"DM Mono",monospace;color:var(--muted);font-size:12px}
 .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
 .empty{text-align:center;color:var(--muted);padding:60px 20px}
 .cap{font-size:13px;color:var(--muted);margin-top:4px}
 .amt{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:20px;color:var(--navy)}
+
+/* budget meter */
+.budget{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:0 0 20px;box-shadow:0 4px 18px rgba(13,31,53,.05)}
+.budget .head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+.budget .head .t{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:20px}
+.budget .head .ceil{font-family:"DM Mono",monospace;font-size:13px;color:var(--muted)}
+.meter{height:12px;border-radius:999px;background:#efeadd;overflow:hidden;display:flex;margin:12px 0 10px}
+.meter .used{background:var(--navy)}.meter .hold{background:var(--gold)}
+.blabels{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-family:"DM Mono",monospace;color:var(--muted)}
+.blabels b{color:var(--ink);font-weight:600}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.dot.used{background:var(--navy)}.dot.hold{background:var(--gold)}.dot.free{background:#efeadd}
+.notice{margin-top:12px;padding:10px 14px;border-radius:9px;font-size:14px;background:#fdf6e3;color:var(--warn);border:1px solid #e8d9a8}
+.notice.info{background:#eef3f8;color:var(--navy);border-color:#cfe0f0}
+
+/* eligibility gate */
+.gate{border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin:18px 0 4px;background:#fbf9f3}
+.gate .gt{font-weight:700;font-size:14px;margin:0 0 8px;color:var(--navy)}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:9px 0;font-weight:400;font-size:15px;cursor:pointer}
+.chk input{width:18px;height:18px;margin:2px 0 0;flex:0 0 auto}
+.gate-fail{margin-top:10px;padding:10px 14px;border-radius:9px;background:#f7e9e9;color:var(--bad);border:1px solid #e6bcbc;font-size:14px}
+.gate-fail ul{margin:6px 0 0;padding-left:18px}.gate-fail li{margin:2px 0}
+
+/* attachments */
+.attach{border:1px dashed var(--line);border-radius:11px;padding:14px 16px;margin:16px 0 4px;background:#fff}
+.attach .at{font-weight:700;font-size:14px;margin:0 0 4px;color:var(--navy)}
+.attach .sub{font-size:13px;color:var(--muted);margin:0 0 10px}
+.attach .ctl{display:grid;grid-template-columns:170px 1fr auto;gap:10px;align-items:center}
+@media(max-width:640px){.attach .ctl{grid-template-columns:1fr}}
+.att-list{margin:12px 0 0}
+.att-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin:6px 0;font-size:14px;background:#fbf9f3}
+.att-row .nm{display:flex;align-items:center;gap:8px;min-width:0}
+.att-row .nm .ty{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px;flex:0 0 auto}
+.att-row .nm .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.att-row .lnk{color:var(--navy);text-decoration:underline;cursor:pointer;background:none;border:0;font:inherit;padding:0}
+.att-row .rm{color:var(--bad);cursor:pointer;background:none;border:0;font:inherit;padding:0}
+.mini{font-size:14px;padding:9px 12px}
+.disc{font-size:13px;color:var(--muted);margin:2px 0 0}
 </style></head><body>
 
 <div id="loginView"><div class="login">
@@ -75,40 +109,91 @@ Continue with Google</button><div id="loginErr" class="err"></div>
     <div class="who"><span id="whoName"></span><a href="#" id="signout">Sign out</a></div></div></div>
   <div class="wrap">
     <div class="intro"><p class="eyebrow">Research publication support</p><h1>Your APC requests</h1>
-      <p>APC support for Q1 to Q3 Scopus-indexed papers. Your request goes to your campus research dean, then your director, then the President.</p></div>
+      <p>APC support for Q1 to Q3 Scopus-indexed papers. You seek prior approval before submission, then claim after the journal accepts.</p></div>
+    <div id="budget"></div>
     <div style="margin:12px 0 22px"><button id="newBtn" class="gold">+ New request</button></div>
     <div id="list"></div>
   </div>
 </div>
+
+<!-- Stage 1 form -->
 <div id="formView" class="hidden"><div class="wrap" style="max-width:760px"><div class="card" style="margin-top:26px">
   <h3 id="formTitle">New APC request</h3>
-  <p class="cap">Manuscript details for COPE clearance. Give links, do not upload files.</p>
+  <p class="cap">Manuscript details for prior approval. Add links or attach files, whichever you prefer.</p>
   <label>Manuscript title</label><input id="f_title" placeholder="Working title">
   <label>Abstract (short)</label><textarea id="f_abstract"></textarea>
   <div class="row"><div><label>Target journal</label><input id="f_journal"></div>
     <div><label>Quartile</label><select id="f_quartile"><option>Q1</option><option>Q2</option><option>Q3</option></select></div></div>
-  <div class="row"><div><label>Author position</label><select id="f_pos"><option value="first">First author</option><option value="second">Second author</option><option value="corresponding">Corresponding author</option></select></div>
+  <div class="row"><div><label>Your author position</label><select id="f_pos"><option value="first">First author</option><option value="second">Second author</option><option value="other">Third or later</option></select></div>
     <div><label>Estimated APC (Rs)</label><input id="f_apc" type="number" min="0" step="1000"></div></div>
+  <div class="row"><div><label>Discipline</label><input id="f_discipline" placeholder="Management or allied area"></div>
+    <div><label>Scopus indexing (optional)</label><input id="f_indexing" placeholder="Scopus ID or note"></div></div>
   <label>Co-authors</label><input id="f_coauth">
-  <label>Link to manuscript or abstract</label><input id="f_link" placeholder="Drive / DOI / publisher link">
-  <div class="actions"><button id="saveDraft" class="ghost">Save draft</button><button id="submitChain" class="gold">Submit to research dean</button><button id="cancelForm" class="ghost">Cancel</button></div>
+  <label>Link to manuscript or abstract (optional)</label><input id="f_link" placeholder="Drive / DOI / publisher link">
+
+  <label>External funding for this APC</label>
+  <select id="f_fund"><option value="">Select an answer</option><option value="no">No external funding</option><option value="yes">Yes, partly or fully funded</option></select>
+  <div id="f_fundwrap" class="hidden"><label>Funding detail</label><textarea id="f_fundnote" placeholder="Source and amount. No double reimbursement is allowed."></textarea></div>
+
+  <div class="gate">
+    <p class="gt">Eligibility, confirm before you submit</p>
+    <label class="chk"><input type="checkbox" id="g_corr"><span>I am the corresponding author for this paper and I am affiliated to XIME.</span></label>
+    <label class="chk"><input type="checkbox" id="g_scopus"><span>The target journal is Scopus-indexed at Q1, Q2 or Q3.</span></label>
+    <label class="chk"><input type="checkbox" id="g_disc"><span>The work is in Management or an allied discipline.</span></label>
+    <label class="chk"><input type="checkbox" id="g_invoice"><span>The APC invoice will be raised in the campus name.</span></label>
+  </div>
+
+  <div id="attach1"></div>
+
+  <div class="actions"><button id="saveDraft" class="ghost">Save draft</button><button id="submitChain" class="gold">Submit for prior approval</button><button id="cancelForm" class="ghost">Cancel</button></div>
   <div id="formErr" class="err"></div>
 </div></div></div>
+
+<!-- Stage 2 claim form -->
+<div id="claimView" class="hidden"><div class="wrap" style="max-width:760px"><div class="card" style="margin-top:26px">
+  <h3 id="claimTitle">Claim after acceptance</h3>
+  <p class="cap" id="claimSub"></p>
+  <div id="claimNotice"></div>
+  <label>Acceptance letter link</label><input id="c_accept" placeholder="Drive / email link to the acceptance">
+  <div class="row"><div><label>Payment option</label><select id="c_option"><option value="reimbursement">Reimbursement (you paid)</option><option value="advance">Advance (XIME pays)</option></select></div>
+    <div><label>Claim amount (Rs)</label><input id="c_amount" type="number" min="0" step="1000"></div></div>
+  <p class="disc" id="c_cap"></p>
+  <div class="row"><div><label>Invoice link (optional)</label><input id="c_invoice" placeholder="APC invoice link"></div>
+    <div><label>Payment proof link (optional)</label><input id="c_proof" placeholder="Receipt, for reimbursement"></div></div>
+  <label>Published or in-press link (optional)</label><input id="c_pub" placeholder="DOI or publisher link">
+
+  <div id="attach2"></div>
+
+  <div class="actions"><button id="submitClaim" class="gold">Submit claim</button><button id="cancelClaim" class="ghost">Cancel</button></div>
+  <div id="claimErr" class="err"></div>
+</div></div></div>
+
 <script>
 const SUPABASE_URL="https://qcufrukhfcmyfvwwoqjo.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
 const AY="2026-27";
+const CEILING=100000;
+const QCAP={Q1:100000,Q2:75000,Q3:50000};
+const BUCKET="apc-docs";
+const MIME_OK=["application/pdf","image/png","image/jpeg","image/webp"];
+const SIZE_MAX=5*1024*1024;
+const S1_TYPES=[["synopsis","Synopsis"],["proposal","Proposal"],["indexing_evidence","Indexing evidence"],["other","Other"]];
+const S2_TYPES=[["acceptance_letter","Acceptance letter"],["invoice","Invoice"],["payment_proof","Payment proof"],["published_paper","Published paper"],["other","Other"]];
+
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const rupee=n=>n==null?"-":"Rs "+Number(n).toLocaleString("en-IN");
 const fmtDate=iso=>iso?new Date(iso).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}):"";
+const safeName=n=>String(n||"file").replace(/[^\w.\-]+/g,"_").slice(-80);
+
 async function gauth(){const gb=$("#googleBtn");$("#loginErr").textContent="";gb.disabled=true;
   const{error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{hd:"xime.org",prompt:"select_account"}}});
   if(error){$("#loginErr").textContent=error.message;gb.disabled=false;}}
 
 const STATUS_LABEL={draft:"Draft",dean_review:"With research dean",director_review:"With director",president_review:"With President",approved:"Approved",rejected:"Declined",accepted:"Paper accepted",claim_submitted:"Claim submitted",claim_approved:"Claim approved",reimbursed:"Reimbursed",closed:"Closed"};
 const ORDER=["Submitted","Research dean","Director","President","Approved"];
+const INFLIGHT=["dean_review","director_review","president_review","approved","accepted","claim_submitted"];
 function stageIdx(s){return{draft:0,dean_review:1,director_review:2,president_review:3,approved:4,rejected:-1,accepted:4,claim_submitted:4,claim_approved:4,reimbursed:4,closed:4}[s]??0;}
 function stageStrip(s){const now=stageIdx(s);
   if(s==="rejected")return '<div class="stage"><span class="step" style="background:#f7e9e9;color:var(--bad);border-color:#e6bcbc">Declined</span></div>';
@@ -119,42 +204,199 @@ function chainNotes(r){let h="";
   if(r.approved_amount!=null)h+=`<div class="cap"><b>Approved:</b> ${rupee(r.approved_amount)}</div>`;
   return h;}
 
-let ME=null,REQS=[],EDIT=null;
+let ME=null,REQS=[],EDIT=null,CLAIMR=null,ATT={};
 $("#googleBtn").addEventListener("click",gauth);
 $("#signout").addEventListener("click",async e=>{e.preventDefault();await sb.auth.signOut();location.reload();});
 sb.auth.getSession().then(({data})=>{if(data.session)boot(data.session.user.email);});
+
 async function boot(email){const {data:fm}=await sb.from("faculty_master").select("name,campus").eq("email",email).maybeSingle();
   if(!fm){$("#loginErr").textContent="Signed in as "+email+", not on the faculty list.";await sb.auth.signOut();return;}
   ME={email,name:fm.name,campus:fm.campus};$("#loginView").classList.add("hidden");$("#appView").classList.remove("hidden");$("#whoName").textContent=fm.name;await load();}
-async function load(){const {data}=await sb.from("apc_request").select("*").eq("faculty_email",ME.email).order("created_at",{ascending:false});REQS=data||[];renderList();}
-function renderList(){const el=$("#list");if(!REQS.length){el.innerHTML='<div class="empty">No requests yet.</div>';return;}
-  el.innerHTML=REQS.map(r=>`<div class="card"><div style="display:flex;justify-content:space-between;gap:12px">
-    <div><h3>${esc(r.manuscript_title)}</h3><p class="meta">${esc(r.journal_name)} &middot; ${esc(r.journal_quartile)} &middot; est. ${rupee(r.estimated_apc)}</p></div>
+
+async function load(){
+  const {data}=await sb.from("apc_request").select("*").eq("faculty_email",ME.email).order("created_at",{ascending:false});
+  REQS=data||[];
+  ATT={};
+  const ids=REQS.map(r=>r.request_id);
+  if(ids.length){const {data:a}=await sb.from("apc_attachment").select("request_id").in("request_id",ids);
+    (a||[]).forEach(x=>{ATT[x.request_id]=(ATT[x.request_id]||0)+1;});}
+  renderBudget();renderList();
+}
+
+function budget(){
+  const rows=REQS.filter(r=>r.academic_year===AY);
+  let committed=0,reserved=0;
+  rows.forEach(r=>{
+    if(r.approved_amount!=null)committed+=Number(r.approved_amount)||0;
+    else if(INFLIGHT.includes(r.status))reserved+=Number(r.estimated_apc)||0;
+  });
+  return {committed,reserved,remaining:Math.max(0,CEILING-committed),over:(committed+reserved)>CEILING};
+}
+function renderBudget(){
+  const b=budget();
+  const usedPct=Math.min(100,Math.round(b.committed/CEILING*100));
+  const holdPct=Math.min(100-usedPct,Math.round(b.reserved/CEILING*100));
+  $("#budget").innerHTML=`<div class="budget">
+    <div class="head"><span class="t">APC budget, ${esc(AY)}</span><span class="ceil">Annual ceiling ${rupee(CEILING)}</span></div>
+    <div class="meter"><div class="used" style="width:${usedPct}%"></div><div class="hold" style="width:${holdPct}%"></div></div>
+    <div class="blabels">
+      <span><span class="dot used"></span>Committed <b>${rupee(b.committed)}</b></span>
+      <span><span class="dot hold"></span>In flight <b>${rupee(b.reserved)}</b></span>
+      <span><span class="dot free"></span>Left of ceiling <b>${rupee(b.remaining)}</b></span>
+    </div>
+    ${b.over?`<div class="notice">Your committed and in-flight requests together pass the ${rupee(CEILING)} ceiling. A claim over the ceiling, or a second claim this year, routes through the President.</div>`:``}
+  </div>`;
+}
+
+function renderList(){const el=$("#list");if(!REQS.length){el.innerHTML='<div class="empty">No requests yet. Start with a new request above.</div>';return;}
+  el.innerHTML=REQS.map(r=>{const n=ATT[r.request_id]||0;
+    return `<div class="card"><div style="display:flex;justify-content:space-between;gap:12px">
+    <div><h3>${esc(r.manuscript_title)}</h3><p class="meta">${esc(r.journal_name)} &middot; ${esc(r.journal_quartile)} &middot; est. ${rupee(r.estimated_apc)}${n?` &middot; ${n} file${n>1?"s":""}`:""}</p></div>
     <span class="badge b-${r.status}">${STATUS_LABEL[r.status]||r.status}</span></div>
     ${stageStrip(r.status)}${chainNotes(r)}
     <div class="actions">${r.status==="draft"?`<button class="ghost" data-edit="${r.request_id}">Edit</button>`:''}
-    ${r.status==="approved"?`<button class="gold" data-claim="${r.request_id}">Mark accepted &amp; claim</button>`:''}</div></div>`).join('');
+    ${r.status==="approved"?`<button class="gold" data-claim="${r.request_id}">Claim after acceptance</button>`:''}</div></div>`;}).join('');
   el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>openForm(REQS.find(x=>x.request_id===b.dataset.edit))));
-  el.querySelectorAll("[data-claim]").forEach(b=>b.addEventListener("click",()=>claim(REQS.find(x=>x.request_id===b.dataset.claim))));}
+  el.querySelectorAll("[data-claim]").forEach(b=>b.addEventListener("click",()=>openClaim(REQS.find(x=>x.request_id===b.dataset.claim))));}
+
+/* ---------- Stage 1 form ---------- */
 $("#newBtn").addEventListener("click",()=>openForm(null));
 $("#cancelForm").addEventListener("click",()=>{$("#formView").classList.add("hidden");$("#appView").classList.remove("hidden");});
+$("#f_fund").addEventListener("change",()=>{$("#f_fundwrap").classList.toggle("hidden",$("#f_fund").value!=="yes");});
+
 function openForm(r){EDIT=r;$("#appView").classList.add("hidden");$("#formView").classList.remove("hidden");$("#formErr").textContent="";
   $("#formTitle").textContent=r?"Edit request":"New APC request";
   $("#f_title").value=r?.manuscript_title||"";$("#f_abstract").value=r?.abstract||"";$("#f_journal").value=r?.journal_name||"";
   $("#f_quartile").value=r?.journal_quartile||"Q1";$("#f_pos").value=r?.author_position||"first";$("#f_apc").value=r?.estimated_apc||"";
-  $("#f_coauth").value=r?.co_authors||"";$("#f_link").value=r?.proposal_link||"";}
-function collect(){return{faculty_email:ME.email,academic_year:AY,campus:ME.campus,manuscript_title:$("#f_title").value.trim(),
+  $("#f_coauth").value=r?.co_authors||"";$("#f_link").value=r?.proposal_link||"";
+  $("#f_discipline").value=r?.discipline||"";$("#f_indexing").value=r?.indexing_status||"";
+  const fd=r?.external_funding_disclosed;$("#f_fund").value=fd===true?"yes":fd===false?"no":"";
+  $("#f_fundnote").value=r?.external_funding_note||"";$("#f_fundwrap").classList.toggle("hidden",fd!==true);
+  ["g_corr","g_scopus","g_disc","g_invoice"].forEach(id=>{$("#"+id).checked=false;});
+  renderAttach("attach1",r,1,S1_TYPES);
+}
+
+function collect(){const fund=$("#f_fund").value;
+  return{faculty_email:ME.email,academic_year:AY,campus:ME.campus,manuscript_title:$("#f_title").value.trim(),
   abstract:$("#f_abstract").value.trim(),journal_name:$("#f_journal").value.trim(),journal_quartile:$("#f_quartile").value,
-  author_position:$("#f_pos").value,estimated_apc:parseInt($("#f_apc").value||"0",10)||null,co_authors:$("#f_coauth").value.trim(),proposal_link:$("#f_link").value.trim()};}
-async function persist(status){const d=collect();if(!d.manuscript_title){$("#formErr").textContent="Add the title.";return null;}if(!d.journal_name){$("#formErr").textContent="Add the journal.";return null;}
+  author_position:$("#f_pos").value,estimated_apc:parseInt($("#f_apc").value||"0",10)||null,co_authors:$("#f_coauth").value.trim(),
+  proposal_link:$("#f_link").value.trim(),discipline:$("#f_discipline").value.trim(),indexing_status:$("#f_indexing").value.trim(),
+  external_funding_disclosed:fund==="yes"?true:fund==="no"?false:null,external_funding_note:$("#f_fundnote").value.trim()||null};}
+
+function eligibility(){const e=[];const pos=$("#f_pos").value;
+  if(pos!=="first"&&pos!=="second")e.push("APC support needs you to be first or second author.");
+  if(!$("#g_corr").checked)e.push("Confirm you are the corresponding author and XIME-affiliated.");
+  if(!$("#g_scopus").checked)e.push("Confirm the journal is Scopus-indexed at Q1 to Q3.");
+  if(!$("#g_disc").checked)e.push("Confirm the work is in Management or an allied discipline.");
+  if(!$("#g_invoice").checked)e.push("Confirm the APC invoice will be in the campus name.");
+  if(!$("#f_discipline").value.trim())e.push("Name the discipline.");
+  const fund=$("#f_fund").value;if(fund!=="no"&&fund!=="yes")e.push("Answer whether you have external funding for this APC.");
+  return e;}
+
+function showGateFail(errs){const old=$("#formErr");
+  old.innerHTML=`<div class="gate-fail">Fix these before submitting:<ul>${errs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;}
+
+async function persist(status){const d=collect();
+  if(!d.manuscript_title){$("#formErr").textContent="Add the title.";return null;}
+  if(!d.journal_name){$("#formErr").textContent="Add the journal.";return null;}
   d.status=status;let row;
   if(EDIT){const {data,error}=await sb.from("apc_request").update(d).eq("request_id",EDIT.request_id).select().single();if(error){$("#formErr").textContent=error.message;return null;}row=data;}
-  else{const {data,error}=await sb.from("apc_request").insert(d).select().single();if(error){$("#formErr").textContent=error.message;return null;}row=data;}return row;}
-$("#saveDraft").addEventListener("click",async()=>{const r=await persist("draft");if(r)await done();});
-$("#submitChain").addEventListener("click",async()=>{const r=await persist("dean_review");if(!r)return;
-  await sb.from("apc_event").insert({request_id:r.request_id,actor_email:ME.email,action:"submitted",note:"Submitted for research dean recommendation"});await done();});
-async function done(){$("#formView").classList.add("hidden");$("#appView").classList.remove("hidden");await load();}
-async function claim(r){const link=prompt("Paste the acceptance letter link:");if(link===null)return;
-  await sb.from("apc_request").update({status:"claim_submitted",acceptance_link:link,claim_amount:r.estimated_apc,payment_option:"reimbursement"}).eq("request_id",r.request_id);
-  await sb.from("apc_event").insert({request_id:r.request_id,actor_email:ME.email,action:"claim_submitted",note:"Funding claim after acceptance"});await load();}
+  else{const {data,error}=await sb.from("apc_request").insert(d).select().single();if(error){$("#formErr").textContent=error.message;return null;}row=data;}
+  EDIT=row;return row;}
+
+$("#saveDraft").addEventListener("click",async()=>{const r=await persist("draft");if(!r)return;
+  $("#formTitle").textContent="Edit request";renderAttach("attach1",r,1,S1_TYPES);await load();
+  $("#formErr").innerHTML='<span style="color:var(--good)">Draft saved. You can attach files now.</span>';});
+
+$("#submitChain").addEventListener("click",async()=>{const errs=eligibility();if(errs.length){showGateFail(errs);return;}
+  const r=await persist("dean_review");if(!r)return;
+  await sb.from("apc_event").insert({request_id:r.request_id,actor_email:ME.email,action:"submitted",note:"Submitted for prior approval"});await done();});
+
+async function done(){$("#formView").classList.add("hidden");$("#claimView").classList.add("hidden");$("#appView").classList.remove("hidden");await load();}
+
+/* ---------- Stage 2 claim ---------- */
+$("#cancelClaim").addEventListener("click",()=>{$("#claimView").classList.add("hidden");$("#appView").classList.remove("hidden");});
+$("#c_amount").addEventListener("input",updateClaimCap);
+$("#c_option").addEventListener("change",updateClaimNotice);
+
+function openClaim(r){CLAIMR=r;$("#appView").classList.add("hidden");$("#claimView").classList.remove("hidden");$("#claimErr").textContent="";
+  $("#claimTitle").textContent="Claim after acceptance";
+  $("#claimSub").textContent=`${r.manuscript_title}, ${r.journal_name} (${r.journal_quartile})`;
+  $("#c_accept").value=r.acceptance_link||"";$("#c_option").value=r.payment_option||"reimbursement";
+  $("#c_amount").value=r.claim_amount||r.estimated_apc||"";
+  $("#c_invoice").value=r.invoice_link||"";$("#c_proof").value=r.payment_proof_link||"";$("#c_pub").value=r.published_link||"";
+  updateClaimCap();updateClaimNotice();renderAttach("attach2",r,2,S2_TYPES);}
+
+function updateClaimCap(){const cap=QCAP[CLAIMR.journal_quartile]||CEILING;const amt=parseInt($("#c_amount").value||"0",10)||0;
+  $("#c_cap").textContent=`${CLAIMR.journal_quartile} cap is ${rupee(cap)}. `+(amt>cap?`Your amount is above the cap.`:`Amount is within the cap.`);
+  $("#c_cap").style.color=amt>cap?"var(--bad)":"var(--muted)";}
+
+function updateClaimNotice(){const b=budget();const amt=parseInt($("#c_amount").value||"0",10)||0;
+  const priorApproved=REQS.filter(r=>r.academic_year===AY&&r.request_id!==CLAIMR.request_id&&r.approved_amount!=null).length;
+  const overCeiling=(b.committed+amt)>CEILING;const adv=$("#c_option").value==="advance";
+  const notes=[];
+  if(priorApproved>=1)notes.push("This is a second approved claim this year, so it routes through the President.");
+  if(overCeiling)notes.push(`This claim takes you past the ${rupee(CEILING)} annual ceiling, so it routes through the President.`);
+  if(adv)notes.push("An advance needs prior COPE approval and Director approval before payment.");
+  $("#claimNotice").innerHTML=notes.length?`<div class="notice info">${notes.map(esc).join(" ")}</div>`:"";}
+
+$("#submitClaim").addEventListener("click",async()=>{const r=CLAIMR;const cap=QCAP[r.journal_quartile]||CEILING;
+  const accept=$("#c_accept").value.trim();const amt=parseInt($("#c_amount").value||"0",10)||0;
+  if(!accept){$("#claimErr").textContent="Add the acceptance letter link.";return;}
+  if(amt<=0){$("#claimErr").textContent="Add the claim amount.";return;}
+  if(amt>cap){$("#claimErr").textContent=`Claim is above the ${r.journal_quartile} cap of ${rupee(cap)}.`;return;}
+  const upd={status:"claim_submitted",acceptance_link:accept,claim_amount:amt,payment_option:$("#c_option").value,
+    invoice_link:$("#c_invoice").value.trim()||null,payment_proof_link:$("#c_proof").value.trim()||null,published_link:$("#c_pub").value.trim()||null};
+  const {error}=await sb.from("apc_request").update(upd).eq("request_id",r.request_id);
+  if(error){$("#claimErr").textContent=error.message;return;}
+  await sb.from("apc_event").insert({request_id:r.request_id,actor_email:ME.email,action:"claim_submitted",note:"Claim after acceptance, "+$("#c_option").value});
+  await done();});
+
+/* ---------- attachments ---------- */
+async function renderAttach(containerId,r,stage,types){const el=document.getElementById(containerId);if(!el)return;
+  if(!r||!r.request_id){el.innerHTML=`<div class="attach"><p class="at">Attachments</p><p class="sub">Save a draft first, then you can attach files.</p></div>`;return;}
+  const opts=types.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join("");
+  el.innerHTML=`<div class="attach"><p class="at">Attachments</p>
+    <p class="sub">PDF or image, up to 5 MB. Files are private to your reviewers.</p>
+    <div class="ctl">
+      <select class="a_type">${opts}</select>
+      <input type="file" class="a_file" accept="application/pdf,image/png,image/jpeg,image/webp">
+      <button class="ghost mini a_up" type="button">Upload</button>
+    </div>
+    <div class="att-list" id="${containerId}_list">Loading files...</div>
+    <div class="err a_err" style="margin-top:8px"></div></div>`;
+  el.querySelector(".a_up").addEventListener("click",()=>doUpload(el,r,stage,containerId,types));
+  await listAttach(containerId,r.request_id,stage);}
+
+async function listAttach(containerId,requestId,stage){const box=document.getElementById(containerId+"_list");if(!box)return;
+  const {data,error}=await sb.from("apc_attachment").select("*").eq("request_id",requestId).eq("stage",stage).order("uploaded_at",{ascending:true});
+  if(error){box.textContent=error.message;return;}
+  const rows=data||[];
+  if(!rows.length){box.innerHTML=`<div class="cap">No files yet.</div>`;return;}
+  box.innerHTML=rows.map(a=>`<div class="att-row" data-id="${a.id}"><div class="nm"><span class="ty">${esc(a.doc_type)}</span><span class="fn">${esc(a.filename)}</span></div>
+    <div style="display:flex;gap:14px;flex:0 0 auto"><button class="lnk" data-view="${esc(a.storage_path)}">View</button><button class="rm" data-del="${a.id}" data-path="${esc(a.storage_path)}">Remove</button></div></div>`).join("");
+  box.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>viewAttach(b.dataset.view)));
+  box.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>delAttach(b.dataset.del,b.dataset.path,containerId,requestId,stage)));}
+
+async function doUpload(el,r,stage,containerId,types){const errEl=el.querySelector(".a_err");errEl.textContent="";
+  const fileInput=el.querySelector(".a_file");const docType=el.querySelector(".a_type").value;const file=fileInput.files[0];
+  if(!file){errEl.textContent="Choose a file first.";return;}
+  if(!MIME_OK.includes(file.type)){errEl.textContent="Only PDF, PNG, JPEG or WebP files are allowed.";return;}
+  if(file.size>SIZE_MAX){errEl.textContent="File is over 5 MB.";return;}
+  const path=`${r.request_id}/${stage}/${Date.now()}_${safeName(file.name)}`;
+  const {error:upErr}=await sb.storage.from(BUCKET).upload(path,file,{contentType:file.type,upsert:false});
+  if(upErr){errEl.textContent=upErr.message;return;}
+  const {error:insErr}=await sb.from("apc_attachment").insert({request_id:r.request_id,stage,doc_type:docType,storage_path:path,filename:file.name,uploaded_by:ME.email});
+  if(insErr){errEl.textContent=insErr.message;await sb.storage.from(BUCKET).remove([path]);return;}
+  fileInput.value="";await listAttach(containerId,r.request_id,stage);}
+
+async function viewAttach(path){const {data,error}=await sb.storage.from(BUCKET).createSignedUrl(path,120);
+  if(error||!data?.signedUrl){alert("Could not open the file: "+(error?error.message:"unknown"));return;}
+  window.open(data.signedUrl,"_blank");}
+
+async function delAttach(id,path,containerId,requestId,stage){
+  const {error:delErr}=await sb.from("apc_attachment").delete().eq("id",id);
+  if(delErr){alert(delErr.message);return;}
+  await sb.storage.from(BUCKET).remove([path]);
+  await listAttach(containerId,requestId,stage);}
 </script></body></html>
