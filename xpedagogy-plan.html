@@ -153,7 +153,9 @@
       <p class="eyebrow">Plan and compare</p>
       <h1>Plan your course, then see what you delivered</h1>
       <p>Set out the methods you intend to use across the course, the cases, simulations, scenarios and live work. As the term runs and you log your monthly actuals, this shows planned against delivered, side by side.</p>
+      <div style="margin-top:14px"><button id="exBtn" type="button" style="background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 16px;font-family:inherit;font-weight:600;font-size:14px;color:var(--navy);cursor:pointer">See a worked example (the role model)</button></div>
     </div>
+    <div id="exampleArea"></div>
 
     <div id="planArea"></div>
   </div>
@@ -535,6 +537,40 @@ async function save(lock){
 
   $("#savedMsg").textContent = lock ? "Plan locked." : ("Saved "+new Date().toLocaleTimeString());
   await loadPlan();
+}
+
+/* ---------- WORKED EXAMPLE (read-only role model) ---------- */
+let EXAMPLE=null, EXOPEN=false;
+$("#exBtn").addEventListener("click", async ()=>{
+  EXOPEN=!EXOPEN;
+  const area=$("#exampleArea"), btn=$("#exBtn");
+  if(!EXOPEN){ area.innerHTML=""; btn.textContent="See a worked example (the role model)"; return; }
+  btn.textContent="Hide the worked example";
+  if(!EXAMPLE){
+    area.innerHTML='<div class="card"><div class="card-b" style="color:var(--muted)">Loading example...</div></div>';
+    const { data } = await sb.rpc("xp_example_plan");
+    EXAMPLE=data;
+  }
+  renderExample();
+});
+function renderExample(){
+  const area=$("#exampleArea");
+  if(!EXAMPLE || !EXAMPLE.header){ area.innerHTML='<div class="card"><div class="card-b" style="color:var(--muted)">No example plan is set up yet.</div></div>'; return; }
+  const h=EXAMPLE.header, c=EXAMPLE.course||{}, f=EXAMPLE.faculty||{}, sess=EXAMPLE.sessions||[];
+  const sixset=new Set(SIX); const cnt={}; SIX.forEach(k=>cnt[k]=0);
+  sess.forEach(s=>{ if(sixset.has(s.method_category)) cnt[s.method_category]++; });
+  const psix=SIX.map(k=>cnt[k]);
+  let html='<div class="card" style="border-color:var(--gold)"><div class="card-h" style="background:#fdf8ec"><h2>Worked example</h2>'+
+    '<div style="font-family:\'DM Mono\',monospace;font-size:13px;color:var(--muted)">'+esc(f.name||"")+' \u00b7 '+esc(c.course_name||"")+'</div></div><div class="card-b">';
+  html+='<p style="margin:0 0 14px;color:var(--muted);font-size:15px">This is '+esc(f.name||"a colleague")+"'s actual plan, shown as a reference for what a detailed plan looks like. It is read only and separate from your own plan above.</p>";
+  html+='<div class="six">';
+  SIX.forEach((k,i)=> html+='<div class="cell"><label>'+esc(SIXMAP[k].label)+'</label><div class="big">'+psix[i]+'</div></div>');
+  html+='</div>';
+  html+='<div class="tbl-scroll" style="margin-top:16px"><table class="ledger"><thead><tr><th>#</th><th>Mod</th><th>Method</th><th>Category</th><th>Artifact</th><th>Note</th></tr></thead><tbody>';
+  sess.forEach(s=>{ html+='<tr class="'+(s.is_assessment?"assess":"")+'"><td>'+(s.session_no==null?"MT":s.session_no)+'</td><td>'+(s.module_no==null?"":s.module_no)+'</td><td>'+esc(s.method_type||"")+'</td><td>'+esc(CATLABEL[s.method_category]||s.method_category||"")+'</td><td>'+esc(s.artifact_name||"")+'</td><td>'+esc(s.session_note||"")+'</td></tr>'; });
+  html+='</tbody></table></div></div></div>';
+  area.innerHTML=html;
+  area.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function writeErr(error){
