@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Quiz · XIME Bengaluru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0D1F35; --navy-2:#152A47; --gold:#C9A84C; --gold-dk:#a9863a;
+    --parchment:#FAF8F3; --paper:#ffffff; --ink:#1B2A3F; --line:#E7E1D4;
+    --muted:#6E7A8A; --go:#2E9E6B; --warn:#D9A441; --stop:#D2544B;
+    --shadow:0 14px 38px rgba(13,31,53,.18); --radius:18px;
+    --serif:"Cormorant Garamond",Georgia,serif;
+    --sans:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{font-family:var(--sans);background:linear-gradient(165deg,#0D1F35 0%,#152A47 100%);
+    color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:520px;margin:0 auto;padding:18px 16px 40px;min-height:100vh;display:flex;flex-direction:column;}
+  .screen{display:none;flex:1;flex-direction:column;}
+  .screen.active{display:flex;animation:fade .3s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .brand{display:flex;align-items:center;gap:10px;color:#E4D9BE;font-size:12.5px;letter-spacing:.18em;
+    text-transform:uppercase;font-weight:700;margin-bottom:14px;}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(201,168,76,.22);}
+
+  .card{background:var(--parchment);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;}
+  h1{font-family:var(--serif);font-size:34px;line-height:1.08;margin:0 0 6px;letter-spacing:.01em;color:var(--navy);}
+  .sub{color:var(--muted);font-size:15px;margin:0 0 20px;line-height:1.4;}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 22px;}
+  .fact{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;}
+  .fact .n{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--navy);line-height:1;}
+  .fact .l{font-size:12.5px;color:var(--muted);margin-top:4px;}
+  .rules{list-style:none;padding:0;margin:0 0 22px;}
+  .rules li{display:flex;gap:10px;font-size:14.5px;color:#33415c;padding:7px 0;border-bottom:1px dashed var(--line);}
+  .rules li:last-child{border-bottom:none;}
+  .rules .ic{color:var(--gold-dk);font-weight:800;}
+
+  label{display:block;font-size:13px;font-weight:700;color:#33415c;margin:0 0 6px;}
+  input[type=text],input[type=email]{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;
+    font-size:16px;color:var(--ink);background:var(--paper);outline:none;transition:border .15s;}
+  input:focus{border-color:var(--gold);}
+  .field{margin-bottom:16px;}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:6px;}
+  .err{color:var(--stop);font-size:13px;margin-top:8px;min-height:18px;font-weight:600;}
+
+  .btn{width:100%;border:none;border-radius:13px;padding:16px;font-size:16.5px;font-weight:700;cursor:pointer;
+    background:var(--navy);color:#fff;box-shadow:0 10px 22px rgba(13,31,53,.3);transition:transform .08s,box-shadow .2s,background .2s;}
+  .btn:active{transform:translateY(1px) scale(.995);}
+  .btn:disabled{background:#9aa6b6;box-shadow:none;cursor:not-allowed;}
+  .btn.gold{background:var(--gold);color:var(--navy);}
+  .btn.ghost{background:transparent;color:var(--navy);box-shadow:none;border:1.5px solid var(--line);}
+
+  .qtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;color:#E4D9BE;}
+  .qcount{font-size:13.5px;font-weight:700;letter-spacing:.03em;}
+  .progress{height:6px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progress > i{display:block;height:100%;background:var(--gold);width:0;transition:width .35s;}
+
+  .timerwrap{display:flex;align-items:center;justify-content:center;margin:2px 0 16px;}
+  .ring{position:relative;width:92px;height:92px;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .bg{fill:none;stroke:rgba(255,255,255,.16);stroke-width:9;}
+  .ring .fg{fill:none;stroke:var(--go);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .4s;}
+  .ring .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;}
+  .ring .num b{font-family:var(--serif);font-size:32px;line-height:1;font-weight:700;}
+  .ring .num span{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#B9C4D6;margin-top:3px;}
+  .ring.low .fg{stroke:var(--warn);}
+  .ring.crit .fg{stroke:var(--stop);}
+  .ring.crit{animation:pulse .9s infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+  .qcard{background:var(--parchment);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;flex:1;display:flex;flex-direction:column;}
+  .qtext{font-size:18.5px;line-height:1.34;font-weight:700;color:var(--navy);margin:0 0 18px;}
+  .opts{display:flex;flex-direction:column;gap:11px;}
+  .opt{display:flex;gap:13px;align-items:flex-start;text-align:left;width:100%;background:var(--paper);
+    border:1.6px solid var(--line);border-radius:13px;padding:14px;font-size:15.5px;line-height:1.3;color:#26344c;
+    cursor:pointer;transition:border .12s,background .12s,transform .06s;}
+  .opt:active{transform:scale(.995);}
+  .opt .key{flex:none;width:28px;height:28px;border-radius:8px;background:#EFE7D2;color:var(--navy);
+    font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;}
+  .opt.sel{border-color:var(--gold);background:#FBF4E1;}
+  .opt.sel .key{background:var(--gold);color:var(--navy);}
+  .opt.locked{opacity:.85;cursor:default;}
+
+  .qfoot{margin-top:18px;}
+  .locknote{text-align:center;font-size:13px;color:var(--muted);margin-top:12px;min-height:18px;}
+
+  .scorebig{text-align:center;margin:6px 0 4px;}
+  .scorebig .pct{font-family:var(--serif);font-size:64px;font-weight:700;letter-spacing:-.01em;color:var(--navy);line-height:1;}
+  .scorebig .frac{font-size:17px;color:var(--muted);margin-top:6px;font-weight:500;}
+  .verdict{text-align:center;font-size:15px;color:#33415c;margin:14px 0 22px;}
+  .who{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--muted);margin-bottom:16px;}
+  .who b{color:var(--ink);}
+  .status{text-align:center;font-size:13.5px;margin-top:14px;min-height:20px;font-weight:600;}
+  .status.ok{color:var(--go);}
+  .status.bad{color:var(--stop);}
+  .foot{color:#8FA0BA;font-size:11.5px;text-align:center;margin-top:24px;letter-spacing:.04em;}
+  .center{text-align:center;color:#DCE4F0;padding:40px 10px;}
+  .spinner{width:34px;height:34px;border:3px solid rgba(255,255,255,.25);border-top-color:var(--gold);
+    border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOADING -->
+  <section id="scr-load" class="screen active">
+    <div class="brand"><span class="dot"></span> XIME Bengaluru</div>
+    <div class="center"><div class="spinner"></div><div id="load-msg">Loading the quiz…</div></div>
+  </section>
+
+  <!-- LANDING -->
+  <section id="scr-landing" class="screen">
+    <div class="brand"><span class="dot"></span> XIME Bengaluru</div>
+    <div class="card">
+      <h1 id="q-title">Quiz</h1>
+      <p class="sub">A single-best-answer assessment. Read each question and choose one option before the timer runs out.</p>
+      <div class="facts">
+        <div class="fact"><div class="n" id="f-count">-</div><div class="l">Questions</div></div>
+        <div class="fact"><div class="n" id="f-time">-</div><div class="l">Per question</div></div>
+        <div class="fact"><div class="n">1</div><div class="l">Best answer each</div></div>
+        <div class="fact"><div class="n" id="f-mins">-</div><div class="l">Minutes total</div></div>
+      </div>
+      <ul class="rules">
+        <li><span class="ic">›</span> Each question stays on screen for a fixed countdown.</li>
+        <li><span class="ic">›</span> Tap an option to choose. You can change it until you lock or time runs out.</li>
+        <li><span class="ic">›</span> When the timer ends, the question locks and moves on.</li>
+        <li><span class="ic">›</span> You cannot return to a previous question.</li>
+        <li><span class="ic">›</span> Your score appears at the end.</li>
+      </ul>
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" type="text" autocomplete="name" placeholder="e.g. Ananya Rao">
+      </div>
+      <div class="field" id="email-field">
+        <label for="email">XIME email</label>
+        <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="you@xime.org">
+        <div class="hint" id="email-hint">Use your official email address.</div>
+      </div>
+      <div class="err" id="landing-err"></div>
+      <button class="btn" id="start-btn">Start quiz</button>
+    </div>
+    <div class="foot">Do not refresh or close this page during the quiz.</div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="scr-quiz" class="screen">
+    <div class="qtop">
+      <span class="qcount" id="qcount">Question 1</span>
+      <span class="qcount" id="qname"></span>
+    </div>
+    <div class="progress"><i id="progbar"></i></div>
+    <div class="timerwrap">
+      <div class="ring" id="ring">
+        <svg width="92" height="92" viewBox="0 0 92 92">
+          <circle class="bg" cx="46" cy="46" r="42"></circle>
+          <circle class="fg" id="ringfg" cx="46" cy="46" r="42"></circle>
+        </svg>
+        <div class="num"><b id="ringnum">30</b><span>sec</span></div>
+      </div>
+    </div>
+    <div class="qcard">
+      <p class="qtext" id="qtext"></p>
+      <div class="opts" id="opts"></div>
+      <div class="qfoot">
+        <button class="btn gold" id="lock-btn" disabled>Lock answer &amp; continue</button>
+        <div class="locknote" id="locknote">Choose an option to enable locking.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section id="scr-done" class="screen">
+    <div class="brand"><span class="dot"></span> XIME Bengaluru</div>
+    <div class="card">
+      <h1>Well done.</h1>
+      <p class="sub">Here is how you did.</p>
+      <div class="scorebig"><div class="pct" id="pct">-</div><div class="frac" id="frac"></div></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="who" id="who"></div>
+      <button class="btn ghost" id="download-btn">Download my result</button>
+      <div class="status" id="submit-status"></div>
+    </div>
+    <div class="foot">You may now close this page.</div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   X-Hub Quiz  ·  front end  (v1.0, 2026-08-17)
+   URL-driven: open with ?code=YOUR_CODE  (defaults to frm-m1-4)
+   Reads and scores through Supabase security-definer functions.
+   The answer key never reaches this page.
+   ========================================================================= */
+const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
+const CODE = new URLSearchParams(location.search).get('code') || 'frm-m1-4';
+
+const $ = id => document.getElementById(id);
+function show(scr){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(scr).classList.add('active');window.scrollTo(0,0);}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+async function rpc(fn, body){
+  const r = await fetch(SUPABASE_URL + "/rest/v1/rpc/" + fn, {
+    method:"POST",
+    headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  });
+  if(!r.ok){ throw new Error("HTTP "+r.status+": "+await r.text()); }
+  return await r.json();
+}
+
+let QUIZ = null;                 // {title, count, time_per_question, require_email, email_domain, questions:[{q,o}]}
+let student = {name:"", email:""};
+let order = [];                  // shuffled display order -> canonical index
+let idx = 0;
+let picks = [];                  // letter or null per CANONICAL index
+let timeLeft = 30, tick = null, selected = null;
+const CIRC = 2 * Math.PI * 42;
+
+/* ---------------- load quiz ---------------- */
+(async function init(){
+  try{
+    const q = await rpc("fq_get", {p_code: CODE});
+    if(!q || !q.ok){ $('load-msg').textContent = (q && q.error) ? q.error : "This quiz is not available."; return; }
+    QUIZ = q;
+    $('q-title').textContent = q.title || "Quiz";
+    $('f-count').textContent = q.count;
+    $('f-time').textContent  = q.time_per_question + "s";
+    $('f-mins').textContent  = "~" + Math.max(1, Math.round(q.count * q.time_per_question / 60));
+    if(q.require_email){
+      $('email-hint').textContent = "Use your official @" + q.email_domain + " address.";
+    } else {
+      $('email-field').style.display = "none";
+    }
+    show('scr-landing');
+  }catch(e){
+    $('load-msg').textContent = "Could not reach the server. Check the connection and reload.";
+  }
+})();
+
+/* ---------------- landing ---------------- */
+$('start-btn').addEventListener('click', ()=>{
+  const name = $('name').value.trim();
+  const email = $('email').value.trim().toLowerCase();
+  const err = $('landing-err');
+  if(!name){ err.textContent = "Please enter your full name."; return; }
+  if(QUIZ.require_email){
+    const ok = new RegExp("^[^@\\s]+@" + QUIZ.email_domain.replace('.','\\.') + "$").test(email);
+    if(!ok){ err.textContent = "Enter a valid @" + QUIZ.email_domain + " email address."; return; }
+  }
+  err.textContent = "";
+  student = {name, email};
+  picks = new Array(QUIZ.count).fill(null);
+  order = shuffle(QUIZ.questions.map((_,i)=> i));
+  idx = 0;
+  $('qname').textContent = name.split(' ')[0];
+  show('scr-quiz');
+  loadQuestion();
+});
+$('email').addEventListener('keydown', e=>{ if(e.key==='Enter') $('start-btn').click(); });
+
+/* ---------------- quiz flow ---------------- */
+function loadQuestion(){
+  const qi = order[idx];
+  const item = QUIZ.questions[qi];
+  selected = null;
+  $('qcount').textContent = "Question " + (idx+1) + " of " + QUIZ.count;
+  $('progbar').style.width = (idx / QUIZ.count * 100) + "%";
+  $('qtext').textContent = item.q;
+  const box = $('opts'); box.innerHTML = "";
+  ["A","B","C","D"].forEach(k=>{
+    const b = document.createElement('button');
+    b.className = "opt"; b.dataset.key = k;
+    b.innerHTML = '<span class="key">' + k + '</span><span>' + esc(item.o[k]) + '</span>';
+    b.addEventListener('click', ()=> selectOption(k, b));
+    box.appendChild(b);
+  });
+  $('lock-btn').disabled = true;
+  $('lock-btn').textContent = "Lock answer & continue";
+  $('locknote').textContent = "Choose an option to enable locking.";
+  startTimer();
+}
+function selectOption(k, el){
+  selected = k;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  $('lock-btn').disabled = false;
+  $('locknote').textContent = "You can change your choice until you lock or time runs out.";
+}
+$('lock-btn').addEventListener('click', ()=>{ if(!$('lock-btn').disabled) advance(false); });
+
+function startTimer(){
+  clearInterval(tick);
+  timeLeft = QUIZ.time_per_question;
+  updateRing();
+  tick = setInterval(()=>{
+    timeLeft--; updateRing();
+    if(timeLeft <= 0){ clearInterval(tick); advance(true); }
+  }, 1000);
+}
+function updateRing(){
+  $('ringnum').textContent = Math.max(timeLeft, 0);
+  const fg = $('ringfg');
+  fg.style.strokeDasharray = CIRC;
+  const frac = Math.max(timeLeft, 0) / QUIZ.time_per_question;
+  fg.style.strokeDashoffset = CIRC * (1 - frac);
+  const ring = $('ring'); ring.classList.remove('low','crit');
+  if(timeLeft <= 5) ring.classList.add('crit');
+  else if(timeLeft <= 15) ring.classList.add('low');
+}
+function advance(timedOut){
+  clearInterval(tick);
+  picks[order[idx]] = selected || null;
+  document.querySelectorAll('.opt').forEach(o=>{o.classList.add('locked');o.style.pointerEvents='none';});
+  $('lock-btn').disabled = true;
+  $('locknote').textContent = timedOut && !selected ? "Time up. No answer recorded." :
+                              timedOut ? "Time up. Answer locked." : "Answer locked.";
+  setTimeout(()=>{
+    idx++;
+    if(idx >= QUIZ.count){ finish(); } else { loadQuestion(); }
+  }, 600);
+}
+
+/* ---------------- results ---------------- */
+let lastResult = null;
+async function finish(){
+  $('progbar').style.width = "100%";
+  show('scr-done');
+  $('who').innerHTML = "Recorded for <b>" + esc(student.name) + "</b>" + (student.email ? "<br>" + esc(student.email) : "");
+  const status = $('submit-status');
+  status.className = "status"; status.textContent = "Submitting your result…";
+  try{
+    const res = await rpc("fq_submit", {p_code: CODE, p_name: student.name, p_email: student.email, p_picks: picks});
+    if(!res || !res.ok){ throw new Error((res && res.error) || "Submit rejected"); }
+    lastResult = res;
+    renderScore(res.score, res.total, res.percent);
+    status.className = "status ok"; status.textContent = "✓ Result submitted to your instructor.";
+  }catch(e){
+    status.className = "status bad";
+    status.textContent = "Could not submit. Tap below to download your result and send it to your instructor.";
+    $('pct').textContent = "-"; $('frac').textContent = "Your answers are saved on this page.";
+  }
+}
+function renderScore(correct, total, pct){
+  $('pct').textContent = pct + "%";
+  $('frac').textContent = correct + " / " + total + " correct";
+  $('verdict').textContent =
+    pct>=80 ? "Excellent. Strong grasp of the material." :
+    pct>=60 ? "Good work. A few areas to revisit." :
+    pct>=40 ? "A fair start. Worth reviewing the modules." :
+              "Keep going. Revisit the concepts and try again.";
+}
+$('download-btn').addEventListener('click', ()=>{
+  const answersStr = picks.map(p=> p || '-').join('');
+  const sc = lastResult ? lastResult.score : '';
+  const tot = lastResult ? lastResult.total : QUIZ.count;
+  const pct = lastResult ? lastResult.percent : '';
+  const header = "Name,Email,Code,Score,Total,Percent,Answers,SubmittedAt";
+  const line = [student.name, student.email, CODE, sc, tot, pct, answersStr, new Date().toISOString()]
+    .map(v=> '"' + String(v).replace(/"/g,'""') + '"').join(",");
+  const blob = new Blob([header + "\n" + line], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = "quiz_" + (student.email.split('@')[0] || 'result') + ".csv"; a.click();
+  URL.revokeObjectURL(url);
+});
+
+window.addEventListener('beforeunload', e=>{
+  if($('scr-quiz').classList.contains('active')){ e.preventDefault(); e.returnValue=''; }
+});
+</script>
+</body>
+</html>
