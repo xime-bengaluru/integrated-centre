@@ -97,8 +97,8 @@
     font-weight:600;font-size:14px;padding:9px 14px;cursor:pointer}
   .add:hover{background:#fdfaf0}
   .teach-grid{grid-template-columns:1fr 110px 150px 90px auto}
-  .res-grid{grid-template-columns:1.4fr 90px 90px auto}
-  .rev-grid{grid-template-columns:1.4fr 130px auto}
+  .res-grid{grid-template-columns:1.3fr 120px 80px 90px auto}
+  .rev-grid{grid-template-columns:1.3fr 120px 110px auto}
   .inst-grid{grid-template-columns:1.8fr auto}
   @media(max-width:720px){.teach-grid,.res-grid,.rev-grid,.inst-grid{grid-template-columns:1fr}}
   .entry-block{display:block}
@@ -202,31 +202,26 @@
   @media print{
     @page{ size:A4; margin:16mm 15mm; }
     html,body{ background:#fff !important; font-size:12pt; }
-    /* hide everything that is not the goals sheet */
     header.top, .sub-head, #gateBanner, .rail, .toast, .disclaim{ display:none !important; }
-    .main .domain{ display:none !important; }        /* entry sections during beta */
-    .gdeadline{ display:none !important; }            /* deadline banner is screen guidance */
+    .main .domain{ display:none !important; }
+    .gdeadline{ display:none !important; }
     .add, .rm, .flag, .addrow, .rmrow, .gcount, button{ display:none !important; }
     .layout{ display:block !important; padding:0 !important; }
     .wrap{ max-width:none !important; padding:0 !important; }
-    /* print masthead */
     #printhead{ display:block !important; border-bottom:2pt solid #C9A84C; padding-bottom:10pt; margin-bottom:16pt; }
     #printhead .ph-brand{ font-family:'DM Mono',monospace; font-size:11pt; letter-spacing:3pt; color:#8A6F2A; }
     #printhead .ph-title{ font-family:'Cormorant Garamond',Georgia,serif; font-size:26pt; font-weight:600; color:#0D1F35; line-height:1.1; margin-top:2pt; }
     #printhead .ph-meta{ font-family:'DM Sans',sans-serif; font-size:11pt; color:#1F2A3D; margin-top:5pt; }
     #printhead .ph-printed{ font-family:'DM Mono',monospace; font-size:9pt; color:#5A6B82; margin-top:3pt; }
-    /* goals strip flattened for paper */
     .gstrip{ border:none !important; box-shadow:none !important; background:#fff !important; margin:0 !important; }
     .gstrip .ghead{ border-bottom:1pt solid #C9A84C !important; padding:0 0 6pt 0 !important; }
     .gstrip .ghead h2{ font-size:16pt !important; }
     .gstrip .gsub{ display:none !important; }
     .gsummary{ margin:12pt 0 !important; padding:12pt 14pt !important; font-size:13.5pt !important; background:#FAF8F3 !important; border-left:3pt solid #C9A84C !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    /* editable cards collapse to a clean read layout when printed */
     .gcards{ display:block !important; padding:0 !important; }
     .gcard{ border:none !important; border-bottom:1pt solid #e6e0d4 !important; border-radius:0 !important; background:#fff !important; padding:9pt 0 !important; break-inside:avoid; }
     .gcard h3{ font-size:13pt !important; color:#0D1F35 !important; margin-bottom:5pt !important; }
     .gcard label{ color:#5A6B82 !important; font-size:9.5pt !important; margin-top:6pt !important; }
-    /* inputs and selects print as their values on a quiet underline, not boxes */
     .gcard input[type=text], .gcard input[type=number], .gcard textarea, .gcard select,
     .growrow .rf input, .growrow .rf select{
       border:none !important; border-bottom:0.5pt solid #d8d4c7 !important; border-radius:0 !important;
@@ -237,7 +232,6 @@
     .growrow{ margin-bottom:2pt !important; break-inside:avoid; }
     .growrow .rn{ color:#8A6F2A !important; }
     .gro{ font-size:11.5pt !important; }
-    /* the read-only rendering (interim/final view) prints tidily too */
     .gstrip > div[style]{ padding:8pt 0 !important; }
   }
 </style>
@@ -299,7 +293,7 @@
       <div class="domain">
         <div class="dhead"><h2>Teaching</h2><div class="dtot mono" id="tot-teaching">0</div></div>
         <div class="body">
-          <p class="hint">Base by course credit, adjusted by your teaching effectiveness score. Repeat sections of the same course count at half from the second instance onward.</p>
+          <p class="hint">Base by course credit: 35, 25, 20 for 3, 2, 1.5 credit. Project-based courses score 40, 30, 25. Repeat sections and small electives of 30 or fewer score at the repeat rate. Anchor faculty and cross-campus classes add on. Teaching effectiveness below 2 deducts 10.</p>
           <div id="teach-list"></div>
           <button class="add" data-add="teaching">+ Add course</button>
         </div>
@@ -308,7 +302,7 @@
       <div class="domain">
         <div class="dhead"><h2>Research and Publications</h2><div class="dtot mono" id="tot-research">0</div></div>
         <div class="body">
-          <p class="hint">Points by output type. For multi-author work, credit is split (60:40 for two authors, 50:25:25 for three).</p>
+          <p class="hint">Points by output type from the current tiers. Author credit follows the handbook split: 50/50 for two XIME authors, 50/25/25 for three, and so on. External-collaboration splits beyond a sole XIME first author show as provisional until the author matrix is ruled.</p>
           <div id="res-list"></div>
           <button class="add" data-add="research">+ Add output</button>
         </div>
@@ -317,7 +311,7 @@
       <div class="domain">
         <div class="dhead"><h2>Revenue (MDP / OBP / Consulting / Grant)</h2><div class="dtot mono" id="tot-revenue">0</div></div>
         <div class="body">
-          <p class="hint">Credited per Rs 10,000 at the rate for each type. Enter the total amount you are credited for.</p>
+          <p class="hint">Credited per Rs 10,000 at the rate for each type. For an MDP you deliver, enter your teaching hours too, credited at 1.5 per hour on top of revenue.</p>
           <div id="rev-list"></div>
           <button class="add" data-add="revenue">+ Add revenue item</button>
         </div>
@@ -326,7 +320,7 @@
       <div class="domain">
         <div class="dhead"><h2>Institution Building</h2><div class="dtot mono" id="tot-institution">0</div></div>
         <div class="body">
-          <p class="hint">Roles and contributions to institution building.</p>
+          <p class="hint">Roles and contributions to institution building. Group and campus tier roles, per the current grid.</p>
           <div id="inst-list"></div>
           <button class="add" data-add="institution">+ Add role</button>
           <div id="inst-ruling" class="needs-ruling" style="display:none"></div>
@@ -341,9 +335,8 @@
         <h3>Your year, so far</h3>
         <div class="bignum" id="overall">0 <small>/ 300</small></div>
         <div style="margin:14px 0 4px">
-          <div class="floor"><span class="lab">Teaching</span><span><span class="val" id="f-teaching">0</span> <span class="pill" id="p-teaching">min 135</span></span></div>
-          <div class="floor"><span class="lab">Research + Revenue</span><span><span class="val" id="f-other">0</span> <span class="pill" id="p-other">min 90</span></span></div>
-          <div class="floor"><span class="lab">Sub-floor (30 from one)</span><span><span class="val" id="f-sub">0</span> <span class="pill" id="p-sub">min 30</span></span></div>
+          <div class="floor"><span class="lab">Teaching</span><span><span class="val" id="f-teaching">0</span> <span class="pill" id="p-teaching">min 100</span></span></div>
+          <div class="floor"><span class="lab">Research + EP + Institution</span><span><span class="val" id="f-other">0</span> <span class="pill" id="p-other">min 90</span></span></div>
           <div class="floor"><span class="lab">Overall target</span><span><span class="val" id="f-overall">0</span> <span class="pill" id="p-overall">300</span></span></div>
         </div>
         <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b> <span style="font-size:12px" id="incRate">(Rs 2000 per point over 300, capped at 450, floors apply)</span><div id="incNote" style="font-size:12px;color:var(--warn);margin-top:4px"></div></div>
@@ -362,7 +355,7 @@
       </div>
     </div>
   </div>
-  <p class="disclaim">X-Hub AY 2026-27 beta &middot; coefficients from XIME Faculty Handbook 2025, Annexure II &middot; for testing only</p>
+  <p class="disclaim">X-Hub AY 2026-27 beta &middot; coefficients from XIME Faculty Handbook, Annexure II &middot; for testing only</p>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -728,8 +721,8 @@ document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click
   const d=b.dataset.add;
   DIRTY=true;
   if(d==="teaching") STATE.teaching.push(normTeach({ id:uid() }));
-  if(d==="research") STATE.research.push({ id:uid(), code:"", authors:"1", pos:"1" });
-  if(d==="revenue") STATE.revenue.push({ id:uid(), code:"", amount:0, detail:"" });
+  if(d==="research") STATE.research.push({ id:uid(), code:"", collab:"xime", authors:"1", pos:"1" });
+  if(d==="revenue") STATE.revenue.push({ id:uid(), code:"", amount:0, hours:"", detail:"" });
   if(d==="institution") STATE.institution.push({ id:uid(), code:"", detail:"" });
   renderAll();
 }));
@@ -738,9 +731,10 @@ document.querySelectorAll(".add[data-add]").forEach(b=>b.addEventListener("click
 function normTeach(e){
   e=e||{};
   const c=e.cases||{};
+  const eff = (e.eff==="below2" || e.eff==="0") ? "below2" : "ok";
   return Object.assign({}, e, {
-    id: e.id||uid(), name: e.name||"", credit: e.credit||"3", eff: e.eff||"100", repeat: !!e.repeat,
-    term: e.term||"", anchor: e.anchor||"no",
+    id: e.id||uid(), name: e.name||"", credit: e.credit||"3", eff: eff, repeat: !!e.repeat,
+    term: e.term||"", anchor: e.anchor||"no", small: e.small||"no", crossN: e.crossN==null?"":String(e.crossN),
     cases: { hbi: c.hbi==null?"":String(c.hbi), other: c.other==null?"":String(c.other),
              sources: c.sources||"", own: c.own==null?"":String(c.own) },
     mode: e.mode||"none", project: e.project||"",
@@ -748,22 +742,52 @@ function normTeach(e){
   });
 }
 const CREDIT_CODE={ "3":"TCH_BASE_3CR","2":"TCH_BASE_2CR","1.5":"TCH_BASE_1_5CR","1":"TCH_BASE_1CR" };
+const PROJECT_CODE={ "3":"TCH_PROJECT_3CR","2":"TCH_PROJECT_2CR","1.5":"TCH_PROJECT_1_5CR" };
+const REPEAT_CODE={ "3":"TCH_REPEAT_3CR","2":"TCH_REPEAT_2CR","1.5":"TCH_REPEAT_1_5CR" };
+const BASE_FB={ "3":35,"2":25,"1.5":20,"1":10 };
+const PROJECT_FB={ "3":40,"2":30,"1.5":25 };
+const REPEAT_FB={ "3":25,"2":15,"1.5":10 };
 function teachScore(e){
-  const fb={ "3":30,"2":20,"1.5":15,"1":10 }[e.credit] ?? 0;
-  const base=ptsOr(CREDIT_CODE[e.credit]||"", fb);
-  const effPct = e.eff==="100" ? ptsOr("TCH_EFF_ABOVE_2_5",100) : e.eff==="80" ? ptsOr("TCH_EFF_2_TO_2_5",80) : 0;
-  const rep = e.repeat ? ptsOr("TCH_REPEAT_SECTION",50)/100 : 1;
-  return base*(effPct/100)*rep;
+  const creditFb = BASE_FB[e.credit] ?? 0;
+  let base;
+  if(e.mode==="project" && PROJECT_CODE[e.credit]){
+    base = ptsOr(PROJECT_CODE[e.credit], PROJECT_FB[e.credit] ?? creditFb);
+  } else if(e.repeat && REPEAT_CODE[e.credit]){
+    base = ptsOr(REPEAT_CODE[e.credit], REPEAT_FB[e.credit] ?? creditFb);
+  } else if(e.small==="yes" && REPEAT_CODE[e.credit]){
+    base = ptsOr(REPEAT_CODE[e.credit], REPEAT_FB[e.credit] ?? creditFb);
+  } else {
+    base = ptsOr(CREDIT_CODE[e.credit]||"", creditFb);
+  }
+  let total = base;
+  if(e.anchor==="yes" && e.credit==="3") total += ptsOr("TCH_ANCHOR",15);
+  const cross = Number(e.crossN)||0;
+  if(cross>0) total += cross*ptsOr("TCH_CROSS_CAMPUS",1.5);
+  if(e.eff==="below2") total += ptsOr("TCH_EFF_PENALTY",-10);
+  return total;
 }
-function authorShare(authors, pos){
-  const a=Number(authors), p=Number(pos);
+// Author credit: all-XIME ladder (first 50 pct, rest split), plus the external sole-first case.
+// Other external positions return null: provisional until the six-combo author matrix is ruled.
+function authorShare(authors, pos, collab){
+  const a=Number(authors)||1, p=Number(pos)||1;
   if(a<=1) return 1;
-  if(a===2) return p===1?0.6:0.4;
-  if(a===3) return p===1?0.5:0.25;
-  return 1/a; // 4+ : equal split (assumption, flagged provisional)
+  if(collab==="external"){
+    if(p===1) return 1;   // XIME sole first author with external co-authors: 100 percent
+    return null;          // other external positions: needs matrix ruling
+  }
+  if(p===1) return 0.5;   // all XIME: first author 50 percent
+  return 0.5/(a-1);       // remaining 50 percent split equally among the others
 }
-function resScore(e){ return pts(e.code)*authorShare(e.authors,e.pos); }
-function revScore(e){ return (Number(e.amount)/10000)*pts(e.code); }
+function resScore(e){
+  const share=authorShare(e.authors, e.pos, e.collab);
+  if(share==null) return 0;
+  return pts(e.code)*share;
+}
+function revScore(e){
+  let s=(Number(e.amount)/10000)*pts(e.code);
+  if(e.code==="REV_MDP_OBP_FDP_EDP" && e.hours) s += (Number(e.hours)||0)*ptsOr("REV_MDP_TEACHING_HOURS",1.5);
+  return s;
+}
 function instScore(e){ return pts(e.code); }
 
 function compute(){
@@ -771,17 +795,17 @@ function compute(){
   const r=STATE.research.reduce((s,e)=>s+resScore(e),0);
   const v=STATE.revenue.reduce((s,e)=>s+revScore(e),0);
   const i=STATE.institution.reduce((s,e)=>s+instScore(e),0);
-  const other=r+v, overall=t+r+v+i;
+  // Aug-18 floor (b): 90 from any one of research, EP revenue, or academic administration, in any combination.
+  const other=r+v+i, overall=t+r+v+i;
   const target=FLOORS.TGT_ANNUAL_PLAN??300;
   const rateRule=RULES.find(x=>x.domain==="incentive"&&x.points!=null);
-  const rate=rateRule?Number(rateRule.points):1000;
+  const rate=rateRule?Number(rateRule.points):2000;
   const cap=FLOORS.FLR_INCENTIVE_CAP??450;
   const floors={
-    teaching: t>=(FLOORS.FLR_TEACHING??135),
-    other: other>=(FLOORS.FLR_RESEARCH_REVENUE??90),
-    sub: Math.max(r,v)>=(FLOORS.FLR_OTHER_SUBFLOOR??30)
+    teaching: t>=(FLOORS.FLR_TEACHING??100),
+    other: other>=(FLOORS.FLR_RESEARCH_REVENUE??90)
   };
-  const floorsMet=floors.teaching&&floors.other&&floors.sub;
+  const floorsMet=floors.teaching&&floors.other;
   const eligible=Math.max(0, Math.min(overall, cap)-target);
   const gross=eligible*rate;
   return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
@@ -799,7 +823,7 @@ function optionList(domainRules, selected){
 }
 
 const TEACH_TERMS=["","Term I","Term II","Term III","Term IV","Term V","Term VI"];
-const EFF_BANDS=[["100","Above 10 of 20 (100%)"],["80","8 to 10 of 20 (80%)"],["0","Below 8 of 20 (0%)"]];
+const EFF_OPTS=[["ok","2.0 or above (no penalty)"],["below2","Below 2.0 (minus 10)"]];
 function renderTeaching(){
   const list=$("#teach-list"); list.innerHTML="";
   STATE.teaching.forEach((raw,idx)=>{
@@ -812,10 +836,10 @@ function renderTeaching(){
         <div class="fld"><label>Credits</label><select data-i="${idx}" data-k="credit">
           ${["3","2","1.5","1"].map(c=>`<option value="${c}" ${e.credit===c?"selected":""}>${c} credit</option>`).join("")}</select></div>
         <div class="fld"><label>Teaching effectiveness</label><select data-i="${idx}" data-k="eff">
-          ${EFF_BANDS.map(([bv,bl])=>`<option value="${bv}" ${e.eff===bv?"selected":""}>${bl}</option>`).join("")}</select></div>
+          ${EFF_OPTS.map(([bv,bl])=>`<option value="${bv}" ${e.eff===bv?"selected":""}>${bl}</option>`).join("")}</select></div>
         <div class="fld"><label>Repeat</label><select data-i="${idx}" data-k="repeat">
           <option value="no" ${!e.repeat?"selected":""}>No</option>
-          <option value="yes" ${e.repeat?"selected":""}>Yes 50%</option></select></div>
+          <option value="yes" ${e.repeat?"selected":""}>Yes</option></select></div>
         <div class="row2"><span class="score">${sc.toFixed(1)}</span><button class="rm" data-rm-t="${idx}">Remove</button></div>
       </div>
 
@@ -824,9 +848,13 @@ function renderTeaching(){
         <div class="tgrid">
           <div class="tfld"><label>Term</label><select data-i="${idx}" data-k="term">
             ${TEACH_TERMS.map(t=>`<option value="${t}" ${e.term===t?"selected":""}>${t||"Select"}</option>`).join("")}</select></div>
-          <div class="tfld"><label>Anchor faculty</label><select data-i="${idx}" data-k="anchor">
+          <div class="tfld"><label>Anchor faculty (3cr)</label><select data-i="${idx}" data-k="anchor">
             <option value="no" ${e.anchor!=="yes"?"selected":""}>No</option>
             <option value="yes" ${e.anchor==="yes"?"selected":""}>Yes</option></select></div>
+          <div class="tfld"><label>Enrolment 30 or fewer</label><select data-i="${idx}" data-k="small">
+            <option value="no" ${e.small!=="yes"?"selected":""}>No</option>
+            <option value="yes" ${e.small==="yes"?"selected":""}>Yes</option></select></div>
+          <div class="tfld"><label>Classes in another campus</label><input data-i="${idx}" data-k="crossN" type="number" min="0" step="1" value="${esc(e.crossN)}" placeholder="0"></div>
           <div class="tfld"><label>Project or assignment based</label><select data-i="${idx}" data-k="mode">
             <option value="none" ${e.mode==="none"?"selected":""}>Neither</option>
             <option value="project" ${e.mode==="project"?"selected":""}>Project</option>
@@ -864,15 +892,19 @@ function renderResearch(){
   const list=$("#res-list"); list.innerHTML="";
   const rr=rulesBy("research").filter(r=>r.unit && r.unit!=="modifier");
   STATE.research.forEach((e,idx)=>{
-    const sc=resScore(e), prov=e.code && isProvisional(e.code);
+    const share=authorShare(e.authors,e.pos,e.collab);
+    const sc=resScore(e), prov=(e.code && isProvisional(e.code)) || share==null;
     const row=el("div",{class:"entry res-grid"});
     row.innerHTML=`
       <div class="fld"><label>Output type</label><select data-i="${idx}" data-k="code">
         <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
+      <div class="fld"><label>Collaboration</label><select data-i="${idx}" data-k="collab">
+        <option value="xime" ${e.collab!=="external"?"selected":""}>All XIME</option>
+        <option value="external" ${e.collab==="external"?"selected":""}>With external</option></select></div>
       <div class="fld"><label>Authors</label><select data-i="${idx}" data-k="authors">
-        ${["1","2","3","4"].map(a=>`<option value="${a}" ${e.authors===a?"selected":""}>${a==="4"?"4+":a}</option>`).join("")}</select></div>
+        ${["1","2","3","4","5"].map(a=>`<option value="${a}" ${e.authors===a?"selected":""}>${a}</option>`).join("")}</select></div>
       <div class="fld"><label>Your position</label><select data-i="${idx}" data-k="pos">
-        ${["1","2","3","4"].map(p=>`<option value="${p}" ${e.pos===p?"selected":""}>${p}</option>`).join("")}</select></div>
+        ${["1","2","3","4","5"].map(p=>`<option value="${p}" ${e.pos===p?"selected":""}>${p}</option>`).join("")}</select></div>
       <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span>
         <span><button class="flag" data-flag-d="research" data-flag-l="${(ruleByCode(e.code)?.label||'entry').replace(/"/g,'&quot;')}">flag</button>
         <button class="rm" data-rm-r="${idx}">Remove</button></span></div>`;
@@ -886,11 +918,13 @@ function renderRevenue(){
   const rr=rulesBy("revenue").filter(r=>r.unit==="per_10k");
   STATE.revenue.forEach((e,idx)=>{
     const sc=revScore(e), prov=e.code && isProvisional(e.code);
+    const isMDP = e.code==="REV_MDP_OBP_FDP_EDP";
     const row=el("div",{class:"entry rev-grid"});
     row.innerHTML=`
       <div class="fld"><label>Type</label><select data-i="${idx}" data-k="code">
         <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
       <div class="fld"><label>Amount (Rs)</label><input data-i="${idx}" data-k="amount" type="number" min="0" step="1000" value="${e.amount||0}"></div>
+      <div class="fld"><label>MDP teaching hrs</label><input data-i="${idx}" data-k="hours" type="number" min="0" step="1" value="${esc(e.hours||"")}" placeholder="0" ${isMDP?"":"disabled title='Only for MDP/OBP/FDP/EDP'"}></div>
       <div class="fld" style="grid-column:1 / -1"><label>Brief description (programme, client, event)</label><input data-i="${idx}" data-k="detail" type="text" maxlength="140" value="${esc(e.detail||"")}" placeholder="e.g. EssilorLuxottica MDP batch 2, HR conclave sponsorships"></div>
       <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span><button class="rm" data-rm-v="${idx}">Remove</button></div>`;
     list.appendChild(row);
@@ -900,7 +934,7 @@ function renderRevenue(){
 
 function renderInstitution(){
   const list=$("#inst-list"); list.innerHTML="";
-  const rr=rulesBy("institution"); // all roles, including pending ones awaiting a value
+  const rr=rulesBy("institution").filter(r=>r.unit!=="modifier"); // roles only, not split markers
   STATE.institution.forEach((e,idx)=>{
     const sc=instScore(e), prov=e.code && isProvisional(e.code);
     const row=el("div",{class:"entry inst-grid"});
@@ -917,7 +951,7 @@ function renderInstitution(){
 }
 
 function buildInstitutionRuling(){
-  const noval = rulesBy("institution").filter(r=>r.points==null);
+  const noval = rulesBy("institution").filter(r=>r.points==null && r.unit!=="modifier");
   const box=$("#inst-ruling");
   if(noval.length){
     box.style.display="block";
@@ -934,19 +968,16 @@ function renderSummary(){
     const p=$(pillId); const ok=val>=min;
     p.className="pill "+(ok?"ok":"no"); p.textContent=ok?"met":("min "+min);
   };
-  setFloor("#f-teaching","#p-teaching",c.teaching,FLOORS.FLR_TEACHING??135);
+  setFloor("#f-teaching","#p-teaching",c.teaching,FLOORS.FLR_TEACHING??100);
   setFloor("#f-other","#p-other",c.other,FLOORS.FLR_RESEARCH_REVENUE??90);
-  const sub=Math.max(c.research,c.revenue);
-  setFloor("#f-sub","#p-sub",sub,FLOORS.FLR_OTHER_SUBFLOOR??30);
   setFloor("#f-overall","#p-overall",c.overall,FLOORS.TGT_ANNUAL_PLAN??300);
   $("#incRate").textContent = "(Rs "+c.rate.toLocaleString("en-IN")+" per point over "+c.target+", capped at "+c.cap+", floors apply)";
   const note=$("#incNote");
   $("#incentive").textContent = rupee(c.incentive);
   if(!c.floorsMet && c.incentiveGross>0){
     const miss=[];
-    if(!c.floors.teaching) miss.push("Teaching "+c.teaching.toFixed(0)+" of "+(FLOORS.FLR_TEACHING??135));
-    if(!c.floors.other) miss.push("Research + Revenue "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
-    if(!c.floors.sub) miss.push("Sub-floor "+Math.max(c.research,c.revenue).toFixed(0)+" of "+(FLOORS.FLR_OTHER_SUBFLOOR??30));
+    if(!c.floors.teaching) miss.push("Teaching "+c.teaching.toFixed(0)+" of "+(FLOORS.FLR_TEACHING??100));
+    if(!c.floors.other) miss.push("Research + EP + Institution "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
     note.textContent="Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.";
   } else { note.textContent=""; }
 }
@@ -1029,12 +1060,10 @@ function renderAll(){
 document.addEventListener("input", e=>{
   const t=e.target; if(t.dataset.i===undefined) return;
   const i=+t.dataset.i, k=t.dataset.k;
-  // which domain? infer from closest list
   const listId=t.closest("[id$='-list']")?.id;
   const map={ "teach-list":"teaching","res-list":"research","rev-list":"revenue","inst-list":"institution" };
   const d=map[listId]; if(!d) return;
 
-  // per-course pedagogy bands: attribute on the entry, no score impact, no rebuild
   if(!EDITABLE) return;
 
   let v=t.value;
@@ -1044,7 +1073,6 @@ document.addEventListener("input", e=>{
   else STATE[d][i][k]=v;
   DIRTY=true;
 
-  // Typed fields (course name, amount) must not trigger a list rebuild, or the field loses focus mid-typing.
   if(t.tagName==="INPUT" && t.type!=="checkbox"){ liveUpdate(d, i, t); return; }
   renderAll();
 });
