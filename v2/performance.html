@@ -293,7 +293,7 @@
       <div class="domain">
         <div class="dhead"><h2>Teaching</h2><div class="dtot mono" id="tot-teaching">0</div></div>
         <div class="body">
-          <p class="hint">Base by course credit: 35, 25, 20 for 3, 2, 1.5 credit. Project-based courses score 40, 30, 25. Repeat sections and small electives of 30 or fewer score at the repeat rate. Anchor faculty and cross-campus classes add on. Teaching effectiveness below 2 deducts 10.</p>
+          <p class="hint">Base by course credit: 35, 25, 20 for 3, 2, 1.5 credit. Repeat sections and small electives of 30 or fewer score at the repeat rate: 25, 15, 10. Project-based adds 5 on top of that base. Anchor faculty on a 3-credit course is a flat 15. Cross-campus classes add 1.5 each. Teaching effectiveness below 2 deducts 10.</p>
           <div id="teach-list"></div>
           <button class="add" data-add="teaching">+ Add course</button>
         </div>
@@ -748,19 +748,20 @@ const BASE_FB={ "3":35,"2":25,"1.5":20,"1":10 };
 const PROJECT_FB={ "3":40,"2":30,"1.5":25 };
 const REPEAT_FB={ "3":25,"2":15,"1.5":10 };
 function teachScore(e){
-  const creditFb = BASE_FB[e.credit] ?? 0;
-  let base;
+  // Anchor faculty on a 3-credit course is a flat 15, per handbook (David feedback 26 Aug 2026).
+  if(e.anchor==="yes" && e.credit==="3") return ptsOr("TCH_ANCHOR",15);
+
+  const normalBase = ptsOr(CREDIT_CODE[e.credit]||"", BASE_FB[e.credit] ?? 0);
+  const repeatBase = REPEAT_CODE[e.credit] ? ptsOr(REPEAT_CODE[e.credit], REPEAT_FB[e.credit] ?? normalBase) : normalBase;
+  // Repeat sections and small electives of 30 or fewer are scored at the repeat rate.
+  let base = (e.repeat || e.small==="yes") ? repeatBase : normalBase;
+  // Project-based adds a premium (project value minus the normal base for that credit), so a repeat
+  // or small project course lands at the repeat rate plus the premium, not the full project value.
   if(e.mode==="project" && PROJECT_CODE[e.credit]){
-    base = ptsOr(PROJECT_CODE[e.credit], PROJECT_FB[e.credit] ?? creditFb);
-  } else if(e.repeat && REPEAT_CODE[e.credit]){
-    base = ptsOr(REPEAT_CODE[e.credit], REPEAT_FB[e.credit] ?? creditFb);
-  } else if(e.small==="yes" && REPEAT_CODE[e.credit]){
-    base = ptsOr(REPEAT_CODE[e.credit], REPEAT_FB[e.credit] ?? creditFb);
-  } else {
-    base = ptsOr(CREDIT_CODE[e.credit]||"", creditFb);
+    const projPts = ptsOr(PROJECT_CODE[e.credit], PROJECT_FB[e.credit] ?? normalBase);
+    base += (projPts - normalBase);
   }
   let total = base;
-  if(e.anchor==="yes" && e.credit==="3") total += ptsOr("TCH_ANCHOR",15);
   const cross = Number(e.crossN)||0;
   if(cross>0) total += cross*ptsOr("TCH_CROSS_CAMPUS",1.5);
   if(e.eff==="below2") total += ptsOr("TCH_EFF_PENALTY",-10);
@@ -848,7 +849,7 @@ function renderTeaching(){
         <div class="tgrid">
           <div class="tfld"><label>Term</label><select data-i="${idx}" data-k="term">
             ${TEACH_TERMS.map(t=>`<option value="${t}" ${e.term===t?"selected":""}>${t||"Select"}</option>`).join("")}</select></div>
-          <div class="tfld"><label>Anchor faculty (3cr)</label><select data-i="${idx}" data-k="anchor">
+          <div class="tfld"><label>Anchor faculty (3cr = 15)</label><select data-i="${idx}" data-k="anchor">
             <option value="no" ${e.anchor!=="yes"?"selected":""}>No</option>
             <option value="yes" ${e.anchor==="yes"?"selected":""}>Yes</option></select></div>
           <div class="tfld"><label>Enrolment 30 or fewer</label><select data-i="${idx}" data-k="small">
