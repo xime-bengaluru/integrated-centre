@@ -90,6 +90,18 @@
   .qfoot{margin-top:18px;}
   .locknote{text-align:center;font-size:13px;color:var(--muted);margin-top:12px;min-height:18px;}
 
+  .modrec{margin:2px 0 18px;}
+  .modlead{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:center;margin:0 0 12px;}
+  .modgrp{margin-bottom:12px;}
+  .modhead{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;padding-left:2px;}
+  .modrow{display:flex;align-items:center;justify-content:space-between;background:var(--paper);
+    border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:8px;}
+  .mname{font-size:14.5px;font-weight:700;color:var(--navy);}
+  .mtag{font-size:12.5px;font-weight:800;padding:3px 11px;border-radius:999px;white-space:nowrap;}
+  .mtag.go{background:rgba(46,158,107,.15);color:#1f7a4f;}
+  .mtag.warn{background:rgba(217,164,65,.20);color:#8a6416;}
+  .modclear{font-size:14.5px;color:#1f7a4f;font-weight:700;text-align:center;
+    background:rgba(46,158,107,.10);border:1px solid rgba(46,158,107,.25);border-radius:12px;padding:13px;}
   .scorebig{text-align:center;margin:6px 0 4px;}
   .scorebig .pct{font-family:var(--serif);font-size:64px;font-weight:700;letter-spacing:-.01em;color:var(--navy);line-height:1;}
   .scorebig .frac{font-size:17px;color:var(--muted);margin-top:6px;font-weight:500;}
@@ -183,6 +195,7 @@
       <p class="sub">Here is how you did.</p>
       <div class="scorebig"><div class="pct" id="pct">-</div><div class="frac" id="frac"></div></div>
       <div class="verdict" id="verdict"></div>
+      <div class="modrec" id="modrec"></div>
       <div class="who" id="who"></div>
       <button class="btn ghost" id="download-btn">Download my result</button>
       <div class="status" id="submit-status"></div>
@@ -194,10 +207,12 @@
 
 <script>
 /* =========================================================================
-   X-Hub Quiz  ·  front end  (v1.0, 2026-08-17)
+   X-Hub Quiz  ·  front end  (v1.1, 2026-09-06)
    URL-driven: open with ?code=YOUR_CODE  (defaults to frm-m1-4)
    Reads and scores through Supabase security-definer functions.
-   The answer key never reaches this page.
+   The answer key never reaches this page during the quiz.
+   v1.1: per-module readout on the results screen (weakest first, red-free),
+         built from the module tags returned in fq_submit detail after submit.
    ========================================================================= */
 const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
@@ -343,6 +358,7 @@ async function finish(){
     if(!res || !res.ok){ throw new Error((res && res.error) || "Submit rejected"); }
     lastResult = res;
     renderScore(res.score, res.total, res.percent);
+    renderModules(res.detail);
     status.className = "status ok"; status.textContent = "✓ Result submitted to your instructor.";
   }catch(e){
     status.className = "status bad";
@@ -358,6 +374,43 @@ function renderScore(correct, total, pct){
     pct>=60 ? "Good work. A few areas to revisit." :
     pct>=40 ? "A fair start. Worth reviewing the modules." :
               "Keep going. Revisit the concepts and try again.";
+}
+/* per-module readout, weakest first, no red crosses */
+function renderModules(detail){
+  const box = $('modrec'); if(!box) return;
+  box.innerHTML = "";
+  if(!Array.isArray(detail)) return;
+  const map = {};
+  detail.forEach(d=>{
+    const m = d && d.m;
+    if(!m) return;                 // skip untagged questions
+    if(!map[m]) map[m] = {c:0, t:0};
+    map[m].t++;
+    if(d.ok) map[m].c++;
+  });
+  const mods = Object.keys(map);
+  if(mods.length === 0) return;    // nothing tagged, hide the block
+  mods.sort((a,b)=> (map[a].c/map[a].t) - (map[b].c/map[b].t)); // weakest first
+  const solid  = mods.filter(m=> map[m].c === map[m].t);
+  const revise = mods.filter(m=> map[m].c <  map[m].t);
+
+  let html = '<div class="modlead">Where you stand, by topic</div>';
+  if(revise.length){
+    html += '<div class="modgrp"><div class="modhead">Worth a look before Wednesday</div>';
+    revise.forEach(m=>{ html += '<div class="modrow"><span class="mname">'+esc(m)+
+      '</span><span class="mtag warn">'+map[m].c+' / '+map[m].t+'</span></div>'; });
+    html += '</div>';
+  }
+  if(solid.length){
+    html += '<div class="modgrp"><div class="modhead">You are solid on</div>';
+    solid.forEach(m=>{ html += '<div class="modrow"><span class="mname">'+esc(m)+
+      '</span><span class="mtag go">'+map[m].c+' / '+map[m].t+'</span></div>'; });
+    html += '</div>';
+  }
+  if(!revise.length){
+    html += '<div class="modclear">Clean sweep. Every topic solid. Keep it sharp for Wednesday.</div>';
+  }
+  box.innerHTML = html;
 }
 $('download-btn').addEventListener('click', ()=>{
   const answersStr = picks.map(p=> p || '-').join('');
