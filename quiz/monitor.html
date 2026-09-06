@@ -87,6 +87,16 @@
   .track.low > i{background:var(--stop);}
   .item .pc{font-size:12.5px;font-weight:700;color:var(--ink);text-align:right;}
 
+  /* by-module panel */
+  .modcall{background:#FBF0D8;border:1px solid #E7D3A0;border-radius:12px;padding:12px 15px;
+    font-size:14.5px;font-weight:800;color:#7a5b12;margin:0 0 16px;}
+  .modcall.clear{background:#DCF1E7;border-color:#B6E0CB;color:#1c7a52;}
+  .mrow{display:grid;grid-template-columns:1fr 160px 46px;align-items:center;gap:12px;margin-bottom:10px;}
+  .mrow .mn{font-size:14.5px;font-weight:700;color:var(--navy);}
+  .mrow .mn small{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;}
+  .mrow .pc2{font-size:13px;font-weight:800;color:var(--ink);text-align:right;}
+  @media(max-width:600px){.mrow{grid-template-columns:1fr 90px 40px;}}
+
   .tablewrap{max-height:440px;overflow:auto;border-radius:14px;background:var(--parchment);box-shadow:0 12px 30px rgba(13,31,53,.16);}
   table{width:100%;border-collapse:collapse;font-size:13.5px;}
   thead th{position:sticky;top:0;background:var(--navy);color:#E4D9BE;text-align:left;padding:11px 14px;font-size:11.5px;
@@ -154,6 +164,13 @@
     </div>
   </div>
 
+  <div class="panel" id="modpanel" style="display:none;margin-bottom:20px;">
+    <h2>By module</h2>
+    <p class="desc">Percent correct per module, weakest first. This is your class-level revise list for the close.</p>
+    <div class="modcall" id="modcall"></div>
+    <div id="modlist"></div>
+  </div>
+
   <div class="grid">
     <div class="panel">
       <h2>Score distribution</h2>
@@ -178,9 +195,11 @@
 
 <script>
 /* =========================================================================
-   X-Hub Quiz  ·  facilitator monitor  (v1.1, 2026-08-17)
+   X-Hub Quiz  ·  facilitator monitor  (v1.2, 2026-09-06)
    Open with ?code=YOUR_CODE  (defaults to frm-m1-4). Polls live.
    v1.1 adds roster progress: submitted vs expected, pending list, off-roster flags.
+   v1.2 adds a By module panel (fq_module_stats): percent correct per module,
+        weakest first, with a one-line revise call for the class close.
    ========================================================================= */
 const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
@@ -265,6 +284,29 @@ function renderRoster(rs){
   }
 }
 
+function renderModules(ms){
+  const panel = $('modpanel');
+  if(!ms || !ms.ok || !ms.modules || !ms.modules.length){ panel.style.display = "none"; return; }
+  panel.style.display = "block";
+  const mods = ms.modules.slice().sort((a,b)=> a.pc - b.pc); // weakest first
+  const revise = mods.filter(m=> m.pc < 70);
+  const call = $('modcall');
+  if(revise.length){
+    call.className = "modcall";
+    call.textContent = "Revise first: " + revise.map(m=> m.module).join(", ");
+  } else {
+    call.className = "modcall clear";
+    call.textContent = "Strong across all modules. Keep it sharp for Wednesday.";
+  }
+  $('modlist').innerHTML = mods.map(m=>{
+    const cls = m.pc>=70 ? '' : m.pc>=45 ? 'mid' : 'low';
+    return '<div class="mrow"><div class="mn">' + esc(m.module) +
+      '<small>' + m.questions + (m.questions==1 ? ' question' : ' questions') + '</small></div>' +
+      '<div class="track ' + cls + '"><i style="width:' + m.pc + '%"></i></div>' +
+      '<div class="pc2">' + m.pc + '%</div></div>';
+  }).join('');
+}
+
 function renderResults(rows){
   const tb = $('tbody');
   if(!rows || !rows.length){ tb.innerHTML = '<tr><td colspan="7" class="empty">No submissions yet.</td></tr>'; return; }
@@ -281,10 +323,11 @@ function renderResults(rows){
 
 async function poll(){
   try{
-    const [st, rows, rs] = await Promise.all([
-      rpc("fq_stats",{p_code:CODE}), rpc("fq_results",{p_code:CODE}), rpc("fq_roster_status",{p_code:CODE})
+    const [st, rows, rs, ms] = await Promise.all([
+      rpc("fq_stats",{p_code:CODE}), rpc("fq_results",{p_code:CODE}),
+      rpc("fq_roster_status",{p_code:CODE}), rpc("fq_module_stats",{p_code:CODE})
     ]);
-    renderStats(st); renderResults(rows); renderRoster(rs);
+    renderStats(st); renderResults(rows); renderRoster(rs); renderModules(ms);
     $('updated').textContent = "Updated " + new Date().toTimeString().slice(0,8);
   }catch(e){ $('updated').textContent = "Reconnecting..."; }
 }
