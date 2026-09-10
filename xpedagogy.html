@@ -52,49 +52,84 @@
   .month-pill{display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-family:"DM Mono",monospace;font-size:14px;color:var(--navy)}
   .month-pill b{color:var(--gold)}
 
-  /* course cards */
-  .courses{padding:20px 0 60px}
-  .course{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 0 18px;overflow:hidden;box-shadow:0 4px 18px rgba(13,31,53,.05)}
-  .course-head{display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff, #fdfbf6)}
-  .course-head .cname{font-family:"Cormorant Garamond",serif;font-size:25px;font-weight:600;flex:1;border:0;background:transparent;padding:0}
+  /* ledger page */
+  .course{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 0 22px;overflow:hidden;box-shadow:0 4px 18px rgba(13,31,53,.05)}
+  .course-head{display:grid;grid-template-columns:1fr auto;gap:10px 16px;padding:18px 22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fdfbf6)}
+  .course-head .cname{font-family:"Cormorant Garamond",serif;font-size:25px;font-weight:600;border:0;background:transparent;padding:0;width:100%}
   .course-head .cname:focus{outline:none;border-bottom:2px solid var(--gold)}
-  .course-head .meta{display:flex;gap:8px}
+  .course-head .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;grid-column:1 / span 2}
   .course-head select{width:auto;font-size:14px;padding:7px 10px}
-  .course-head .rm{background:transparent;border:0;color:var(--muted);font-size:22px;cursor:pointer;padding:0 4px;line-height:1}
+  .course-head .rm{background:transparent;border:0;color:var(--muted);font-size:22px;cursor:pointer;padding:0 4px;line-height:1;justify-self:end}
   .course-head .rm:hover{color:var(--bad)}
+  .course-head .warn{font-size:13px;color:var(--bad);grid-column:1 / span 2}
 
-  .counts{display:grid;grid-template-columns:repeat(6,1fr);gap:0}
-  @media(max-width:820px){.counts{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:480px){.counts{grid-template-columns:repeat(2,1fr)}}
-  .count{padding:20px 16px;text-align:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .count:nth-child(6n){border-right:0}
-  .count label{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 10px;min-height:32px;display:flex;align-items:center;justify-content:center;text-align:center}
-  .stepper{display:flex;align-items:center;justify-content:center;gap:0}
-  .stepper button{width:38px;height:38px;border:1px solid var(--line);background:#fff;color:var(--navy);font-size:22px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center}
-  .stepper button:first-child{border-radius:9px 0 0 9px}
-  .stepper button:last-child{border-radius:0 9px 9px 0}
-  .stepper button:hover{background:var(--parch)}
-  .stepper input{width:56px;height:38px;text-align:center;border-left:0;border-right:0;border-radius:0;font-family:"DM Mono",monospace;font-size:20px;font-weight:500;padding:0}
-  .stepper input:focus{outline:none;background:#fffdf6}
-  .prev{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted);margin-top:7px;min-height:14px}
-  .prev.up{color:var(--good)}
+  .strip{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line);background:#fdfcf9}
+  .strip div{flex:1 1 90px;padding:12px 10px;text-align:center;border-right:1px solid var(--line)}
+  .strip div:last-child{border-right:0}
+  .strip b{display:block;font-family:"DM Mono",monospace;font-size:20px;color:var(--navy)}
+  .strip span{font-size:12px;color:var(--muted)}
 
-  .course-foot{display:flex;align-items:center;gap:12px;padding:14px 22px}
-  .course-foot input{font-size:15px;padding:9px 12px}
-  .srcs{flex:1}
+  table.ledger{width:100%;border-collapse:collapse;font-size:15px}
+  .ledger th{text-align:left;font-size:12px;letter-spacing:.4px;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--line);background:#fff}
+  .ledger td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .ledger td.t{font-weight:600}
+  .ledger td.t small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+  .ledger .tag{display:inline-block;font-family:"DM Mono",monospace;font-size:11px;padding:2px 7px;border-radius:5px;background:var(--parch);border:1px solid var(--line);white-space:nowrap}
+  .ledger .tag.hbi{border-color:var(--gold);color:#7a5f1c}
+  .ledger .tag.own{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .ledger .lib{color:var(--good);font-size:12px}
+  .ledger .ev a{color:var(--navy);font-size:13px}
+  .ledger .act button{background:transparent;border:0;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 6px}
+  .ledger .act button:hover{color:var(--navy)}
+  .ledger .none{color:var(--muted);text-align:center;padding:22px}
+  @media(max-width:720px){.ledger th.hide,.ledger td.hide{display:none}}
 
-  .addcourse{width:100%;background:transparent;border:2px dashed var(--line);border-radius:14px;padding:20px;font-family:inherit;font-size:17px;font-weight:600;color:var(--muted);cursor:pointer}
+  .addrow{padding:14px 22px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .addrow button{background:var(--navy);color:#fff;border:0;border-radius:9px;font-family:inherit;font-weight:600;font-size:15px;padding:10px 18px;cursor:pointer}
+  .addrow button:hover{background:var(--navy2)}
+  .addrow .hint{color:var(--muted);font-size:14px}
+
+  /* item form */
+  .item{background:#fffdf6;border-top:2px solid var(--gold);padding:18px 22px 22px}
+  .item h3{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:23px;margin:0 0 4px}
+  .item .def{color:var(--muted);font-size:15px;margin:0 0 12px;max-width:70ch}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 18px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .grid .full{grid-column:1 / span 2}
+  @media(max-width:720px){.grid .full{grid-column:auto}}
+  .grid label{margin-top:12px}
+  .grid label small{font-weight:400;color:var(--muted)}
+  textarea{width:100%;font-family:inherit;font-size:16px;padding:10px 13px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);min-height:74px;resize:vertical}
+  textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+  .check{display:flex;align-items:center;gap:10px;font-size:15px;margin-top:18px}
+  .check input{width:auto}
+  .item-foot{display:flex;gap:12px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .item-foot .go{background:var(--gold);color:var(--navy);border:0;border-radius:9px;font-family:inherit;font-weight:700;font-size:15px;padding:11px 24px;cursor:pointer}
+  .item-foot .go:disabled{opacity:.5;cursor:default}
+  .cancel{background:transparent;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:15px;padding:10px 16px;cursor:pointer;color:var(--muted)}
+  .item-foot .msg{font-size:14px;color:var(--bad)}
+
+  .addcourse{width:100%;background:transparent;border:2px dashed var(--line);border-radius:14px;padding:20px;font-family:inherit;font-size:17px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:60px}
   .addcourse:hover{border-color:var(--gold);color:var(--navy)}
+  .courses{padding:20px 0 10px}
 
-  .savebar{position:sticky;bottom:0;background:rgba(250,248,243,.92);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:16px 0;margin-top:10px}
-  .savebar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
-  .savebar .tot{font-family:"DM Mono",monospace;font-size:14px;color:var(--muted)}
-  .savebar .tot b{color:var(--navy);font-size:18px}
-  .savebtn{background:var(--gold);color:var(--navy);border:0;border-radius:9px;font-family:inherit;font-weight:700;font-size:16px;padding:12px 28px;cursor:pointer}
-  .savebtn:hover{filter:brightness(1.05)}
-  .savebtn:disabled{opacity:.5;cursor:default}
-  .saved{color:var(--good);font-family:"DM Mono",monospace;font-size:13px}
-
+  /* faq drawer */
+  .faqbar{display:flex;gap:12px;align-items:center;margin-top:16px;flex-wrap:wrap}
+  .faqbar a,.faqbar button{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;padding:10px 18px;border-radius:9px;text-decoration:none;cursor:pointer;font-family:inherit}
+  .faqbar a{background:var(--navy);color:#fff}
+  .faqbar button{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .faq{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 22px;margin:18px 0 6px}
+  .faq dl{margin:0}
+  .faq dt{font-weight:600;font-size:16px;margin:16px 0 2px;display:flex;gap:10px;align-items:baseline}
+  .faq dd{margin:0 0 4px;color:var(--muted);font-size:15px;max-width:80ch}
+  .faq dd.ex{color:var(--ink);font-size:14px}
+  .faq dd.ex:before{content:"Example: ";color:var(--muted)}
+  .faq dd.need{font-size:13px;color:var(--muted)}
+  .faq dd.need:before{content:"What to record: "}
+  .faq dt:first-child{margin-top:14px}
+  .faq .close{margin:14px 0}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 20px;border-radius:9px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.on{opacity:1}
   .empty{text-align:center;color:var(--muted);padding:60px 20px;font-size:18px}
   .hidden{display:none}
 </style>
@@ -131,22 +166,19 @@
     <div class="intro">
       <p class="eyebrow">Teaching methods ledger</p>
       <h1>What you are teaching with</h1>
-      <p>Keep a running count of the cases, simulations, scenarios and live projects you use in each course. Update it once a month. At the mid-year review this fills your X-Drive teaching section for you.</p>
+      <p>Record each case, simulation, scenario, role play, project or Bloomberg session as you use it. Name the source and link the evidence. The monthly counts and your X-Drive teaching section fill themselves from this ledger.</p>
       <div class="month-pill">Recording for <b id="monthLabel"></b></div>
-      <div style="margin-top:14px"><a href="/xpedagogy-plan.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 18px;border-radius:9px">Plan this course, then compare with delivery &rarr;</a></div>
+      <div class="faqbar">
+        <a href="/xpedagogy-plan.html">Plan this course, then compare with delivery</a>
+        <button id="faqBtn" type="button">What counts as what</button>
+      </div>
+      <div id="faq" class="faq hidden"></div>
     </div>
 
     <div id="courseList" class="courses"></div>
     <button id="addCourse" class="addcourse">+ Add a course</button>
   </div>
-
-  <div class="savebar"><div class="wrap">
-    <div class="tot">This month across all courses: <b id="totMethods">0</b> methods</div>
-    <div style="display:flex;align-items:center;gap:16px">
-      <span id="savedMsg" class="saved"></span>
-      <button id="saveBtn" class="savebtn">Save this month</button>
-    </div>
-  </div></div>
+  <div id="toast" class="toast"></div>
 </div>
 <script>
 const SUPABASE_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
@@ -157,33 +189,48 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?"":s).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 
-const METHODS = [
-  ["cases_hbi","HBP cases"],
-  ["cases_other","Other cases"],
-  ["cases_own","Own cases made"],
-  ["simulations","Simulations"],
-  ["scenarios","Scenarios"],
-  ["live_projects","Live projects"]
-];
+/* Vocabulary. Sub-types and which fields each category asks for. */
+const CATS = {
+  case:               { label:"Case",                 subs:[["hbi","HBI (Harvard)"],["sourced","Other publisher"],["own","Own case"]],
+                        fields:["title","source","sessions","class_size","evidence","repo"], sourceLabel:"Publisher and product number" },
+  scenario:           { label:"Scenario (caselet)",   subs:[["own","Own"],["sourced","From another source"]],
+                        fields:["title","source","description","sessions","evidence","repo"], sourceLabel:"Where it came from, if not your own", descLabel:"One-line summary of the situation" },
+  simulation:         { label:"Simulation",           subs:[["hbi","HBI (Harvard)"],["other","Other vendor"],["own","Own simulation or game"]],
+                        fields:["title","source","sessions","evidence"], sourceLabel:"Vendor and product number" },
+  role_play:          { label:"Role play",            subs:null, fields:["title","description","sessions"], descLabel:"Describe the situation and the roles", descRequired:true },
+  live_project:       { label:"Live project",         subs:null, fields:["title","source","description","evidence"], sourceLabel:"Sponsor organisation", descLabel:"What students deliver" },
+  project_assignment: { label:"Project or assignment",subs:null, fields:["title","description","tools","evidence"], descLabel:"Describe the project or assignment", descRequired:true },
+  bloomberg:          { label:"Bloomberg terminal",   subs:null, fields:["title","sessions","evidence"], evidenceRequired:true, sessionsLabel:"Lab sessions" },
+  guest_session:      { label:"Guest or industry session", subs:null, fields:["title","source","description"], sourceLabel:"Guest name and organisation", descLabel:"Topic" },
+  other:              { label:"Other method",         subs:null, fields:["title","description","sessions"], descLabel:"Describe the method", descRequired:true }
+};
+const DOMAINS = ["General Management","Marketing","Finance","Human Resources","OB & Leadership","Strategy & Operations","Analytics & Technology","Economics","Business Communication","Other"];
+const PROGS = ["PGDM","PGDM Working Professionals","Executive","Other"];
+const TERMS = ["","Term I","Term II","Term III","Term IV","Term V","Term VI"];
+const STRIP = [["cases_hbi","HBI cases"],["cases_other","Other cases"],["cases_own","Own cases"],["scenarios","Scenarios"],["simulations","Simulations"],["role_plays","Role plays"],["live_projects","Live projects"],["projects","Projects"],["bloomberg_sessions","Bloomberg"],["guest_sessions","Guests"]];
 
-let USER = null;          // { email, name }
-let COURSES = [];         // { course_id, course_name, credit, term, cur:{...}, prev:{...} }
+let USER = null;
+let COURSES = [];
+let FAQ = null;
+let OPEN = null;   // { ci, activity } item form currently open
 const MONTH = firstOfMonth(new Date());
 
 function firstOfMonth(d){ return new Date(Date.UTC(d.getFullYear(), d.getMonth(), 1)).toISOString().slice(0,10); }
 function monthName(iso){ const d=new Date(iso+"T00:00:00Z"); return d.toLocaleString("en-GB",{month:"long",year:"numeric",timeZone:"UTC"}); }
+function monthOptions(){ // this month back to June of the academic year
+  const out=[]; let d=new Date(MONTH+"T00:00:00Z");
+  for(let i=0;i<12;i++){ const iso=d.toISOString().slice(0,10); out.push(iso); if(iso<="2026-06-01") break; d=new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth()-1, 1)); }
+  return out;
+}
+function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("on"); setTimeout(()=>el.classList.remove("on"),2200); }
 
 /* ---------- AUTH ---------- */
 $("#googleBtn").addEventListener("click", async ()=>{
   const gb=$("#googleBtn"); $("#loginErr").textContent=""; gb.disabled=true;
-  const { error } = await sb.auth.signInWithOAuth({
-    provider:"google",
-    options:{ redirectTo: window.location.origin + window.location.pathname,
-              queryParams:{ hd:"xime.org", prompt:"select_account" } }
-  });
+  const { error } = await sb.auth.signInWithOAuth({ provider:"google",
+    options:{ redirectTo: window.location.origin + window.location.pathname, queryParams:{ hd:"xime.org", prompt:"select_account" } } });
   if(error){ $("#loginErr").textContent=error.message; gb.disabled=false; }
 });
-
 $("#loginBtn").addEventListener("click", doLogin);
 $("#pass").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
 async function doLogin(){
@@ -195,9 +242,7 @@ async function doLogin(){
   const { data:{ session } } = await sb.auth.getSession();
   if(session) boot(session.user.email);
 }
-
 $("#signout").addEventListener("click", async e=>{ e.preventDefault(); await sb.auth.signOut(); location.reload(); });
-
 sb.auth.getSession().then(({data})=>{ if(data.session) boot(data.session.user.email); });
 
 async function boot(email){
@@ -206,8 +251,7 @@ async function boot(email){
     $("#loginErr").textContent="Signed in as "+email+", but that address is not on the faculty list. Tell the X-Hub administrator which XIME address you use.";
     const lb=$("#loginBtn"); if(lb){ lb.disabled=false; lb.textContent="Sign in"; }
     const gb=$("#googleBtn"); if(gb){ gb.disabled=false; }
-    await sb.auth.signOut();
-    return;
+    await sb.auth.signOut(); return;
   }
   USER = { email, name: fm.name };
   $("#loginView").classList.add("hidden");
@@ -220,155 +264,200 @@ async function boot(email){
 /* ---------- LOAD ---------- */
 async function load(){
   const { data: courses, error } = await sb.from("xp_course")
-    .select("course_id,course_name,credit,term")
-    .eq("faculty_email", USER.email).eq("academic_year", AY)
-    .order("created_at");
-  if(error){ console.error(error); }
-  COURSES = (courses||[]).map(c=>({ ...c, cur:blank(), prev:null }));
-
-  // pull this month's snapshot (if any) and the most recent prior snapshot, per course
+    .select("course_id,course_name,credit,term,domain,programme")
+    .eq("faculty_email", USER.email).eq("academic_year", AY).order("created_at");
+  if(error) console.error(error);
+  COURSES = (courses||[]).map(c=>({ ...c, items:[], counts:null }));
   for(const c of COURSES){
-    const { data: snaps } = await sb.from("xp_snapshot")
-      .select("as_of_month,cases_hbi,cases_other,cases_own,cases_sources,simulations,scenarios,live_projects,method_note")
-      .eq("course_id", c.course_id).order("as_of_month",{ascending:false}).limit(6);
-    if(snaps && snaps.length){
-      const thisMonth = snaps.find(s=>s.as_of_month===MONTH);
-      const prior = snaps.find(s=>s.as_of_month<MONTH);
-      if(thisMonth) c.cur = { ...thisMonth };
-      else if(prior){ c.cur = { ...prior, as_of_month:MONTH }; } // carry forward as starting point
-      c.prev = prior || null;
-    }
+    const { data: items } = await sb.from("xp_activity").select("*").eq("course_id", c.course_id).order("as_of_month",{ascending:false}).order("created_at",{ascending:false});
+    c.items = items||[];
+    const { data: snap } = await sb.from("xp_snapshot").select("*").eq("course_id", c.course_id).order("as_of_month",{ascending:false}).limit(1).maybeSingle();
+    c.counts = snap||null;
   }
   render();
 }
-function blank(){ return { cases_hbi:0,cases_other:0,cases_own:0,cases_sources:"",simulations:0,scenarios:0,live_projects:0,method_note:"" }; }
 
 /* ---------- RENDER ---------- */
+function subLabel(cat, sub){ const c=CATS[cat]; if(!c||!c.subs) return ""; const f=c.subs.find(s=>s[0]===sub); return f?f[1]:sub||""; }
+
 function render(){
   const list = $("#courseList");
   if(!COURSES.length){
-    list.innerHTML = '<div class="empty">No courses yet. Add the courses you are teaching this year, then set how many of each method you have used so far.</div>';
-    updateTotal(); return;
+    list.innerHTML = '<div class="empty">No courses yet. Add the courses you are teaching this year, then record what you teach with.</div>';
+    return;
   }
   list.innerHTML = "";
   COURSES.forEach((c,ci)=>{
     const card = document.createElement("div"); card.className="course";
-    const counts = METHODS.map(([k,label])=>{
-      const v = c.cur[k]||0;
-      const p = c.prev ? (c.prev[k]||0) : null;
-      const delta = (p!=null) ? v-p : null;
-      const prevTxt = (delta!=null && delta>0) ? `+${delta} this month` : (p!=null ? `${p} last month` : "");
-      return `<div class="count">
-        <label>${label}</label>
-        <div class="stepper">
-          <button data-ci="${ci}" data-k="${k}" data-op="-1" aria-label="decrease ${label}">-</button>
-          <input data-ci="${ci}" data-k="${k}" type="number" min="0" step="1" value="${v}" inputmode="numeric">
-          <button data-ci="${ci}" data-k="${k}" data-op="1" aria-label="increase ${label}">+</button>
-        </div>
-        <div class="prev ${delta>0?'up':''}">${prevTxt}</div>
-      </div>`;
-    }).join("");
+    const rows = c.items.length ? c.items.map(a=>{
+      const cat=CATS[a.category]||{label:a.category};
+      const tagCls = a.sub_type==="hbi"?"hbi":(a.sub_type==="own"?"own":"");
+      return `<tr>
+        <td class="hide"><span class="tag">${monthName(a.as_of_month).slice(0,3)}</span></td>
+        <td class="t">${esc(a.title)}${a.description?`<small>${esc(a.description)}</small>`:""}${a.tools_used?`<small>Tools: ${esc(a.tools_used)}</small>`:""}</td>
+        <td>${esc(cat.label)}${a.sub_type?` <span class="tag ${tagCls}">${esc(subLabel(a.category,a.sub_type))}</span>`:""}${a.origin==="library_order"?'<div class="lib">via library</div>':""}</td>
+        <td class="hide">${esc(a.source||"")}</td>
+        <td class="hide" style="font-family:'DM Mono',monospace">${a.session_count}</td>
+        <td class="ev">${a.evidence_link?`<a href="${esc(a.evidence_link)}" target="_blank" rel="noopener">link</a>`:'<span style="color:var(--muted);font-size:13px">none</span>'}${a.in_repository?'<div style="font-size:11px;color:var(--muted)">in repository</div>':""}</td>
+        <td class="act"><button data-edit="${ci}:${a.activity_id}" title="Edit">Edit</button><button data-del="${ci}:${a.activity_id}" title="Remove">Remove</button></td>
+      </tr>`;
+    }).join("") : `<tr><td colspan="7" class="none">Nothing recorded yet for this course.</td></tr>`;
+
+    const cnt = c.counts || {};
+    const strip = STRIP.map(([k,l])=>`<div><b>${cnt[k]||0}</b><span>${l}</span></div>`).join("");
 
     card.innerHTML = `
       <div class="course-head">
-        <input class="cname" data-ci="${ci}" data-k="course_name" value="${esc(c.course_name)}" placeholder="Course name">
-        <div class="meta">
-          <select data-ci="${ci}" data-k="credit">
-            ${["3","2","1.5","1"].map(x=>`<option value="${x}" ${c.credit===x?"selected":""}>${x} cr</option>`).join("")}
-          </select>
-          <select data-ci="${ci}" data-k="term">
-            ${["","Term I","Term II","Term III","Term IV","Term V","Term VI"].map(t=>`<option value="${t}" ${c.term===t?"selected":""}>${t||"Term"}</option>`).join("")}
-          </select>
-        </div>
+        <input class="cname" data-ci="${ci}" data-k="course_name" value="${esc(c.course_name)}" placeholder="Course name in full, no acronyms">
         <button class="rm" data-rm="${ci}" title="Remove course">&times;</button>
+        <div class="meta">
+          <select data-ci="${ci}" data-k="programme">${PROGS.map(x=>`<option value="${x}" ${(c.programme||"PGDM")===x?"selected":""}>${x}</option>`).join("")}</select>
+          <select data-ci="${ci}" data-k="term">${TERMS.map(t=>`<option value="${t}" ${c.term===t?"selected":""}>${t||"Term"}</option>`).join("")}</select>
+          <select data-ci="${ci}" data-k="credit">${["3","2","1.5","1"].map(x=>`<option value="${x}" ${c.credit===x?"selected":""}>${x} cr</option>`).join("")}</select>
+          <select data-ci="${ci}" data-k="domain"><option value="">Domain</option>${DOMAINS.map(x=>`<option value="${x}" ${c.domain===x?"selected":""}>${x}</option>`).join("")}</select>
+        </div>
+        ${!c.domain?'<div class="warn">Pick a domain so this course appears in the domain summary.</div>':""}
+        ${/\b[A-Z]{2,}\b/.test(c.course_name||"")?'<div class="warn">Course names should be written in full, without acronyms.</div>':""}
       </div>
-      <div class="counts">${counts}</div>
-      <div class="course-foot">
-        <input class="srcs" data-ci="${ci}" data-k="cases_sources" value="${esc(c.cur.cases_sources)}" placeholder="Where the other cases come from, e.g. Ivey, IIMA, The Case Centre">
-      </div>`;
+      <div class="strip">${strip}</div>
+      <table class="ledger">
+        <thead><tr><th class="hide">Month</th><th>What</th><th>Type</th><th class="hide">Source</th><th class="hide">Sessions</th><th>Evidence</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="addrow"><button data-add="${ci}">+ Record something you taught with</button><span class="hint">Each entry saves on its own. Counts above update as you go.</span></div>
+      <div class="itemhost"></div>`;
     list.appendChild(card);
   });
 
-  list.querySelectorAll(".stepper button").forEach(b=>b.addEventListener("click",()=>{
-    const ci=+b.dataset.ci, k=b.dataset.k, op=+b.dataset.op;
-    COURSES[ci].cur[k] = Math.max(0, (+COURSES[ci].cur[k]||0)+op);
-    render(); updateTotal();
-  }));
-  list.querySelectorAll('input[type="number"]').forEach(inp=>inp.addEventListener("input",()=>{
-    const ci=+inp.dataset.ci, k=inp.dataset.k;
-    COURSES[ci].cur[k] = Math.max(0, Math.floor(+inp.value||0));
-    updateTotal();
-  }));
-  list.querySelectorAll('.cname,.srcs,select').forEach(inp=>inp.addEventListener("input",()=>{
-    const ci=+inp.dataset.ci, k=inp.dataset.k;
-    if(k==="course_name"||k==="credit"||k==="term") COURSES[ci][k]=inp.value;
-    else COURSES[ci].cur[k]=inp.value;
-  }));
-  list.querySelectorAll(".rm").forEach(b=>b.addEventListener("click",()=>{
-    const ci=+b.dataset.rm;
-    if(COURSES[ci].course_id && !confirm("Remove this course and its history? This cannot be undone.")) return;
-    COURSES[ci]._delete = true;
-    if(!COURSES[ci].course_id) COURSES.splice(ci,1);
-    render(); updateTotal();
-  }));
-  updateTotal();
+  list.querySelectorAll('.cname,.course-head select').forEach(inp=>inp.addEventListener("change",()=>saveCourseHead(+inp.dataset.ci, inp.dataset.k, inp.value)));
+  list.querySelectorAll('.cname').forEach(inp=>inp.addEventListener("blur",()=>saveCourseHead(+inp.dataset.ci,"course_name",inp.value)));
+  list.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>openItem(+b.dataset.add, null)));
+  list.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{ const [ci,id]=b.dataset.edit.split(":"); openItem(+ci, COURSES[+ci].items.find(a=>a.activity_id===id)); }));
+  list.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>removeItem(b.dataset.del)));
+  list.querySelectorAll(".rm").forEach(b=>b.addEventListener("click",()=>removeCourse(+b.dataset.rm)));
+  if(OPEN) openItem(OPEN.ci, OPEN.activity, true);
 }
 
-function updateTotal(){
-  const t = COURSES.filter(c=>!c._delete).reduce((s,c)=>
-    s + METHODS.reduce((a,[k])=>a+(+c.cur[k]||0),0), 0);
-  $("#totMethods").textContent = t;
+/* ---------- COURSE HEAD ---------- */
+async function saveCourseHead(ci, k, v){
+  const c=COURSES[ci]; if(!c) return;
+  if(k==="course_name") v=v.trim();
+  if(c[k]===v) return;
+  c[k]=v;
+  if(!c.course_id){ if(k==="course_name" && v) await createCourse(c); return; }
+  const { error } = await sb.from("xp_course").update({ [k]: v }).eq("course_id", c.course_id);
+  if(error){ console.error(error); toast("Could not save that change"); } else { toast("Saved"); if(k==="domain"||k==="course_name") render(); }
 }
-
-/* ---------- ADD / SAVE ---------- */
+async function createCourse(c){
+  const { data, error } = await sb.from("xp_course").insert({ faculty_email:USER.email, academic_year:AY, course_name:c.course_name, credit:c.credit||"3", term:c.term||"", domain:c.domain||null, programme:c.programme||"PGDM" }).select("course_id").single();
+  if(error){ console.error(error); toast("Could not add the course"); return; }
+  c.course_id=data.course_id; toast("Course added"); render();
+}
 $("#addCourse").addEventListener("click",()=>{
-  COURSES.push({ course_id:null, course_name:"", credit:"3", term:"", cur:blank(), prev:null });
-  render();
-  const inputs=document.querySelectorAll(".cname"); inputs[inputs.length-1].focus();
+  COURSES.push({ course_id:null, course_name:"", credit:"3", term:"", domain:"", programme:"PGDM", items:[], counts:null });
+  render(); const inputs=document.querySelectorAll(".cname"); inputs[inputs.length-1].focus();
 });
-
-$("#saveBtn").addEventListener("click", save);
-async function save(){
-  const btn=$("#saveBtn"); btn.disabled=true; btn.textContent="Saving...";
-  $("#savedMsg").textContent="";
-  try{
-    for(const c of COURSES){
-      if(c._delete && c.course_id){ await sb.from("xp_course").delete().eq("course_id", c.course_id); continue; }
-      if(c._delete) continue;
-      if(!c.course_name.trim()) continue;
-
-      let cid = c.course_id;
-      if(!cid){
-        const { data, error } = await sb.from("xp_course").insert({
-          faculty_email: USER.email, academic_year: AY,
-          course_name: c.course_name.trim(), credit: c.credit, term: c.term
-        }).select("course_id").single();
-        if(error) throw error;
-        cid = data.course_id; c.course_id = cid;
-      } else {
-        await sb.from("xp_course").update({ course_name:c.course_name.trim(), credit:c.credit, term:c.term }).eq("course_id", cid);
-      }
-
-      const row = {
-        course_id: cid, as_of_month: MONTH,
-        cases_hbi:+c.cur.cases_hbi||0, cases_other:+c.cur.cases_other||0, cases_own:+c.cur.cases_own||0,
-        cases_sources:c.cur.cases_sources||"", simulations:+c.cur.simulations||0,
-        scenarios:+c.cur.scenarios||0, live_projects:+c.cur.live_projects||0, method_note:c.cur.method_note||""
-      };
-      const { error: se } = await sb.from("xp_snapshot").upsert(row, { onConflict:"course_id,as_of_month" });
-      if(se) throw se;
-    }
-    $("#savedMsg").textContent = "Saved for "+monthName(MONTH);
-    await load();
-  }catch(err){
-    console.error(err);
-    $("#savedMsg").textContent = "";
-    $("#loginErr").textContent="";
-    alert("Could not save. Please check your connection and try again.");
-  }finally{
-    btn.disabled=false; btn.textContent="Save this month";
+async function removeCourse(ci){
+  const c=COURSES[ci];
+  if(c.course_id){
+    if(!confirm("Remove this course and everything recorded under it? This cannot be undone.")) return;
+    const { error } = await sb.from("xp_course").delete().eq("course_id", c.course_id);
+    if(error){ toast("Could not remove the course"); return; }
   }
+  COURSES.splice(ci,1); OPEN=null; render();
 }
+
+/* ---------- ITEM FORM ---------- */
+function openItem(ci, activity, rerender){
+  const c=COURSES[ci]; if(!c) return;
+  if(!c.course_id){ toast("Give the course a name first"); return; }
+  document.querySelectorAll(".itemhost").forEach(h=>h.innerHTML="");
+  OPEN = { ci, activity };
+  const host = document.querySelectorAll(".itemhost")[ci];
+  const a = activity || { category:"case", sub_type:"hbi", as_of_month:MONTH, title:"", source:"", description:"", tools_used:"", session_count:1, class_size:"", evidence_link:"", in_repository:false };
+  host.innerHTML = formHTML(a, !!activity);
+  wire(host, ci, activity);
+  host.scrollIntoView({ behavior:"smooth", block:"center" });
+}
+function wire(host, ci, activity){
+  host.querySelector("[name=category]").addEventListener("change", e=>{ const cat=e.target.value; const subs=CATS[cat].subs; const cur=readForm(host); cur.category=cat; cur.sub_type=subs?subs[0][0]:null; if(cat==="case"&&cur.sub_type==="own") cur.in_repository=true; host.innerHTML=formHTML(cur, !!activity); wire(host, ci, activity); });
+  const st=host.querySelector("[name=sub_type]"); if(st) st.addEventListener("change", e=>{ const cur=readForm(host); if(cur.sub_type==="own") cur.in_repository=true; host.innerHTML=formHTML(cur, !!activity); wire(host, ci, activity); });
+  host.querySelector(".cancel").addEventListener("click", ()=>{ OPEN=null; host.innerHTML=""; });
+  host.querySelector(".go").addEventListener("click", ()=>saveItem(host, ci, activity));
+}
+function faqFor(cat, sub){
+  if(!FAQ) return null;
+  return FAQ.find(f=>f.category===cat && (f.sub_type||null)===(CATS[cat].subs?sub:null)) || FAQ.find(f=>f.category===cat);
+}
+function formHTML(a, editing){
+  const cat=CATS[a.category]; const f=cat.fields; const has=k=>f.includes(k);
+  const def=faqFor(a.category, a.sub_type);
+  const months=monthOptions();
+  return `<div class="item">
+    <h3>${editing?"Edit entry":"Record something you taught with"}</h3>
+    <p class="def">${def?esc(def.definition):""}</p>
+    <div class="grid">
+      <label>Type<select name="category">${Object.entries(CATS).map(([k,v])=>`<option value="${k}" ${a.category===k?"selected":""}>${v.label}</option>`).join("")}</select></label>
+      ${cat.subs?`<label>Which kind<select name="sub_type">${cat.subs.map(([k,l])=>`<option value="${k}" ${a.sub_type===k?"selected":""}>${l}</option>`).join("")}</select></label>`:`<label>Month used<select name="as_of_month">${months.map(m=>`<option value="${m}" ${a.as_of_month===m?"selected":""}>${monthName(m)}</option>`).join("")}</select></label>`}
+      ${cat.subs?`<label>Month used<select name="as_of_month">${months.map(m=>`<option value="${m}" ${a.as_of_month===m?"selected":""}>${monthName(m)}</option>`).join("")}</select></label>`:""}
+      <label class="${cat.subs?"":"full"}">Title<input name="title" value="${esc(a.title)}" placeholder="${a.category==="bloomberg"?"What students did on the terminal":"Name of the case, simulation, scenario or exercise"}"></label>
+      ${has("source")?`<label class="full">${esc(cat.sourceLabel||"Source")} <small>${a.sub_type==="own"?"(leave blank for your own)":""}</small><input name="source" value="${esc(a.source)}" placeholder="${a.sub_type==="hbi"?"HBS 615013-PDF-ENG, McDonald and Christensen":"Publisher, author, product number"}"></label>`:""}
+      ${has("description")?`<label class="full">${esc(cat.descLabel||"Description")} ${cat.descRequired?"":"<small>(optional)</small>"}<textarea name="description">${esc(a.description)}</textarea></label>`:""}
+      ${has("tools")?`<label class="full">Tools students used<input name="tools_used" value="${esc(a.tools_used)}" placeholder="Excel, Power BI, ChatGPT, Bloomberg, survey tools"></label>`:""}
+      ${has("sessions")?`<label>${esc(cat.sessionsLabel||"Sessions used")}<input name="session_count" type="number" min="0" step="1" value="${a.session_count??1}" inputmode="numeric"></label>`:""}
+      ${has("class_size")?`<label>Class size<input name="class_size" type="number" min="0" step="1" value="${esc(a.class_size||"")}" inputmode="numeric"></label>`:""}
+      ${has("evidence")?`<label class="full">Evidence link ${cat.evidenceRequired?"":"<small>(Google Drive or X-Register link, optional)</small>"}<input name="evidence_link" value="${esc(a.evidence_link)}" placeholder="https://drive.google.com/..."></label>`:""}
+      ${has("repo")?`<label class="check"><input type="checkbox" name="in_repository" ${a.in_repository?"checked":""}> Add to the XIME case and scenario repository</label>`:""}
+    </div>
+    <div class="item-foot"><button class="go" type="button">${editing?"Save changes":"Add to ledger"}</button><button class="cancel" type="button">Cancel</button><span class="msg"></span></div>
+  </div>`;
+}
+function readForm(host){
+  const g=n=>{ const el=host.querySelector(`[name=${n}]`); return el? (el.type==="checkbox"?el.checked:el.value) : undefined; };
+  return { category:g("category"), sub_type:g("sub_type")??null, as_of_month:g("as_of_month")||MONTH, title:g("title")||"", source:g("source")||"", description:g("description")||"",
+           tools_used:g("tools_used")||"", session_count:g("session_count")??1, class_size:g("class_size")||"", evidence_link:g("evidence_link")||"", in_repository:!!g("in_repository") };
+}
+async function saveItem(host, ci, activity){
+  const c=COURSES[ci]; const v=readForm(host); const cat=CATS[v.category]; const msg=host.querySelector(".msg");
+  msg.textContent="";
+  if(!v.title.trim()){ msg.textContent="Give it a title."; return; }
+  if(cat.descRequired && !v.description.trim()){ msg.textContent="A short description is needed for this type."; return; }
+  if(cat.evidenceRequired && !v.evidence_link.trim()){ msg.textContent="Bloomberg use needs an evidence link."; return; }
+  if(v.evidence_link && !/^https?:\/\//i.test(v.evidence_link.trim())){ msg.textContent="The evidence link should start with http."; return; }
+  const row = { course_id:c.course_id, as_of_month:v.as_of_month, category:v.category, sub_type:cat.subs?v.sub_type:null,
+    title:v.title.trim(), source:v.source.trim()||null, description:v.description.trim()||null, tools_used:v.tools_used.trim()||null,
+    session_count:Math.max(0, Math.floor(+v.session_count||0)), class_size:v.class_size?Math.floor(+v.class_size):null,
+    evidence_link:v.evidence_link.trim()||null, in_repository:v.in_repository };
+  const go=host.querySelector(".go"); go.disabled=true;
+  let error;
+  if(activity){ ({ error } = await sb.from("xp_activity").update(row).eq("activity_id", activity.activity_id)); }
+  else { ({ error } = await sb.from("xp_activity").insert(row)); }
+  go.disabled=false;
+  if(error){ console.error(error); msg.textContent="Could not save. "+(error.message||""); return; }
+  OPEN=null; toast(activity?"Changes saved":"Added to ledger"); await load();
+}
+async function removeItem(ref){
+  const [ci,id]=ref.split(":");
+  if(!confirm("Remove this entry from the ledger?")) return;
+  const { error } = await sb.from("xp_activity").delete().eq("activity_id", id);
+  if(error){ toast("Could not remove"); return; }
+  toast("Removed"); await load();
+}
+
+/* ---------- FAQ ---------- */
+$("#faqBtn").addEventListener("click", async ()=>{
+  const box=$("#faq");
+  if(!box.classList.contains("hidden")){ box.classList.add("hidden"); return; }
+  await loadFaq();
+  box.innerHTML = '<dl>'+FAQ.map(f=>`<dt>${esc(f.label)}</dt><dd>${esc(f.definition)}</dd>${f.example?`<dd class="ex">${esc(f.example)}</dd>`:""}${f.needs?`<dd class="need">${esc(f.needs)}</dd>`:""}`).join("")+'</dl><div class="close"><button class="cancel" type="button" onclick="document.getElementById(\'faq\').classList.add(\'hidden\')">Close</button></div>';
+  box.classList.remove("hidden");
+});
+async function loadFaq(){
+  if(FAQ) return;
+  const { data } = await sb.from("xp_category_faq").select("*").order("sort_order");
+  FAQ = data||[];
+}
+loadFaq();
 </script>
 </body>
 </html>
