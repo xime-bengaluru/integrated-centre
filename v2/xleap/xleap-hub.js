@@ -1,4 +1,4 @@
-/* xleap-hub.js  v1.0  11 Sep 2026
+/* xleap-hub.js  v1.1  11 Sep 2026
    X-Hub adapter for XLEAP (Madhu Kumar PS, XLEAP v2.0 Aug 2026).
    Loads after the XLEAP page script and overrides five behaviours by name.
    Madhu's calculation engine is not touched. To adopt a new XLEAP release,
@@ -17,7 +17,7 @@
   const HUB_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
   const HUB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
   const AY_DEFAULT = "2026-27";
-  const ADAPTER_VERSION = "hub-1.0";
+  const ADAPTER_VERSION = "hub-1.1";
   const CAMPUS_TO_TOOL = { Bengaluru: "Bangalore", Kochi: "Kochi", Chennai: "Chennai" };
 
   if (!window.supabase || !window.supabase.createClient) {
@@ -62,8 +62,8 @@
   #hubBar b{color:#0D1F35}
   #hubBar a{color:#8A6F2A;cursor:pointer;text-decoration:underline}
   #hubBar .dot{width:8px;height:8px;border-radius:50%;background:#0D9268}
-  .hub-locked select,.hub-locked input{background:#f3f4f6!important;color:#475569!important;pointer-events:none}
-  .hub-locked-note{font-size:11px;color:#8A6F2A;margin-top:4px}
+  .hub-locked select,.hub-locked input{background:#EFEAE0!important;color:#0D1F35!important;border-color:#C9A84C!important;pointer-events:none;cursor:not-allowed}
+  .hub-locked-note{font-size:11px;color:#8A6F2A;margin-top:4px;font-weight:600}
   .hub-master-panel{background:#FAF8F3;border:1px solid #C9A84C;border-radius:10px;padding:12px 14px;margin:0 0 14px}
   .hub-master-panel b{color:#0D1F35}
   .hub-master-panel select{margin:0 8px;padding:7px 9px;border:1px solid #b7c3d0;border-radius:6px;min-width:280px}
@@ -80,6 +80,12 @@
   }
   function hideOverlay() { const o = $("#hubOverlay"); if (o) o.style.display = "none"; }
 
+  function showSigningIn() {
+    overlay(`
+      <div class="eyebrow">X-Hub &middot; AY ${h(AY_DEFAULT)}</div>
+      <h1>XLEAP</h1>
+      <p>Signing you in and loading your records from X-Hub...</p>`);
+  }
   function showSignIn(msg) {
     overlay(`
       <div class="eyebrow">X-Hub &middot; AY ${h(AY_DEFAULT)}</div>
@@ -114,7 +120,7 @@
     overlay(`
       <div class="eyebrow">X-Hub &middot; AY ${h(AY_DEFAULT)}</div>
       <h1>Your XLEAP records</h1>
-      <p>One record per course and class. Open a record to continue, or start a new one.</p>
+      <p>You are signed in. One record per course and class. Open a record to continue, or start a new one.</p>
       ${list}
       <button class="btn-g" id="hubNew">Start a new course record</button>
       <div class="who"><span>Signed in as <b>${h(ME.full_name)}</b> &middot; ${h(ME.campus || "")}</span><a href="#" id="hubOut">Sign out</a></div>`);
@@ -168,7 +174,7 @@
       if (el.classList.contains("hub-locked")) return;
       el.classList.add("hub-locked");
       const c = el.querySelector("select,input"); if (c) { c.setAttribute("readonly", "readonly"); c.setAttribute("tabindex", "-1"); }
-      const n = document.createElement("div"); n.className = "hub-locked-note"; n.textContent = "Set by X-Hub from the faculty directory"; el.appendChild(n);
+      const n = document.createElement("div"); n.className = "hub-locked-note"; n.innerHTML = "&#128274; Filled by X-Hub from the faculty directory and cannot be edited here. If it is wrong, tell the X-Hub administrator."; el.appendChild(n);
     });
   }
 
@@ -293,7 +299,8 @@
     sel.innerHTML = MASTER.length ? `<option value="">Select approved course</option>` + MASTER.map((m) => `<option value="${h(m.master_id)}">${h(m.course_name)}${m.course_code ? " (" + h(m.course_code) + ")" : ""} \u00B7 ${h(m.programme)}${m.term ? " \u00B7 T" + h(m.term) : ""}</option>`).join("") : `<option value="">No approved courses in the master yet for ${h(ay)}</option>`;
   }
   async function applyMaster() {
-    const id = $("#hubMasterSel").value; if (!id) return;
+    const id = $("#hubMasterSel").value;
+    if (!id) { toast(MASTER.length ? "Select an approved course first, then click Load." : "No approved courses are in the X-Hub course master yet for this year. Use the syllabus file upload below; the master fills as IQAC approves Term 1 syllabi.", 7000); return; }
     const m = MASTER.find((x) => x.master_id === id); if (!m) return;
     let pos = state.pos && state.pos.length ? state.pos.map((p) => ({ code: p.code, statement: p.statement })) : [];
     if (m.po_set_id) {
@@ -330,8 +337,21 @@
     ME = me;
     await showPicker();
   }
+  const returningFromGoogle = /[#?&](access_token|code)=/.test(window.location.hash + window.location.search);
+  showSigningIn();
+  let booting = false;
+  async function tryBoot(session) {
+    if (booting || ME) return;
+    booting = true;
+    try { await boot(session); } finally { booting = false; }
+  }
   sb.auth.getSession().then(({ data }) => {
-    if (data && data.session) boot(data.session); else showSignIn();
+    if (data && data.session) tryBoot(data.session);
+    else if (!returningFromGoogle) showSignIn();
   });
-  sb.auth.onAuthStateChange((ev, session) => { if (ev === "SIGNED_IN" && session && !ME) boot(session); });
+  sb.auth.onAuthStateChange((ev, session) => {
+    if (session && (ev === "SIGNED_IN" || ev === "INITIAL_SESSION")) tryBoot(session);
+    else if (ev === "INITIAL_SESSION" && !session && !ME && !returningFromGoogle) showSignIn();
+  });
+  setTimeout(() => { if (!ME && returningFromGoogle && !booting) showSignIn("Sign-in did not complete. Please try again."); }, 8000);
 })();
