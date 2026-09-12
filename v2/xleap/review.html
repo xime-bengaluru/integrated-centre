@@ -44,6 +44,20 @@
   .rowbtn{font:inherit;font-size:12px;padding:5px 9px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;color:var(--ink)}
   .rowbtn:hover{border-color:var(--gold)}
   .note{font-size:13px;color:var(--muted);margin:8px 0 0}
+  .chips{display:flex;flex-wrap:wrap;gap:4px}
+  .chip{display:inline-block;font-size:11px;font-variant-numeric:tabular-nums;padding:2px 6px;border-radius:5px;border:1px solid var(--line);background:#fff;white-space:nowrap}
+  .chip b{font-weight:600;margin-right:3px;color:var(--muted)}
+  .chip.met{background:var(--green-bg);border-color:#BFDDB0;color:var(--green)}
+  .chip.gap{background:#FBE5E7;border-color:#F0B9BF;color:#8A1C1C}
+  .chip.na{color:var(--muted);background:var(--line-2)}
+  tr.detail td{background:var(--paper);padding:12px 14px}
+  .matrix{border:1px solid var(--line);font-size:12px;width:auto;margin:0}
+  .matrix th,.matrix td{padding:4px 8px;text-align:center}
+  .matrix th:first-child,.matrix td:first-child{text-align:left;font-weight:600}
+  .matrix td.m3{background:#E2F0D9}.matrix td.m2{background:#EEF5E8}.matrix td.m1{background:#F7FAF4}
+  .loop{font-size:13px;margin-top:10px;max-width:900px}
+  .loop b{display:inline-block;min-width:150px;color:var(--muted);font-weight:500}
+  .ledger th.po,.ledger td.po{font-size:12.5px;padding-left:6px;padding-right:6px}
   #gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;z-index:50}
   #gate .card{width:min(560px,92vw);background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 36px;box-shadow:0 12px 40px rgba(13,31,53,.12)}
   #gate p{color:var(--muted)}
@@ -83,6 +97,9 @@
 
   <h2>Attainment by campus, area, programme and term <small>current, aggregation-eligible records only</small></h2>
   <div id="pivot"></div>
+
+  <h2>Programme outcome attainment by batch <small>all terms submitted so far, eligible records only</small></h2>
+  <div id="batch"></div>
 
   <h2>Submissions <small id="subCount"></small></h2>
   <div id="subs"></div>
@@ -137,35 +154,70 @@
     const c=$("#campus").value, t=$("#term").value, hist=$("#history").checked;
     return ROWS.filter(r=>(hist||r.is_current)&&(!c||r.campus===c)&&(!t||String(r.term)===t));
   }
+  const POS=["PO1","PO2","PO3","PO4","PO5","PO6","PO7"];
+  function poValue(r,po){ const x=r.po_attainment&&r.po_attainment[po]; const v=x&&x.value; return (v===""||v==null||isNaN(Number(v)))?null:Number(v); }
+  function poAverages(list){ return POS.map(po=>{ const vals=list.map(r=>poValue(r,po)).filter(v=>v!=null); return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null; }); }
+  function poCells(avgs){ return avgs.map(v=>`<td class="n po">${v==null?'<span style="color:var(--muted)">N/M</span>':num(v)}</td>`).join(""); }
   function renderPivot(){
     const c=$("#campus").value, t=$("#term").value;
     const rows=PIVOT.filter(r=>(!c||r.campus===c)&&(!t||String(r.term)===t));
+    const elig=ROWS.filter(r=>r.is_current&&r.aggregation_eligible&&(!c||r.campus===c)&&(!t||String(r.term)===t));
     if(!rows.length){ $("#pivot").innerHTML=`<div class="empty"><b>No eligible records yet for this selection.</b> The table fills as faculty submit course records that pass XLEAP's validation.</div>`; return; }
-    $("#pivot").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Area</th><th>Programme</th><th class="n">Term</th><th class="n">Courses</th><th class="n">Eligible</th><th class="n">CO attainment</th><th class="n">PO attainment</th><th class="n">COs met</th><th class="n">POs met</th><th class="n">Loops closed</th><th class="n">Needing support</th></tr></thead><tbody>
-      ${rows.map(r=>`<tr><td>${h(r.campus)}</td><td>${h(r.area)}</td><td>${h(r.programme)}</td><td class="n">${h(r.term)}</td><td class="n">${r.courses}</td><td class="n">${r.eligible}</td>
-        <td class="big">${num(r.avg_co)}<small>of 3</small></td><td class="big">${num(r.avg_po)}<small>of 3</small></td>
-        <td class="n">${num(r.co_met_pct,0)}%</td><td class="n">${num(r.po_met_pct,0)}%</td><td class="n">${r.loops_closed} / ${r.eligible}</td><td class="n">${num(r.support_pct,0)}%</td></tr>`).join("")}
-      </tbody></table>`;
+    $("#pivot").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Area</th><th>Programme</th><th class="n">Term</th><th class="n">Courses</th><th class="n">Eligible</th><th class="n">CO avg</th><th class="n">PO avg</th>${POS.map(p=>`<th class="n po">${p}</th>`).join("")}<th class="n">Loops closed</th><th class="n">Needing support</th></tr></thead><tbody>
+      ${rows.map(r=>{ const grp=elig.filter(x=>x.campus===r.campus&&x.area===r.area&&x.programme===r.programme&&String(x.term)===String(r.term));
+        return `<tr><td>${h(r.campus)}</td><td>${h(r.area)}</td><td>${h(r.programme)}</td><td class="n">${h(r.term)}</td><td class="n">${r.courses}</td><td class="n">${r.eligible}</td>
+        <td class="big">${num(r.avg_co)}<small>of 3</small></td><td class="big">${num(r.avg_po)}<small>of 3</small></td>${poCells(poAverages(grp))}
+        <td class="n">${r.loops_closed} / ${r.eligible}</td><td class="n">${num(r.support_pct,0)}%</td></tr>`; }).join("")}
+      </tbody></table>
+      <p class="note">PO columns are the average across the eligible courses in that row, weighted by nothing but course count; N/M means no course in the row maps to that PO. The term view is diagnostic. Programme PO attainment is read across the full programme in the table below.</p>`;
+    renderBatch(elig);
+  }
+  function renderBatch(elig){
+    const groups={};
+    elig.forEach(r=>{ const k=[r.campus,r.programme,r.batch||""].join("|"); (groups[k]=groups[k]||{campus:r.campus,programme:r.programme,batch:r.batch||"",rows:[]}).rows.push(r); });
+    const list=Object.values(groups).sort((a,b)=>(a.campus+a.programme+a.batch).localeCompare(b.campus+b.programme+b.batch));
+    if(!list.length){ $("#batch").innerHTML=""; return; }
+    $("#batch").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Programme</th><th>Batch</th><th class="n">Terms covered</th><th class="n">Courses</th>${POS.map(p=>`<th class="n po">${p}</th>`).join("")}</tr></thead><tbody>
+      ${list.map(g=>{ const terms=[...new Set(g.rows.map(r=>String(r.term)))].sort().join(", "); return `<tr><td>${h(g.campus)}</td><td>${h(g.programme)}</td><td>${h(g.batch)}</td><td class="n">${h(terms)}</td><td class="n">${g.rows.length}</td>${poCells(poAverages(g.rows))}</tr>`; }).join("")}
+      </tbody></table>
+      <p class="note">Programme outcome attainment for a batch accumulates as each term's course records are submitted; the figure is final only when all six terms are in.</p>`;
   }
   function renderSubs(){
     const rows=visibleRows();
     $("#subCount").textContent=rows.length?`${rows.length} record${rows.length>1?"s":""}`:"";
     $("#dlAll").disabled=!rows.length;
     if(!rows.length){ $("#subs").innerHTML=`<div class="empty"><b>Nothing submitted yet for this selection.</b> Faculty submit from the Attainment and Reports tab in XLEAP with "Submit to X-Hub".</div>`; return; }
-    $("#subs").innerHTML=`<table><thead><tr><th>Campus</th><th>Course</th><th>Section</th><th>Faculty</th><th class="n">Term</th><th class="n">Students</th><th class="n">CO</th><th class="n">PO</th><th>Validation</th><th>Closing the loop</th><th>Submitted</th><th></th></tr></thead><tbody>
+    const chips=(obj,keys)=>`<div class="chips">${keys.map(k=>{ const x=obj&&obj[k]; if(!x) return ""; const st=String(x.status||""); const cls=/met/i.test(st)&&!/not/i.test(st)?"met":/gap/i.test(st)?"gap":"na"; const v=(x.value===""||x.value==null)?"N/M":num(x.value,1); return `<span class="chip ${cls}" title="${h(st)}"><b>${k}</b>${v}</span>`; }).join("")}</div>`;
+    const coKeys=r=>Object.keys(r.co_attainment||{}).sort((a,b)=>parseInt(a.slice(2))-parseInt(b.slice(2)));
+    $("#subs").innerHTML=`<table><thead><tr><th>Campus</th><th>Course</th><th>Section</th><th>Faculty</th><th class="n">Term</th><th class="n">Students</th><th>Course outcomes</th><th>Programme outcomes</th><th>Validation</th><th>Closing the loop</th><th>Submitted</th><th></th></tr></thead><tbody>
       ${rows.map(r=>`<tr>
         <td>${h(r.campus)}</td>
         <td><b>${h(r.course_name)}</b>${r.course_code?`<br><span style="color:var(--muted);font-size:12px">${h(r.course_code)} &middot; ${h(r.programme)} ${h(r.batch||"")}</span>`:""}</td>
         <td>${h(r.class_section)}</td>
         <td>${h(r.record&&r.record.FacultyName||r.faculty_email)}</td>
         <td class="n">${h(r.term)}</td><td class="n">${r.student_count??""}</td>
-        <td class="n">${num(r.avg_co)}</td><td class="n">${num(r.avg_po)}</td>
+        <td>${chips(r.co_attainment,coKeys(r))}</td><td>${chips(r.po_attainment,POS)}</td>
         <td>${r.aggregation_eligible?`<span class="pill ok">Eligible</span>`:`<span class="pill warn">${h(r.validation_status||"Not eligible")}</span>`}</td>
         <td>${h(r.closing_loop_status||"")}${r.closing_loop_complete?' <span class="pill ok">Closed</span>':""}</td>
         <td>${when(r.submitted_at)} ${r.is_current?`<span class="pill">v${r.version}</span>`:`<span class="pill old">v${r.version}, superseded</span>`}</td>
-        <td><button class="rowbtn" data-id="${h(r.submission_id)}">CSV</button></td></tr>`).join("")}
+        <td style="white-space:nowrap"><button class="rowbtn" data-more="${h(r.submission_id)}">Detail</button> <button class="rowbtn" data-id="${h(r.submission_id)}">CSV</button></td></tr>
+        <tr class="detail" id="d-${h(r.submission_id)}" style="display:none"><td colspan="12">${detail(r)}</td></tr>`).join("")}
       </tbody></table>`;
+    document.querySelectorAll("[data-more]").forEach(b=>b.onclick=()=>{ const d=document.getElementById("d-"+b.getAttribute("data-more")); const open=d.style.display!=="none"; d.style.display=open?"none":"table-row"; b.textContent=open?"Detail":"Hide"; });
     document.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{ const r=ROWS.find(x=>x.submission_id===b.getAttribute("data-id")); downloadCSV([r],`${(r.record&&r.record.ExportFileName)||("XLEAP_"+r.record_key.replace(/[^A-Za-z0-9]+/g,"_"))}.csv`); });
+  }
+  function detail(r){
+    const cos=Object.keys(r.co_attainment||{}).sort((a,b)=>parseInt(a.slice(2))-parseInt(b.slice(2)));
+    const map=r.co_po_mapping||{};
+    const rec=r.record||{};
+    const m=`<table class="matrix"><thead><tr><th>CO-PO mapping</th>${POS.map(p=>`<th>${p}</th>`).join("")}<th>CO attainment</th></tr></thead><tbody>
+      ${cos.map(co=>`<tr><td>${co}</td>${POS.map(po=>{ const v=map[co]&&map[co][po]; const n=Number(v)||0; return `<td class="m${n}">${n||""}</td>`; }).join("")}<td><b>${num((r.co_attainment[co]||{}).value,2)}</b> <span style="color:var(--muted)">${h((r.co_attainment[co]||{}).status||"")}</span></td></tr>`).join("")}
+      <tr><td>PO attainment</td>${POS.map(po=>{ const x=r.po_attainment&&r.po_attainment[po]; const v=x&&x.value; return `<td><b>${(v===""||v==null)?"N/M":num(v,2)}</b></td>`; }).join("")}<td></td></tr>
+    </tbody></table>`;
+    const f=(k,l)=>rec[k]?`<div><b>${l}</b>${h(rec[k])}</div>`:"";
+    const loop=`<div class="loop">${f("FacultyInterpretation","Interpretation")}${f("RootCause","Root cause")}${f("ImprovementAction","Improvement action")}${f("ActionOwner","Owner")}${f("TargetDate","Target date")}${f("FollowUpMeasure","Follow-up measure")}${f("FollowUpResult","Follow-up result")}${f("EvidenceReference","Evidence")}</div>`;
+    const stats=`<div class="note" style="margin:0 0 10px">Students ${r.student_count??""} &middot; needing support ${r.students_needing_support??""} &middot; CO target ${h(rec.COTarget||"")} &middot; PO target ${h(rec.POTarget||"")} &middot; validation ${h(r.validation_status||"")} (${h(r.overall_validity||"")})</div>`;
+    return stats+m+loop;
   }
   function columnsFor(rows){
     const cols=[]; const seen=new Set();
