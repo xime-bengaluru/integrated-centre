@@ -105,13 +105,16 @@
   function gate(msg,showBtn,err){ $("#gateMsg").textContent=msg; $("#gateBtn").style.display=showBtn?"inline-flex":"none"; $("#gateErr").textContent=err||""; }
   $("#gateBtn").onclick=async()=>{ const {error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{hd:"xime.org",prompt:"select_account"}}}); if(error) gate("Sign in to continue.",true,error.message); };
 
+  let booting=false;
   async function boot(){
+    if(booting||ME) return; booting=true;
     const {data,error}=await sb.rpc("xl_me"); const me=data&&data[0];
-    if(error||!me||!me.full_name){ await sb.auth.signOut(); gate("This address is not on the faculty list.",true,""); return; }
+    if(error||!me||!me.full_name){ booting=false; await sb.auth.signOut(); gate("This address is not on the faculty list.",true,""); return; }
     ME=me;
     $("#who").innerHTML=`Signed in as <b>${h(ME.full_name)}</b> &middot; ${h(ME.campus||"")}${ME.can_review?" &middot; IQAC review":""}<br><a href="index.html">Back to XLEAP</a><a href="#" id="out">Sign out</a>`;
     $("#out").onclick=async(e)=>{e.preventDefault();await sb.auth.signOut();location.reload();};
     const ays=["2026-27","2027-28"]; $("#ay").innerHTML=ays.map(a=>`<option>${a}</option>`).join("");
+    $("#campus").innerHTML='<option value="">All I can see</option>'; $("#term").innerHTML='<option value="">All</option>';
     ["Bengaluru","Kochi","Chennai"].forEach(c=>$("#campus").insertAdjacentHTML("beforeend",`<option>${c}</option>`));
     for(let t=1;t<=6;t++) $("#term").insertAdjacentHTML("beforeend",`<option>${t}</option>`);
     ["#ay","#campus","#term","#history"].forEach(s=>$(s).onchange=load);
