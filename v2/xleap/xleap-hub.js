@@ -1,4 +1,4 @@
-/* xleap-hub.js  v1.1  11 Sep 2026
+/* xleap-hub.js  v1.2  12 Sep 2026
    X-Hub adapter for XLEAP (Madhu Kumar PS, XLEAP v2.0 Aug 2026).
    Loads after the XLEAP page script and overrides five behaviours by name.
    Madhu's calculation engine is not touched. To adopt a new XLEAP release,
@@ -17,7 +17,7 @@
   const HUB_URL = "https://qcufrukhfcmyfvwwoqjo.supabase.co";
   const HUB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
   const AY_DEFAULT = "2026-27";
-  const ADAPTER_VERSION = "hub-1.1";
+  const ADAPTER_VERSION = "hub-1.2";
   const CAMPUS_TO_TOOL = { Bengaluru: "Bangalore", Kochi: "Kochi", Chennai: "Chennai" };
 
   if (!window.supabase || !window.supabase.createClient) {
@@ -50,6 +50,8 @@
   #hubOverlay .btn-g{display:inline-flex;align-items:center;gap:10px;background:#0D1F35;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-size:15px;font-weight:600;cursor:pointer}
   #hubOverlay .btn-g:hover{background:#1A3352}
   #hubOverlay .btn-o{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0D1F35;border:1px solid #C9A84C;border-radius:8px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer}
+  #hubOverlay .btn-x{display:inline-flex;align-items:center;background:#fff;color:#8A1C1C;border:1px solid #D8D2C5;border-radius:8px;padding:9px 12px;font-size:13px;cursor:pointer}
+  #hubOverlay .btn-x:hover{border-color:#C8102E}
   #hubOverlay .err{color:#C8102E;font-size:14px;margin-top:12px}
   #hubOverlay table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 18px}
   #hubOverlay th{text-align:left;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#5A6B82;padding:8px 6px;border-bottom:1px solid #D8D2C5}
@@ -115,7 +117,7 @@
         <td>${h(r.term || "")}</td><td>${h(r.class_section || "")}</td>
         <td>${fmtDate(r.last_saved_at)} ${fmtTime(r.last_saved_at)}</td>
         <td>${r.current_version ? `<span class="pill ok">Submitted v${r.current_version}</span>` : `<span class="pill">Draft</span>`}</td>
-        <td><button class="btn-o" data-open="${h(r.workspace_id)}">Open</button></td></tr>`).join("")}
+        <td style="white-space:nowrap"><button class="btn-o" data-open="${h(r.workspace_id)}">Open</button> <button class="btn-x" data-del="${h(r.workspace_id)}" data-name="${h(r.course_name || "this record")}" data-sub="${r.current_version ? 1 : 0}" title="Delete this draft from X-Hub">Delete</button></td></tr>`).join("")}
       </tbody></table>` : `<p>No records yet on X-Hub. Start your first course record below.</p>`;
     overlay(`
       <div class="eyebrow">X-Hub &middot; AY ${h(AY_DEFAULT)}</div>
@@ -123,10 +125,22 @@
       <p>You are signed in. One record per course and class. Open a record to continue, or start a new one.</p>
       ${list}
       <button class="btn-g" id="hubNew">Start a new course record</button>
-      <div class="who"><span>Signed in as <b>${h(ME.full_name)}</b> &middot; ${h(ME.campus || "")}</span><a href="#" id="hubOut">Sign out</a></div>`);
+      <div class="who"><span>Signed in as <b>${h(ME.full_name)}</b> &middot; ${h(ME.campus || "")}</span><span>${ME.can_review ? '<a href="review.html" style="margin-right:16px">Institutional record</a>' : ''}<a href="#" id="hubOut">Sign out</a></span></div>`);
     $("#hubNew").onclick = () => startNewRecord();
     $("#hubOut").onclick = async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); };
     document.querySelectorAll("[data-open]").forEach((b) => { b.onclick = () => openRecord(b.getAttribute("data-open"), rows); });
+    document.querySelectorAll("[data-del]").forEach((b) => { b.onclick = () => deleteRecord(b.getAttribute("data-del"), b.getAttribute("data-name"), b.getAttribute("data-sub") === "1"); });
+  }
+
+  async function deleteRecord(id, name, submitted) {
+    const msg = submitted
+      ? `Delete the working record for ${name}? The submitted institutional record on X-Hub stays; only your working copy is removed.`
+      : `Delete the draft for ${name} from X-Hub? This cannot be undone.`;
+    if (!window.confirm(msg)) return;
+    const { error } = await sb.from("xl_workspace").delete().eq("workspace_id", id);
+    if (error) { toast("Could not delete: " + error.message, 6000); return; }
+    if (WS_ID === id) { WS_ID = null; WS_KEY = null; }
+    showPicker();
   }
 
   /* ---------- record open / new ---------- */
@@ -184,7 +198,7 @@
     const host = $(".status.clean-status") || $(".toolbar");
     if (!host) return;
     if (!bar) { bar = document.createElement("div"); bar.id = "hubBar"; host.parentNode.insertBefore(bar, host); }
-    bar.innerHTML = `<span class="dot"></span><span><b>${h(ME.full_name)}</b> &middot; ${h(ME.campus || "")}</span><a id="hubRecords">My records</a><a id="hubSignOut">Sign out</a>`;
+    bar.innerHTML = `<span class="dot"></span><span><b>${h(ME.full_name)}</b> &middot; ${h(ME.campus || "")}</span><a id="hubRecords">My records</a>${ME.can_review ? '<a href="review.html">Institutional record</a>' : ''}<a id="hubSignOut">Sign out</a>`;
     $("#hubRecords").onclick = () => showPicker();
     $("#hubSignOut").onclick = async () => { await flushHubSave(); await sb.auth.signOut(); location.reload(); };
   }
@@ -206,13 +220,14 @@
     if (!ME) return;
     if (hubSaving) { hubQueued = true; return; }
     hubSaving = true;
+    ensureIdentity();
     const key = currentRecordKey();
     const status = document.getElementById("saveStatus");
     try {
       const { data, error } = await sb.rpc("xl_workspace_save", { p_record_key: key, p_state: state, p_meta: currentMeta(), p_tool_version: (state.meta && state.meta.toolVersion) || "2.0 " + ADAPTER_VERSION });
       if (error) throw error;
-      if (WS_ID && WS_KEY && WS_KEY !== key && data !== WS_ID) {
-        await sb.from("xl_workspace").delete().eq("workspace_id", WS_ID);
+      if (WS_KEY && WS_KEY !== key) {
+        await sb.from("xl_workspace").delete().eq("faculty_email", ME.email).eq("record_key", WS_KEY);
       }
       WS_ID = data; WS_KEY = key;
       if (status) status.textContent = "Saved to X-Hub " + fmtTime(Date.now());
@@ -233,21 +248,35 @@
   };
   const _renderActive = window.renderActive;
   window.renderActive = function () {
+    if (ME) ensureIdentity();
     _renderActive.apply(this, arguments);
     if (ME) { lockIdentityFields(); patchRouting(); injectMasterPanel(); }
   };
+  // Returns true when identity had to be repaired (after Clear Contents / New, Open Project, imports)
+  function ensureIdentity() {
+    if (!ME || !state) return false;
+    state.meta = state.meta || {}; state.aol = state.aol || {};
+    const wantName = ME.full_name, wantCampus = CAMPUS_TO_TOOL[ME.campus] || ME.campus;
+    let fixed = false;
+    if (state.meta.facultyName !== wantName) { state.meta.facultyName = wantName; fixed = true; }
+    if (wantCampus && state.aol.campus !== wantCampus) { state.aol.campus = wantCampus; fixed = true; }
+    if (!state.aol.academicYear) { state.aol.academicYear = AY_DEFAULT; fixed = true; }
+    if (fixed) { try { results = calculateAll(); } catch (e) {} scheduleHubSave(); }
+    return fixed;
+  }
   window.addEventListener("beforeunload", () => { if (hubTimer) { navigator.sendBeacon && hubSave(); } });
 
   /* ---------- submit ---------- */
   const _exportCSV = window.exportExecutiveSummaryCSV;
   window.downloadExecutiveSummaryCSV = _exportCSV;
   window.exportExecutiveSummaryCSV = async function () {
+    if (ensureIdentity()) { results = calculateAll(); renderActive(); }
     const ready = institutionalExecutiveSummaryReadiness();
     if (!ready.ok) { focusFirstMandatoryIssue("Submit to X-Hub"); return; }
     const rec = executiveSummaryRecord();
     try {
       await flushHubSave();
-      const { data, error } = await sb.rpc("xl_submit", { p_workspace_id: WS_ID, p_record: rec });
+      const { data, error } = await sb.rpc("xl_submit", { p_workspace_id: WS_ID, p_record: rec, p_columns: Object.keys(rec) });
       if (error) throw error;
       const v = data && data[0] ? data[0].version : "?";
       const eligible = rec.InstitutionalAggregationEligible === "YES";

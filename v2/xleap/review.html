@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XLEAP institutional record | X-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--paper:#FAF8F3;--ink:#0D1F35;--ink-2:#334155;--muted:#5A6B82;--line:#D8D2C5;--line-2:#EFEAE0;--gold:#C9A84C;--gold-ink:#8A6F2A;--red:#C8102E;--green:#166534;--green-bg:#E2F0D9;--amber-bg:#FBF1D9;--amber:#8A5A00}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',Arial,sans-serif;font-size:15px;line-height:1.5}
+  a{color:var(--gold-ink)}
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 24px 60px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:22px;flex-wrap:wrap}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:38px;line-height:1.05;margin:0}
+  header p{margin:6px 0 0;color:var(--muted);max-width:640px}
+  .who{font-size:13px;color:var(--muted);text-align:right}
+  .who b{color:var(--ink)}
+  .who a{margin-left:14px}
+  .controls{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  select{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  .btn{font:inherit;font-size:14px;font-weight:600;padding:9px 14px;border-radius:8px;border:1px solid var(--gold);background:#fff;color:var(--ink);cursor:pointer}
+  .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:26px;margin:28px 0 10px}
+  h2 small{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);font-weight:400;margin-left:10px}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:14px}
+  th{text-align:left;font-weight:600;color:var(--ink-2);font-size:13px;padding:10px 10px;border-bottom:1px solid var(--line);background:#fff}
+  td{padding:10px 10px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+  .ledger td.big{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:600;line-height:1;text-align:right;padding-top:8px}
+  .ledger td.big small{display:block;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);font-weight:400;margin-top:3px}
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--line-2);color:var(--muted);white-space:nowrap}
+  .pill.ok{background:var(--green-bg);color:var(--green)}
+  .pill.warn{background:var(--amber-bg);color:var(--amber)}
+  .pill.old{background:#fff;border:1px solid var(--line)}
+  .empty{background:#fff;border:1px dashed var(--line);border-radius:10px;padding:26px;color:var(--muted)}
+  .empty b{color:var(--ink)}
+  .rowbtn{font:inherit;font-size:12px;padding:5px 9px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;color:var(--ink)}
+  .rowbtn:hover{border-color:var(--gold)}
+  .note{font-size:13px;color:var(--muted);margin:8px 0 0}
+  #gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;z-index:50}
+  #gate .card{width:min(560px,92vw);background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 36px;box-shadow:0 12px 40px rgba(13,31,53,.12)}
+  #gate p{color:var(--muted)}
+  #gate .err{color:var(--red);font-size:14px;margin-top:10px;min-height:1em}
+  .foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media (max-width:760px){h1{font-size:30px}.ledger td.big{font-size:20px}table{display:block;overflow-x:auto}}
+  @media (prefers-reduced-motion:no-preference){.fade{animation:fade .35s ease-out}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+<div id="gate"><div class="card">
+  <h1 style="font-size:32px">XLEAP institutional record</h1>
+  <p id="gateMsg">Signing you in...</p>
+  <button class="btn primary" id="gateBtn" style="display:none">Sign in with Google</button>
+  <div class="err" id="gateErr"></div>
+  <p style="margin-top:22px;font-size:13px"><a href="index.html">Back to XLEAP</a> &nbsp; <a href="../index.html">X-Hub</a></p>
+</div></div>
+
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <div>
+      <h1>XLEAP institutional record</h1>
+      <p>Course-level assurance of learning records submitted by faculty, consolidated for Academics and IQAC. Each course and class holds one current record; earlier versions are kept.</p>
+    </div>
+    <div class="who" id="who"></div>
+  </header>
+
+  <div class="controls">
+    <label>Academic year <select id="ay"></select></label>
+    <label>Campus <select id="campus"><option value="">All I can see</option></select></label>
+    <label>Term <select id="term"><option value="">All</option></select></label>
+    <label><input type="checkbox" id="history"> Include earlier versions</label>
+    <span style="flex:1"></span>
+    <button class="btn primary" id="dlAll">Download all as CSV</button>
+  </div>
+
+  <h2>Attainment by campus, area, programme and term <small>current, aggregation-eligible records only</small></h2>
+  <div id="pivot"></div>
+
+  <h2>Submissions <small id="subCount"></small></h2>
+  <div id="subs"></div>
+  <p class="note">CSV columns follow the XLEAP executive summary schema exactly as the tool generates it, so files open in the same consolidation sheets as before. Student-level marks are not included; they stay with the faculty record.</p>
+
+  <div class="foot"><span>XIME &middot; X-Hub &middot; XLEAP institutional record</span><span>Records visible to you are limited by your role and campus.</span></div>
+</div>
+
+<script>
+(function(){
+  const HUB_URL="https://qcufrukhfcmyfvwwoqjo.supabase.co";
+  const HUB_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI";
+  const sb=window.supabase.createClient(HUB_URL,HUB_ANON);
+  const $=(s)=>document.querySelector(s);
+  const h=(v)=>String(v==null?"":v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  const num=(v,d=2)=>v==null||v===""?"":Number(v).toFixed(d);
+  const when=(d)=>new Date(d).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+  let ME=null, ROWS=[], PIVOT=[];
+
+  function gate(msg,showBtn,err){ $("#gateMsg").textContent=msg; $("#gateBtn").style.display=showBtn?"inline-flex":"none"; $("#gateErr").textContent=err||""; }
+  $("#gateBtn").onclick=async()=>{ const {error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{hd:"xime.org",prompt:"select_account"}}}); if(error) gate("Sign in to continue.",true,error.message); };
+
+  async function boot(){
+    const {data,error}=await sb.rpc("xl_me"); const me=data&&data[0];
+    if(error||!me||!me.full_name){ await sb.auth.signOut(); gate("This address is not on the faculty list.",true,""); return; }
+    ME=me;
+    $("#who").innerHTML=`Signed in as <b>${h(ME.full_name)}</b> &middot; ${h(ME.campus||"")}${ME.can_review?" &middot; IQAC review":""}<br><a href="index.html">Back to XLEAP</a><a href="#" id="out">Sign out</a>`;
+    $("#out").onclick=async(e)=>{e.preventDefault();await sb.auth.signOut();location.reload();};
+    const ays=["2026-27","2027-28"]; $("#ay").innerHTML=ays.map(a=>`<option>${a}</option>`).join("");
+    ["Bengaluru","Kochi","Chennai"].forEach(c=>$("#campus").insertAdjacentHTML("beforeend",`<option>${c}</option>`));
+    for(let t=1;t<=6;t++) $("#term").insertAdjacentHTML("beforeend",`<option>${t}</option>`);
+    ["#ay","#campus","#term","#history"].forEach(s=>$(s).onchange=load);
+    $("#dlAll").onclick=()=>downloadCSV(visibleRows(),`XLEAP_Institutional_Record_${$("#ay").value}_${new Date().toISOString().slice(0,10)}.csv`);
+    $("#gate").style.display="none"; $("#app").style.display="block"; $("#app").classList.add("fade");
+    await load();
+  }
+
+  async function load(){
+    const ay=$("#ay").value;
+    const [p,s]=await Promise.all([
+      sb.rpc("xl_institute_summary",{p_academic_year:ay}),
+      sb.from("xl_submission").select("submission_id,record_key,version,is_current,faculty_email,campus,area,programme,batch,term,course_code,course_name,class_section,student_count,aggregation_eligible,validation_status,overall_validity,avg_co,avg_po,co_met_pct,po_met_pct_of_mapped,students_needing_support,closing_loop_status,closing_loop_complete,submitted_at,record,record_columns").eq("academic_year",ay).order("submitted_at",{ascending:false})
+    ]);
+    PIVOT=p.data||[]; ROWS=s.data||[];
+    if(p.error) console.error(p.error); if(s.error) console.error(s.error);
+    renderPivot(); renderSubs();
+  }
+  function visibleRows(){
+    const c=$("#campus").value, t=$("#term").value, hist=$("#history").checked;
+    return ROWS.filter(r=>(hist||r.is_current)&&(!c||r.campus===c)&&(!t||String(r.term)===t));
+  }
+  function renderPivot(){
+    const c=$("#campus").value, t=$("#term").value;
+    const rows=PIVOT.filter(r=>(!c||r.campus===c)&&(!t||String(r.term)===t));
+    if(!rows.length){ $("#pivot").innerHTML=`<div class="empty"><b>No eligible records yet for this selection.</b> The table fills as faculty submit course records that pass XLEAP's validation.</div>`; return; }
+    $("#pivot").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Area</th><th>Programme</th><th class="n">Term</th><th class="n">Courses</th><th class="n">Eligible</th><th class="n">CO attainment</th><th class="n">PO attainment</th><th class="n">COs met</th><th class="n">POs met</th><th class="n">Loops closed</th><th class="n">Needing support</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td>${h(r.campus)}</td><td>${h(r.area)}</td><td>${h(r.programme)}</td><td class="n">${h(r.term)}</td><td class="n">${r.courses}</td><td class="n">${r.eligible}</td>
+        <td class="big">${num(r.avg_co)}<small>of 3</small></td><td class="big">${num(r.avg_po)}<small>of 3</small></td>
+        <td class="n">${num(r.co_met_pct,0)}%</td><td class="n">${num(r.po_met_pct,0)}%</td><td class="n">${r.loops_closed} / ${r.eligible}</td><td class="n">${num(r.support_pct,0)}%</td></tr>`).join("")}
+      </tbody></table>`;
+  }
+  function renderSubs(){
+    const rows=visibleRows();
+    $("#subCount").textContent=rows.length?`${rows.length} record${rows.length>1?"s":""}`:"";
+    $("#dlAll").disabled=!rows.length;
+    if(!rows.length){ $("#subs").innerHTML=`<div class="empty"><b>Nothing submitted yet for this selection.</b> Faculty submit from the Attainment and Reports tab in XLEAP with "Submit to X-Hub".</div>`; return; }
+    $("#subs").innerHTML=`<table><thead><tr><th>Campus</th><th>Course</th><th>Section</th><th>Faculty</th><th class="n">Term</th><th class="n">Students</th><th class="n">CO</th><th class="n">PO</th><th>Validation</th><th>Closing the loop</th><th>Submitted</th><th></th></tr></thead><tbody>
+      ${rows.map(r=>`<tr>
+        <td>${h(r.campus)}</td>
+        <td><b>${h(r.course_name)}</b>${r.course_code?`<br><span style="color:var(--muted);font-size:12px">${h(r.course_code)} &middot; ${h(r.programme)} ${h(r.batch||"")}</span>`:""}</td>
+        <td>${h(r.class_section)}</td>
+        <td>${h(r.record&&r.record.FacultyName||r.faculty_email)}</td>
+        <td class="n">${h(r.term)}</td><td class="n">${r.student_count??""}</td>
+        <td class="n">${num(r.avg_co)}</td><td class="n">${num(r.avg_po)}</td>
+        <td>${r.aggregation_eligible?`<span class="pill ok">Eligible</span>`:`<span class="pill warn">${h(r.validation_status||"Not eligible")}</span>`}</td>
+        <td>${h(r.closing_loop_status||"")}${r.closing_loop_complete?' <span class="pill ok">Closed</span>':""}</td>
+        <td>${when(r.submitted_at)} ${r.is_current?`<span class="pill">v${r.version}</span>`:`<span class="pill old">v${r.version}, superseded</span>`}</td>
+        <td><button class="rowbtn" data-id="${h(r.submission_id)}">CSV</button></td></tr>`).join("")}
+      </tbody></table>`;
+    document.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{ const r=ROWS.find(x=>x.submission_id===b.getAttribute("data-id")); downloadCSV([r],`${(r.record&&r.record.ExportFileName)||("XLEAP_"+r.record_key.replace(/[^A-Za-z0-9]+/g,"_"))}.csv`); });
+  }
+  function columnsFor(rows){
+    const cols=[]; const seen=new Set();
+    rows.forEach(r=>{ const c=(r.record_columns&&r.record_columns.length)?r.record_columns:Object.keys(r.record||{}); c.forEach(k=>{ if(!seen.has(k)){seen.add(k);cols.push(k);} }); });
+    return cols;
+  }
+  function csvCell(v){ if(v==null) return ""; const s=String(v); return /[",\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s; }
+  function downloadCSV(rows,name){
+    if(!rows||!rows.length) return;
+    const cols=columnsFor(rows);
+    const lines=[cols.join(",")].concat(rows.map(r=>cols.map(k=>csvCell((r.record||{})[k])).join(",")));
+    const blob=new Blob(["\ufeff"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+  }
+
+  const back=/[#?&](access_token|code)=/.test(location.hash+location.search);
+  sb.auth.getSession().then(({data})=>{ if(data&&data.session) boot(); else if(!back) gate("Sign in with your XIME Google account to see the institutional record.",true); });
+  sb.auth.onAuthStateChange((ev,session)=>{ if(session&&(ev==="SIGNED_IN"||ev==="INITIAL_SESSION")&&!ME) boot(); else if(ev==="INITIAL_SESSION"&&!session&&!ME&&!back) gate("Sign in with your XIME Google account to see the institutional record.",true); });
+  setTimeout(()=>{ if(!ME&&back) gate("Sign-in did not complete. Please try again.",true); },8000);
+})();
+</script>
+</body>
+</html>
