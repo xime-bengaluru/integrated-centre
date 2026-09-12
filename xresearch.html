@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Research · X-Research · XIME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#0D1F35;--gold:#C9A84C;--paper:#FAF8F3;--ink:#1c2a3a;--line:#e6e0d4;--muted:#6b7280;--card:#fff;
+--q1:#1f7a4d;--q2:#3f9d6d;--q3:#8bb08f;--q4:#c2b280;--wos:#4a6fa5;--bc:#9a7bb0;--abdc:#b08968;--red:#b23b3b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif}
+header{background:var(--navy);color:#fff;padding:22px 0}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.who{display:flex;align-items:center;gap:16px}
+.av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#e0c979);color:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700}
+.eyebrow{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.who h1{font-size:26px;font-weight:700;line-height:1.1}
+.who .meta{color:#c7d0dc;font-size:13px;margin-top:2px}
+.hstat{display:flex;gap:20px}.hstat div{text-align:center}
+.hstat .n{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:#fff;line-height:1}
+.hstat .l{font-size:10.5px;color:#9fb0c4;text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+.signout{background:none;border:1px solid #33445c;color:#c7d0dc;padding:6px 12px;border-radius:8px;font-family:inherit;font-size:12.5px;cursor:pointer}
+.verbs{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.verbrow{display:flex;gap:2px;flex-wrap:wrap}
+.verb{padding:13px 18px;background:none;border:none;font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.verb.active{color:var(--navy);border-bottom-color:var(--gold)}
+main{padding:26px 0 70px}
+.sec{display:none}.sec.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:18px}
+.card h2{font-size:23px;color:var(--navy);font-weight:700}
+.card .cap{color:var(--muted);font-size:13px;margin:2px 0 16px}
+.note{background:#fbf6e8;border:1px solid #ecdcae;border-left:3px solid var(--gold);border-radius:8px;padding:11px 15px;font-size:13px;color:#5b4e2e;margin-bottom:16px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form .full{grid-column:1/3}
+label{display:block;font-size:12.5px;font-weight:600;color:#3a4658;margin-bottom:5px}
+input,select,textarea{width:100%;font-family:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fdfcfa}
+textarea{min-height:60px;resize:vertical}
+.hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+.btn{background:var(--navy);color:#fff;border:none;font-family:inherit;font-weight:600;font-size:14px;padding:10px 20px;border-radius:9px;cursor:pointer}
+.btn.gold{background:var(--gold);color:var(--navy)}.btn.ghost{background:none;border:1px solid var(--line);color:var(--navy)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.typegrid{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:6px}
+.type{padding:7px 13px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;background:#fff;color:#3a4658}
+.type.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;color:#fff}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.work{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;position:relative}
+.cover{height:110px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:14px;text-align:center;padding:12px;background-size:cover;background-position:center}
+.work .body{padding:13px}.work .t{font-size:14px;font-weight:600;line-height:1.3;margin-bottom:7px}
+.work .m{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+.work .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.mini{font-size:11px;font-weight:600;padding:4px 9px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;color:#3a4658}
+.mini.on{background:var(--q1);color:#fff;border-color:var(--q1)}
+.feat{position:absolute;top:8px;left:9px;background:var(--gold);color:var(--navy);font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase}
+.stg{font-size:10.5px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:#f5f1e8;color:#3a4658}
+.plan{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:15px}
+.pcard h3{font-size:15px;color:var(--navy);font-family:'DM Sans';font-weight:700;margin-bottom:4px}
+.pbar{height:24px;background:#f1ede3;border-radius:7px;overflow:hidden;position:relative;margin-top:9px}
+.pbar i{display:block;height:100%;border-radius:7px}.pbar span{position:absolute;top:0;left:10px;line-height:24px;font-size:12px;font-weight:700;color:var(--navy)}
+.pushbar{background:linear-gradient(135deg,#132840,#0D1F35);color:#fff;border-radius:14px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.pushbar .small{color:#9fb0c4;font-size:12.5px;margin-top:3px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;opacity:0;transition:.3s;z-index:20}
+.toast.show{opacity:1}
+.gate{max-width:440px;margin:12vh auto;text-align:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:40px 32px}
+.gate h1{font-size:30px;color:var(--navy);margin-bottom:8px}.gate p{color:var(--muted);margin-bottom:20px}
+.empty{text-align:center;color:var(--muted);padding:36px;font-size:14px}
+@media(max-width:860px){.gallery{grid-template-columns:1fr 1fr}.form,.plan{grid-template-columns:1fr}.hstat{display:none}}
+</style></head><body>
+
+<div id="gate" class="gate" style="display:none">
+  <div class="eyebrow" style="color:var(--gold)">XIME · X-Research</div>
+  <h1>My Research</h1>
+  <p>Sign in with your XIME Google account to record and plan your research.</p>
+  <button class="btn gold" onclick="signIn()">Sign in with Google</button>
+</div>
+
+<div id="app" style="display:none">
+<header><div class="wrap"><div class="hrow">
+  <div class="who"><div class="av" id="ini"></div><div>
+    <div class="eyebrow">XIME · X-Research</div><h1 id="fname"></h1>
+    <div class="meta" id="fmeta"></div></div></div>
+  <div style="display:flex;align-items:center;gap:18px">
+    <div class="hstat" id="hstat"></div>
+    <button class="signout" onclick="signOut()">Sign out</button>
+  </div>
+</div></div></header>
+
+<div class="verbs"><div class="wrap"><div class="verbrow" id="verbs"></div></div></div>
+
+<main><div class="wrap">
+
+<section class="sec active" data-s="record">
+  <div class="card">
+    <h2>Record an activity</h2>
+    <div class="cap">Log any research work once. It lives here in X-Research through the year. At the half-year review you push the confirmed set into your APE.</div>
+    <div class="typegrid" id="types"></div>
+    <div class="form">
+      <div class="full"><label>Title</label><input id="f_title" placeholder="Title of the paper, project, patent or activity"></div>
+      <div><label>Journal / venue / body</label><input id="f_journal" placeholder="e.g. Journal of Retailing"></div>
+      <div><label>Co-authors</label><input id="f_coauthors" placeholder="Names, or NIL"></div>
+      <div><label>Month</label><input id="f_month" placeholder="e.g. April"></div>
+      <div><label>Year</label><input id="f_year" type="number" placeholder="2026"></div>
+      <div><label>Authorship</label><select id="f_category"><option>Faculty (solo)</option><option>Collaborative</option><option>Faculty + Students</option><option>Faculty + Research Scholar</option><option>International Collaborative</option></select></div>
+      <div><label>Indexing</label><select id="f_indexed"><option value="">Select</option><option>Scopus</option><option>WoS</option><option>ABDC only</option><option>Not indexed</option></select></div>
+      <div><label>Quartile / rating</label><select id="f_quartile"><option value="">NA</option><option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option></select></div>
+      <div><label>ABDC category</label><select id="f_abdc"><option value="">NA</option><option>A*</option><option>A</option><option>B</option><option>C</option></select></div>
+      <div><label>Stage</label><select id="f_stage"><option value="planned">Planned</option><option value="drafting">Drafting</option><option value="under_review">Under review</option><option value="published">Published</option></select></div>
+      <div><label>Research area</label><input id="f_area" placeholder="e.g. AI &amp; Machine Learning"></div>
+      <div class="full"><label>Evidence link (X-Register or Drive)</label><input id="f_evidence" placeholder="Paste a link. Files are not uploaded here."><div class="hint">The artifact stays in X-Register or Drive. Only the link is stored, per the no-hosting rule. Cover images are the one exception, added in Showcase.</div></div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:10px"><button class="btn gold" id="saveBtn" onclick="saveOutput()">Save to my record</button></div>
+  </div>
+</section>
+
+<section class="sec" data-s="show">
+  <div class="card">
+    <h2>My showcase</h2>
+    <div class="cap">Your research this year. Add a cover, mark the stage, flag when a piece is ready to push. Star nominates it for the research dean's project of the month.</div>
+    <div id="gallery" class="gallery"></div>
+    <div id="showEmpty" class="empty" style="display:none">Nothing recorded yet. Add your first item under Record.</div>
+  </div>
+</section>
+
+<section class="sec" data-s="plan">
+  <div class="card">
+    <h2>My research plan · <span id="planYear"></span></h2>
+    <div class="cap">Set your intent for the year. The bars fill from what you record, so the review reads planned against actual.</div>
+    <div class="plan" id="planBars"></div>
+    <div class="form">
+      <div><label>Planned total outputs</label><input id="p_total" type="number" min="0"></div>
+      <div><label>Planned Scopus-indexed</label><input id="p_scopus" type="number" min="0"></div>
+      <div><label>Planned top-tier (Q1/Q2)</label><input id="p_top" type="number" min="0"></div>
+      <div><label>Planned conferences</label><input id="p_conf" type="number" min="0"></div>
+      <div class="full"><label>Focus areas</label><input id="p_focus" placeholder="e.g. consumer AI adoption, sustainable finance"></div>
+      <div class="full"><label>One-line aspiration</label><input id="p_asp" placeholder="What you most want to achieve in research this year"></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn gold" onclick="savePlan()">Save plan</button></div>
+  </div>
+</section>
+
+<section class="sec" data-s="fund">
+  <div class="card">
+    <h2>Funding &amp; APC</h2>
+    <div class="cap">Request article processing support against a published paper. This opens the APC workflow, which routes by amount.</div>
+    <a class="btn gold" href="/apc.html" style="text-decoration:none;display:inline-block">Open APC workflow</a>
+    <div class="note" style="margin-top:16px">APC lives beside X-Research, not inside it. Your published outputs here are what you claim against there.</div>
+  </div>
+</section>
+
+<section class="sec" data-s="push">
+  <div class="card">
+    <h2>Push to APE</h2>
+    <div class="cap">At the half-year review, confirm your record is complete and push the published, ready items into your Annual Performance record.</div>
+    <div class="pushbar">
+      <div><div id="pushCount" style="font-family:'Cormorant Garamond';font-size:24px;font-weight:700"></div><div class="small" id="pushDetail"></div></div>
+      <button class="btn gold" id="pushBtn" onclick="pushToApe()">Push ready items to APE</button>
+    </div>
+    <div class="note" style="margin-top:14px">Only items marked <b>ready</b> and at stage <b>published</b> are pushed. Pushing again updates the APE record rather than duplicating it, so the two never drift apart.</div>
+  </div>
+</section>
+
+</div></main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ===== CONFIG =====
+const SUPABASE_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const AY = '2026-27';
+// ==================
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let ME = null, ROWS = [], PLAN = null, curType = 'journal';
+const TC={Q1:'var(--q1)',Q2:'var(--q2)',Q3:'var(--q3)',Q4:'var(--q4)',WoS:'var(--wos)'};
+const COVERS={Q1:'linear-gradient(135deg,#1f7a4d,#134e30)',Q2:'linear-gradient(135deg,#3f9d6d,#1f7a4d)',Q3:'linear-gradient(135deg,#8bb08f,#5f8a63)',Q4:'linear-gradient(135deg,#c2b280,#9a8a52)',WoS:'linear-gradient(135deg,#4a6fa5,#2d4a75)'};
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+function tierOf(r){if(r.sjr_quartile&&/^Q[1-4]$/.test(r.sjr_quartile))return r.sjr_quartile;if((r.indexed_in||'').toLowerCase().includes('wos'))return 'WoS';if((r.publication_type||'')==='book_chapter')return 'Book Chapter';if(r.abdc_category)return 'ABDC '+r.abdc_category;return '—';}
+
+async function signIn(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});}
+async function signOut(){await sb.auth.signOut();location.reload();}
+
+async function boot(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){document.getElementById('gate').style.display='block';return;}
+  const {data:who,error} = await sb.rpc('xr_whoami');
+  if(error||!who||!who.faculty_master_id){
+    document.getElementById('gate').style.display='block';
+    document.querySelector('#gate p').textContent='This account is not in the faculty directory. Contact the platform team.';
+    return;
+  }
+  ME = who;
+  document.getElementById('app').style.display='block';
+  document.getElementById('ini').textContent=(ME.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('fname').textContent=ME.name||ME.email;
+  document.getElementById('fmeta').textContent=[ME.subject_area||'Area not set', ME.campus, AY].filter(Boolean).join(' · ');
+  document.getElementById('planYear').textContent=AY;
+  buildTypes(); buildVerbs();
+  await loadAll();
+}
+
+function buildTypes(){
+  const T=[['journal','Journal paper'],['conference','Conference paper'],['book_chapter','Book chapter'],['book','Book'],['case','Case published'],['patent','Patent'],['phd_guiding','PhD guiding'],['editorial','Editorial role'],['sponsored_research','Sponsored research']];
+  document.getElementById('types').innerHTML=T.map((t,i)=>`<div class="type${i===0?' on':''}" data-v="${t[0]}">${t[1]}</div>`).join('');
+  document.querySelectorAll('.type').forEach(e=>e.onclick=()=>{document.querySelectorAll('.type').forEach(x=>x.classList.remove('on'));e.classList.add('on');curType=e.dataset.v;});
+}
+function buildVerbs(){
+  const V=[['record','Record'],['show','Showcase'],['plan','Plan'],['fund','Fund'],['push','Push to APE']];
+  document.getElementById('verbs').innerHTML=V.map((v,i)=>`<button class="verb${i===0?' active':''}" data-v="${v[0]}">${v[1]}</button>`).join('');
+  document.querySelectorAll('.verb').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.verb').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.sec').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');document.querySelector(`.sec[data-s="${b.dataset.v}"]`).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+}
+
+async function loadAll(){
+  const {data:rows} = await sb.from('xr_output').select('*').eq('academic_year',AY).order('created_at',{ascending:false});
+  ROWS = rows||[];
+  const {data:plan} = await sb.from('xr_plan').select('*').eq('academic_year',AY).maybeSingle();
+  PLAN = plan;
+  renderStats(); renderGallery(); renderPlan(); renderPush();
+}
+
+function renderStats(){
+  const scop=ROWS.filter(r=>(r.indexed_in||'').toLowerCase().includes('scopus')).length;
+  const top=ROWS.filter(r=>['Q1','Q2'].includes(r.sjr_quartile)).length;
+  document.getElementById('hstat').innerHTML=[[ROWS.length,'Recorded'],[scop,'Scopus'],[top,'Q1/Q2']].map(s=>`<div><div class="n">${s[0]}</div><div class="l">${s[1]}</div></div>`).join('');
+}
+
+function renderGallery(){
+  const g=document.getElementById('gallery');
+  document.getElementById('showEmpty').style.display=ROWS.length?'none':'block';
+  g.innerHTML=ROWS.map(r=>{
+    const t=tierOf(r);const cov=r.cover_url?`background-image:url('${r.cover_url}')`:`background:${COVERS[t]||'linear-gradient(135deg,#b08968,#8a6a4d)'}`;
+    const canFeat=ME.is_research_dean && ME.dean_campus===ME.campus;
+    return `<div class="work">
+      ${r.is_featured?'<div class="feat">Featured</div>':''}
+      <div class="cover" style="${cov}">${r.cover_url?'':r.title.slice(0,58)}</div>
+      <div class="body">
+        <div class="t">${r.title.slice(0,60)}${r.title.length>60?'…':''}</div>
+        <div class="m"><span class="pill" style="background:${TC[t]||'var(--abdc)'}">${t}</span> &nbsp;${r.research_category||''} · ${r.month||''} ${r.year||''}</div>
+        <div class="row">
+          <select class="mini" onchange="setStage('${r.id}',this.value)">
+            ${['planned','drafting','under_review','published'].map(s=>`<option value="${s}" ${r.stage===s?'selected':''}>${s.replace('_',' ')}</option>`).join('')}
+          </select>
+          <button class="mini ${r.ready?'on':''}" onclick="toggleReady('${r.id}',${!r.ready})">${r.ready?'ready ✓':'mark ready'}</button>
+          <label class="mini" style="cursor:pointer">cover<input type="file" accept="image/*" style="display:none" onchange="uploadCover('${r.id}',this.files[0])"></label>
+          ${canFeat?`<button class="mini" onclick="feature('${r.id}',${!r.is_featured})">${r.is_featured?'unfeature':'feature'}</button>`:''}
+        </div>
+        ${r.pushed_at?'<div class="stg" style="margin-top:8px;display:inline-block">in APE</div>':''}
+      </div></div>`;
+  }).join('');
+}
+
+function renderPlan(){
+  const scop=ROWS.filter(r=>(r.indexed_in||'').toLowerCase().includes('scopus')).length;
+  const top=ROWS.filter(r=>['Q1','Q2'].includes(r.sjr_quartile)).length;
+  const conf=ROWS.filter(r=>r.publication_type==='conference').length;
+  const P=PLAN||{planned_total:0,planned_scopus:0,planned_top_tier:0,planned_conferences:0};
+  const rows=[['Total outputs',P.planned_total,ROWS.length],['Scopus-indexed',P.planned_scopus,scop],['Top-tier (Q1/Q2)',P.planned_top_tier,top],['Conferences',P.planned_conferences,conf]];
+  document.getElementById('planBars').innerHTML=rows.map(([lbl,pl,ac])=>{
+    const pct=pl>0?Math.min(ac/pl*100,100):0;const met=pl>0&&ac>=pl;
+    return `<div class="pcard"><h3>${lbl}</h3><div class="hint">Planned ${pl||0} · recorded <b style="color:${met?'var(--q1)':'var(--navy)'}">${ac}</b>${met?' ✓':''}</div>
+    <div class="pbar"><i style="width:${pct}%;background:${met?'var(--q1)':'var(--q2)'}"></i><span>${ac} / ${pl||0}</span></div></div>`;
+  }).join('');
+  document.getElementById('p_total').value=P.planned_total||'';document.getElementById('p_scopus').value=P.planned_scopus||'';
+  document.getElementById('p_top').value=P.planned_top_tier||'';document.getElementById('p_conf').value=P.planned_conferences||'';
+  document.getElementById('p_focus').value=P.focus_areas||'';document.getElementById('p_asp').value=P.aspiration||'';
+}
+
+function renderPush(){
+  const ready=ROWS.filter(r=>r.ready&&r.stage==='published');
+  const pushed=ROWS.filter(r=>r.pushed_at).length;
+  document.getElementById('pushCount').textContent=`${ready.length} ready to push`;
+  document.getElementById('pushDetail').textContent=`${pushed} already in your APE record for ${AY}`;
+  document.getElementById('pushBtn').disabled=ready.length===0;
+}
+
+async function saveOutput(){
+  const title=document.getElementById('f_title').value.trim();
+  if(!title){toast('Title is required');return;}
+  document.getElementById('saveBtn').disabled=true;
+  const row={faculty_master_id:ME.faculty_master_id,academic_year:AY,publication_type:curType,title,
+    journal_name:val('f_journal'),co_authors:val('f_coauthors'),month:val('f_month'),
+    year:parseInt(document.getElementById('f_year').value)||null,research_category:val('f_category'),
+    indexed_in:val('f_indexed'),sjr_quartile:val('f_quartile'),abdc_category:val('f_abdc'),
+    stage:document.getElementById('f_stage').value,research_area:val('f_area'),evidence_url:val('f_evidence')};
+  const {error}=await sb.from('xr_output').insert(row);
+  document.getElementById('saveBtn').disabled=false;
+  if(error){toast('Save failed: '+error.message);return;}
+  ['f_title','f_journal','f_coauthors','f_month','f_year','f_area','f_evidence'].forEach(id=>document.getElementById(id).value='');
+  toast('Recorded'); await loadAll();
+}
+function val(id){return document.getElementById(id).value.trim()||null;}
+
+async function setStage(id,stage){const {error}=await sb.from('xr_output').update({stage}).eq('id',id);if(error){toast(error.message);}else{await loadAll();}}
+async function toggleReady(id,ready){const {error}=await sb.from('xr_output').update({ready}).eq('id',id);if(error){toast(error.message);}else{await loadAll();}}
+
+async function uploadCover(id,file){
+  if(!file)return;
+  const path=`${ME.faculty_master_id}/${id}-${Date.now()}.${(file.name.split('.').pop()||'jpg')}`;
+  const {error:upErr}=await sb.storage.from('xr-covers').upload(path,file,{upsert:true});
+  if(upErr){toast('Upload failed: '+upErr.message);return;}
+  const {data}=sb.storage.from('xr-covers').getPublicUrl(path);
+  const {error}=await sb.from('xr_output').update({cover_url:data.publicUrl}).eq('id',id);
+  if(error){toast(error.message);}else{toast('Cover added');await loadAll();}
+}
+
+async function feature(id,on){
+  const month=on?prompt('Feature for which month?','September 2026'):null;
+  if(on&&!month)return;
+  const {error}=await sb.rpc('xr_set_featured',{p_output_id:id,p_month:month,p_on:on});
+  if(error){toast(error.message);}else{toast(on?'Featured':'Unfeatured');await loadAll();}
+}
+
+async function savePlan(){
+  const row={faculty_master_id:ME.faculty_master_id,academic_year:AY,
+    planned_total:num('p_total'),planned_scopus:num('p_scopus'),planned_top_tier:num('p_top'),
+    planned_conferences:num('p_conf'),focus_areas:val('p_focus'),aspiration:val('p_asp')};
+  const {error}=await sb.from('xr_plan').upsert(row,{onConflict:'faculty_master_id,academic_year'});
+  if(error){toast('Plan save failed: '+error.message);}else{toast('Plan saved');await loadAll();}
+}
+function num(id){return parseInt(document.getElementById(id).value)||0;}
+
+async function pushToApe(){
+  const ready=ROWS.filter(r=>r.ready&&r.stage==='published').length;
+  if(!confirm(`Push ${ready} published item(s) into your APE record for ${AY}? You can re-push after edits; it updates rather than duplicates.`))return;
+  document.getElementById('pushBtn').disabled=true;
+  const {data,error}=await sb.rpc('xr_push_to_ape',{p_faculty_master_id:ME.faculty_master_id,p_academic_year:AY});
+  if(error){toast('Push failed: '+error.message);document.getElementById('pushBtn').disabled=false;return;}
+  toast(`${data} item(s) pushed to APE`); await loadAll();
+}
+
+sb.auth.onAuthStateChange((_e,_s)=>{});
+boot();
+</script>
+</body></html>
