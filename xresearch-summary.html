@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Portal · X-Research · XIME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#0D1F35;--gold:#C9A84C;--paper:#FAF8F3;--ink:#1c2a3a;--line:#e6e0d4;--muted:#6b7280;--card:#fff;
+--q1:#1f7a4d;--q2:#3f9d6d;--q3:#8bb08f;--q4:#c2b280;--wos:#4a6fa5;--bc:#9a7bb0;--abdc:#b08968;--other:#c3bdb0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+.wrap{max-width:1220px;margin:0 auto;padding:0 28px}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif}
+header{background:var(--navy);color:#fff;padding:26px 0 22px}
+header .top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600}
+header h1{font-size:38px;font-weight:700;line-height:1.05;margin-top:4px}
+header .sub{color:#c7d0dc;font-size:14.5px;margin-top:7px;max-width:640px}
+.ctrl{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.scope{background:#132840;border:1px solid #33445c;color:#c7d0dc;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600}
+.scope b{color:var(--gold)}
+select.year{background:#132840;color:#fff;border:1px solid #33445c;border-radius:8px;padding:7px 12px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+.signout{background:none;border:1px solid #33445c;color:#9fb0c4;padding:6px 12px;border-radius:8px;font-family:inherit;font-size:12px;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:22px}
+.kpi{background:#132840;border:1px solid #26384f;border-radius:12px;padding:14px 16px}
+.kpi .n{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:#fff;line-height:1}
+.kpi .l{font-size:11.5px;color:#9fb0c4;text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+.kpi .s{font-size:12px;color:var(--gold);margin-top:3px;min-height:15px}
+main{padding:30px 0 60px}
+.note{background:#fbf6e8;border:1px solid #ecdcae;border-left:3px solid var(--gold);border-radius:8px;padding:12px 16px;font-size:13.5px;color:#5b4e2e;margin:0 0 24px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:22px}
+.tab{padding:10px 16px;border:none;background:none;font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:var(--navy);border-bottom-color:var(--gold)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:20px}
+.card h2{font-size:24px;font-weight:700;color:var(--navy)}
+.card .cap{font-size:13px;color:var(--muted);margin-top:2px;margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:160px 1fr 42px;align-items:center;gap:12px}
+.bar .lbl{font-size:13.5px;font-weight:500;text-align:right;color:#3a4658}
+.bar .track{background:#f1ede3;border-radius:6px;height:22px;overflow:hidden}
+.bar .fill{height:100%;border-radius:6px;background:var(--navy);min-width:2px}
+.bar .val{font-size:13.5px;font-weight:700;color:var(--navy)}
+.trend{display:flex;align-items:flex-end;gap:6px;height:170px;padding-top:10px;border-bottom:1px solid var(--line)}
+.tcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px}
+.tcol .tb{width:70%;background:var(--gold);border-radius:5px 5px 0 0;min-height:3px}
+.tcol .tn{font-size:12px;font-weight:700;color:var(--navy)}
+.tcol .tm{font-size:11px;color:var(--muted);margin-top:6px;white-space:nowrap}
+.roll{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rollitem{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:#f9f6ef;border:1px solid var(--line);border-radius:9px}
+.rollitem .nm{font-weight:600;font-size:14px}
+.rollitem .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--navy);color:#fff}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.controls input,.controls select{font-family:inherit;font-size:13.5px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.controls input{flex:1;min-width:200px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:9px 10px;background:#f5f1e8;color:var(--navy);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--line);cursor:pointer;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid #f0ece2;vertical-align:top}
+tr:hover td{background:#fbfaf6}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;color:#fff}
+.matrix td,.matrix th{text-align:center}.matrix td:first-child,.matrix th:first-child{text-align:left;font-weight:600}
+.heat{font-weight:700;border-radius:5px}
+.small{font-size:12px;color:var(--muted)}
+.gate{max-width:440px;margin:12vh auto;text-align:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:40px 32px}
+.gate h1{font-size:30px;color:var(--navy);margin-bottom:8px}.gate p{color:var(--muted);margin-bottom:20px}
+.btn{background:var(--gold);color:var(--navy);border:none;font-family:inherit;font-weight:600;font-size:14px;padding:11px 22px;border-radius:9px;cursor:pointer}
+.loading{text-align:center;color:var(--muted);padding:50px;font-size:14px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2,.roll{grid-template-columns:1fr}.bar{grid-template-columns:120px 1fr 38px}}
+</style></head><body>
+
+<div id="gate" class="gate" style="display:none">
+  <div class="eyebrow" style="color:var(--gold)">XIME · X-Research</div>
+  <h1>Research Portal</h1>
+  <p>Sign in with your XIME Google account to view the research summary.</p>
+  <button class="btn" onclick="signIn()">Sign in with Google</button>
+</div>
+
+<div id="app" style="display:none">
+<header><div class="wrap">
+  <div class="top">
+    <div>
+      <div class="eyebrow">XIME · X-Research</div>
+      <h1>Research Portal</h1>
+      <div class="sub">Institutional view of faculty research output, drawn live from the evaluation ledger.</div>
+    </div>
+    <div class="ctrl">
+      <div class="scope" id="scope"></div>
+      <select class="year" id="year" onchange="onYear()"><option value="2025-26">AY 2025-26</option><option value="2026-27">AY 2026-27</option></select>
+      <button class="signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+</div></header>
+
+<main><div class="wrap">
+  <div class="note" id="provNote"><b>Domain</b> is each faculty member's area affiliation from the directory. Where it reads <b>Area not set</b>, that field is still blank in the directory and is a one-time backfill. <b>Research area</b> is auto-clustered from titles and is provisional until faculty confirm the tags.</div>
+  <div id="loading" class="loading">Loading the ledger...</div>
+  <div id="content" style="display:none">
+  <div class="tabs" id="tabs"></div>
+
+  <div class="panel active" data-p="overall">
+    <div class="grid2">
+      <div class="card"><h2>Output by quality tier</h2><div class="cap">Indexed and quartile-rated work. The accreditation and NBA/NAAC narrative.</div><div class="bars" id="tierBars"></div></div>
+      <div class="card"><h2>Nature of authorship</h2><div class="cap">Solo, collaborative, with students and research scholars, international.</div><div class="bars" id="catBars"></div></div>
+    </div>
+    <div class="card"><h2>Publication rhythm across the year</h2><div class="cap">Monthly count. Steady or bunched near review windows.</div><div class="trend" id="trend"></div></div>
+  </div>
+
+  <div class="panel" data-p="domain">
+    <div class="card"><h2>By domain</h2><div class="cap">Faculty academic area, from the People Directory.</div><div class="bars" id="domBars"></div></div>
+    <div class="card"><h2>Domain by quality tier</h2><div class="cap">Where the strong quartile work sits, and where a domain publishes volume without tier.</div><div style="overflow-x:auto"><table class="matrix" id="domMatrix"></table></div></div>
+  </div>
+
+  <div class="panel" data-p="area">
+    <div class="card"><h2>By research area <span class="pill" style="background:var(--abdc)">AUTO-CLUSTERED</span></h2><div class="cap">Theme of the paper, clustered from titles. Distinct from domain.</div><div class="bars" id="areaBars"></div></div>
+  </div>
+
+  <div class="panel" data-p="campus">
+    <div class="card"><h2>By campus</h2><div class="cap">What your access shows. The President sees all three; a campus dean sees their own.</div><div class="bars" id="campusBars"></div>
+    <div class="card" style="margin:16px 0 0;background:#f9f6ef"><h2 style="font-size:19px">Campus by quality tier</h2><div style="overflow-x:auto;margin-top:10px"><table class="matrix" id="campusMatrix"></table></div></div></div>
+  </div>
+
+  <div class="panel" data-p="roll">
+    <div class="card"><h2>Top-quartile honour roll</h2><div class="cap">Faculty with Q1 or Q2 work this year, computed live.</div><div class="roll" id="roll"></div></div>
+  </div>
+
+  <div class="panel" data-p="ledger">
+    <div class="card"><h2>Full publication ledger</h2><div class="cap">Every record in your scope. Search, filter, sort.</div>
+      <div class="controls"><input id="q" placeholder="Search title, faculty, journal..."><select id="fTier"><option value="">All tiers</option></select><select id="fCampus"><option value="">All campuses</option></select><select id="fArea"><option value="">All research areas</option></select></div>
+      <div style="overflow-x:auto"><table id="ledger"></table></div>
+      <div class="small" id="count" style="margin-top:10px"></div>
+    </div>
+  </div>
+  </div>
+</div></main>
+</div>
+
+<script>
+// ===== CONFIG =====
+const SUPABASE_URL='https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+// ==================
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let R=[], YEAR='2025-26';
+const TIER_ORDER=['Q1','Q2','Q3','Q4','WoS','Book Chapter','ABDC A','ABDC B','ABDC C','Conference','Scopus (unrated)','Other'];
+const TIER_COLOR={Q1:'var(--q1)',Q2:'var(--q2)',Q3:'var(--q3)',Q4:'var(--q4)',WoS:'var(--wos)','Book Chapter':'var(--bc)','ABDC A':'var(--abdc)','ABDC B':'var(--abdc)','ABDC C':'var(--abdc)',Conference:'#7c8aa0','Scopus (unrated)':'#8a97a8',Other:'var(--other)'};
+const MONTH_ORDER=['April','May','June','July','August','Sept','Oct','Nov','Dec','Jan','Feb','March'];
+const mkey=m=>{m=(m||'').trim();const a={'Sep':'Sept','September':'Sept','Jun':'June','Jul':'July','Aug':'August','Apr':'April','Mar':'March'};return a[m]||m;};
+const AREA=[['Sustainability & ESG',/\b(esg|sustainab|green|eco-?design|life cycle|environment|csr|corporate social)\b/],
+['AI & Machine Learning',/\b(artificial intelligence|generative ai|\bai\b|machine learning|deep learning|neuro-?symbolic|predictive analytics|explainable)\b/],
+['Finance & Investment',/\b(invest|financ|equity|ipo|loan|distress|startup|funding|valuation|banking|macroeconom|gdp|fdi|foreign direct)\b/],
+['Marketing & Consumer',/\b(brand|consumer|marketing|advertis|purchase|nostalgia|influencer|customer loyalt|search engine)\b/],
+['HR, OB & Leadership',/\b(leadership|layoff|well-?being|work-?life|recruitment|emotional intelligence|queen bee|stress|competency|\bjob\b)\b/],
+['Operations & Analytics',/\b(six sigma|\bdea\b|forecast|design science|systems framework|numerical method|statistical model|bioanalytical|federated)\b/],
+['Economy & Industry',/\b(economic|industry|cement|automobile|tourism|expenditure|brics|spin-?off|family firm|private equity|euro)\b/],
+['Education & Pedagogy',/\b(student|pgdm|leisure curriculum|education)\b/]];
+
+function signIn(){sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});}
+function signOut(){sb.auth.signOut().then(()=>location.reload());}
+
+function tierOf(r){const q=r.sjr_quartile||'';if(/^Q[1-4]$/.test(q))return q;const idx=(r.indexed_in||'').toLowerCase();if(idx.includes('wos')||idx.includes('web of science'))return 'WoS';if(r.publication_type==='book_chapter')return 'Book Chapter';if(r.publication_type==='conference')return 'Conference';const a=(r.abdc_category||'').replace('*','');if(['A','B','C'].includes(a))return 'ABDC '+a;if(idx.includes('scopus'))return 'Scopus (unrated)';return 'Other';}
+function areaOf(r){const t=((r.title||'')+' '+(r.journal_name||'')).toLowerCase();for(const[n,p]of AREA)if(p.test(t))return n;return 'Other / General';}
+function catOf(r){let c=(r.research_category||'').replace(/"/g,'').replace(/&/g,'and').replace(/\s+/g,' ').trim();const m={'Collaborative Research':'Collaborative','Faculty and Students':'Faculty + Students','Faculty and Research Scholar':'Faculty + Research Scholar','International Collaborative Research':'International Collaborative','Faculty':'Faculty (solo)'};return m[c]||c||'Unspecified';}
+
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){document.getElementById('gate').style.display='block';return;}
+  document.getElementById('app').style.display='block';
+  const {data:scope}=await sb.rpc('xr_ledger_scope');
+  document.getElementById('scope').innerHTML='Showing <b>'+(scope||'your scope')+'</b>';
+  await load();
+}
+async function load(){
+  document.getElementById('loading').style.display='block';
+  document.getElementById('content').style.display='none';
+  const {data,error}=await sb.rpc('xr_ledger',{p_academic_year:YEAR});
+  if(error){document.getElementById('loading').textContent='Could not load: '+error.message;return;}
+  R=(data||[]).map(r=>({...r,tier:tierOf(r),area:areaOf(r),category:catOf(r)}));
+  document.getElementById('loading').style.display='none';
+  document.getElementById('content').style.display='block';
+  renderAll();
+}
+function onYear(){YEAR=document.getElementById('year').value;load();}
+
+const count=f=>{const m={};R.forEach(r=>{const k=f(r);m[k]=(m[k]||0)+1});return m;};
+const uniq=k=>[...new Set(R.map(r=>r[k]))];
+function bars(el,map,order,colorFn){const keys=order?order.filter(k=>map[k]):Object.keys(map).sort((a,b)=>map[b]-map[a]);const max=Math.max(...keys.map(k=>map[k]),1);document.getElementById(el).innerHTML=keys.map(k=>`<div class="bar"><div class="lbl">${k}</div><div class="track"><div class="fill" style="width:${map[k]/max*100}%;background:${colorFn?colorFn(k):'var(--navy)'}"></div></div><div class="val">${map[k]}</div></div>`).join('');}
+
+function renderAll(){
+  if(!R.length){document.getElementById('kpis').innerHTML='<div class="kpi" style="grid-column:1/7"><div class="l">No records in this scope for '+YEAR+' yet</div></div>';['tierBars','catBars','domBars','areaBars','campusBars','roll'].forEach(id=>document.getElementById(id).innerHTML='');document.getElementById('trend').innerHTML='';document.getElementById('domMatrix').innerHTML='';document.getElementById('campusMatrix').innerHTML='';buildTabs();renderLedger();return;}
+  const scopus=R.filter(r=>(r.indexed_in||'').toLowerCase().includes('scopus')).length;
+  const q12=R.filter(r=>['Q1','Q2'].includes(r.tier)).length;
+  const wos=R.filter(r=>r.tier==='WoS').length;
+  const fac=new Set(R.map(r=>r.faculty)).size;
+  const camp=new Set(R.map(r=>r.campus)).size;
+  const kpi=[['Publications',R.length,''],['Faculty publishing',fac,''],['Scopus-indexed',scopus,Math.round(scopus/R.length*100)+'% of output'],['Top-tier (Q1+Q2)',q12,'flagship quality'],['Web of Science',wos,''],['Campuses',camp,'in your view']];
+  document.getElementById('kpis').innerHTML=kpi.map(k=>`<div class="kpi"><div class="n">${k[1]}</div><div class="l">${k[0]}</div><div class="s">${k[2]||''}</div></div>`).join('');
+  bars('tierBars',count(r=>r.tier),TIER_ORDER,k=>TIER_COLOR[k]);
+  bars('catBars',count(r=>r.category));
+  bars('domBars',count(r=>r.domain));
+  bars('areaBars',count(r=>r.area));
+  bars('campusBars',count(r=>r.campus),null,()=>'var(--gold)');
+  const tm=count(r=>mkey(r.month));const tOrder=MONTH_ORDER.filter(m=>tm[m]);const tmax=Math.max(...Object.values(tm),1);
+  document.getElementById('trend').innerHTML=tOrder.map(m=>`<div class="tcol"><div class="tn">${tm[m]}</div><div class="tb" style="height:${tm[m]/tmax*120}px"></div><div class="tm">${m}</div></div>`).join('');
+  matrix('domMatrix','domain');
+  matrix('campusMatrix','campus');
+  const rollm={};R.forEach(r=>{if(['Q1','Q2'].includes(r.tier))(rollm[r.faculty]=rollm[r.faculty]||[]).push(r.tier);});
+  const items=Object.entries(rollm).sort((a,b)=>{const s=x=>x.filter(t=>t==='Q1').length*10+x.length;return s(b[1])-s(a[1]);});
+  document.getElementById('roll').innerHTML=items.length?items.map(([f,ts])=>{const q1=ts.filter(t=>t==='Q1').length,q2=ts.filter(t=>t==='Q2').length;const b=[q1?`Q1 ×${q1}`:'',q2?`Q2 ×${q2}`:''].filter(Boolean).join(' · ');return `<div class="rollitem"><div class="nm">${f}</div><div class="badge">${b}</div></div>`;}).join(''):'<div class="small">No Q1 or Q2 work in this scope yet.</div>';
+  buildTabs();renderLedger();
+}
+function matrix(el,dim){const keys=[...new Set(R.map(r=>r[dim]))].sort();const tiers=['Q1','Q2','Q3','Q4','WoS','Book Chapter','ABDC'];const cell=(d,t)=>R.filter(r=>r[dim]===d&&(t==='ABDC'?r.tier.startsWith('ABDC'):r.tier===t)).length;let h='<tr><th>'+(dim==='domain'?'Domain':'Campus')+'</th>'+tiers.map(t=>`<th>${t}</th>`).join('')+'<th>Total</th></tr>';keys.forEach(d=>{const tot=R.filter(r=>r[dim]===d).length;h+=`<tr><td>${d}</td>`+tiers.map(t=>{const v=cell(d,t);const op=v?0.12+Math.min(v,6)/6*0.55:0;return `<td class="heat" style="background:rgba(201,168,76,${op})">${v||''}</td>`;}).join('')+`<td style="font-weight:700">${tot}</td></tr>`;});document.getElementById(el).innerHTML=h;}
+
+let sortKey='faculty',sortDir=1;
+function renderLedger(){
+  const fTier=document.getElementById('fTier'),fCampus=document.getElementById('fCampus'),fArea=document.getElementById('fArea');
+  fTier.innerHTML='<option value="">All tiers</option>'+TIER_ORDER.filter(t=>count(r=>r.tier)[t]).map(t=>`<option>${t}</option>`).join('');
+  fCampus.innerHTML='<option value="">All campuses</option>'+uniq('campus').sort().map(c=>`<option>${c}</option>`).join('');
+  fArea.innerHTML='<option value="">All research areas</option>'+uniq('area').sort().map(a=>`<option>${a}</option>`).join('');
+  const draw=()=>{const term=document.getElementById('q').value.toLowerCase();let rows=R.filter(r=>(!fTier.value||r.tier===fTier.value)&&(!fCampus.value||r.campus===fCampus.value)&&(!fArea.value||r.area===fArea.value)&&(!term||((r.title||'')+r.faculty+(r.journal_name||'')).toLowerCase().includes(term)));
+    rows.sort((a,b)=>{let x=a[sortKey],y=b[sortKey];if(typeof x==='string'){x=x.toLowerCase();y=(y||'').toLowerCase();}return (x>y?1:x<y?-1:0)*sortDir;});
+    const cols=[['faculty','Faculty'],['title','Title'],['campus','Campus'],['domain','Domain'],['journal_name','Journal'],['tier','Tier'],['month','Month']];
+    let h='<tr>'+cols.map(c=>`<th data-k="${c[0]}">${c[1]}</th>`).join('')+'</tr>';
+    h+=rows.map(r=>`<tr><td style="white-space:nowrap">${r.faculty}</td><td style="max-width:320px">${r.title||''}</td><td>${r.campus}</td><td>${r.domain}</td><td style="max-width:170px;color:var(--muted)">${r.journal_name||''}</td><td><span class="pill" style="background:${TIER_COLOR[r.tier]||'var(--abdc)'}">${r.tier}</span></td><td>${r.month||''} ${r.year||''}</td></tr>`).join('');
+    document.getElementById('ledger').innerHTML=h;
+    document.getElementById('count').textContent=`Showing ${rows.length} of ${R.length} publications`;
+    document.querySelectorAll('#ledger th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(k===sortKey)sortDir*=-1;else{sortKey=k;sortDir=1;}draw();});
+  };
+  document.getElementById('q').oninput=draw;[fTier,fCampus,fArea].forEach(e=>e.onchange=draw);draw();
+}
+function buildTabs(){
+  const T=[['overall','Overall'],['domain','By Domain'],['area','By Research Area'],['campus','By Campus'],['roll','Honour Roll'],['ledger','Full Ledger']];
+  const el=document.getElementById('tabs');
+  if(el.dataset.built)return;el.dataset.built='1';
+  el.innerHTML=T.map((t,i)=>`<button class="tab${i===0?' active':''}" data-t="${t[0]}">${t[1]}</button>`).join('');
+  el.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{el.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelector(`.panel[data-p="${b.dataset.t}"]`).classList.add('active');});
+}
+boot();
+</script>
+</body></html>
