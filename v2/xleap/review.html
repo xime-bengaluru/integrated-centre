@@ -144,7 +144,7 @@
     const ay=$("#ay").value;
     const [p,s]=await Promise.all([
       sb.rpc("xl_institute_summary",{p_academic_year:ay}),
-      sb.from("xl_submission").select("submission_id,record_key,version,is_current,faculty_email,campus,area,programme,batch,term,course_code,course_name,class_section,student_count,aggregation_eligible,validation_status,overall_validity,avg_co,avg_po,co_met_pct,po_met_pct_of_mapped,students_needing_support,closing_loop_status,closing_loop_complete,submitted_at,record,record_columns").eq("academic_year",ay).order("submitted_at",{ascending:false})
+      sb.from("xl_submission").select("submission_id,record_key,version,is_current,faculty_email,campus,area,programme,batch,term,course_code,course_name,class_section,student_count,aggregation_eligible,validation_status,overall_validity,avg_co,avg_po,co_met_pct,po_met_pct_of_mapped,students_needing_support,closing_loop_status,closing_loop_complete,submitted_at,co_attainment,po_attainment,co_po_mapping,record,record_columns").eq("academic_year",ay).order("submitted_at",{ascending:false})
     ]);
     PIVOT=p.data||[]; ROWS=s.data||[];
     if(p.error) console.error(p.error); if(s.error) console.error(s.error);
@@ -194,7 +194,7 @@
         <td>${h(r.campus)}</td>
         <td><b>${h(r.course_name)}</b>${r.course_code?`<br><span style="color:var(--muted);font-size:12px">${h(r.course_code)} &middot; ${h(r.programme)} ${h(r.batch||"")}</span>`:""}</td>
         <td>${h(r.class_section)}</td>
-        <td>${h(r.record&&r.record.FacultyName||r.faculty_email)}</td>
+        <td>${h(r.record&&(r.record.Faculty||r.record.FacultyName)||r.faculty_email)}</td>
         <td class="n">${h(r.term)}</td><td class="n">${r.student_count??""}</td>
         <td>${chips(r.co_attainment,coKeys(r))}</td><td>${chips(r.po_attainment,POS)}</td>
         <td>${r.aggregation_eligible?`<span class="pill ok">Eligible</span>`:`<span class="pill warn">${h(r.validation_status||"Not eligible")}</span>`}</td>
