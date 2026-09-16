@@ -95,10 +95,10 @@
     <button class="btn primary" id="dlAll">Download all as CSV</button>
   </div>
 
-  <h2>Attainment by campus, area, programme and term <small>current, aggregation-eligible records only</small></h2>
+  <h2>Course outcome attainment <small>one row per course and class; current, aggregation-eligible records only</small></h2>
   <div id="pivot"></div>
 
-  <h2>Programme outcome attainment by batch <small>all terms submitted so far, eligible records only</small></h2>
+  <h2>Programme outcome attainment <small>by term, with the batch total across all terms submitted so far</small></h2>
   <div id="batch"></div>
 
   <h2>Submissions <small id="subCount"></small></h2>
@@ -160,27 +160,30 @@
   function poCells(avgs){ return avgs.map(v=>`<td class="n po">${v==null?'<span style="color:var(--muted)">N/M</span>':num(v)}</td>`).join(""); }
   function renderPivot(){
     const c=$("#campus").value, t=$("#term").value;
-    const rows=PIVOT.filter(r=>(!c||r.campus===c)&&(!t||String(r.term)===t));
     const elig=ROWS.filter(r=>r.is_current&&r.aggregation_eligible&&(!c||r.campus===c)&&(!t||String(r.term)===t));
-    if(!rows.length){ $("#pivot").innerHTML=`<div class="empty"><b>No eligible records yet for this selection.</b> The table fills as faculty submit course records that pass XLEAP's validation.</div>`; return; }
-    $("#pivot").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Area</th><th>Programme</th><th class="n">Term</th><th class="n">Courses</th><th class="n">Eligible</th><th class="n">CO avg</th><th class="n">PO avg</th>${POS.map(p=>`<th class="n po">${p}</th>`).join("")}<th class="n">Loops closed</th><th class="n">Needing support</th></tr></thead><tbody>
-      ${rows.map(r=>{ const grp=elig.filter(x=>x.campus===r.campus&&x.area===r.area&&x.programme===r.programme&&String(x.term)===String(r.term));
-        return `<tr><td>${h(r.campus)}</td><td>${h(r.area)}</td><td>${h(r.programme)}</td><td class="n">${h(r.term)}</td><td class="n">${r.courses}</td><td class="n">${r.eligible}</td>
-        <td class="big">${num(r.avg_co)}<small>of 3</small></td><td class="big">${num(r.avg_po)}<small>of 3</small></td>${poCells(poAverages(grp))}
-        <td class="n">${r.loops_closed} / ${r.eligible}</td><td class="n">${num(r.support_pct,0)}%</td></tr>`; }).join("")}
+    if(!elig.length){ $("#pivot").innerHTML=`<div class="empty"><b>No eligible records yet for this selection.</b> The table fills as faculty submit course records that pass XLEAP's validation.</div>`; $("#batch").innerHTML=""; return; }
+    const maxCo=Math.max(...elig.map(r=>Object.keys(r.co_attainment||{}).length),1);
+    const COS=Array.from({length:maxCo},(_,i)=>"CO"+(i+1));
+    const cell=(x)=>{ if(!x) return `<td class="n po"></td>`; const v=x.value; const st=String(x.status||""); const cls=/gap/i.test(st)?' style="color:#8A1C1C;font-weight:600"':""; return `<td class="n po"${cls}>${(v===""||v==null)?"":num(v)}</td>`; };
+    const sorted=elig.slice().sort((a,b)=>(a.campus+a.programme+String(a.term).padStart(2,"0")+a.course_name).localeCompare(b.campus+b.programme+String(b.term).padStart(2,"0")+b.course_name));
+    $("#pivot").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Programme</th><th class="n">Term</th><th>Course</th><th>Section</th>${COS.map(co=>`<th class="n po">${co}</th>`).join("")}<th class="n">CO avg</th><th class="n">COs met</th><th class="n">Needing support</th></tr></thead><tbody>
+      ${sorted.map(r=>`<tr><td>${h(r.campus)}</td><td>${h(r.programme)} ${h(r.batch||"")}</td><td class="n">${h(r.term)}</td><td><b>${h(r.course_name)}</b></td><td>${h(r.class_section)}</td>${COS.map(co=>cell(r.co_attainment&&r.co_attainment[co])).join("")}<td class="big">${num(r.avg_co)}<small>of 3</small></td><td class="n">${r.co_met_count??""} / ${r.co_count??""}</td><td class="n">${r.students_needing_support??""} / ${r.student_count??""}</td></tr>`).join("")}
       </tbody></table>
-      <p class="note">PO columns are the average across the eligible courses in that row, weighted by nothing but course count; N/M means no course in the row maps to that PO. The term view is diagnostic. Programme PO attainment is read across the full programme in the table below.</p>`;
+      <p class="note">Course outcomes are specific to each course, so they are shown per course and never averaged across courses. A value in red is below the target of 2.0.</p>`;
     renderBatch(elig);
   }
   function renderBatch(elig){
     const groups={};
     elig.forEach(r=>{ const k=[r.campus,r.programme,r.batch||""].join("|"); (groups[k]=groups[k]||{campus:r.campus,programme:r.programme,batch:r.batch||"",rows:[]}).rows.push(r); });
     const list=Object.values(groups).sort((a,b)=>(a.campus+a.programme+a.batch).localeCompare(b.campus+b.programme+b.batch));
-    if(!list.length){ $("#batch").innerHTML=""; return; }
-    $("#batch").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Programme</th><th>Batch</th><th class="n">Terms covered</th><th class="n">Courses</th>${POS.map(p=>`<th class="n po">${p}</th>`).join("")}</tr></thead><tbody>
-      ${list.map(g=>{ const terms=[...new Set(g.rows.map(r=>String(r.term)))].sort().join(", "); return `<tr><td>${h(g.campus)}</td><td>${h(g.programme)}</td><td>${h(g.batch)}</td><td class="n">${h(terms)}</td><td class="n">${g.rows.length}</td>${poCells(poAverages(g.rows))}</tr>`; }).join("")}
+    const avg=(rows)=>{ const v=rows.map(r=>Number(r.avg_po)).filter(x=>!isNaN(x)); return v.length?v.reduce((a,b)=>a+b,0)/v.length:null; };
+    $("#batch").innerHTML=`<table class="ledger"><thead><tr><th>Campus</th><th>Programme</th><th>Batch</th><th class="n">Term</th><th class="n">Courses</th>${POS.map(p=>`<th class="n po">${p}</th>`).join("")}<th class="n">PO avg</th></tr></thead><tbody>
+      ${list.map(g=>{ const terms=[...new Set(g.rows.map(r=>String(r.term)))].sort((a,b)=>Number(a)-Number(b));
+        const termRows=terms.map(t=>{ const rs=g.rows.filter(r=>String(r.term)===t); return `<tr><td>${h(g.campus)}</td><td>${h(g.programme)}</td><td>${h(g.batch)}</td><td class="n">${h(t)}</td><td class="n">${rs.length}</td>${poCells(poAverages(rs))}<td class="n">${num(avg(rs))}</td></tr>`; }).join("");
+        const total=`<tr style="background:var(--paper);font-weight:600"><td>${h(g.campus)}</td><td>${h(g.programme)}</td><td>${h(g.batch)}</td><td class="n">All (${terms.length} of 6)</td><td class="n">${g.rows.length}</td>${poCells(poAverages(g.rows))}<td class="big">${num(avg(g.rows))}<small>of 3</small></td></tr>`;
+        return termRows+total; }).join("")}
       </tbody></table>
-      <p class="note">Programme outcome attainment for a batch accumulates as each term's course records are submitted; the figure is final only when all six terms are in.</p>`;
+      <p class="note">Each PO column is the average across the courses in that row that map to the PO; N/M means none does. Term rows are diagnostic. The batch row is the programme figure, and it is final only when all six terms are in.</p>`;
   }
   function renderSubs(){
     const rows=visibleRows();
