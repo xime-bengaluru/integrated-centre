@@ -332,14 +332,24 @@ function compute(st){
   const v=st.revenue.reduce((s,e)=>s+revScore(e),0);
   const i=st.institution.reduce((s,e)=>s+instScore(e),0);
   const other=r+v, overall=t+r+v+i;
+  // Mirror the faculty form: the paid share of MDP/OBP/Consulting is stripped from the incentive base,
+  // and the incentive is capped, so director and faculty always see the same incentive figure.
+  const paidDeduct=st.revenue.reduce((s,e)=>{
+    if((e.code==="REV_MDP_OBP_FDP_EDP"||e.code==="REV_CONSULTING") && e.paid==="yes")
+      return s + (Number(e.amount_paid||0)/10000)*pts(e.code);
+    return s;
+  },0);
+  const incentiveBase=Math.max(0, overall-paidDeduct);
   const target=FLOORS.TGT_ANNUAL_PLAN??300;
   const rateRule=RULES.find(x=>x.domain==="incentive"&&x.points!=null);
   const rate=rateRule?Number(rateRule.points):1000;
+  const cap=FLOORS.FLR_INCENTIVE_CAP??450;
   const floors={ teaching:t>=(FLOORS.FLR_TEACHING??135), other:other>=(FLOORS.FLR_RESEARCH_REVENUE??90), sub:Math.max(r,v)>=(FLOORS.FLR_OTHER_SUBFLOOR??30) };
   const floorsMet=floors.teaching&&floors.other&&floors.sub;
-  const gross=Math.max(0, overall-target)*rate;
+  const gross=Math.max(0, Math.min(incentiveBase, cap)-target)*rate;
   return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
-    target:target, rate:rate, floors:floors, floorsMet:floorsMet, incentiveGross:gross, incentive: floorsMet?gross:0 };
+    paidDeduct:paidDeduct, incentiveBase:incentiveBase,
+    target:target, rate:rate, cap:cap, floors:floors, floorsMet:floorsMet, incentiveGross:gross, incentive: floorsMet?gross:0 };
 }
 
 /* ---------- LOGIN ---------- */
@@ -542,13 +552,16 @@ function renderDetail(){
   setFloor("#f-overall","#p-overall",c.overall,c.target);
   $("#incentive").textContent=rupee(c.incentive);
   const note=$("#incNote");
+  const bits=[];
+  if(c.paidDeduct>0) bits.push(c.paidDeduct.toFixed(0)+" points from paid work excluded from the incentive base.");
   if(!c.floorsMet && c.incentiveGross>0){
     const miss=[];
     if(!c.floors.teaching) miss.push("Teaching "+c.teaching.toFixed(0)+" of "+(FLOORS.FLR_TEACHING??135));
     if(!c.floors.other) miss.push("Research + Revenue "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
     if(!c.floors.sub) miss.push("Sub-floor "+Math.max(c.research,c.revenue).toFixed(0)+" of "+(FLOORS.FLR_OTHER_SUBFLOOR??30));
-    note.textContent="Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.";
-  } else note.textContent="";
+    bits.push("Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.");
+  }
+  note.textContent=bits.join(" ");
 
   const rv=reviewFor(CURRENT,GATE);
   if(rv){
