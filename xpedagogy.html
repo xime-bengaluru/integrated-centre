@@ -191,7 +191,7 @@ const esc = s => String(s==null?"":s).replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"
 
 /* Vocabulary. Sub-types and which fields each category asks for. */
 const CATS = {
-  case:               { label:"Case",                 subs:[["hbi","HBI (Harvard)"],["sourced","Other publisher"],["own","Own case"]],
+  case:               { label:"Case",                 subs:[["hbi","HBI (Harvard)"],["sourced","Other publisher (Darden, Ivey, IIM)"],["own","Own case"]],
                         fields:["title","source","sessions","class_size","evidence","repo"], sourceLabel:"Publisher and product number" },
   scenario:           { label:"Scenario (caselet)",   subs:[["own","Own"],["sourced","From another source"]],
                         fields:["title","source","description","sessions","evidence","repo"], sourceLabel:"Where it came from, if not your own", descLabel:"One-line summary of the situation" },
@@ -205,9 +205,9 @@ const CATS = {
   other:              { label:"Other method",         subs:null, fields:["title","description","sessions"], descLabel:"Describe the method", descRequired:true }
 };
 const DOMAINS = ["General Management","Marketing","Finance","Human Resources","OB & Leadership","Strategy & Operations","Analytics & Technology","Economics","Business Communication","Other"];
-const PROGS = ["PGDM","PGDM Working Professionals","Executive","Other"];
+const PROGS = ["PGDM","PGDM-BA","PGDM Working Professionals","Executive","Other"];
 const TERMS = ["","Term I","Term II","Term III","Term IV","Term V","Term VI"];
-const STRIP = [["cases_hbi","HBI cases"],["cases_other","Other cases"],["cases_own","Own cases"],["scenarios","Scenarios"],["simulations","Simulations"],["role_plays","Role plays"],["live_projects","Live projects"],["projects","Projects"],["bloomberg_sessions","Bloomberg"],["guest_sessions","Guests"]];
+const STRIP = [["cases_hbi","HBI cases"],["cases_other","Sourced cases"],["cases_own","Own cases"],["scenarios","Scenarios"],["simulations","Simulations"],["role_plays","Role plays"],["live_projects","Live projects"],["projects","Projects"],["bloomberg_sessions","Bloomberg"],["guest_sessions","Guest Speakers"]];
 
 let USER = null;
 let COURSES = [];
