@@ -114,11 +114,15 @@
   <div class="wrap">
     <div class="intro">
       <p class="eyebrow">Institute view</p>
-      <h1>How the faculty are teaching</h1>
+      <h1 id="introTitle">How the faculty are teaching</h1>
       <p>A live count of the methods faculty are using across their courses this year: cases, simulations, scenarios and live projects. Updated by each faculty member, month by month.</p>
     </div>
 
     <div class="controls">
+      <div class="seg" id="viewSeg">
+        <button data-v="faculty" class="on">By faculty</button>
+        <button data-v="domain">By domain</button>
+      </div>
       <div class="seg" id="campusSeg">
         <button data-c="all" class="on">All campuses</button>
         <button data-c="Bengaluru">Bengaluru</button>
@@ -173,6 +177,25 @@
       </table>
       <div id="emptyState" class="empty hidden">No pedagogy entries yet for this year. Faculty rows will appear here as soon as they record their first month.</div>
     </div>
+
+    <div class="tbl" id="domWrap" style="display:none">
+      <table id="domTable">
+        <thead><tr>
+          <th data-s="name">Area / Domain</th>
+          <th data-s="faculty">Faculty</th>
+          <th data-s="courses">Courses</th>
+          <th data-s="cases_hbi"><span class="dot" style="background:var(--hbi)"></span>HBP</th>
+          <th data-s="cases_other"><span class="dot" style="background:var(--oth)"></span>Other</th>
+          <th data-s="cases_own"><span class="dot" style="background:var(--own)"></span>Own</th>
+          <th data-s="simulations"><span class="dot" style="background:var(--sim)"></span>Sims</th>
+          <th data-s="scenarios"><span class="dot" style="background:var(--scn)"></span>Scenarios</th>
+          <th data-s="live_projects"><span class="dot" style="background:var(--prj)"></span>Projects</th>
+          <th data-s="total_methods">Total</th>
+        </tr></thead>
+        <tbody id="domBody"></tbody>
+        <tfoot id="domFoot"></tfoot>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -184,7 +207,7 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-let ROWS=[], TREND=[], CAMPUS="all", SORT="total_methods", OPEN=null;
+let ROWS=[], TREND=[], CAMPUS="all", SORT="total_methods", OPEN=null, VIEW="faculty", OPEN_DOM=null;
 const M=[["cases_hbi","HBP","--hbi"],["cases_other","Other","--oth"],["cases_own","Own","--own"],
          ["simulations","Sims","--sim"],["scenarios","Scenarios","--scn"],["live_projects","Projects","--prj"]];
 
@@ -228,18 +251,26 @@ $("#sortSel").addEventListener("change",e=>{SORT=e.target.value;render();});
 document.querySelectorAll("#facTable thead th").forEach(th=>th.addEventListener("click",()=>{
   SORT=th.dataset.s; $("#sortSel").value=SORT; render();
 }));
+$("#viewSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  VIEW=b.dataset.v; OPEN=null; OPEN_DOM=null;
+  [...$("#viewSeg").children].forEach(x=>x.classList.toggle("on",x===b));
+  render();
+});
+document.querySelectorAll("#domTable thead th").forEach(th=>th.addEventListener("click",()=>{
+  SORT=th.dataset.s; $("#sortSel").value=SORT; render();
+}));
 
 function filtered(){ return CAMPUS==="all"?ROWS:ROWS.filter(r=>r.campus===CAMPUS); }
 
 function render(){
-  const rows=filtered().slice().sort((a,b)=>
-    SORT==="name" ? a.faculty_name.localeCompare(b.faculty_name) : (b[SORT]||0)-(a[SORT]||0));
+  $("#introTitle").textContent = VIEW==="domain" ? "How each area is teaching" : "How the faculty are teaching";
+  const rows=filtered();
 
-  // stat band
+  // stat band (institute-wide, same in both views)
   const sum=k=>rows.reduce((s,r)=>s+(r[k]||0),0);
-  const facCount=rows.length;
   const band=[
-    [facCount,"faculty reporting","--navy"],
+    [rows.length,"faculty reporting","--navy"],
     [sum("cases_hbi")+sum("cases_other")+sum("cases_own"),"cases in use","--hbi"],
     [sum("cases_own"),"own cases created","--own"],
     [sum("simulations"),"simulations","--sim"],
@@ -249,11 +280,24 @@ function render(){
   $("#statBand").innerHTML=band.map(([n,l,c])=>
     `<div class="stat"><div class="n"><span class="dot" style="background:var(${c})"></span>${n}</div><div class="l">${l}</div></div>`).join("");
 
-  // table
-  const body=$("#facBody"); const foot=$("#facFoot");
-  if(!rows.length){ $("#facTable").classList.add("hidden"); $("#emptyState").classList.remove("hidden"); drawTrend(); return; }
-  $("#facTable").classList.remove("hidden"); $("#emptyState").classList.add("hidden");
+  const empty=!rows.length;
+  $("#emptyState").classList.toggle("hidden", !empty);
 
+  if(VIEW==="domain"){
+    $("#facTable").classList.add("hidden");
+    $("#domWrap").style.display = empty ? "none" : "block";
+    if(!empty) renderDomains(rows, sum);
+  } else {
+    $("#domWrap").style.display="none";
+    $("#facTable").classList.toggle("hidden", empty);
+    if(!empty) renderFaculty(rows, sum);
+  }
+  drawTrend();
+}
+
+function renderFaculty(rows, sum){
+  rows=rows.slice().sort((a,b)=> SORT==="name" ? a.faculty_name.localeCompare(b.faculty_name) : (b[SORT]||0)-(a[SORT]||0));
+  const body=$("#facBody"), foot=$("#facFoot");
   body.innerHTML=rows.map(r=>{
     const cell=k=>{const v=r[k]||0;return `<td class="${v?'':'zero'}">${v}</td>`;};
     const stale = r.last_updated ? staleFlag(r.last_updated) : "";
@@ -266,19 +310,59 @@ function render(){
     const drill = OPEN===r.faculty_email ? drillRow(r.faculty_email) : "";
     return main+drill;
   }).join("");
-
   foot.innerHTML=`<tr><td>Total, ${rows.length} faculty</td><td>${sum("courses")}</td>
     <td>${sum("cases_hbi")}</td><td>${sum("cases_other")}</td><td>${sum("cases_own")}</td>
     <td>${sum("simulations")}</td><td>${sum("scenarios")}</td><td>${sum("live_projects")}</td>
     <td>${sum("total_methods")}</td></tr>`;
-
   body.querySelectorAll("tr[data-email]").forEach(tr=>tr.addEventListener("click",async()=>{
     const em=tr.dataset.email;
     OPEN = OPEN===em ? null : em;
     if(OPEN) await ensureCourses(em);
     render();
   }));
-  drawTrend();
+}
+
+function domainAgg(rows){
+  const g={};
+  rows.forEach(r=>{
+    const d=r.domain||"Unassigned";
+    if(!g[d]) g[d]={domain:d, faculty:0, courses:0, cases_hbi:0, cases_other:0, cases_own:0, simulations:0, scenarios:0, live_projects:0, total_methods:0};
+    const a=g[d]; a.faculty+=1;
+    ["courses","cases_hbi","cases_other","cases_own","simulations","scenarios","live_projects","total_methods"].forEach(k=>a[k]+=(r[k]||0));
+  });
+  return Object.values(g);
+}
+
+function renderDomains(rows, sum){
+  const aggs=domainAgg(rows).sort((a,b)=> SORT==="name" ? a.domain.localeCompare(b.domain) : (b[SORT]||0)-(a[SORT]||0));
+  const body=$("#domBody"), foot=$("#domFoot");
+  body.innerHTML=aggs.map(a=>{
+    const cell=k=>{const v=a[k]||0;return `<td class="${v?'':'zero'}">${v}</td>`;};
+    const main=`<tr data-dom="${esc(a.domain)}">
+      <td><span class="fac">${esc(a.domain)}</span></td>
+      <td>${a.faculty}</td><td>${a.courses}</td>
+      ${cell("cases_hbi")}${cell("cases_other")}${cell("cases_own")}${cell("simulations")}${cell("scenarios")}${cell("live_projects")}
+      <td><span class="tot">${a.total_methods}</span></td></tr>`;
+    const drill = OPEN_DOM===a.domain ? domDrill(a, rows) : "";
+    return main+drill;
+  }).join("");
+  const sum2=(arr,k)=>arr.reduce((s,x)=>s+(x[k]||0),0);
+  foot.innerHTML=`<tr><td>Total, ${aggs.length} areas</td><td>${sum2(aggs,"faculty")}</td><td>${sum("courses")}</td>
+    <td>${sum("cases_hbi")}</td><td>${sum("cases_other")}</td><td>${sum("cases_own")}</td>
+    <td>${sum("simulations")}</td><td>${sum("scenarios")}</td><td>${sum("live_projects")}</td>
+    <td>${sum("total_methods")}</td></tr>`;
+  body.querySelectorAll("tr[data-dom]").forEach(tr=>tr.addEventListener("click",()=>{
+    const d=tr.dataset.dom;
+    OPEN_DOM = OPEN_DOM===d ? null : d;
+    render();
+  }));
+}
+
+function domDrill(a, allRows){
+  const facs=allRows.filter(r=>(r.domain||"Unassigned")===a.domain).slice().sort((x,y)=>(y.total_methods||0)-(x.total_methods||0));
+  const head=`<tr><th>Faculty</th><th>Campus</th><th>Courses</th><th>HBP</th><th>Other</th><th>Own</th><th>Sims</th><th>Scenarios</th><th>Projects</th><th>Total</th></tr>`;
+  const rowsHtml=facs.map(f=>`<tr><td style="text-align:left">${esc(f.faculty_name)}</td><td style="text-align:left">${esc(f.campus)}</td><td>${f.courses||0}</td><td>${f.cases_hbi||0}</td><td>${f.cases_other||0}</td><td>${f.cases_own||0}</td><td>${f.simulations||0}</td><td>${f.scenarios||0}</td><td>${f.live_projects||0}</td><td>${f.total_methods||0}</td></tr>`).join("");
+  return `<tr class="drill"><td colspan="10"><div class="inner"><table><thead>${head}</thead><tbody>${rowsHtml}</tbody></table></div></td></tr>`;
 }
 
 function staleFlag(iso){
