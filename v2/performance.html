@@ -340,6 +340,7 @@
           <div class="floor"><span class="lab">Overall target</span><span><span class="val" id="f-overall">0</span> <span class="pill" id="p-overall">300</span></span></div>
         </div>
         <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b> <span style="font-size:12px" id="incRate">(Rs 2000 per point over 300, capped at 450, floors apply)</span><div id="incNote" style="font-size:12px;color:var(--warn);margin-top:4px"></div></div>
+        <button class="add" id="execSummaryBtn" style="margin-top:14px;width:100%">Executive summary (print)</button>
       </div>
 
       <div class="card">
@@ -374,7 +375,7 @@ let GATE = "plan";
 let STATE = { teaching:[], research:[], revenue:[], institution:[] };
 let GATES = {};
 let STATUS = "draft", SUBMITTED_AT = null, EDITABLE = true, SEEDED = null, DIRTY = false;
-let GOALS = null, GOALS_EDITABLE = false;
+let GOALS = null, GOALS_EDITABLE = false, GOALS_FIRST_TIME = false;
 const GATE_ORDER = ["plan","interim","final"];
 const GATE_LABEL = { plan:"July plan", interim:"December interim", final:"April final" };
 
@@ -621,11 +622,16 @@ async function loadCheckpoint(){
   EDITABLE = gateOpen(GATE) && STATUS!=="submitted";
   if(GATE==="plan"){
     GOALS=normGoals(data?data.goals:null);
+    GOALS_FIRST_TIME = !data;
     GOALS_EDITABLE=EDITABLE;
   } else {
     const { data: pr } = await sb.from("v2_checkpoints").select("goals").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate","plan").maybeSingle();
     GOALS=normGoals(pr?pr.goals:null);
-    GOALS_EDITABLE=false;
+    GOALS_FIRST_TIME = !pr;
+    // President's directive: reopen goals at end of Term 1. During the interim gate, goals are editable
+    // (for new joiners and anyone who wants to revise) and saved back to the plan record. Nothing else in
+    // the plan is touched. Other gates keep goals read-only.
+    GOALS_EDITABLE = (GATE==="interim") && gateOpen("interim");
   }
   $("#savedMsg").textContent="";
   updateGateUI();
@@ -671,6 +677,16 @@ function writeErrMsg(error){
     return "Your sign-in has expired. Please sign out, sign in again, then try once more.";
   return m;
 }
+async function saveGoalsToPlan(now){
+  GOALS.summary_text=buildSummary(GOALS,USER.name); GOALS.highlight_rows=goalHighlights(GOALS);
+  const { data: planRow } = await sb.from("v2_checkpoints").select("faculty_email").eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate","plan").maybeSingle();
+  if(planRow){
+    const { error } = await sb.from("v2_checkpoints").update({ goals:GOALS, updated_at:now }).eq("faculty_email",USER.email).eq("academic_year",AY).eq("gate","plan");
+    return error||null;
+  }
+  const { error } = await sb.from("v2_checkpoints").insert({ faculty_email:USER.email, faculty_name:USER.name, campus:USER.campus, academic_year:AY, gate:"plan", goals:GOALS, entries:{teaching:[],research:[],revenue:[],institution:[]}, status:"draft", updated_at:now });
+  return error||null;
+}
 $("#saveBtn").addEventListener("click", async ()=>{
   if(!EDITABLE){ toast("This checkpoint cannot be edited"); return; }
   if(!(await ensureSession())){ toast("Your sign-in has expired. Please sign out and sign in again."); return; }
@@ -680,6 +696,7 @@ $("#saveBtn").addEventListener("click", async ()=>{
   if(GATE==="plan"){ GOALS.summary_text=buildSummary(GOALS,USER.name); GOALS.highlight_rows=goalHighlights(GOALS); row.goals=GOALS; }
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
   if(error){ toast("Save failed: "+writeErrMsg(error)); return; }
+  if(GATE==="interim" && GOALS_EDITABLE){ const ge=await saveGoalsToPlan(new Date().toISOString()); if(ge){ toast("Saved, but goals write failed: "+writeErrMsg(ge)); } }
   DIRTY=false;
   if(SEEDED){ SEEDED=null; updateGateUI(); }
   $("#savedMsg").textContent="Saved "+new Date().toLocaleTimeString();
@@ -697,9 +714,58 @@ $("#submitBtn").addEventListener("click", async ()=>{
   if(GATE==="plan"){ GOALS.summary_text=buildSummary(GOALS,USER.name); GOALS.highlight_rows=goalHighlights(GOALS); row.goals=GOALS; }
   const { error } = await sb.from("v2_checkpoints").upsert(row, { onConflict:"faculty_email,academic_year,gate" });
   if(error){ toast("Submit failed: "+writeErrMsg(error)); return; }
+  if(GATE==="interim" && GOALS_EDITABLE){ const ge=await saveGoalsToPlan(now); if(ge){ toast("Submitted, but goals write failed: "+writeErrMsg(ge)); } }
   STATUS="submitted"; SUBMITTED_AT=now; EDITABLE=false; DIRTY=false; SEEDED=null;
   updateGateUI(); toast("Checkpoint submitted");
 });
+
+/* ---------- EXECUTIVE SUMMARY ---------- */
+function rupeeSafe(n){ try{ return rupee(n); }catch(_){ return "Rs "+Math.round(n||0).toLocaleString("en-IN"); } }
+function openExecSummary(){
+  const c=compute();
+  const areaBlock=(title, rows, subtotal)=>{
+    const body = rows.length ? rows.map(r=>'<tr><td>'+esc(r.label)+'</td><td class="pt">'+r.pts+'</td></tr>').join("") : '<tr><td colspan="2" class="empty">Nothing recorded yet.</td></tr>';
+    return '<h3>'+esc(title)+' <span class="sub">'+subtotal.toFixed(0)+' points</span></h3><table>'+body+'</table>';
+  };
+  const tRows=STATE.teaching.map(e=>({label:(e.name||"Course")+(e.term?" \u00B7 "+e.term:""), pts:teachScore(e).toFixed(1)}));
+  const rRows=STATE.research.map(e=>({label:(ruleByCode(e.code)?.label||"Output"), pts:resScore(e).toFixed(1)}));
+  const vRows=STATE.revenue.map(e=>{
+    const paid=(e.code==="REV_MDP_OBP_FDP_EDP"||e.code==="REV_CONSULTING")&&e.paid==="yes";
+    return {label:(e.detail||ruleByCode(e.code)?.label||"Revenue")+(paid?" (paid share excluded from incentive)":""), pts:revScore(e).toFixed(1)};
+  });
+  const iRows=STATE.institution.map(e=>({label:(ruleByCode(e.code)?.label||"Role"), pts:instScore(e).toFixed(1)+(e.ruled_points!=null?"":" (prov)")}));
+  const goalsTxt = buildSummary(GOALS, USER.name) || "";
+  const html='<!doctype html><html><head><meta charset="utf-8"><title>Performance Summary - '+esc(USER.name||"")+'</title>'+
+    '<style>@page{margin:18mm}body{font-family:Georgia,"Cormorant Garamond",serif;color:#0D1F35;margin:0;padding:26px 34px;font-size:17px;line-height:1.5}'+
+    'h1{font-size:30px;margin:0 0 2px}.meta{color:#6b7280;font-size:15px;margin-bottom:4px}'+
+    '.goals{background:#FAF8F3;border-left:4px solid #C9A84C;padding:12px 16px;margin:16px 0;font-size:17px}'+
+    'h3{font-size:20px;border-bottom:2px solid #C9A84C;padding-bottom:4px;margin:22px 0 8px}h3 .sub{float:right;color:#6b7280;font-size:15px;font-weight:400}'+
+    'table{width:100%;border-collapse:collapse;margin-bottom:4px}td{padding:6px 4px;border-bottom:1px solid #e6e0d4;font-size:16px}td.pt{text-align:right;width:120px;font-variant-numeric:tabular-nums}td.empty{color:#9aa3ad;font-style:italic}'+
+    '.totals{margin-top:26px;background:#0D1F35;color:#fff;border-radius:10px;padding:18px 20px}.totals .big{font-size:26px;font-weight:700}'+
+    '.totals .row{display:flex;justify-content:space-between;padding:3px 0;font-size:16px}.totals .gold{color:#C9A84C}'+
+    '.btn{background:#0D1F35;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:15px;cursor:pointer;margin:18px 6px 0 0}'+
+    '@media print{.noprint{display:none}}</style></head><body>'+
+    '<h1>Performance Summary</h1>'+
+    '<div class="meta">'+esc(USER.name||"")+' &middot; '+esc(USER.campus||"")+' &middot; AY '+AY+' &middot; '+esc(GATE_LABEL[GATE]||GATE)+' &middot; generated '+new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})+'</div>'+
+    (goalsTxt?'<div class="goals"><b>Goals for the year:</b> '+esc(goalsTxt)+'</div>':'')+
+    areaBlock("Teaching", tRows, c.teaching)+
+    areaBlock("Research and Publications", rRows, c.research)+
+    areaBlock("Revenue (MDP / OBP / Consulting / Grant)", vRows, c.revenue)+
+    areaBlock("Institution Building", iRows, c.institution)+
+    '<div class="totals">'+
+      '<div class="row"><span>Overall points</span><span class="big">'+c.overall.toFixed(0)+' <span style="font-size:15px;font-weight:400">/ 300</span></span></div>'+
+      (c.paidDeduct>0?'<div class="row"><span>Excluded from incentive (already paid)</span><span>'+c.paidDeduct.toFixed(0)+'</span></div>':'')+
+      '<div class="row"><span>Teaching floor '+(FLOORS.FLR_TEACHING??100)+', met</span><span>'+(c.floors.teaching?"Yes":"No")+'</span></div>'+
+      '<div class="row"><span>Research + EP + Institution floor '+(FLOORS.FLR_RESEARCH_REVENUE??90)+', met</span><span>'+(c.floors.other?"Yes":"No")+'</span></div>'+
+      '<div class="row gold" style="border-top:1px solid #33465e;margin-top:8px;padding-top:10px"><span>Projected incentive</span><span class="big">'+rupeeSafe(c.incentive)+'</span></div>'+
+    '</div>'+
+    '<div class="noprint"><button class="btn" onclick="window.print()">Print or Save as PDF</button><button class="btn" style="background:#6b7280" onclick="window.close()">Close</button></div>'+
+    '</body></html>';
+  const w=window.open("","_blank");
+  if(!w){ toast("Allow pop-ups to open the printable summary"); return; }
+  w.document.write(html); w.document.close();
+}
+const _esb=document.getElementById("execSummaryBtn"); if(_esb) _esb.addEventListener("click", openExecSummary);
 
 /* ---------- FEEDBACK ---------- */
 $("#fbSend").addEventListener("click", ()=>sendFeedback("general", $("#fbGeneral").value));
@@ -789,7 +855,13 @@ function revScore(e){
   if(e.code==="REV_MDP_OBP_FDP_EDP" && e.hours) s += (Number(e.hours)||0)*ptsOr("REV_MDP_TEACHING_HOURS",1.5);
   return s;
 }
-function instScore(e){ return pts(e.code); }
+function instScore(e){
+  const r=ruleByCode(e.code);
+  if(!r) return 0;
+  if(e.ruled_points!=null) return Number(e.ruled_points);   // panel set a final value at the year-end gate
+  if(r.points==null) return 0;                              // variable-range role, awaits a number from the panel
+  return Number(r.points)/2;                                // provisional: half the cap, pending Director and President approval
+}
 
 function compute(){
   const t=STATE.teaching.reduce((s,e)=>s+teachScore(e),0);
@@ -807,9 +879,18 @@ function compute(){
     other: other>=(FLOORS.FLR_RESEARCH_REVENUE??90)
   };
   const floorsMet=floors.teaching&&floors.other;
-  const eligible=Math.max(0, Math.min(overall, cap)-target);
+  // President's directive: work already paid to the faculty (MDP/OBP/Consulting) must not also earn incentive.
+  // Raw score and floors keep the full points; only the incentive base is reduced by the declared paid share.
+  const paidDeduct = STATE.revenue.reduce((s,e)=>{
+    if((e.code==="REV_MDP_OBP_FDP_EDP"||e.code==="REV_CONSULTING") && e.paid==="yes")
+      return s + (Number(e.amount_paid||0)/10000)*pts(e.code);
+    return s;
+  },0);
+  const incentiveBase = Math.max(0, overall - paidDeduct);
+  const eligible=Math.max(0, Math.min(incentiveBase, cap)-target);
   const gross=eligible*rate;
   return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
+    paidDeduct:paidDeduct, incentiveBase:incentiveBase,
     target:target, rate:rate, cap:cap, floors:floors, floorsMet:floorsMet,
     incentiveGross:gross, incentive: floorsMet?gross:0 };
 }
@@ -920,6 +1001,8 @@ function renderRevenue(){
   STATE.revenue.forEach((e,idx)=>{
     const sc=revScore(e), prov=e.code && isProvisional(e.code);
     const isMDP = e.code==="REV_MDP_OBP_FDP_EDP";
+    const isHonorarium = e.code==="REV_MDP_OBP_FDP_EDP" || e.code==="REV_CONSULTING";
+    const paidYes = e.paid==="yes";
     const row=el("div",{class:"entry rev-grid"});
     row.innerHTML=`
       <div class="fld"><label>Type</label><select data-i="${idx}" data-k="code">
@@ -927,6 +1010,15 @@ function renderRevenue(){
       <div class="fld"><label>Amount (Rs)</label><input data-i="${idx}" data-k="amount" type="number" min="0" step="1000" value="${e.amount||0}"></div>
       <div class="fld"><label>MDP teaching hrs</label><input data-i="${idx}" data-k="hours" type="number" min="0" step="1" value="${esc(e.hours||"")}" placeholder="0" ${isMDP?"":"disabled title='Only for MDP/OBP/FDP/EDP'"}></div>
       <div class="fld" style="grid-column:1 / -1"><label>Brief description (programme, client, event)</label><input data-i="${idx}" data-k="detail" type="text" maxlength="140" value="${esc(e.detail||"")}" placeholder="e.g. EssilorLuxottica MDP batch 2, HR conclave sponsorships"></div>
+      ${isHonorarium?`<div class="fld" style="grid-column:1 / -1;border-top:1px dashed var(--line);padding-top:10px;margin-top:2px">
+        <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+          <div><label>Already paid to you?</label><select data-i="${idx}" data-k="paid">
+            <option value="no" ${!paidYes?"selected":""}>No</option>
+            <option value="yes" ${paidYes?"selected":""}>Yes</option></select></div>
+          ${paidYes?`<div><label>Amount paid to you (Rs)</label><input data-i="${idx}" data-k="amount_paid" type="number" min="0" step="1000" value="${e.amount_paid||0}" style="width:160px"></div>`:""}
+        </div>
+        <div class="mnote" style="margin-top:6px">Paid work still counts toward your floors. Only the paid share is removed from the incentive calculation, so the same money is not counted twice.</div>
+      </div>`:""}
       <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span><button class="rm" data-rm-v="${idx}">Remove</button></div>`;
     list.appendChild(row);
   });
@@ -937,13 +1029,17 @@ function renderInstitution(){
   const list=$("#inst-list"); list.innerHTML="";
   const rr=rulesBy("institution").filter(r=>r.unit!=="modifier"); // roles only, not split markers
   STATE.institution.forEach((e,idx)=>{
-    const sc=instScore(e), prov=e.code && isProvisional(e.code);
+    const sc=instScore(e);
+    const r=ruleByCode(e.code);
+    const cap = r && r.points!=null ? Number(r.points) : null;
+    const ruled = e.ruled_points!=null;
+    const provLabel = e.code && !ruled ? (cap!=null ? 'provisional \u00B7 half of '+cap : 'provisional') : '';
     const row=el("div",{class:"entry inst-grid"});
     row.innerHTML=`
       <div class="fld"><label>Role or contribution</label><select data-i="${idx}" data-k="code">
         <option value="">Select...</option>${optionList(rr, e.code)}</select></div>
       <div class="fld" style="grid-column:1 / -1"><label>Brief description (what, for whom)</label><input data-i="${idx}" data-k="detail" type="text" maxlength="140" value="${esc(e.detail||"")}" placeholder="e.g. automated asset tracking workflow, Digii and Meritto integration"></div>
-      <div class="row2"><span class="score">${sc.toFixed(1)}${prov?'<span class="prov">provisional</span>':''}</span>
+      <div class="row2"><span class="score">${sc.toFixed(1)}${provLabel?'<span class="prov">'+provLabel+'</span>':''}</span>
         <span><button class="flag" data-flag-d="institution" data-flag-l="${(ruleByCode(e.code)?.label||'role').replace(/"/g,'&quot;')}">flag</button>
         <button class="rm" data-rm-i="${idx}">Remove</button></span></div>`;
     list.appendChild(row);
@@ -954,16 +1050,17 @@ function renderInstitution(){
 function buildInstitutionRuling(){
   const noval = rulesBy("institution").filter(r=>r.points==null && r.unit!=="modifier");
   const box=$("#inst-ruling");
+  box.style.display="block";
+  let msg = "<b>Provisional points:</b> Institution Building roles show at half their listed maximum while pending. The Director and President set the final value at the year-end review.";
   if(noval.length){
-    box.style.display="block";
-    box.innerHTML = "<b>Awaiting a ruling:</b> these entries can be recorded now and show as provisional at 0 points until the panel sets a value: "
-      + noval.map(r=>r.label).join(", ") + ".";
-  } else box.style.display="none";
+    msg += " A few roles have a variable range and show at 0 until the panel sets a number: " + noval.map(r=>r.label).join(", ") + ".";
+  }
+  box.innerHTML = msg;
 }
 
 function renderSummary(){
   const c=compute();
-  $("#overall").innerHTML = c.overall.toFixed(0) + ' <small>/ 300</small>';
+  $("#overall").innerHTML = c.overall.toFixed(0) + ' <small>/ 300</small>' + (c.paidDeduct>0?'<div style="font-size:12px;color:var(--muted);font-weight:400;margin-top:3px">'+c.paidDeduct.toFixed(0)+' excluded from incentive (already paid)</div>':'');
   const setFloor=(valId,pillId,val,min)=>{
     $(valId).textContent=val.toFixed(0);
     const p=$(pillId); const ok=val>=min;
@@ -975,12 +1072,15 @@ function renderSummary(){
   $("#incRate").textContent = "(Rs "+c.rate.toLocaleString("en-IN")+" per point over "+c.target+", capped at "+c.cap+", floors apply)";
   const note=$("#incNote");
   $("#incentive").textContent = rupee(c.incentive);
+  const bits=[];
+  if(c.paidDeduct>0) bits.push(c.paidDeduct.toFixed(0)+" points from paid work are excluded from the incentive base.");
   if(!c.floorsMet && c.incentiveGross>0){
     const miss=[];
     if(!c.floors.teaching) miss.push("Teaching "+c.teaching.toFixed(0)+" of "+(FLOORS.FLR_TEACHING??100));
     if(!c.floors.other) miss.push("Research + EP + Institution "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
-    note.textContent="Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.";
-  } else { note.textContent=""; }
+    bits.push("Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.");
+  }
+  note.textContent = bits.join(" ");
 }
 
 function counterFor(val,cap){ return '<div class="gcount'+(String(val).length>=cap?' warn':'')+'">'+String(val).length+'/'+cap+'</div>'; }
@@ -988,11 +1088,19 @@ function renderGoals(){
   const w=document.getElementById("goalsWrap");
   if(!w) return;
   const sum=buildSummary(GOALS, USER.name);
-  let h='<div class="gstrip"><div class="ghead"><h2>My Goals for the Year</h2><span class="gsub">'+
-    (GOALS_EDITABLE?"What you plan for AY "+AY+". Locks when goal setting closes.":"Recorded when goals were set for AY "+AY+".")+'</span></div>';
+  const gsub = GOALS_EDITABLE
+    ? (GATE==="interim" ? "Revise or set your goals for AY "+AY+". Saved to your plan." : "What you plan for AY "+AY+". Locks when goal setting closes.")
+    : "Recorded when goals were set for AY "+AY+".";
+  let h='<div class="gstrip"><div class="ghead"><h2>My Goals for the Year</h2><span class="gsub">'+gsub+'</span></div>';
   if(GATE==="plan"){
     const pc=(GATES.plan||{}).closes_on, io=(GATES.interim||{}).opens_on;
     h+='<div class="gdeadline"><span class="gdl-dot"></span><span><b>Goal setting closes on '+(pc?esc(fmtDate(pc)):"the announced date")+'.</b> Please complete your goals and submit before then. Performance capture (Teaching, Research, Revenue, Institution Building) opens'+(io?(" on "+esc(fmtDate(io))):" in September")+'.</span></div>';
+  } else if(GATE==="interim" && GOALS_EDITABLE){
+    if(GOALS_FIRST_TIME){
+      h+='<div class="gdeadline" style="background:#e9f2ec;border-color:#cfe3d6;color:#2f6b46"><span class="gdl-dot"></span><span><b>Welcome. Start here.</b> Set your goals for the year, one card per area. Nothing here is graded and there is no late penalty. Your goals guide your review; the rest of the form is where you record what you actually do through the year.</span></div>';
+    } else {
+      h+='<div class="gdeadline"><span class="gdl-dot"></span><span><b>Goals are open for revision.</b> Update them as your year takes shape. Your saved plan is preserved; only the goals you change are updated.</span></div>';
+    }
   }
   h+='<div class="gsummary" id="gsumBox"'+(sum?"":' style="display:none"')+'><span id="gsumText">'+esc(sum)+'</span></div>';
   if(GOALS_EDITABLE){
@@ -1069,7 +1177,7 @@ document.addEventListener("input", e=>{
 
   let v=t.value;
   if(k==="repeat") v = (t.value==="yes");
-  if(k==="amount") v = Number(t.value)||0;
+  if(k==="amount"||k==="amount_paid") v = Number(t.value)||0;
   if(k.indexOf(".")>0){ const parts=k.split("."); if(!STATE[d][i][parts[0]]) STATE[d][i][parts[0]]={}; STATE[d][i][parts[0]][parts[1]]=v; }
   else STATE[d][i][k]=v;
   DIRTY=true;

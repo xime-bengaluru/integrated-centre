@@ -466,7 +466,7 @@ function entryLabel(d,e){
   const r=ruleByCode(e.code);
   const lbl=r?r.label:(e.code||"Not selected");
   if(d==="research") return { l:lbl, m:e.authors+" author(s), position "+e.pos };
-  if(d==="revenue") return { l:lbl, m:"Amount "+rupee(Number(e.amount)||0)+(e.detail?" · "+e.detail:"") };
+  if(d==="revenue"){ const paid=(e.code==="REV_MDP_OBP_FDP_EDP"||e.code==="REV_CONSULTING")&&e.paid==="yes"; return { l:lbl, m:"Amount "+rupee(Number(e.amount)||0)+(e.detail?" \u00B7 "+e.detail:"")+(paid?" \u00B7 Paid to faculty "+rupee(Number(e.amount_paid)||0)+" (excluded from incentive)":"") }; }
   return { l:lbl, m:e.detail||"" };
 }
 
