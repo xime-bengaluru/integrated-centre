@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/xhub-scoring.js"></script>
 <style>
   :root{
     --navy:#0D1F35; --gold:#C9A84C; --parchment:#FAF8F3;
@@ -184,8 +185,7 @@
             <div class="bignum" id="overall">0 <small>/ 300</small></div>
             <div style="margin:14px 0 4px">
               <div class="floor"><span class="lab">Teaching</span><span><span class="val" id="f-teaching">0</span> <span class="pill" id="p-teaching">min 135</span></span></div>
-              <div class="floor"><span class="lab">Research + Revenue</span><span><span class="val" id="f-other">0</span> <span class="pill" id="p-other">min 90</span></span></div>
-              <div class="floor"><span class="lab">Sub-floor (30 from one)</span><span><span class="val" id="f-sub">0</span> <span class="pill" id="p-sub">min 30</span></span></div>
+              <div class="floor"><span class="lab">Research + Revenue + Institution</span><span><span class="val" id="f-other">0</span> <span class="pill" id="p-other">min 90</span></span></div>
               <div class="floor"><span class="lab">Overall target</span><span><span class="val" id="f-overall">0</span> <span class="pill" id="p-overall">300</span></span></div>
             </div>
             <div class="incentive">Projected incentive above threshold:<br><b id="incentive">Rs 0</b><div id="incNote" style="font-size:12px;color:var(--warn);margin-top:4px"></div></div>
@@ -307,50 +307,15 @@ function gateOpen(g){
 }
 
 const CREDIT_CODE={ "3":"TCH_BASE_3CR","2":"TCH_BASE_2CR","1.5":"TCH_BASE_1_5CR","1":"TCH_BASE_1CR" };
-function teachScore(e){
-  const fb={ "3":30,"2":20,"1.5":15,"1":10 }[e.credit] ?? 0;
-  const base=ptsOr(CREDIT_CODE[e.credit]||"", fb);
-  const effPct = e.eff==="100" ? ptsOr("TCH_EFF_ABOVE_2_5",100) : e.eff==="80" ? ptsOr("TCH_EFF_2_TO_2_5",80) : 0;
-  const rep = e.repeat ? ptsOr("TCH_REPEAT_SECTION",50)/100 : 1;
-  return base*(effPct/100)*rep;
-}
-function authorShare(authors,pos){
-  const a=Number(authors), p=Number(pos);
-  if(a<=1) return 1;
-  if(a===2) return p===1?0.6:0.4;
-  if(a===3) return p===1?0.5:0.25;
-  return 1/a;
-}
-function resScore(e){ return pts(e.code)*authorShare(e.authors,e.pos); }
-function revScore(e){ return (Number(e.amount)/10000)*pts(e.code); }
-function instScore(e){ return pts(e.code); }
-const SCORER={ teaching:teachScore, research:resScore, revenue:revScore, institution:instScore };
-
-function compute(st){
-  const t=st.teaching.reduce((s,e)=>s+teachScore(e),0);
-  const r=st.research.reduce((s,e)=>s+resScore(e),0);
-  const v=st.revenue.reduce((s,e)=>s+revScore(e),0);
-  const i=st.institution.reduce((s,e)=>s+instScore(e),0);
-  const other=r+v, overall=t+r+v+i;
-  // Mirror the faculty form: the paid share of MDP/OBP/Consulting is stripped from the incentive base,
-  // and the incentive is capped, so director and faculty always see the same incentive figure.
-  const paidDeduct=st.revenue.reduce((s,e)=>{
-    if((e.code==="REV_MDP_OBP_FDP_EDP"||e.code==="REV_CONSULTING") && e.paid==="yes")
-      return s + (Number(e.amount_paid||0)/10000)*pts(e.code);
-    return s;
-  },0);
-  const incentiveBase=Math.max(0, overall-paidDeduct);
-  const target=FLOORS.TGT_ANNUAL_PLAN??300;
-  const rateRule=RULES.find(x=>x.domain==="incentive"&&x.points!=null);
-  const rate=rateRule?Number(rateRule.points):1000;
-  const cap=FLOORS.FLR_INCENTIVE_CAP??450;
-  const floors={ teaching:t>=(FLOORS.FLR_TEACHING??135), other:other>=(FLOORS.FLR_RESEARCH_REVENUE??90), sub:Math.max(r,v)>=(FLOORS.FLR_OTHER_SUBFLOOR??30) };
-  const floorsMet=floors.teaching&&floors.other&&floors.sub;
-  const gross=Math.max(0, Math.min(incentiveBase, cap)-target)*rate;
-  return { teaching:t, research:r, revenue:v, institution:i, other:other, overall:overall,
-    paidDeduct:paidDeduct, incentiveBase:incentiveBase,
-    target:target, rate:rate, cap:cap, floors:floors, floorsMet:floorsMet, incentiveGross:gross, incentive: floorsMet?gross:0 };
-}
+// Scoring lives in the shared module (xhub-scoring.js) so this surface computes identically
+// to the faculty form. Rules and floors are injected via XScore.init() after they load.
+const teachScore  = e => XScore.teachScore(e);
+const resScore    = e => XScore.resScore(e);
+const revScore    = e => XScore.revScore(e);
+const instScore   = e => XScore.instScore(e);
+const authorShare = (a,p,c) => XScore.authorShare(a,p,c);
+const SCORER = { teaching:teachScore, research:resScore, revenue:revScore, institution:instScore };
+function compute(st){ return XScore.compute(st); }
 
 /* ---------- LOGIN ---------- */
 $("#loginBtn").addEventListener("click", doLogin);
@@ -404,6 +369,7 @@ async function boot(email){
   RULES=rules||[];
   const { data: floors } = await sb.from("scoring_floors").select("*").eq("academic_year",AY).eq("status","ratified");
   FLOORS={}; (floors||[]).forEach(f=>FLOORS[f.floor_code]=Number(f.points));
+  XScore.init(RULES, FLOORS);
   const { data: gc } = await sb.from("evaluation_gate_config").select("gate,opens_on,closes_on,is_open").eq("academic_year",AY);
   GATES={}; (gc||[]).forEach(g=>{ if(GATE_ORDER.indexOf(g.gate)>=0) GATES[g.gate]=g; });
 
@@ -548,7 +514,6 @@ function renderDetail(){
   };
   setFloor("#f-teaching","#p-teaching",c.teaching,FLOORS.FLR_TEACHING??135);
   setFloor("#f-other","#p-other",c.other,FLOORS.FLR_RESEARCH_REVENUE??90);
-  setFloor("#f-sub","#p-sub",Math.max(c.research,c.revenue),FLOORS.FLR_OTHER_SUBFLOOR??30);
   setFloor("#f-overall","#p-overall",c.overall,c.target);
   $("#incentive").textContent=rupee(c.incentive);
   const note=$("#incNote");
@@ -557,8 +522,7 @@ function renderDetail(){
   if(!c.floorsMet && c.incentiveGross>0){
     const miss=[];
     if(!c.floors.teaching) miss.push("Teaching "+c.teaching.toFixed(0)+" of "+(FLOORS.FLR_TEACHING??135));
-    if(!c.floors.other) miss.push("Research + Revenue "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
-    if(!c.floors.sub) miss.push("Sub-floor "+Math.max(c.research,c.revenue).toFixed(0)+" of "+(FLOORS.FLR_OTHER_SUBFLOOR??30));
+    if(!c.floors.other) miss.push("Research + Revenue + Institution "+c.other.toFixed(0)+" of "+(FLOORS.FLR_RESEARCH_REVENUE??90));
     bits.push("Floors not yet met: "+miss.join("; ")+". Potential "+rupee(c.incentiveGross)+" once floors are met.");
   }
   note.textContent=bits.join(" ");
