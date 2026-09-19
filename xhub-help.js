@@ -42,12 +42,14 @@
   .xhb-panel{position:fixed;right:22px;bottom:88px;z-index:99999;width:min(380px,calc(100vw - 32px));height:min(560px,calc(100vh - 130px));
     background:#fff;border-radius:16px;box-shadow:0 20px 55px rgba(13,31,53,.3);display:none;flex-direction:column;overflow:hidden;
     font-family:'DM Sans',system-ui,sans-serif;color:#24303F}
-  .xhb-panel.open{display:flex}
+  .xhb-panel.xhb-open{display:flex}
   .xhb-head{background:#0D1F35;color:#fff;padding:13px 16px;display:flex;align-items:center;gap:9px}
   .xhb-head .l{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:20px;letter-spacing:.5px}
   .xhb-head .t{font-size:13px;font-weight:600;line-height:1.1}
   .xhb-head .t span{display:block;font-size:10.5px;color:#9FB0C7;font-weight:400}
-  .xhb-x{margin-left:auto;background:none;border:none;color:#9FB0C7;font-size:20px;cursor:pointer;line-height:1}
+  .xhb-actions{margin-left:auto;display:flex;gap:6px}
+  .xhb-hb{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;line-height:1;display:flex;align-items:center;gap:5px;font-family:inherit}
+  .xhb-hb:hover{background:rgba(255,255,255,.26)}
   .xhb-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px}
   .xhb-m{max-width:86%;padding:10px 13px;border-radius:13px;font-size:13.5px;line-height:1.48;white-space:pre-wrap;word-wrap:break-word}
   .xhb-u{align-self:flex-end;background:#0D1F35;color:#fff;border-bottom-right-radius:3px}
@@ -92,38 +94,49 @@
     var panel = el("div", "xhb-panel");
     var head = el("div", "xhb-head",
       '<div class="l">XIME</div><div class="t">X-Hub Assistant<span>' + esc(pageLabel()) + '</span></div>');
-    var closeBtn = el("button", "xhb-x", "&times;"); closeBtn.type = "button"; closeBtn.setAttribute("aria-label", "Close");
-    head.appendChild(closeBtn);
+    var menuBtn = el("button", "xhb-hb", "Menu"); menuBtn.type = "button"; menuBtn.title = "Back to the suggested questions";
+    var closeBtn = el("button", "xhb-hb", "Close &times;"); closeBtn.type = "button"; closeBtn.setAttribute("aria-label", "Close");
+    var actions = el("div", "xhb-actions"); actions.appendChild(menuBtn); actions.appendChild(closeBtn);
+    head.appendChild(actions);
     panel.appendChild(head);
 
     var log = el("div", "xhb-log");
-    var intro = el("div", "xhb-intro", "<b>How can I help?</b>I read X-Hub's current rules, so my answers stay up to date.");
-    var chips = el("div", "xhb-chips");
-    STARTERS.forEach(function (q) { var c = el("div", "xhb-chip", esc(q)); c.onclick = function () { inp.value = q; send(); }; chips.appendChild(c); });
-    intro.appendChild(chips); log.appendChild(intro);
-
     var bar = el("div", "xhb-bar");
-    var inp = el("input"); inp.placeholder = "Ask a question…"; inp.autocomplete = "off";
-    var snd = el("button", null, "Send");
+    var inp = el("input"); inp.placeholder = "Ask a question\u2026"; inp.autocomplete = "off";
+    var snd = el("button", null, "Send"); snd.type = "button";
     bar.appendChild(inp); bar.appendChild(snd);
-
     var foot = el("div", "xhb-foot", "Grounded in X-Hub's live rules");
     panel.appendChild(log); panel.appendChild(bar); panel.appendChild(foot);
     document.body.appendChild(btn); document.body.appendChild(panel);
 
-    function openPanel() { panel.classList.add("open"); btn.style.display = "none"; setTimeout(function () { inp.focus(); }, 50); }
-    function closePanel() { panel.classList.remove("open"); btn.style.display = "flex"; }
-    btn.onclick = openPanel;
-    closeBtn.onclick = function (e) { e.stopPropagation(); closePanel(); };
-    head.addEventListener("click", closePanel);
+    // Isolate the panel from the host page: nothing that happens inside it reaches page handlers.
+    ["click", "pointerdown", "pointerup", "mousedown", "mouseup", "keydown", "keyup", "keypress", "input", "change", "submit"]
+      .forEach(function (t) { panel.addEventListener(t, function (e) { e.stopPropagation(); }); });
+
+    function showMenu() {
+      history = []; log.innerHTML = "";
+      var intro = el("div", "xhb-intro", "<b>How can I help?</b>I read X-Hub's current rules, so my answers stay up to date.");
+      var chips = el("div", "xhb-chips");
+      STARTERS.forEach(function (q) {
+        var c = el("div", "xhb-chip", esc(q));
+        c.onclick = function (e) { e.preventDefault(); e.stopPropagation(); inp.value = q; send(); };
+        chips.appendChild(c);
+      });
+      intro.appendChild(chips); log.appendChild(intro);
+      inp.value = "";
+    }
+    showMenu();
+
+    function openPanel(e) { if (e) { e.preventDefault(); e.stopPropagation(); } panel.classList.add("xhb-open"); panel.style.display = "flex"; btn.style.display = "none"; setTimeout(function () { inp.focus(); }, 50); }
+    function closePanel(e) { if (e) { e.preventDefault(); e.stopPropagation(); } panel.classList.remove("xhb-open"); panel.style.display = "none"; btn.style.display = "flex"; }
+    function keepOpen() { if (panel.style.display !== "flex") { panel.classList.add("xhb-open"); panel.style.display = "flex"; btn.style.display = "none"; } }
+
+    btn.addEventListener("click", openPanel, true);
+    closeBtn.addEventListener("click", closePanel, true);
+    menuBtn.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); showMenu(); inp.focus(); }, true);
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && panel.classList.contains("open")) closePanel();
-    });
-    document.addEventListener("click", function (e) {
-      if (!panel.classList.contains("open")) return;
-      if (panel.contains(e.target) || btn.contains(e.target)) return;
-      closePanel();
-    });
+      if (e.key === "Escape" && panel.style.display === "flex") closePanel();
+    }, true);
 
     function bubble(role, text) {
       var d = el("div", "xhb-m " + (role === "user" ? "xhb-u" : "xhb-b"));
@@ -133,10 +146,11 @@
 
     function send() {
       var q = inp.value.trim(); if (!q) return;
-      if (intro.parentNode) intro.remove();
+      var intro = log.querySelector(".xhb-intro"); if (intro) intro.remove();
       inp.value = ""; snd.disabled = true; inp.disabled = true;
       bubble("user", q); history.push({ role: "user", content: q });
-      var typing = el("div", "xhb-typing", "reading the rules…"); log.appendChild(typing); log.scrollTop = log.scrollHeight;
+      var typing = el("div", "xhb-typing", "reading the rules\u2026"); log.appendChild(typing); log.scrollTop = log.scrollHeight;
+      keepOpen();
 
       var session = readSession();
       var token = (session && session.access_token) ? session.access_token : ANON;
@@ -148,16 +162,16 @@
         body: JSON.stringify({ question: q, page: pageLabel(), history: history.slice(-10), faculty_email: email })
       }).then(function (r) { return r.json(); }).then(function (data) {
         typing.remove();
-        var ans = data && data.answer ? data.answer : "I couldn't answer just now — please try again.";
+        var ans = data && data.answer ? data.answer : "I couldn't answer just now \u2014 please try again.";
         bubble("bot", ans); history.push({ role: "assistant", content: ans });
       }).catch(function () {
         typing.remove();
         bubble("bot", "I couldn't reach the assistant just now. Please try again in a moment.");
-      }).then(function () { snd.disabled = false; inp.disabled = false; inp.focus(); });
+      }).then(function () { snd.disabled = false; inp.disabled = false; keepOpen(); inp.focus(); });
     }
 
-    snd.onclick = send;
-    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
+    snd.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); send(); });
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); send(); } });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
