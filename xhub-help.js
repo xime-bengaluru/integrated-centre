@@ -72,13 +72,17 @@
   function fmt(t) { return esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"); }
 
   var history = [];
-  var client = null, session = null;
 
-  function ensureSupabase(cb) {
-    if (window.supabase && window.supabase.createClient) return cb();
-    var s = document.createElement("script");
-    s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-    s.onload = cb; s.onerror = cb; document.head.appendChild(s);
+  // Read the signed-in session from the shared Supabase storage instead of creating a second
+  // client (a duplicate client is what triggers the "Multiple GoTrueClient instances" warning).
+  function readSession() {
+    try {
+      var raw = localStorage.getItem("sb-qcufrukhfcmyfvwwoqjo-auth-token");
+      if (!raw) return null;
+      var obj = JSON.parse(raw);
+      var s = obj && obj.currentSession ? obj.currentSession : obj;
+      return s && s.access_token ? s : null;
+    } catch (e) { return null; }
   }
 
   function boot() {
@@ -110,7 +114,16 @@
     function openPanel() { panel.classList.add("open"); btn.style.display = "none"; setTimeout(function () { inp.focus(); }, 50); }
     function closePanel() { panel.classList.remove("open"); btn.style.display = "flex"; }
     btn.onclick = openPanel;
-    closeBtn.onclick = closePanel;
+    closeBtn.onclick = function (e) { e.stopPropagation(); closePanel(); };
+    head.addEventListener("click", closePanel);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && panel.classList.contains("open")) closePanel();
+    });
+    document.addEventListener("click", function (e) {
+      if (!panel.classList.contains("open")) return;
+      if (panel.contains(e.target) || btn.contains(e.target)) return;
+      closePanel();
+    });
 
     function bubble(role, text) {
       var d = el("div", "xhb-m " + (role === "user" ? "xhb-u" : "xhb-b"));
@@ -125,6 +138,7 @@
       bubble("user", q); history.push({ role: "user", content: q });
       var typing = el("div", "xhb-typing", "reading the rules…"); log.appendChild(typing); log.scrollTop = log.scrollHeight;
 
+      var session = readSession();
       var token = (session && session.access_token) ? session.access_token : ANON;
       var email = (session && session.user) ? session.user.email : null;
 
@@ -144,13 +158,6 @@
 
     snd.onclick = send;
     inp.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
-
-    ensureSupabase(function () {
-      try {
-        client = window.supabase.createClient(SB_URL, ANON);
-        client.auth.getSession().then(function (res) { session = res.data.session; });
-      } catch (e) { /* explainer still works signed-out via the anon key */ }
-    });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
