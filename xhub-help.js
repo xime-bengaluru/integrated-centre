@@ -84,11 +84,13 @@
   function boot() {
     var style = el("style"); style.textContent = CSS; document.head.appendChild(style);
 
-    var btn = el("button", "xhb-btn", "?"); btn.title = "X-Hub help";
+    var btn = el("button", "xhb-btn", "?"); btn.title = "X-Hub help"; btn.type = "button";
     var panel = el("div", "xhb-panel");
-    panel.appendChild(el("div", "xhb-head",
-      '<div class="l">XIME</div><div class="t">X-Hub Assistant<span>' + esc(pageLabel()) + '</span></div>'));
-    panel.querySelector(".xhb-head").appendChild((function () { var x = el("button", "xhb-x", "&times;"); x.onclick = toggle; return x; })());
+    var head = el("div", "xhb-head",
+      '<div class="l">XIME</div><div class="t">X-Hub Assistant<span>' + esc(pageLabel()) + '</span></div>');
+    var closeBtn = el("button", "xhb-x", "&times;"); closeBtn.type = "button"; closeBtn.setAttribute("aria-label", "Close");
+    head.appendChild(closeBtn);
+    panel.appendChild(head);
 
     var log = el("div", "xhb-log");
     var intro = el("div", "xhb-intro", "<b>How can I help?</b>I read X-Hub's current rules, so my answers stay up to date.");
@@ -105,8 +107,10 @@
     panel.appendChild(log); panel.appendChild(bar); panel.appendChild(foot);
     document.body.appendChild(btn); document.body.appendChild(panel);
 
-    function toggle() { panel.classList.toggle("open"); if (panel.classList.contains("open")) inp.focus(); }
-    btn.onclick = toggle;
+    function openPanel() { panel.classList.add("open"); btn.style.display = "none"; setTimeout(function () { inp.focus(); }, 50); }
+    function closePanel() { panel.classList.remove("open"); btn.style.display = "flex"; }
+    btn.onclick = openPanel;
+    closeBtn.onclick = closePanel;
 
     function bubble(role, text) {
       var d = el("div", "xhb-m " + (role === "user" ? "xhb-u" : "xhb-b"));
