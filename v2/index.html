@@ -2,201 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>X-Hub | AY 2026-27</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --navy:       #0D1F35;
-    --navy-mid:   #1A3352;
-    --navy-l:     #243D5C;
-    --gold:       #C9A84C;
-    --gold-l:     #E8C97A;
-    --gold-d:     #8A6F2A;
-    --cream:      #FAF8F3;
-    --text:       #0D1F35;
-    --muted:      #5A6B82;
-    --border:     #D8D2C5;
-    --teal:       #0D9268;
-    --teal-l:     #6FCDA8;
-    --red:        #C8102E;
+  :root{
+    --navy:#0D1F35; --navy-2:#1F2A3D; --gold:#C9A84C; --gold-l:#E8C97A; --gold-d:#9c7f2e;
+    --parchment:#FAF8F3; --ink:#233043; --muted:#5f6a7d; --line:#e9e0cf;
+    --teal:#0D9268; --teal-l:#0f7d5b;
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--parchment);color:var(--ink);min-height:100vh;font-size:16px;-webkit-font-smoothing:antialiased}
 
   /* HEADER */
-  .header { background: var(--navy); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(201,168,76,0.25); }
-  .header-left { display: flex; align-items: center; gap: 22px; }
-  .header-logo { height: 28px; width: auto; display: block; }
-  .header-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.32); }
-  .header-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.82); letter-spacing: 0.08em; }
-  .header-ay { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold-l); letter-spacing: 0.1em; padding: 3px 10px; border: 1px solid rgba(201,168,76,0.4); border-radius: 12px; }
-  .header-right { display: flex; align-items: center; gap: 14px; }
-  .header-date { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; }
-  .header-user { font-size: 12px; color: rgba(255,255,255,0.65); }
-  .header-user a { color: var(--gold-l); text-decoration: none; margin-left: 10px; font-size: 11.5px; }
-  .header-user a:hover { text-decoration: underline; }
+  .header{background:var(--navy);padding:0 clamp(16px,4vw,32px);height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.25);padding-top:env(safe-area-inset-top,0px)}
+  .header-left{display:flex;align-items:center;gap:20px}
+  .header-logo{height:26px;width:auto;display:block}
+  .header-divider{width:1px;height:26px;background:rgba(255,255,255,.32)}
+  .header-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.82);letter-spacing:.08em}
+  .header-ay{font-family:var(--mono);font-size:10px;color:var(--gold-l);letter-spacing:.1em;padding:3px 10px;border:1px solid rgba(201,168,76,.4);border-radius:12px}
+  .header-right{display:flex;align-items:center;gap:14px}
+  .header-date{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.08em}
+  .header-user{font-size:13px;color:rgba(255,255,255,.7)}
+  .header-user a{color:var(--gold-l);text-decoration:none;margin-left:10px;font-size:12px}
+  .header-user a:hover{text-decoration:underline}
 
   /* HERO */
-  .hero { background: var(--navy); padding: 52px 32px 60px; position: relative; overflow: hidden; }
-  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%); pointer-events: none; }
-  .hero-greeting { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; opacity: 0; animation: fadeUp 0.5s ease forwards; }
-  .hero-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 5vw, 44px); font-weight: 500; color: white; line-height: 1.15; margin-bottom: 8px; opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards; }
-  .hero-name em { color: var(--gold-l); font-style: italic; }
-  .hero-sub { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 30px; opacity: 0; animation: fadeUp 0.5s ease 0.15s forwards; max-width: 640px; line-height: 1.6; }
-  .focus-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.4); border-radius: 20px; font-size: 11.5px; color: var(--gold-l); font-weight: 500; letter-spacing: 0.04em; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
-  .focus-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  .hero{padding:clamp(30px,4vw,46px) clamp(16px,4vw,32px) clamp(8px,2vw,14px);max-width:1140px;margin:0 auto}
+  .hero-greeting{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-d);margin-bottom:10px}
+  .hero-name{font-family:var(--serif);font-size:clamp(30px,5vw,46px);font-weight:500;color:var(--navy);line-height:1.12;margin-bottom:8px}
+  .hero-name em{color:var(--gold-d);font-style:italic}
+  .hero-sub{font-family:var(--serif);font-style:italic;font-size:clamp(16px,1.9vw,20px);color:var(--muted);max-width:660px;line-height:1.5}
 
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .wrap{max-width:1140px;margin:0 auto;padding:clamp(14px,2vw,22px) clamp(16px,4vw,32px) 56px}
 
-  .modules-section { padding: 44px 32px 60px; max-width: 1100px; margin: 0 auto; }
+  /* PERFORMANCE FEATURE TILE */
+  .feature{background:linear-gradient(160deg,#fffdf9,#fbf7ee);border:1px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;margin-bottom:34px;
+    box-shadow:0 2px 4px rgba(31,42,61,.05),0 16px 40px rgba(31,42,61,.09),inset 0 0 0 1px rgba(201,168,76,.4),0 0 26px rgba(201,168,76,.10);
+    transition:transform .2s ease, box-shadow .3s ease}
+  .feature:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(31,42,61,.10),0 26px 54px rgba(31,42,61,.16),inset 0 0 0 1px rgba(201,168,76,.5),0 0 34px rgba(201,168,76,.2)}
+  .feature-body{padding:clamp(24px,3vw,34px)}
+  .feature-tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);background:rgba(201,168,76,.14);padding:5px 12px;border-radius:12px;font-weight:600;margin-bottom:16px}
+  .feature-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+  .feature-title{font-family:var(--serif);font-size:clamp(28px,3.6vw,36px);font-weight:600;color:var(--navy);line-height:1.1;margin-bottom:12px}
+  .feature-desc{font-size:15px;color:var(--muted);line-height:1.65;max-width:660px;margin-bottom:24px}
+  .feature-desc strong{color:var(--ink);font-weight:600}
+  .status-chips{display:flex;gap:12px;margin-bottom:26px;flex-wrap:wrap}
+  .status-chip{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px;min-width:158px;flex:1 1 158px;max-width:230px;text-decoration:none;color:inherit;display:block;cursor:pointer;transition:border-color .15s, transform .15s, box-shadow .15s}
+  .status-chip:hover{border-color:rgba(201,168,76,.55);transform:translateY(-2px);box-shadow:0 8px 20px rgba(31,42,61,.08)}
+  .status-chip-name{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--navy);line-height:1;margin-bottom:4px}
+  .status-chip-sub{font-size:12px;color:var(--muted);margin-bottom:11px;line-height:1.4}
+  .status-chip-state{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:10px;letter-spacing:.03em;font-family:var(--mono)}
+  .status-chip-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .state-open{background:rgba(201,168,76,.16);color:var(--gold-d)} .state-open .status-chip-dot{background:var(--gold)}
+  .state-submitted{background:rgba(13,146,104,.14);color:var(--teal-l)} .state-submitted .status-chip-dot{background:var(--teal)}
+  .state-locked{background:rgba(95,106,125,.1);color:var(--muted)} .state-locked .status-chip-dot{background:var(--muted)}
+  .feature-cta{padding:13px 26px;background:var(--navy);color:#fff;border:none;border-radius:11px;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s;display:inline-flex;align-items:center;gap:9px}
+  .feature-cta:hover{transform:translateX(2px)}
+  .feature-footer{padding:13px clamp(24px,3vw,34px);background:rgba(201,168,76,.06);border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.03em}
 
-  /* HERO TILE : Performance */
-  .hero-tile {
-    background: linear-gradient(135deg, #1F1A2E 0%, #2D1F3D 100%);
-    border-radius: 18px;
-    overflow: hidden;
-    cursor: pointer;
-    margin-bottom: 22px;
-    border: 1px solid rgba(201,168,76,0.35);
-    box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    opacity: 0;
-    animation: fadeUp 0.6s ease 0.25s forwards;
-    position: relative;
-  }
-  .hero-tile:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-  .hero-tile-body { padding: 34px 38px 28px; position: relative; overflow: hidden; }
-  .hero-tile-body::before { content: ''; position: absolute; top: -80px; right: -80px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%); pointer-events: none; }
-  .hero-tile-tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 12px; border-radius: 12px; background: rgba(201,168,76,0.18); color: var(--gold); width: fit-content; margin-bottom: 18px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .hero-tile-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
-  .hero-tile-icon { font-size: 30px; margin-bottom: 14px; line-height: 1; color: var(--gold-l); }
-  .hero-tile-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; color: white; line-height: 1.15; margin-bottom: 10px; }
-  .hero-tile-desc { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.65; max-width: 620px; margin-bottom: 24px; }
-  .hero-tile-desc strong { color: rgba(255,255,255,0.9); }
+  .gate-notice{background:rgba(201,168,76,.1);border-left:3px solid var(--gold);border-radius:8px;padding:14px 18px;margin:0 0 34px;display:flex;gap:12px;align-items:flex-start}
+  .gate-notice-icon{color:var(--gold-d);font-size:16px;flex-shrink:0;margin-top:1px}
+  .gate-notice-text{font-size:14px;color:var(--ink);line-height:1.6}
+  .gate-notice-text strong{font-weight:600;color:var(--navy)}
 
-  /* Gate chips */
-  .status-chips { display: flex; gap: 12px; margin-bottom: 26px; flex-wrap: wrap; }
-  .status-chip {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 12px 16px;
-    min-width: 160px;
-    flex: 1 1 160px;
-    max-width: 220px;
-    transition: border-color 0.15s, background 0.15s, transform 0.15s;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    cursor: pointer;
-  }
-  .status-chip:hover { border-color: rgba(201,168,76,0.45); background: rgba(255,255,255,0.07); transform: translateY(-2px); }
-  .status-chip-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; color: var(--gold-l); line-height: 1; margin-bottom: 4px; letter-spacing: 0.01em; }
-  .status-chip-sub { font-size: 10.5px; color: rgba(255,255,255,0.5); letter-spacing: 0.02em; margin-bottom: 10px; line-height: 1.4; }
-  .status-chip-state { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 10px; letter-spacing: 0.04em; font-family: 'DM Mono', monospace; }
-  .status-chip-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-  .state-open { background: rgba(201,168,76,0.15); color: var(--gold-l); border: 0.5px solid rgba(201,168,76,0.3); }
-  .state-open .status-chip-dot { background: var(--gold); }
-  .state-submitted { background: rgba(13,146,104,0.15); color: var(--teal-l); border: 0.5px solid rgba(13,146,104,0.3); }
-  .state-submitted .status-chip-dot { background: var(--teal); }
-  .state-locked { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.45); border: 0.5px solid rgba(255,255,255,0.1); }
-  .state-locked .status-chip-dot { background: rgba(255,255,255,0.3); }
+  /* PANELS */
+  .panel-label{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-d);margin:0 0 16px;font-weight:600;display:flex;align-items:center;gap:12px}
+  .panel-label::after{content:'';flex:1;height:1px;background:var(--line)}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:38px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.grid{grid-template-columns:1fr}}
 
-  .hero-tile-cta { padding: 14px 28px; background: var(--gold); color: var(--navy); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 10px; letter-spacing: 0.02em; }
-  .hero-tile-cta:hover { background: var(--gold-l); transform: translateX(2px); }
-  .hero-tile-footer { padding: 13px 38px; background: rgba(201,168,76,0.06); border-top: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-  .hero-tile-footer-left { font-size: 11px; color: rgba(255,255,255,0.45); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
-  .hero-tile-footer-right { font-size: 10.5px; padding: 4px 12px; border-radius: 12px; background: rgba(201,168,76,0.18); color: var(--gold-l); font-weight: 600; letter-spacing: 0.04em; }
+  .module-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative}
+  .module-card .card-body{padding:20px;min-height:150px;display:flex;flex-direction:column}
+  .module-card .card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:10px;width:fit-content;margin-bottom:13px;font-weight:600;background:rgba(201,168,76,.14);color:var(--gold-d)}
+  .module-card .card-icon{font-size:22px;margin-bottom:10px;line-height:1;color:var(--gold-d)}
+  .module-card .card-title{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--navy);line-height:1.15;margin-bottom:6px}
+  .module-card .card-desc{font-size:13.5px;color:var(--muted);line-height:1.55;flex:1}
 
-  /* Deadline notice */
-  .gate-notice {
-    background: rgba(201,168,76,0.08);
-    border-left: 3px solid var(--gold);
-    border-radius: 6px;
-    padding: 14px 18px;
-    margin: 0 0 34px;
-    display: flex; gap: 12px; align-items: flex-start;
-    opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards;
-  }
-  .gate-notice-icon { color: var(--gold); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .gate-notice-text { font-size: 13px; color: var(--text); line-height: 1.6; }
-  .gate-notice-text strong { font-weight: 600; color: var(--navy); }
+  .module-card.unlocked{cursor:pointer;box-shadow:inset 0 0 0 1px rgba(201,168,76,.4),0 2px 4px rgba(31,42,61,.05),0 10px 26px rgba(31,42,61,.07),0 0 20px rgba(201,168,76,.1);transition:transform .18s, box-shadow .3s}
+  .module-card.unlocked:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 1px rgba(201,168,76,.5),0 8px 16px rgba(31,42,61,.1),0 22px 44px rgba(31,42,61,.14),0 0 30px rgba(201,168,76,.2)}
+  .module-card.dimmed{background:rgba(201,168,76,.04);border:1px dashed var(--line);cursor:default}
+  .module-card.dimmed .card-tag{background:rgba(95,106,125,.1);color:var(--muted)}
+  .module-card.dimmed .card-icon{color:var(--muted)}
 
-  /* Section label */
-  .other-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
-  .other-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .corner-badge{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:12px;font-weight:500;z-index:2;display:flex;align-items:center;gap:5px}
+  .corner-badge.role{background:var(--navy);color:var(--gold-l);border:1px solid rgba(201,168,76,.3)}
+  .corner-badge.role .badge-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+  .corner-badge.locked{background:rgba(13,31,53,.85);color:#fff}
+  .corner-badge.parked{background:rgba(95,106,125,.1);color:var(--muted);border:1px solid var(--line)}
 
-  .modules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 38px; }
-  @media (max-width: 700px) { .modules-grid { grid-template-columns: 1fr; } }
+  .footer{background:var(--navy);border-top:1px solid rgba(201,168,76,.15);padding:16px clamp(16px,4vw,32px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  .footer-text{font-family:var(--serif);font-style:italic;font-size:13px;color:rgba(255,255,255,.5)}
+  .footer-right{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.06em}
 
-  .module-card {
-    background: white; border: 1px solid var(--border); border-radius: 14px;
-    overflow: hidden; position: relative;
-    opacity: 0; animation: fadeUp 0.5s ease forwards;
-  }
-  .module-card:nth-child(1){ animation-delay: 0.4s; }
-  .module-card:nth-child(2){ animation-delay: 0.45s; }
-  .module-card:nth-child(3){ animation-delay: 0.5s; }
-  .module-card:nth-child(4){ animation-delay: 0.55s; }
-  .module-card .card-body { padding: 22px 22px 18px; min-height: 158px; display: flex; flex-direction: column; }
-  .module-card .card-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 9px; border-radius: 10px; width: fit-content; margin-bottom: 14px; font-weight: 600; }
-  .module-card .card-icon { font-size: 23px; margin-bottom: 10px; line-height: 1; }
-  .module-card .card-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 500; color: var(--text); line-height: 1.2; margin-bottom: 6px; }
-  .module-card .card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.55; flex: 1; }
-
-  .module-card.unlocked { border-left: 3px solid var(--gold); cursor: pointer; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; }
-  .module-card.unlocked:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.08); border-color: var(--gold); }
-  .module-card.unlocked .card-tag { background: rgba(201,168,76,0.15); color: var(--gold-d); }
-  .module-card.unlocked .card-icon { color: var(--gold); }
-
-  .module-card.dimmed { cursor: not-allowed; opacity: 0.55; filter: saturate(0.5); }
-  .module-card.dimmed .card-tag { background: rgba(0,0,0,0.05); color: var(--muted); }
-  .module-card.dimmed .card-icon { color: var(--muted); }
-
-  .corner-badge {
-    position: absolute; top: 12px; right: 12px;
-    font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 4px 10px; border-radius: 12px; font-weight: 500; z-index: 2;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .corner-badge.role { background: var(--navy); color: var(--gold-l); border: 1px solid rgba(201,168,76,0.3); }
-  .corner-badge.role .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
-  .corner-badge.locked { background: rgba(13,31,53,0.85); color: white; }
-  .corner-badge.parked { background: rgba(13,31,53,0.08); color: var(--muted); border: 1px solid var(--border); }
-
-  /* FOOTER */
-  .footer { background: var(--navy); border-top: 1px solid rgba(201,168,76,0.15); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-  .footer-left { display: flex; align-items: center; gap: 12px; }
-  .footer-logo { height: 22px; width: auto; display: block; }
-  .footer-text { font-size: 11px; color: rgba(255,255,255,0.4); }
-  .footer-right { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
-
-  @media (max-width: 700px) {
-    .header { padding: 0 16px; } .header-date { display: none; }
-    .hero { padding: 38px 16px 44px; }
-    .modules-section { padding: 30px 16px 40px; }
-    .hero-tile-body { padding: 24px 22px 20px; }
-    .hero-tile-footer { padding: 13px 22px; }
-    .status-chips { gap: 8px; }
-    .status-chip { min-width: 0; max-width: none; flex: 1 1 100%; padding: 10px 14px; }
-    .footer { padding: 14px 16px; }
-  }
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-left">
-    <svg class="header-logo" xmlns="http://www.w3.org/2000/svg" viewBox="150 85 1325 406" preserveAspectRatio="xMidYMid meet" role="img" aria-label="XIME">
-  <path fill="#ffffff" d="M155.07,424.69c4.7-.4,9.4-1.13,14.1-1.14,7.32-.01,13.75-2.47,19.99-5.94,4.85-2.7,8.85-6.38,12.76-10.24,7.29-7.2,14.88-14.11,21.98-21.5,5.82-6.06,11.1-12.63,16.62-18.98,1.73-1.98,3.42-4,5.23-5.91,5.09-5.36,10.21-10.69,15.35-16,6.83-7.07,13.7-14.09,20.51-21.17,3.22-3.34,6.43-6.69,9.51-10.17,5.72-6.45,11.35-12.98,16.98-19.51,2.61-3.02,2.83-5.32.31-8.45-3.36-4.16-6.36-8.68-10.86-11.8-.48-.34-.74-1-1.11-1.5-5.42-7.35-10.74-14.77-16.29-22.02-6.82-8.92-13.78-17.73-20.79-26.51-4.98-6.24-10.09-12.38-15.24-18.47-7.13-8.41-14.1-16.93-20.8-25.71-4.27-5.59-8.77-11.03-13.82-16-6.29-6.2-13.79-9.48-22.45-10.27-6.07-.55-12.16-.86-18.23-1.31-.82-.06-1.62-.41-2.44-.54-1.3-.21-1.77-.98-1.72-2.22.03-.74,0-1.48,0-2.22,0-15.99.03-31.97-.03-47.96,0-2.44.29-4.64,2.69-6.64h2.58c21.6,0,43.21-.54,64.79.13,29.51.91,59.03-.27,88.52.66,15.23.48,30.43.12,45.65.48.53.01,1.05.07,1.79.12.12.68.33,1.37.34,2.06.03,4.13.39,8.3-.06,12.38-1.07,9.71-.21,19.43-.58,29.14-.18,4.72-.59,9.43-.93,14.55-2.35.23-4.81.61-7.28.69-7.8.28-15.61.43-23.41.68-2.15.07-2.46.51-2.67,2.66-.28,2.85,1.01,5.18,2.54,7.3,3.32,4.6,6.8,9.08,10.31,13.55,3.37,4.3,6.84,8.52,10.3,12.75,3.27,3.99,6.69,7.85,9.85,11.92,3.34,4.3,6.44,8.78,9.93,13.56.13-.03.91-.02,1.41-.4,1.59-1.21,3.16-2.48,4.58-3.88,4.38-4.3,8.82-8.56,13.01-13.04,5.83-6.23,11.53-12.59,17.15-19.02,4.29-4.91,8.4-9.99,12.49-15.07,1.18-1.46,2.19-3.12,2.99-4.83,1.12-2.41.39-4.47-2.06-5.42-2.33-.89-4.8-1.72-7.26-1.87-3.66-.23-7.36.18-11.04.28-2.96.08-5.92.25-8.87.1-1.97-.1-2.7-1.11-2.71-3.17-.04-6.46-.5-12.96.1-19.36.88-9.31.15-18.59.54-27.87.12-2.92.55-5.83.85-8.91h458.5c4.25,15.13,8.48,30.26,12.77,45.37,2.99,10.52,6.11,21,9.09,31.51,3.79,13.35,7.47,26.73,11.24,40.08,2.97,10.52,6.02,21.03,9.04,31.54,3.02,10.51,6.1,21,9.01,31.55.69,2.51.61,5.22,1.17,7.78,1.15,5.23,2.53,10.41,3.77,15.62,1.46,6.12,2.85,12.25,4.31,18.36.22.9.61,1.77.93,2.68,1.78.35,2.24-.67,2.59-2.03,1.19-4.56,2.45-9.1,3.69-13.65.41-1.52.86-3.02,1.28-4.54,3.36-12.37,6.66-24.75,10.09-37.1,3.91-14.08,7.88-28.14,11.93-42.18,2.88-10.01,5.93-19.97,8.89-29.95,3.19-10.79,6.32-21.6,9.56-32.38,1.72-5.74,3.66-11.42,5.42-17.15,3.27-10.64,6.48-21.29,9.75-31.93,1.42-4.62,2.91-9.22,4.39-13.82.19-.58.57-1.11.96-1.85h3.46c136.78,0,273.56.02,410.34-.06,5.95,0,8.27,2.42,9.67,7.1.48,1.6.93,3.24,1.14,4.89.22,1.7-.38,3.59,1.77,4.58.34.16.41.94.58,1.43,2.64,7.54,5.23,15.09,7.93,22.61,3.88,10.8,7.86,21.57,11.76,32.36,1.72,4.76,3.3,9.56,4.98,14.34,3.57,10.14,7.11,20.29,10.79,30.39.94,2.58,1.05,5.15.94,7.79-.1,2.42-1.07,3.52-3.51,4.11-6.79,1.64-13.12,4.49-19.43,7.38-8.05,3.7-16.45,6.41-24.92,8.91-1.19.35-2.46.39-3.91.61-.26-.62-.55-1.26-.8-1.91-2.28-6-4.86-11.85-8.03-17.46-2.64-4.67-4.81-9.61-8.06-13.93-1.13-1.51-2.18-3.11-3.46-4.49-1.95-2.11-2.99-4.74-4.47-7.12-3.56-5.74-8.46-10.13-13.87-14-8.8-6.3-18.45-11.03-28.67-14.48-7.27-2.45-14.72-4.02-22.54-3.96-22.97.16-45.95.06-68.92.06-1.35,0-2.7,0-3.95,0-.72,2.75-.84,84.66-.18,88.44,1.05.06,2.18.17,3.3.17,10.9.01,21.81-.06,32.71.04,3.99.04,7.19-1.58,9.95-4.15,4.31-4.02,6.98-8.92,7.34-14.93.16-2.62.49-5.23.59-7.85.26-7.17.42-14.34.69-21.51.05-1.24.27-2.56.76-3.69.92-2.14,2.87-2.54,5.02-2.54,14.4.02,28.8.01,43.19.01.42,0,.85.01,1.27.01,1.44-.01,2.14.69,2.11,2.14-.02.85,0,1.69,0,2.54,0,22.87-.54,45.75.14,68.6.85,28.46.11,56.91.52,85.36.02,1.14.35,2.27.48,3.41.22,1.89.29,3.73-.63,5.55-1.2,2.37-2.68,3.49-5.61,3.45-14.18-.19-28.37-.08-42.56-.09-4.08,0-4.7-.63-4.73-4.83-.02-3.07.07-6.14-.02-9.21-.17-6.22-.12-12.47-.72-18.65-.53-5.42-1.51-10.86-4.89-15.48-2.81-3.84-6.49-6.32-11.19-7.07-2.48-.4-5.02-.62-7.53-.64-8.89-.07-17.79-.03-26.68-.03-1.15,0-2.3,0-3.64,0-.12,1.08-.29,1.89-.29,2.71-.01,32.19-.02,64.37,0,96.56,0,3.91,1.91,5.78,5.7,5.91,1.03.03,2.05.34,3.09.47,3.95.49,7.9,1.3,11.86,1.36,11.85.18,23.71.13,35.57.04,5.79-.05,11.61-.13,17.37-.7,4.45-.45,8.9-1.43,13.23-2.63,11.56-3.22,22.74-7.52,33.51-12.84,4.18-2.06,7.98-4.72,11.47-7.74,3.98-3.46,7.89-7.03,11.49-10.88,3.36-3.6,6.38-7.54,9.34-11.49,3.46-4.61,6.74-9.37,10.03-14.11,5.88-8.46,9.81-17.82,12.79-27.64.91-3,2.21-5.91,3.56-8.74,1.41-2.95,3.07-3.62,6.2-2.65,2.1.66,4.13,1.55,6.16,2.41,4.75,2.02,9.58,3.73,14.75,4.33.39.04,1.01.19,1.1.43.75,2.1,2.78,2.08,4.38,2.66,6.12,2.23,12.28,4.33,18.41,6.53,2.43.87,2.65,1.5,2.34,4.2-1.05,9.07-4.21,17.55-7.16,26.11-3.05,8.86-5.88,17.79-8.81,26.69-1.78,5.41-3.51,10.83-5.4,16.2-2.34,6.66-4.82,13.27-7.25,19.9-1.38,3.76-2.81,7.5-4.14,11.28-.66,1.88-1.09,3.84-1.72,5.74-3.19,9.57-6.42,19.13-9.63,28.7-1.17,3.49-2.35,6.98-3.55,10.46-1,2.9-1.05,2.94-3.98,2.97-1.27.01-2.54,0-3.81,0-128.1,0-256.2-.09-384.3.14-12.77.02-25.56.48-38.34.43-3.32-.01-6.69-.63-9.95-1.34-3.49-.76-4.39-2.2-4.39-5.9,0-16.52-.01-33.03,0-49.55,0-3.88,1.02-4.74,4.88-4.69,6.14.08,12.29.29,18.42-.06,4.36-.25,8.73-1.12,12.84-2.81,1.88-.77,3.54-1.79,4.61-3.66.51-.89,1.26-1.78,2.12-2.33,2.07-1.32,2.26-3.18,2.26-5.4-.05-38.22.52-76.45-.2-114.66-.66-35.02-.08-70.04-.48-105.05-.01-.94-.1-1.87-.74-2.95-.7,2.29-1.46,4.56-2.11,6.86-2.32,8.27-4.62,16.55-6.9,24.83-3.01,10.91-5.99,21.83-9.02,32.73-2.02,7.27-4.13,14.51-6.18,21.77-1.51,5.35-2.98,10.7-4.49,16.05-2.13,7.56-4.26,15.13-6.42,22.68-4.06,14.21-8.18,28.4-12.2,42.62-4.4,15.53-8.77,31.06-13.05,46.62-3.76,13.64-7.44,27.3-11.06,40.97-3.44,12.96-6.76,25.95-10.13,38.93-.78,3-1.59,3.76-4.51,3.76-17.57.02-35.15,0-52.72,0-.31,0-.62-.1-.54-.09-.53-2.39-.93-4.62-1.54-6.8-2.82-10.1-5.67-20.19-8.57-30.27-2.67-9.27-5.46-18.51-8.11-27.79-3.26-11.4-6.43-22.82-9.67-34.22-2.73-9.59-5.53-19.15-8.27-28.74-3.2-11.2-6.32-22.41-9.54-33.6-3.1-10.79-6.34-21.54-9.42-32.34-2.62-9.17-5.09-18.39-7.64-27.58-2.3-8.28-4.64-16.56-6.93-24.84-2.57-9.3-5.12-18.6-7.68-27.9-1.16-4.25-2.3-8.5-3.48-12.74-.13-.46-.46-.86-1.07-1.98-.1,1.75-.2,2.75-.2,3.75,0,68.61-.01,137.22,0,205.82,0,4.53,1.26,8.75,4.01,12.38,2.5,3.3,6.22,4.63,10.09,5.35,2.67.49,5.43.62,8.15.67,5.5.1,11.01.05,16.51.02,1.35,0,2.71-.18,4.37-.3,1.34,1.91,1.89,4.41,1.91,6.87.1,15.88.06,31.76.02,47.64,0,1.13-.29,2.3-.65,3.38-.82,2.51-1.78,3.18-4.38,3.29-.74.03-1.48,0-2.22,0-151.81,0-303.63,0-455.44,0-.64,0-1.27,0-1.91,0-3.09-.02-4.16-.76-4.79-3.8-.59-2.87-1.13-5.78-1.32-8.7-.37-5.68-.71-11.38-.64-17.06.13-9.81.58-19.62.9-29.64,2.57-1.85,5.67-2.38,9-2.34,8.05.08,16.09.03,24.14.03,1.15,0,2.3,0,3.63,0,.63-3.48.98-6.71-1.09-9.59-4.66-6.5-9.33-13-14.16-19.38-3.87-5.12-7.81-10.19-12-15.04-3.28-3.79-6.23-7.9-10.61-10.74-2.02-1.31-3.31-3.77-4.84-5.78-4.21-5.52-8.37-11.08-12.57-16.61-.23-.3-.66-.45-1.04-.71-2.19,2.27-4.35,4.39-6.37,6.64-2.74,3.05-5.33,6.24-8.08,9.28-3.11,3.44-6.37,6.76-9.5,10.19-4.12,4.51-8.1,9.16-12.31,13.59-3.19,3.36-6.69,6.43-9.95,9.72-2.9,2.92-5.62,6.01-8.5,8.95-2.69,2.75-4.85,5.85-6.49,9.3-1.1,2.31-1.69,4.73-.62,7.26.8,1.91,1.96,3.01,4.3,2.97,7.83-.12,15.67-.05,23.5-.05.74,0,1.49-.03,2.22.03,1.48.11,2.31.93,2.38,2.43.04.74.02,1.48.02,2.22,0,17.36,0,34.73,0,52.09,0,.85.14,1.74-.09,2.52-.17.59-.74,1.25-1.29,1.49-.95.4-2.02.64-3.05.7-4.94.27-9.89.46-14.83.67-5.05.22-10.14.91-15.15.54-14.05-1.03-28.13.13-42.15-.64-19.03-1.04-38.06-.57-57.08-.36-8.53.1-17.09.38-25.64.38-3.42,0-6.84-.75-10.25-1.16,0-19.91,0-39.81,0-59.72ZM652.38,289.34c0,39.79.04,79.59-.06,119.38-.01,3.8.87,7.05,3.18,9.96,2.23,2.81,4.96,4.79,8.74,4.79,17.46,0,34.92,0,52.38,0,.83,0,1.73.02,2.49-.27,6.13-2.3,11.78-8.94,11.78-16.43-.06-76.1-.04-152.19-.04-228.29,0-.85,0-1.7-.07-2.54-.38-4.18-.97-8.35-1.12-12.53-.07-2.07-.8-3.65-1.99-5.14-.72-.9-1.54-1.76-2.45-2.48-3.16-2.51-6.53-4.87-10.71-4.9-16.3-.11-32.6-.13-48.89,0-4.51.04-8,2.38-10.27,6.33-2.1,3.64-2.97,7.59-2.97,11.78,0,40.11,0,80.22,0,120.34ZM554.03,290.26c0-36.94.02-73.87-.03-110.81,0-3.88-.13-7.81-.7-11.64-.5-3.4-1.47-6.77-2.66-10-.9-2.43-2.57-4.07-5.76-3.88-3.81.23-7.35,1.09-10.38,3.27-4.86,3.5-9.49,7.3-14.24,10.96-1.33,1.02-2.59,2.45-4.09,2.83-1.86.46-2.96,1.58-4.01,2.85-4.48,5.43-8.71,11.07-13.36,16.34-5.64,6.41-11.61,12.53-17.42,18.78-2.44,2.62-4.86,5.26-7.28,7.91-5.55,6.06-11.02,12.2-16.65,18.19-5.78,6.16-11.7,12.19-17.59,18.25-2.28,2.35-4.68,4.6-6.94,6.98-2.32,2.44-4.61,4.92-6.8,7.48-1.77,2.08-1.7,2.82-.23,5.31,4.92,8.38,11.51,15.48,17.59,22.96,3.11,3.83,6.47,7.48,9.3,11.5,3.34,4.75,7.04,9.15,11.05,13.32,2.56,2.65,5.02,5.37,6.42,8.89.38.96,1.06,1.82,1.7,2.65,5.66,7.3,11.33,14.59,17.02,21.86,3.49,4.47,6.99,8.92,10.53,13.35,3.8,4.76,7.64,9.49,11.5,14.21,2.86,3.49,5.73,6.98,8.68,10.4,2.2,2.55,4.69,4.87,6.76,7.52,4.6,5.87,10.22,10.59,16.27,14.84,1.71,1.2,3.66,2.11,5.59,2.94,1.78.76,3.34.24,3.69-1.21.88-3.65,2.11-7.18,2.1-11.09-.1-38.31-.06-76.63-.06-114.94ZM1116.52,288.94c0,39.27.02,78.54-.04,117.81,0,2.73.54,5.29,1.65,7.64,1.93,4.11,4.63,7.4,9.95,6.56.62-.1,1.27-.05,1.9,0,2.76.19,4.61-1.16,5.92-3.44,2.47-4.28,3.77-8.94,3.77-13.83.04-78.12.03-156.23.02-234.35,0-4.17-1.57-7.81-4.33-10.88-3.91-4.36-9.4-4.53-13.54-.4-3.51,3.49-5.29,7.81-5.29,12.77-.02,39.38,0,78.75-.01,118.13Z"/>
-</svg>
+    <svg class="header-logo" xmlns="http://www.w3.org/2000/svg" viewBox="150 85 1325 406" preserveAspectRatio="xMidYMid meet" role="img" aria-label="XIME"><path fill="#ffffff" d="M155.07,424.69c4.7-.4,9.4-1.13,14.1-1.14,7.32-.01,13.75-2.47,19.99-5.94,4.85-2.7,8.85-6.38,12.76-10.24,7.29-7.2,14.88-14.11,21.98-21.5,5.82-6.06,11.1-12.63,16.62-18.98,1.73-1.98,3.42-4,5.23-5.91,5.09-5.36,10.21-10.69,15.35-16,6.83-7.07,13.7-14.09,20.51-21.17,3.22-3.34,6.43-6.69,9.51-10.17,5.72-6.45,11.35-12.98,16.98-19.51,2.61-3.02,2.83-5.32.31-8.45-3.36-4.16-6.36-8.68-10.86-11.8-.48-.34-.74-1-1.11-1.5-5.42-7.35-10.74-14.77-16.29-22.02-6.82-8.92-13.78-17.73-20.79-26.51-4.98-6.24-10.09-12.38-15.24-18.47-7.13-8.41-14.1-16.93-20.8-25.71-4.27-5.59-8.77-11.03-13.82-16-6.29-6.2-13.79-9.48-22.45-10.27-6.07-.55-12.16-.86-18.23-1.31-.82-.06-1.62-.41-2.44-.54-1.3-.21-1.77-.98-1.72-2.22.03-.74,0-1.48,0-2.22,0-15.99.03-31.97-.03-47.96,0-2.44.29-4.64,2.69-6.64h2.58c21.6,0,43.21-.54,64.79.13,29.51.91,59.03-.27,88.52.66,15.23.48,30.43.12,45.65.48.53.01,1.05.07,1.79.12.12.68.33,1.37.34,2.06.03,4.13.39,8.3-.06,12.38-1.07,9.71-.21,19.43-.58,29.14-.18,4.72-.59,9.43-.93,14.55-2.35.23-4.81.61-7.28.69-7.8.28-15.61.43-23.41.68-2.15.07-2.46.51-2.67,2.66-.28,2.85,1.01,5.18,2.54,7.3,3.32,4.6,6.8,9.08,10.31,13.55,3.37,4.3,6.84,8.52,10.3,12.75,3.27,3.99,6.69,7.85,9.85,11.92,3.34,4.3,6.44,8.78,9.93,13.56.13-.03.91-.02,1.41-.4,1.59-1.21,3.16-2.48,4.58-3.88,4.38-4.3,8.82-8.56,13.01-13.04,5.83-6.23,11.53-12.59,17.15-19.02,4.29-4.91,8.4-9.99,12.49-15.07,1.18-1.46,2.19-3.12,2.99-4.83,1.12-2.41.39-4.47-2.06-5.42-2.33-.89-4.8-1.72-7.26-1.87-3.66-.23-7.36.18-11.04.28-2.96.08-5.92.25-8.87.1-1.97-.1-2.7-1.11-2.71-3.17-.04-6.46-.5-12.96.1-19.36.88-9.31.15-18.59.54-27.87.12-2.92.55-5.83.85-8.91h458.5c4.25,15.13,8.48,30.26,12.77,45.37,2.99,10.52,6.11,21,9.09,31.51,3.79,13.35,7.47,26.73,11.24,40.08,2.97,10.52,6.02,21.03,9.04,31.54,3.02,10.51,6.1,21,9.01,31.55.69,2.51.61,5.22,1.17,7.78,1.15,5.23,2.53,10.41,3.77,15.62,1.46,6.12,2.85,12.25,4.31,18.36.22.9.61,1.77.93,2.68,1.78.35,2.24-.67,2.59-2.03,1.19-4.56,2.45-9.1,3.69-13.65.41-1.52.86-3.02,1.28-4.54,3.36-12.37,6.66-24.75,10.09-37.1,3.91-14.08,7.88-28.14,11.93-42.18,2.88-10.01,5.93-19.97,8.89-29.95,3.19-10.79,6.32-21.6,9.56-32.38,1.72-5.74,3.66-11.42,5.42-17.15,3.27-10.64,6.48-21.29,9.75-31.93,1.42-4.62,2.91-9.22,4.39-13.82.19-.58.57-1.11.96-1.85h3.46c136.78,0,273.56.02,410.34-.06,5.95,0,8.27,2.42,9.67,7.1.48,1.6.93,3.24,1.14,4.89.22,1.7-.38,3.59,1.77,4.58.34.16.41.94.58,1.43,2.64,7.54,5.23,15.09,7.93,22.61,3.88,10.8,7.86,21.57,11.76,32.36,1.72,4.76,3.3,9.56,4.98,14.34,3.57,10.14,7.11,20.29,10.79,30.39.94,2.58,1.05,5.15.94,7.79-.1,2.42-1.07,3.52-3.51,4.11-6.79,1.64-13.12,4.49-19.43,7.38-8.05,3.7-16.45,6.41-24.92,8.91-1.19.35-2.46.39-3.91.61-.26-.62-.55-1.26-.8-1.91-2.28-6-4.86-11.85-8.03-17.46-2.64-4.67-4.81-9.61-8.06-13.93-1.13-1.51-2.18-3.11-3.46-4.49-1.95-2.11-2.99-4.74-4.47-7.12-3.56-5.74-8.46-10.13-13.87-14-8.8-6.3-18.45-11.03-28.67-14.48-7.27-2.45-14.72-4.02-22.54-3.96-22.97.16-45.95.06-68.92.06-1.35,0-2.7,0-3.95,0-.72,2.75-.84,84.66-.18,88.44,1.05.06,2.18.17,3.3.17,10.9.01,21.81-.06,32.71.04,3.99.04,7.19-1.58,9.95-4.15,4.31-4.02,6.98-8.92,7.34-14.93.16-2.62.49-5.23.59-7.85.26-7.17.42-14.34.69-21.51.05-1.24.27-2.56.76-3.69.92-2.14,2.87-2.54,5.02-2.54,14.4.02,28.8.01,43.19.01.42,0,.85.01,1.27.01,1.44-.01,2.14.69,2.11,2.14-.02.85,0,1.69,0,2.54,0,22.87-.54,45.75.14,68.6.85,28.46.11,56.91.52,85.36.02,1.14.35,2.27.48,3.41.22,1.89.29,3.73-.63,5.55-1.2,2.37-2.68,3.49-5.61,3.45-14.18-.19-28.37-.08-42.56-.09-4.08,0-4.7-.63-4.73-4.83-.02-3.07.07-6.14-.02-9.21-.17-6.22-.12-12.47-.72-18.65-.53-5.42-1.51-10.86-4.89-15.48-2.81-3.84-6.49-6.32-11.19-7.07-2.48-.4-5.02-.62-7.53-.64-8.89-.07-17.79-.03-26.68-.03-1.15,0-2.3,0-3.64,0-.12,1.08-.29,1.89-.29,2.71-.01,32.19-.02,64.37,0,96.56,0,3.91,1.91,5.78,5.7,5.91,1.03.03,2.05.34,3.09.47,3.95.49,7.9,1.3,11.86,1.36,11.85.18,23.71.13,35.57.04,5.79-.05,11.61-.13,17.37-.7,4.45-.45,8.9-1.43,13.23-2.63,11.56-3.22,22.74-7.52,33.51-12.84,4.18-2.06,7.98-4.72,11.47-7.74,3.98-3.46,7.89-7.03,11.49-10.88,3.36-3.6,6.38-7.54,9.34-11.49,3.46-4.61,6.74-9.37,10.03-14.11,5.88-8.46,9.81-17.82,12.79-27.64.91-3,2.21-5.91,3.56-8.74,1.41-2.95,3.07-3.62,6.2-2.65,2.1.66,4.13,1.55,6.16,2.41,4.75,2.02,9.58,3.73,14.75,4.33.39.04,1.01.19,1.1.43.75,2.1,2.78,2.08,4.38,2.66,6.12,2.23,12.28,4.33,18.41,6.53,2.43.87,2.65,1.5,2.34,4.2-1.05,9.07-4.21,17.55-7.16,26.11-3.05,8.86-5.88,17.79-8.81,26.69-1.78,5.41-3.51,10.83-5.4,16.2-2.34,6.66-4.82,13.27-7.25,19.9-1.38,3.76-2.81,7.5-4.14,11.28-.66,1.88-1.09,3.84-1.72,5.74-3.19,9.57-6.42,19.13-9.63,28.7-1.17,3.49-2.35,6.98-3.55,10.46-1,2.9-1.05,2.94-3.98,2.97-1.27.01-2.54,0-3.81,0-128.1,0-256.2-.09-384.3.14-12.77.02-25.56.48-38.34.43-3.32-.01-6.69-.63-9.95-1.34-3.49-.76-4.39-2.2-4.39-5.9,0-16.52-.01-33.03,0-49.55,0-3.88,1.02-4.74,4.88-4.69,6.14.08,12.29.29,18.42-.06,4.36-.25,8.73-1.12,12.84-2.81,1.88-.77,3.54-1.79,4.61-3.66.51-.89,1.26-1.78,2.12-2.33,2.07-1.32,2.26-3.18,2.26-5.4-.05-38.22.52-76.45-.2-114.66-.66-35.02-.08-70.04-.48-105.05-.01-.94-.1-1.87-.74-2.95-.7,2.29-1.46,4.56-2.11,6.86-2.32,8.27-4.62,16.55-6.9,24.83-3.01,10.91-5.99,21.83-9.02,32.73-2.02,7.27-4.13,14.51-6.18,21.77-1.51,5.35-2.98,10.7-4.49,16.05-2.13,7.56-4.26,15.13-6.42,22.68-4.06,14.21-8.18,28.4-12.2,42.62-4.4,15.53-8.77,31.06-13.05,46.62-3.76,13.64-7.44,27.3-11.06,40.97-3.44,12.96-6.76,25.95-10.13,38.93-.78,3-1.59,3.76-4.51,3.76-17.57.02-35.15,0-52.72,0-.31,0-.62-.1-.54-.09-.53-2.39-.93-4.62-1.54-6.8-2.82-10.1-5.67-20.19-8.57-30.27-2.67-9.27-5.46-18.51-8.11-27.79-3.26-11.4-6.43-22.82-9.67-34.22-2.73-9.59-5.53-19.15-8.27-28.74-3.2-11.2-6.32-22.41-9.54-33.6-3.1-10.79-6.34-21.54-9.42-32.34-2.62-9.17-5.09-18.39-7.64-27.58-2.3-8.28-4.64-16.56-6.93-24.84-2.57-9.3-5.12-18.6-7.68-27.9-1.16-4.25-2.3-8.5-3.48-12.74-.13-.46-.46-.86-1.07-1.98-.1,1.75-.2,2.75-.2,3.75,0,68.61-.01,137.22,0,205.82,0,4.53,1.26,8.75,4.01,12.38,2.5,3.3,6.22,4.63,10.09,5.35,2.67.49,5.43.62,8.15.67,5.5.1,11.01.05,16.51.02,1.35,0,2.71-.18,4.37-.3,1.34,1.91,1.89,4.41,1.91,6.87.1,15.88.06,31.76.02,47.64,0,1.13-.29,2.3-.65,3.38-.82,2.51-1.78,3.18-4.38,3.29-.74.03-1.48,0-2.22,0-151.81,0-303.63,0-455.44,0-.64,0-1.27,0-1.91,0-3.09-.02-4.16-.76-4.79-3.8-.59-2.87-1.13-5.78-1.32-8.7-.37-5.68-.71-11.38-.64-17.06.13-9.81.58-19.62.9-29.64,2.57-1.85,5.67-2.38,9-2.34,8.05.08,16.09.03,24.14.03,1.15,0,2.3,0,3.63,0,.63-3.48.98-6.71-1.09-9.59-4.66-6.5-9.33-13-14.16-19.38-3.87-5.12-7.81-10.19-12-15.04-3.28-3.79-6.23-7.9-10.61-10.74-2.02-1.31-3.31-3.77-4.84-5.78-4.21-5.52-8.37-11.08-12.57-16.61-.23-.3-.66-.45-1.04-.71-2.19,2.27-4.35,4.39-6.37,6.64-2.74,3.05-5.33,6.24-8.08,9.28-3.11,3.44-6.37,6.76-9.5,10.19-4.12,4.51-8.1,9.16-12.31,13.59-3.19,3.36-6.69,6.43-9.95,9.72-2.9,2.92-5.62,6.01-8.5,8.95-2.69,2.75-4.85,5.85-6.49,9.3-1.1,2.31-1.69,4.73-.62,7.26.8,1.91,1.96,3.01,4.3,2.97,7.83-.12,15.67-.05,23.5-.05.74,0,1.49-.03,2.22.03,1.48.11,2.31.93,2.38,2.43.04.74.02,1.48.02,2.22,0,17.36,0,34.73,0,52.09,0,.85.14,1.74-.09,2.52-.17.59-.74,1.25-1.29,1.49-.95.4-2.02.64-3.05.7-4.94.27-9.89.46-14.83.67-5.05.22-10.14.91-15.15.54-14.05-1.03-28.13.13-42.15-.64-19.03-1.04-38.06-.57-57.08-.36-8.53.1-17.09.38-25.64.38-3.42,0-6.84-.75-10.25-1.16,0-19.91,0-39.81,0-59.72ZM652.38,289.34c0,39.79.04,79.59-.06,119.38-.01,3.8.87,7.05,3.18,9.96,2.23,2.81,4.96,4.79,8.74,4.79,17.46,0,34.92,0,52.38,0,.83,0,1.73.02,2.49-.27,6.13-2.3,11.78-8.94,11.78-16.43-.06-76.1-.04-152.19-.04-228.29,0-.85,0-1.7-.07-2.54-.38-4.18-.97-8.35-1.12-12.53-.07-2.07-.8-3.65-1.99-5.14-.72-.9-1.54-1.76-2.45-2.48-3.16-2.51-6.53-4.87-10.71-4.9-16.3-.11-32.6-.13-48.89,0-4.51.04-8,2.38-10.27,6.33-2.1,3.64-2.97,7.59-2.97,11.78,0,40.11,0,80.22,0,120.34ZM554.03,290.26c0-36.94.02-73.87-.03-110.81,0-3.88-.13-7.81-.7-11.64-.5-3.4-1.47-6.77-2.66-10-.9-2.43-2.57-4.07-5.76-3.88-3.81.23-7.35,1.09-10.38,3.27-4.86,3.5-9.49,7.3-14.24,10.96-1.33,1.02-2.59,2.45-4.09,2.83-1.86.46-2.96,1.58-4.01,2.85-4.48,5.43-8.71,11.07-13.36,16.34-5.64,6.41-11.61,12.53-17.42,18.78-2.44,2.62-4.86,5.26-7.28,7.91-5.55,6.06-11.02,12.2-16.65,18.19-5.78,6.16-11.7,12.19-17.59,18.25-2.28,2.35-4.68,4.6-6.94,6.98-2.32,2.44-4.61,4.92-6.8,7.48-1.77,2.08-1.7,2.82-.23,5.31,4.92,8.38,11.51,15.48,17.59,22.96,3.11,3.83,6.47,7.48,9.3,11.5,3.34,4.75,7.04,9.15,11.05,13.32,2.56,2.65,5.02,5.37,6.42,8.89.38.96,1.06,1.82,1.7,2.65,5.66,7.3,11.33,14.59,17.02,21.86,3.49,4.47,6.99,8.92,10.53,13.35,3.8,4.76,7.64,9.49,11.5,14.21,2.86,3.49,5.73,6.98,8.68,10.4,2.2,2.55,4.69,4.87,6.76,7.52,4.6,5.87,10.22,10.59,16.27,14.84,1.71,1.2,3.66,2.11,5.59,2.94,1.78.76,3.34.24,3.69-1.21.88-3.65,2.11-7.18,2.1-11.09-.1-38.31-.06-76.63-.06-114.94ZM1116.52,288.94c0,39.27.02,78.54-.04,117.81,0,2.73.54,5.29,1.65,7.64,1.93,4.11,4.63,7.4,9.95,6.56.62-.1,1.27-.05,1.9,0,2.76.19,4.61-1.16,5.92-3.44,2.47-4.28,3.77-8.94,3.77-13.83.04-78.12.03-156.23.02-234.35,0-4.17-1.57-7.81-4.33-10.88-3.91-4.36-9.4-4.53-13.54-.4-3.51,3.49-5.29,7.81-5.29,12.77-.02,39.38,0,78.75-.01,118.13Z"/></svg>
     <div class="header-divider"></div>
     <div class="header-title">X-Hub</div>
     <div class="header-ay">AY 2026-27</div>
@@ -207,122 +120,151 @@
   </div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-greeting" id="hero-greeting">Welcome</div>
   <div class="hero-name" id="hero-name">Welcome to X-Hub</div>
-  <div class="hero-sub" id="hero-sub">Your year at XIME in three checkpoints: plan it in July, take stock in December, close it in April. Record as you go, in your own words and numbers.</div>
-  <div class="focus-badge"><div class="focus-dot"></div><span id="focus-text">Live &middot; AY 2026-27</span></div>
+  <div class="hero-sub" id="hero-sub">Everything we run, in one place. Your year in three checkpoints, your surfaces, and the platform beside them.</div>
 </div>
 
-<!-- MAIN -->
-<div class="modules-section">
+<div class="wrap">
 
-  <!-- PERFORMANCE HERO TILE -->
-  <div class="hero-tile" id="hero-tile-perf" onclick="window.location.href='performance.html'">
-    <div class="hero-tile-body">
-      <div class="hero-tile-tag"><div class="hero-tile-tag-dot"></div><span id="perf-tag">Active &middot; AY 2026-27</span></div>
-      <div class="hero-tile-icon">&#9670;</div>
-      <div class="hero-tile-title">Performance</div>
-      <div class="hero-tile-desc">One page for your whole year: <strong>Teaching</strong>, <strong>Research</strong>, <strong>Revenue</strong>, and <strong>Institution Building</strong>, scored live against the Handbook rules. Open with your <strong>Plan of Intent</strong> in July, refine at the December interim, and close at the April final. Anything without a ruled value still records, provisionally, so nothing you did goes unrecorded.</div>
-
+  <!-- PERFORMANCE FEATURE -->
+  <div class="feature" id="hero-tile-perf" onclick="window.location.href='performance.html'">
+    <div class="feature-body">
+      <div class="feature-tag"><div class="feature-tag-dot"></div><span id="perf-tag">Active &middot; AY 2026-27</span></div>
+      <div class="feature-title">Performance</div>
+      <div class="feature-desc">One page for your whole year: <strong>Teaching</strong>, <strong>Research</strong>, <strong>Revenue</strong> and <strong>Institution Building</strong>, scored live against the Handbook. Open with your <strong>Plan of Intent</strong> in July, refine at the December interim, and close at the April final. Anything without a ruled value still records, provisionally, so nothing you did goes unrecorded.</div>
       <div class="status-chips" id="gate-chips">
         <a class="status-chip" href="performance.html" onclick="event.stopPropagation()">
-          <div class="status-chip-name">July Plan</div>
-          <div class="status-chip-sub">Intent and early record</div>
+          <div class="status-chip-name">July Plan</div><div class="status-chip-sub">Intent and early record</div>
           <div class="status-chip-state state-locked" id="state-plan"><div class="status-chip-dot"></div><span>Loading</span></div>
         </a>
         <a class="status-chip" href="performance.html" onclick="event.stopPropagation()">
-          <div class="status-chip-name">Dec Interim</div>
-          <div class="status-chip-sub">Mid-year stocktake</div>
+          <div class="status-chip-name">Dec Interim</div><div class="status-chip-sub">Mid-year stocktake</div>
           <div class="status-chip-state state-locked" id="state-interim"><div class="status-chip-dot"></div><span>Loading</span></div>
         </a>
         <a class="status-chip" href="performance.html" onclick="event.stopPropagation()">
-          <div class="status-chip-name">Apr Final</div>
-          <div class="status-chip-sub">Year close</div>
+          <div class="status-chip-name">Apr Final</div><div class="status-chip-sub">Year close</div>
           <div class="status-chip-state state-locked" id="state-final"><div class="status-chip-dot"></div><span>Loading</span></div>
         </a>
       </div>
-
-      <button class="hero-tile-cta">Open Performance &rarr;</button>
+      <button class="feature-cta">Open Performance &rarr;</button>
     </div>
-    <div class="hero-tile-footer">
-      <div class="hero-tile-footer-left">centre.xime.org/v2 &middot; X-Hub &middot; AY 2026-27</div>
-      <div class="hero-tile-footer-right">Live &middot; Beta</div>
+    <div class="feature-footer">
+      <div>centre.xime.org/v2 &middot; X-Hub &middot; AY 2026-27</div>
+      <div>Live &middot; Beta</div>
     </div>
   </div>
 
-  <!-- GATE NOTICE -->
   <div class="gate-notice" id="gate-notice" style="display:none">
     <div class="gate-notice-icon">&#9432;</div>
     <div class="gate-notice-text" id="gate-notice-text"></div>
   </div>
 
-  <!-- 3X SURFACES -->
-  <div class="other-section-label">The 3X Surfaces</div>
-  <div class="modules-grid">
+  <!-- X-HUB SURFACES -->
+  <div class="panel-label">X-Hub Surfaces</div>
+  <div class="grid">
     <div class="module-card unlocked" onclick="window.location.href='x-purpose.html'">
       <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
-      <div class="card-body">
-        <div class="card-tag">Growth &amp; Purpose</div>
-        <div class="card-icon">&#9678;</div>
-        <div class="card-title">X-Purpose</div>
-        <div class="card-desc">Your IKIGAI for the year: passion, strengths, contribution, and where they converge. Last year's reflection is there to build on. Complete it alongside your July plan.</div>
-      </div>
+      <div class="card-body"><div class="card-tag">Growth &amp; Purpose</div><div class="card-icon">&#9678;</div>
+        <div class="card-title">X-Purpose</div><div class="card-desc">Your IKIGAI for the year: passion, strengths, contribution and where they converge. Build on last year's reflection alongside your July plan.</div></div>
     </div>
     <div class="module-card unlocked" onclick="window.location.href='xleap/'">
       <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
-      <div class="card-body">
-        <div class="card-tag">Assurance of Learning</div>
-        <div class="card-icon">&#9671;</div>
-        <div class="card-title">XLEAP</div>
-        <div class="card-desc">Learning Evidence and Attainment. Map assessments to course outcomes, load marks, see CO and PO attainment, record the improvement action, and submit the course record to X-Hub. One record per course and class, saved on X-Hub as you go.</div>
-      </div>
+      <div class="card-body"><div class="card-tag">Assurance of Learning</div><div class="card-icon">&#9671;</div>
+        <div class="card-title">XLEAP</div><div class="card-desc">Map assessments to course outcomes, load marks, see CO and PO attainment, record the improvement action, and submit the course record. One record per course and class.</div></div>
+    </div>
+    <div class="module-card unlocked" onclick="window.location.href='https://centre.xime.org/xpedagogy.html'">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Teaching Practice</div><div class="card-icon">&#9635;</div>
+        <div class="card-title">X-Pedagogy</div><div class="card-desc">Your teaching activity ledger: sessions, methods and materials, recorded as you go and feeding your performance record.</div></div>
+    </div>
+    <div class="module-card unlocked" onclick="window.location.href='https://centre.xime.org/xresearch.html'">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Research &amp; Output</div><div class="card-icon">&#9672;</div>
+        <div class="card-title">X-Research</div><div class="card-desc">Capture publications and research output, route the APC approval, and carry it through to your performance record.</div></div>
     </div>
     <div class="module-card dimmed">
       <div class="corner-badge parked">Returning</div>
-      <div class="card-body">
-        <div class="card-tag">Teaching Effectiveness</div>
-        <div class="card-icon">&#9673;</div>
-        <div class="card-title">X-Impact</div>
-        <div class="card-desc">How students experienced your teaching. For AY 2026-27, teaching effectiveness feeds directly into your Performance score; this surface returns in a later phase.</div>
-      </div>
+      <div class="card-body"><div class="card-tag">Teaching Effectiveness</div><div class="card-icon">&#9673;</div>
+        <div class="card-title">X-Impact</div><div class="card-desc">How students experienced your teaching. For AY 2026-27 this feeds directly into your Performance score; the surface returns in a later phase.</div></div>
+    </div>
+    <div class="module-card dimmed">
+      <div class="corner-badge parked">Coming soon</div>
+      <div class="card-body"><div class="card-tag">Staff Performance</div><div class="card-icon">&#9679;</div>
+        <div class="card-title">X-Drive Staff</div><div class="card-desc">The performance surface for staff, being built now. It will sit here for staff the way Performance does for faculty.</div></div>
     </div>
   </div>
 
-  <!-- REVIEW SURFACES -->
-  <div class="other-section-label">Review Surfaces</div>
-  <div class="modules-grid">
+  <!-- REVIEW SURFACES (role-gated) -->
+  <div class="panel-label">Review Surfaces</div>
+  <div class="grid">
     <div class="module-card dimmed" id="tile-validate">
       <div class="corner-badge locked" id="badge-validate">&#128274; Deans</div>
-      <div class="card-body">
-        <div class="card-tag">Dean Validation</div>
-        <div class="card-icon">&#9678;</div>
-        <div class="card-title">Validate</div>
-        <div class="card-desc">The campus roster gate by gate. Open any record in full with its live score, flag entries that need a second look, and reopen a submitted checkpoint when a colleague needs to correct it.</div>
-      </div>
+      <div class="card-body"><div class="card-tag">Dean Validation</div><div class="card-icon">&#9678;</div>
+        <div class="card-title">Validate</div><div class="card-desc">The campus roster gate by gate. Open any record with its live score, flag entries that need a second look, and reopen a submitted checkpoint for correction.</div></div>
     </div>
     <div class="module-card dimmed" id="tile-review">
       <div class="corner-badge locked" id="badge-review">&#128274; Directors</div>
-      <div class="card-body">
-        <div class="card-tag">Director Review</div>
-        <div class="card-icon">&#9670;</div>
-        <div class="card-title">Review</div>
-        <div class="card-desc">Everything the deans see, plus their flags. Mark each record as reviewed with an optional note, visible to deans as the campus record moves toward the panel.</div>
-      </div>
+      <div class="card-body"><div class="card-tag">Director Review</div><div class="card-icon">&#9670;</div>
+        <div class="card-title">Review</div><div class="card-desc">Everything the deans see, plus their flags. Mark each record as reviewed with an optional note as the campus record moves toward the panel.</div></div>
+    </div>
+  </div>
+
+  <!-- XIME PLATFORM -->
+  <div class="panel-label">XIME Platform</div>
+  <div class="grid">
+    <div class="module-card unlocked" onclick="window.open('https://my.xime.org/booking/','_blank')">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Facilities</div><div class="card-icon">&#9638;</div>
+        <div class="card-title">Facility Booking</div><div class="card-desc">Book rooms and resources, with approval routing. Opens on my.xime.org.</div></div>
+    </div>
+    <div class="module-card unlocked" onclick="window.open('https://my.xime.org/placement/','_blank')">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Placement</div><div class="card-icon">&#9636;</div>
+        <div class="card-title">Placement Training</div><div class="card-desc">Placement readiness and training. Opens on my.xime.org.</div></div>
+    </div>
+    <div class="module-card unlocked" onclick="window.open('https://servicehub-gamma-cyan.vercel.app','_blank')">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Support</div><div class="card-icon">&#9881;</div>
+        <div class="card-title">IT Help Desk</div><div class="card-desc">Log IT and service requests and track them through ServiceHub.</div></div>
+    </div>
+    <div class="module-card unlocked" onclick="window.open('https://sangam-app.vercel.app/home.html','_blank')">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Students</div><div class="card-icon">&#9993;</div>
+        <div class="card-title">XIME Help Desk</div><div class="card-desc">The student support desk. Opens on sangam-app.</div></div>
+    </div>
+    <div class="module-card dimmed">
+      <div class="corner-badge parked">Coming soon</div>
+      <div class="card-body"><div class="card-tag">Lab</div><div class="card-icon">&#9650;</div>
+        <div class="card-title">Bloomberg Lab Usage</div><div class="card-desc">Terminal engagement and evidence, arriving once the lab system is deployed.</div></div>
+    </div>
+  </div>
+
+  <!-- OPERATIONS -->
+  <div class="panel-label">Operations</div>
+  <div class="grid">
+    <div class="module-card unlocked" onclick="window.open('https://connect.xime.org','_blank')">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Relationships</div><div class="card-icon">&#9741;</div>
+        <div class="card-title">X-Connect</div><div class="card-desc">External relationships and the alumni ledger. Opens on connect.xime.org.</div></div>
+    </div>
+    <div class="module-card unlocked" onclick="window.open('https://register.xime.org','_blank')">
+      <div class="corner-badge role"><span class="badge-dot"></span>Open</div>
+      <div class="card-body"><div class="card-tag">Governance</div><div class="card-icon">&#9707;</div>
+        <div class="card-title">X-Process</div><div class="card-desc">The policy and process register. Opens on register.xime.org.</div></div>
+    </div>
+    <div class="module-card dimmed">
+      <div class="corner-badge parked">Coming soon</div>
+      <div class="card-body"><div class="card-tag">Learning Resources</div><div class="card-icon">&#9634;</div>
+        <div class="card-title">Case &amp; Simulation Requests</div><div class="card-desc">Order cases, simulations and articles within policy, with the Library in the loop. Arriving on X-Hub.</div></div>
     </div>
   </div>
 
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
-  <div class="footer-left">
-    <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="150 85 1325 406" preserveAspectRatio="xMidYMid meet" role="img" aria-label="XIME">
-  <path fill="#ffffff" d="M155.07,424.69c4.7-.4,9.4-1.13,14.1-1.14,7.32-.01,13.75-2.47,19.99-5.94,4.85-2.7,8.85-6.38,12.76-10.24,7.29-7.2,14.88-14.11,21.98-21.5,5.82-6.06,11.1-12.63,16.62-18.98,1.73-1.98,3.42-4,5.23-5.91,5.09-5.36,10.21-10.69,15.35-16,6.83-7.07,13.7-14.09,20.51-21.17,3.22-3.34,6.43-6.69,9.51-10.17,5.72-6.45,11.35-12.98,16.98-19.51,2.61-3.02,2.83-5.32.31-8.45-3.36-4.16-6.36-8.68-10.86-11.8-.48-.34-.74-1-1.11-1.5-5.42-7.35-10.74-14.77-16.29-22.02-6.82-8.92-13.78-17.73-20.79-26.51-4.98-6.24-10.09-12.38-15.24-18.47-7.13-8.41-14.1-16.93-20.8-25.71-4.27-5.59-8.77-11.03-13.82-16-6.29-6.2-13.79-9.48-22.45-10.27-6.07-.55-12.16-.86-18.23-1.31-.82-.06-1.62-.41-2.44-.54-1.3-.21-1.77-.98-1.72-2.22.03-.74,0-1.48,0-2.22,0-15.99.03-31.97-.03-47.96,0-2.44.29-4.64,2.69-6.64h2.58c21.6,0,43.21-.54,64.79.13,29.51.91,59.03-.27,88.52.66,15.23.48,30.43.12,45.65.48.53.01,1.05.07,1.79.12.12.68.33,1.37.34,2.06.03,4.13.39,8.3-.06,12.38-1.07,9.71-.21,19.43-.58,29.14-.18,4.72-.59,9.43-.93,14.55-2.35.23-4.81.61-7.28.69-7.8.28-15.61.43-23.41.68-2.15.07-2.46.51-2.67,2.66-.28,2.85,1.01,5.18,2.54,7.3,3.32,4.6,6.8,9.08,10.31,13.55,3.37,4.3,6.84,8.52,10.3,12.75,3.27,3.99,6.69,7.85,9.85,11.92,3.34,4.3,6.44,8.78,9.93,13.56.13-.03.91-.02,1.41-.4,1.59-1.21,3.16-2.48,4.58-3.88,4.38-4.3,8.82-8.56,13.01-13.04,5.83-6.23,11.53-12.59,17.15-19.02,4.29-4.91,8.4-9.99,12.49-15.07,1.18-1.46,2.19-3.12,2.99-4.83,1.12-2.41.39-4.47-2.06-5.42-2.33-.89-4.8-1.72-7.26-1.87-3.66-.23-7.36.18-11.04.28-2.96.08-5.92.25-8.87.1-1.97-.1-2.7-1.11-2.71-3.17-.04-6.46-.5-12.96.1-19.36.88-9.31.15-18.59.54-27.87.12-2.92.55-5.83.85-8.91h458.5c4.25,15.13,8.48,30.26,12.77,45.37,2.99,10.52,6.11,21,9.09,31.51,3.79,13.35,7.47,26.73,11.24,40.08,2.97,10.52,6.02,21.03,9.04,31.54,3.02,10.51,6.1,21,9.01,31.55.69,2.51.61,5.22,1.17,7.78,1.15,5.23,2.53,10.41,3.77,15.62,1.46,6.12,2.85,12.25,4.31,18.36.22.9.61,1.77.93,2.68,1.78.35,2.24-.67,2.59-2.03,1.19-4.56,2.45-9.1,3.69-13.65.41-1.52.86-3.02,1.28-4.54,3.36-12.37,6.66-24.75,10.09-37.1,3.91-14.08,7.88-28.14,11.93-42.18,2.88-10.01,5.93-19.97,8.89-29.95,3.19-10.79,6.32-21.6,9.56-32.38,1.72-5.74,3.66-11.42,5.42-17.15,3.27-10.64,6.48-21.29,9.75-31.93,1.42-4.62,2.91-9.22,4.39-13.82.19-.58.57-1.11.96-1.85h3.46c136.78,0,273.56.02,410.34-.06,5.95,0,8.27,2.42,9.67,7.1.48,1.6.93,3.24,1.14,4.89.22,1.7-.38,3.59,1.77,4.58.34.16.41.94.58,1.43,2.64,7.54,5.23,15.09,7.93,22.61,3.88,10.8,7.86,21.57,11.76,32.36,1.72,4.76,3.3,9.56,4.98,14.34,3.57,10.14,7.11,20.29,10.79,30.39.94,2.58,1.05,5.15.94,7.79-.1,2.42-1.07,3.52-3.51,4.11-6.79,1.64-13.12,4.49-19.43,7.38-8.05,3.7-16.45,6.41-24.92,8.91-1.19.35-2.46.39-3.91.61-.26-.62-.55-1.26-.8-1.91-2.28-6-4.86-11.85-8.03-17.46-2.64-4.67-4.81-9.61-8.06-13.93-1.13-1.51-2.18-3.11-3.46-4.49-1.95-2.11-2.99-4.74-4.47-7.12-3.56-5.74-8.46-10.13-13.87-14-8.8-6.3-18.45-11.03-28.67-14.48-7.27-2.45-14.72-4.02-22.54-3.96-22.97.16-45.95.06-68.92.06-1.35,0-2.7,0-3.95,0-.72,2.75-.84,84.66-.18,88.44,1.05.06,2.18.17,3.3.17,10.9.01,21.81-.06,32.71.04,3.99.04,7.19-1.58,9.95-4.15,4.31-4.02,6.98-8.92,7.34-14.93.16-2.62.49-5.23.59-7.85.26-7.17.42-14.34.69-21.51.05-1.24.27-2.56.76-3.69.92-2.14,2.87-2.54,5.02-2.54,14.4.02,28.8.01,43.19.01.42,0,.85.01,1.27.01,1.44-.01,2.14.69,2.11,2.14-.02.85,0,1.69,0,2.54,0,22.87-.54,45.75.14,68.6.85,28.46.11,56.91.52,85.36.02,1.14.35,2.27.48,3.41.22,1.89.29,3.73-.63,5.55-1.2,2.37-2.68,3.49-5.61,3.45-14.18-.19-28.37-.08-42.56-.09-4.08,0-4.7-.63-4.73-4.83-.02-3.07.07-6.14-.02-9.21-.17-6.22-.12-12.47-.72-18.65-.53-5.42-1.51-10.86-4.89-15.48-2.81-3.84-6.49-6.32-11.19-7.07-2.48-.4-5.02-.62-7.53-.64-8.89-.07-17.79-.03-26.68-.03-1.15,0-2.3,0-3.64,0-.12,1.08-.29,1.89-.29,2.71-.01,32.19-.02,64.37,0,96.56,0,3.91,1.91,5.78,5.7,5.91,1.03.03,2.05.34,3.09.47,3.95.49,7.9,1.3,11.86,1.36,11.85.18,23.71.13,35.57.04,5.79-.05,11.61-.13,17.37-.7,4.45-.45,8.9-1.43,13.23-2.63,11.56-3.22,22.74-7.52,33.51-12.84,4.18-2.06,7.98-4.72,11.47-7.74,3.98-3.46,7.89-7.03,11.49-10.88,3.36-3.6,6.38-7.54,9.34-11.49,3.46-4.61,6.74-9.37,10.03-14.11,5.88-8.46,9.81-17.82,12.79-27.64.91-3,2.21-5.91,3.56-8.74,1.41-2.95,3.07-3.62,6.2-2.65,2.1.66,4.13,1.55,6.16,2.41,4.75,2.02,9.58,3.73,14.75,4.33.39.04,1.01.19,1.1.43.75,2.1,2.78,2.08,4.38,2.66,6.12,2.23,12.28,4.33,18.41,6.53,2.43.87,2.65,1.5,2.34,4.2-1.05,9.07-4.21,17.55-7.16,26.11-3.05,8.86-5.88,17.79-8.81,26.69-1.78,5.41-3.51,10.83-5.4,16.2-2.34,6.66-4.82,13.27-7.25,19.9-1.38,3.76-2.81,7.5-4.14,11.28-.66,1.88-1.09,3.84-1.72,5.74-3.19,9.57-6.42,19.13-9.63,28.7-1.17,3.49-2.35,6.98-3.55,10.46-1,2.9-1.05,2.94-3.98,2.97-1.27.01-2.54,0-3.81,0-128.1,0-256.2-.09-384.3.14-12.77.02-25.56.48-38.34.43-3.32-.01-6.69-.63-9.95-1.34-3.49-.76-4.39-2.2-4.39-5.9,0-16.52-.01-33.03,0-49.55,0-3.88,1.02-4.74,4.88-4.69,6.14.08,12.29.29,18.42-.06,4.36-.25,8.73-1.12,12.84-2.81,1.88-.77,3.54-1.79,4.61-3.66.51-.89,1.26-1.78,2.12-2.33,2.07-1.32,2.26-3.18,2.26-5.4-.05-38.22.52-76.45-.2-114.66-.66-35.02-.08-70.04-.48-105.05-.01-.94-.1-1.87-.74-2.95-.7,2.29-1.46,4.56-2.11,6.86-2.32,8.27-4.62,16.55-6.9,24.83-3.01,10.91-5.99,21.83-9.02,32.73-2.02,7.27-4.13,14.51-6.18,21.77-1.51,5.35-2.98,10.7-4.49,16.05-2.13,7.56-4.26,15.13-6.42,22.68-4.06,14.21-8.18,28.4-12.2,42.62-4.4,15.53-8.77,31.06-13.05,46.62-3.76,13.64-7.44,27.3-11.06,40.97-3.44,12.96-6.76,25.95-10.13,38.93-.78,3-1.59,3.76-4.51,3.76-17.57.02-35.15,0-52.72,0-.31,0-.62-.1-.54-.09-.53-2.39-.93-4.62-1.54-6.8-2.82-10.1-5.67-20.19-8.57-30.27-2.67-9.27-5.46-18.51-8.11-27.79-3.26-11.4-6.43-22.82-9.67-34.22-2.73-9.59-5.53-19.15-8.27-28.74-3.2-11.2-6.32-22.41-9.54-33.6-3.1-10.79-6.34-21.54-9.42-32.34-2.62-9.17-5.09-18.39-7.64-27.58-2.3-8.28-4.64-16.56-6.93-24.84-2.57-9.3-5.12-18.6-7.68-27.9-1.16-4.25-2.3-8.5-3.48-12.74-.13-.46-.46-.86-1.07-1.98-.1,1.75-.2,2.75-.2,3.75,0,68.61-.01,137.22,0,205.82,0,4.53,1.26,8.75,4.01,12.38,2.5,3.3,6.22,4.63,10.09,5.35,2.67.49,5.43.62,8.15.67,5.5.1,11.01.05,16.51.02,1.35,0,2.71-.18,4.37-.3,1.34,1.91,1.89,4.41,1.91,6.87.1,15.88.06,31.76.02,47.64,0,1.13-.29,2.3-.65,3.38-.82,2.51-1.78,3.18-4.38,3.29-.74.03-1.48,0-2.22,0-151.81,0-303.63,0-455.44,0-.64,0-1.27,0-1.91,0-3.09-.02-4.16-.76-4.79-3.8-.59-2.87-1.13-5.78-1.32-8.7-.37-5.68-.71-11.38-.64-17.06.13-9.81.58-19.62.9-29.64,2.57-1.85,5.67-2.38,9-2.34,8.05.08,16.09.03,24.14.03,1.15,0,2.3,0,3.63,0,.63-3.48.98-6.71-1.09-9.59-4.66-6.5-9.33-13-14.16-19.38-3.87-5.12-7.81-10.19-12-15.04-3.28-3.79-6.23-7.9-10.61-10.74-2.02-1.31-3.31-3.77-4.84-5.78-4.21-5.52-8.37-11.08-12.57-16.61-.23-.3-.66-.45-1.04-.71-2.19,2.27-4.35,4.39-6.37,6.64-2.74,3.05-5.33,6.24-8.08,9.28-3.11,3.44-6.37,6.76-9.5,10.19-4.12,4.51-8.1,9.16-12.31,13.59-3.19,3.36-6.69,6.43-9.95,9.72-2.9,2.92-5.62,6.01-8.5,8.95-2.69,2.75-4.85,5.85-6.49,9.3-1.1,2.31-1.69,4.73-.62,7.26.8,1.91,1.96,3.01,4.3,2.97,7.83-.12,15.67-.05,23.5-.05.74,0,1.49-.03,2.22.03,1.48.11,2.31.93,2.38,2.43.04.74.02,1.48.02,2.22,0,17.36,0,34.73,0,52.09,0,.85.14,1.74-.09,2.52-.17.59-.74,1.25-1.29,1.49-.95.4-2.02.64-3.05.7-4.94.27-9.89.46-14.83.67-5.05.22-10.14.91-15.15.54-14.05-1.03-28.13.13-42.15-.64-19.03-1.04-38.06-.57-57.08-.36-8.53.1-17.09.38-25.64.38-3.42,0-6.84-.75-10.25-1.16,0-19.91,0-39.81,0-59.72ZM652.38,289.34c0,39.79.04,79.59-.06,119.38-.01,3.8.87,7.05,3.18,9.96,2.23,2.81,4.96,4.79,8.74,4.79,17.46,0,34.92,0,52.38,0,.83,0,1.73.02,2.49-.27,6.13-2.3,11.78-8.94,11.78-16.43-.06-76.1-.04-152.19-.04-228.29,0-.85,0-1.7-.07-2.54-.38-4.18-.97-8.35-1.12-12.53-.07-2.07-.8-3.65-1.99-5.14-.72-.9-1.54-1.76-2.45-2.48-3.16-2.51-6.53-4.87-10.71-4.9-16.3-.11-32.6-.13-48.89,0-4.51.04-8,2.38-10.27,6.33-2.1,3.64-2.97,7.59-2.97,11.78,0,40.11,0,80.22,0,120.34ZM554.03,290.26c0-36.94.02-73.87-.03-110.81,0-3.88-.13-7.81-.7-11.64-.5-3.4-1.47-6.77-2.66-10-.9-2.43-2.57-4.07-5.76-3.88-3.81.23-7.35,1.09-10.38,3.27-4.86,3.5-9.49,7.3-14.24,10.96-1.33,1.02-2.59,2.45-4.09,2.83-1.86.46-2.96,1.58-4.01,2.85-4.48,5.43-8.71,11.07-13.36,16.34-5.64,6.41-11.61,12.53-17.42,18.78-2.44,2.62-4.86,5.26-7.28,7.91-5.55,6.06-11.02,12.2-16.65,18.19-5.78,6.16-11.7,12.19-17.59,18.25-2.28,2.35-4.68,4.6-6.94,6.98-2.32,2.44-4.61,4.92-6.8,7.48-1.77,2.08-1.7,2.82-.23,5.31,4.92,8.38,11.51,15.48,17.59,22.96,3.11,3.83,6.47,7.48,9.3,11.5,3.34,4.75,7.04,9.15,11.05,13.32,2.56,2.65,5.02,5.37,6.42,8.89.38.96,1.06,1.82,1.7,2.65,5.66,7.3,11.33,14.59,17.02,21.86,3.49,4.47,6.99,8.92,10.53,13.35,3.8,4.76,7.64,9.49,11.5,14.21,2.86,3.49,5.73,6.98,8.68,10.4,2.2,2.55,4.69,4.87,6.76,7.52,4.6,5.87,10.22,10.59,16.27,14.84,1.71,1.2,3.66,2.11,5.59,2.94,1.78.76,3.34.24,3.69-1.21.88-3.65,2.11-7.18,2.1-11.09-.1-38.31-.06-76.63-.06-114.94ZM1116.52,288.94c0,39.27.02,78.54-.04,117.81,0,2.73.54,5.29,1.65,7.64,1.93,4.11,4.63,7.4,9.95,6.56.62-.1,1.27-.05,1.9,0,2.76.19,4.61-1.16,5.92-3.44,2.47-4.28,3.77-8.94,3.77-13.83.04-78.12.03-156.23.02-234.35,0-4.17-1.57-7.81-4.33-10.88-3.91-4.36-9.4-4.53-13.54-.4-3.51,3.49-5.29,7.81-5.29,12.77-.02,39.38,0,78.75-.01,118.13Z"/>
-</svg>
-    <div class="footer-text">X-Hub &middot; AY 2026-27 &middot; Beta</div>
-  </div>
+  <div class="footer-text">X-Hub &middot; AY 2026-27 &middot; Beta</div>
   <div class="footer-right">centre.xime.org/v2 &middot; X-Hub v2</div>
 </div>
 
@@ -356,8 +298,6 @@ function firstName(fullName){
   return parts.length ? parts[0] : "";
 }
 
-/* Decide the label and css class for one gate chip.
-   checkpoint: the v2_checkpoints row for this gate (or null). */
 function chipState(gate, checkpoint){
   if (checkpoint && checkpoint.status === "submitted") return { label: "Submitted", cls: "state-submitted" };
   const c = GATES[gate] || {};
