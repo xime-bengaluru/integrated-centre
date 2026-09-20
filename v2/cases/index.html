@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Case &amp; Simulation Requests · X-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --navy:#0D1F35; --gold:#C9A84C; --gold-deep:#9c7f2e; --parchment:#FAF8F3;
+    --ink:#233043; --ink-soft:#5f6a7d; --line:#e9e0cf;
+    --green:#2f9e5f; --amber:#c98a2e; --red:#c0492f;
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:var(--sans);color:var(--ink);background:var(--parchment);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;
+    padding:calc(env(safe-area-inset-top,0px) + 22px) clamp(18px,4vw,52px) calc(env(safe-area-inset-bottom,0px) + 60px);}
+  .frame{max-width:1120px;margin:0 auto}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line);padding-bottom:16px;flex-wrap:wrap}
+  .wm{font-family:var(--serif);font-weight:600;letter-spacing:.28em;font-size:24px;color:var(--navy)}
+  .wm b{color:#e91f27}
+  .kicker{font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;font-size:11px;color:var(--gold-deep);margin-left:12px}
+  .who{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+  .who a{color:var(--gold-deep);text-decoration:none;margin-left:10px}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4vw,42px);line-height:1.1;margin:22px 0 4px}
+  .sub{font-family:var(--serif);font-style:italic;font-size:clamp(16px,1.8vw,20px);color:var(--ink-soft);margin:0 0 22px}
+  .seg{display:inline-flex;gap:5px;background:#f1ebdd;padding:5px;border-radius:100px;margin-bottom:22px}
+  .seg button{font-family:var(--sans);font-size:15px;font-weight:600;border:0;background:transparent;color:var(--ink-soft);padding:9px 20px;border-radius:100px;cursor:pointer;transition:all .18s}
+  .seg button[aria-pressed="true"]{background:var(--gold);color:#20160a}
+  .cols{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(18px,2.4vw,32px);align-items:start}
+  @media (max-width:860px){.cols{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(18px,2vw,26px);box-shadow:0 2px 4px rgba(31,42,61,.05), 0 12px 30px rgba(31,42,61,.08)}
+  .card h2{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:var(--gold-deep);margin:0 0 18px}
+  .field{margin-bottom:16px} .field.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  label{display:block;font-size:14.5px;font-weight:600;margin-bottom:6px;color:var(--ink)}
+  input,select,textarea{width:100%;font-family:var(--sans);font-size:16px;color:var(--ink);background:#fdfcf9;border:1px solid #ddd3bf;border-radius:10px;padding:11px 12px;outline:none;transition:border-color .15s}
+  input:focus,select:focus,textarea:focus{border-color:var(--gold)} textarea{resize:vertical;min-height:74px;line-height:1.45}
+  .hint{font-size:12.5px;color:var(--ink-soft);margin-top:5px}
+  .panel{position:sticky;top:16px}
+  .meter{margin-bottom:20px} .meter:last-child{margin-bottom:0}
+  .meter .m-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+  .m-label{font-weight:600;font-size:15.5px} .m-val{font-family:var(--mono);font-size:13.5px;color:var(--ink-soft)}
+  .bar{height:9px;border-radius:100px;background:#efe7d5;overflow:hidden} .bar span{display:block;height:100%;border-radius:100px;transition:width .3s ease, background .3s ease}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;padding:9px 13px;border-radius:11px;width:100%}
+  .badge .d{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .b-ok{background:rgba(47,158,95,.10);color:#217045} .b-ok .d{background:var(--green)}
+  .b-warn{background:rgba(201,138,46,.12);color:#8a5e18} .b-warn .d{background:var(--amber)}
+  .b-late{background:rgba(192,73,47,.10);color:#96331f} .b-late .d{background:var(--red)}
+  .m-note{font-size:13px;color:var(--ink-soft);margin-top:7px;line-height:1.4}
+  .status{margin-top:6px;border-top:1px solid var(--line);padding-top:18px}
+  .btn{width:100%;font-family:var(--sans);font-size:16.5px;font-weight:600;border:0;border-radius:12px;padding:14px;cursor:pointer;background:var(--navy);color:#fff;transition:opacity .15s, transform .15s}
+  .btn:hover{transform:translateY(-1px)} .btn.review{background:var(--amber);color:#20160a} .btn:disabled{opacity:.5;cursor:progress;transform:none}
+  .summary{margin-top:18px;background:rgba(47,158,95,.06);border:1px solid rgba(47,158,95,.3);border-radius:12px;padding:16px;display:none}
+  .summary.review{background:rgba(201,138,46,.08);border-color:rgba(201,138,46,.4)}
+  .summary.err{background:rgba(192,73,47,.08);border-color:rgba(192,73,47,.4)}
+  .summary h3{margin:0 0 8px;font-size:16px}
+  .digii{font-family:var(--mono);font-size:13px;background:#fff;border:1px dashed #d8cdb6;border-radius:9px;padding:11px;margin-top:10px;line-height:1.5;word-break:break-word}
+  .mailbtn{display:inline-block;margin-top:12px;font-family:var(--sans);font-weight:600;font-size:14.5px;background:var(--navy);color:#fff;text-decoration:none;padding:10px 16px;border-radius:10px}
+  .ledger{margin-top:26px}
+  .ledger h2{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:var(--gold-deep);margin:0 0 12px}
+  .lrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px} .lrow:last-child{border-bottom:0}
+  .ltag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:100px;flex:0 0 auto}
+  .tag-h{background:rgba(201,168,76,.16);color:var(--gold-deep)} .tag-n{background:rgba(95,106,125,.12);color:var(--ink-soft)}
+  .lrow .lt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .lrow .lp{font-family:var(--mono);color:var(--ink-soft);font-size:13px;flex:0 0 auto}
+  .lstat{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft)}
+  /* sign-in overlay */
+  .gate{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px}
+  .gate .box{background:#fff;border-radius:18px;padding:40px 34px;max-width:420px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .gate .wm{font-size:30px;display:block;margin-bottom:6px}
+  .gate p{color:var(--ink-soft);font-size:15px;margin:10px 0 22px}
+  .gbtn{font-family:var(--sans);font-weight:600;font-size:16px;border:1px solid #ddd3bf;background:#fff;border-radius:11px;padding:12px 22px;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="gate" id="gate">
+  <div class="box">
+    <span class="wm">X<b>I</b>ME</span>
+    <div class="kicker" style="margin:0">Case &amp; Simulation Requests</div>
+    <p id="gateMsg">Sign in with your XIME Google account to place a request.</p>
+    <button class="gbtn" id="signin">Continue with Google</button>
+  </div>
+</div>
+
+<div class="frame hidden" id="app">
+  <div class="top">
+    <div><span class="wm">X<b>I</b>ME</span><span class="kicker">X-Hub · Learning Resources</span></div>
+    <div class="who"><span id="whoName"></span><a href="#" id="signout">sign out</a></div>
+  </div>
+
+  <h1>Case &amp; Simulation Requests</h1>
+  <p class="sub">Order Harvard and non-Harvard cases, simulations and articles, within policy.</p>
+
+  <div class="seg" id="seg">
+    <button data-type="case" aria-pressed="true">Case study</button>
+    <button data-type="simulation">Simulation</button>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h2>Request details</h2>
+      <div class="field two">
+        <div><label>Programme</label><select id="prog"><option>PGDM</option><option>PGDM-BA</option></select></div>
+        <div><label>Term</label><select id="term"><option>I</option><option>II</option><option>III</option><option>IV</option><option>V</option><option>VI</option></select></div>
+      </div>
+      <div class="field"><label>Subject / Course</label><input id="subject" placeholder="e.g. Future Ready Manager"></div>
+      <div class="field two">
+        <div><label>Campus</label><select id="campus"><option>Bengaluru</option><option>Kochi</option><option>Chennai</option></select></div>
+        <div><label>Faculty</label><input id="faculty" placeholder="Your name"></div>
+      </div>
+      <div class="field two">
+        <div><label>Students in class</label><input id="students" type="number" value="60"></div>
+        <div><label>Copies required</label><input id="copies" type="number" value="8"></div>
+      </div>
+      <div class="field"><label id="titleLbl">Case title</label><input id="title" placeholder="Full title"></div>
+      <div class="field two">
+        <div><label>Author(s)</label><input id="author" placeholder="Authors"></div>
+        <div><label>HBI product #</label><input id="prodno" placeholder="e.g. 615013-PDF-ENG"></div>
+      </div>
+      <div class="field two">
+        <div><label>Price (USD)</label><input id="price" type="number" step="0.01" placeholder="0.00"></div>
+        <div id="srcWrap"><label>Source</label><select id="source"><option value="harvard">Harvard</option><option value="non_harvard">Non-Harvard</option></select></div>
+      </div>
+      <div class="field" id="pubWrap" style="display:none"><label>Non-Harvard publisher</label>
+        <select id="pub"><option>Ivey</option><option>Darden</option><option>Kellogg</option><option>Stanford GSB</option><option>London Business School</option><option>INSEAD</option><option>ISB</option><option>IIM</option><option>NTU</option><option>Berkeley Haas</option><option>Columbia</option><option>ESMT</option><option>NACRA</option><option>Other</option></select></div>
+      <div class="field"><label>Session date (when it will be used)</label><input id="session" type="date"></div>
+      <div class="field" id="justWrap" style="display:none">
+        <label>Justification</label>
+        <textarea id="just" placeholder="Explain the exception so the Library and Area Head can review."></textarea>
+        <div class="hint" id="justHint"></div>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <h2>Policy check</h2>
+      <div class="meter"><div class="badge b-ok" id="leadBadge"><span class="d"></span><span id="leadTxt">Add a session date</span></div><div class="m-note" id="leadNote">Policy asks for two weeks ahead, and no later than one week.</div></div>
+      <div class="meter" id="capMeter">
+        <div class="m-top"><span class="m-label" id="capLabel">Cases this subject</span><span class="m-val" id="capVal">–</span></div>
+        <div class="bar"><span id="capBar" style="width:0%;background:var(--green)"></span></div>
+        <div class="m-note" id="capNote"></div>
+      </div>
+      <div class="meter" id="ratioMeter">
+        <div class="m-top"><span class="m-label">Harvard ratio</span><span class="m-val" id="ratioVal">–</span></div>
+        <div class="bar"><span id="ratioBar" style="width:100%;background:var(--green)"></span></div>
+        <div class="m-note" id="ratioNote">Target is 2.5 to 1 Harvard to non-Harvard.</div>
+      </div>
+      <div class="meter" id="priceMeter" style="display:none">
+        <div class="m-top"><span class="m-label">Price</span><span class="m-val" id="priceVal">–</span></div>
+        <div class="bar"><span id="priceBar" style="width:0%;background:var(--green)"></span></div>
+        <div class="m-note">Simulations are capped at USD 25.</div>
+      </div>
+      <div class="status">
+        <button class="btn" id="submit">Submit to Library</button>
+        <div class="summary" id="summary">
+          <h3 id="sumTitle"></h3>
+          <div id="sumBody"></div>
+          <div class="digii hidden" id="digii"></div>
+          <a class="mailbtn hidden" id="mailbtn" href="#">Open the Library email</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ledger"><h2>This subject and term, so far</h2><div id="ledgerList"></div></div>
+</div>
+
+<script>
+// ===== CONFIG (safe to edit) =====
+const SUPABASE_URL = 'https://qcufrukhfcmyfvwwoqjo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjdWZydWtoZmNteWZ2d3dvcWpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjI0MTEsImV4cCI6MjA5MDY5ODQxMX0.sswZ6e-mCvHznWmu8p7fm0AbRrlaRfM0jvpA2ppNlWI';
+const LIBRARY_EMAIL = 'library@xime.org';
+const CC_EMAIL = 'raju@xime.org';
+// =================================
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+let type = 'case';
+let POL = { case_cap:4, sim_cap:1, price_cap_usd:25, ratio_target:2.5, lead_min_days:7, lead_ideal_days:14 };
+let COUNTS = { total:0, harvard:0, non_harvard:0 };
+let ME = { email:'', name:'' };
+
+// ---- auth ----
+async function init(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session){ $('gate').classList.remove('hidden'); return; }
+  ME.email = (session.user.email || '').toLowerCase();
+  ME.name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || ME.email;
+  $('whoName').textContent = ME.name;
+  $('faculty').value = ME.name;
+  $('gate').classList.add('hidden'); $('app').classList.remove('hidden');
+  try{ const { data } = await sb.from('cs_policy').select('*').eq('id',1).maybeSingle(); if(data) POL = data; }catch(e){}
+  await refreshCounts();
+  wire();
+}
+$('signin').addEventListener('click', async ()=>{
+  $('gateMsg').textContent = 'Opening Google sign-in…';
+  await sb.auth.signInWithOAuth({ provider:'google', options:{ queryParams:{ hd:'xime.org', prompt:'select_account' }, redirectTo: location.origin + location.pathname } });
+});
+$('signout').addEventListener('click', async (e)=>{ e.preventDefault(); await sb.auth.signOut(); location.reload(); });
+
+// ---- data ----
+function scope(){ return { subject:$('subject').value.trim(), term:$('term').value, type }; }
+async function refreshCounts(){
+  const s = scope();
+  if(!s.subject){ COUNTS={total:0,harvard:0,non_harvard:0}; renderMeters(); renderLedger([]); return; }
+  try{
+    const { data } = await sb.rpc('cs_running_counts', { p_subject:s.subject, p_term:s.term, p_type:s.type });
+    COUNTS = data || {total:0,harvard:0,non_harvard:0};
+    const { data:rows } = await sb.from('cs_request').select('title,source,price_usd,status,resource_type')
+      .eq('subject', s.subject).eq('term', s.term).eq('resource_type', s.type).neq('status','declined')
+      .order('created_at',{ascending:true});
+    renderLedger(rows || []);
+  }catch(e){ COUNTS={total:0,harvard:0,non_harvard:0}; }
+  renderMeters();
+}
+
+// ---- meters ----
+function daysTo(d){ if(!d) return null; const s=new Date(d+'T00:00'); const t=new Date(); t.setHours(0,0,0,0); return Math.round((s-t)/86400000); }
+function renderMeters(){
+  const cap = type==='simulation' ? POL.sim_cap : POL.case_cap;
+  const projected = COUNTS.total + 1;
+  $('capLabel').textContent = type==='simulation' ? 'Simulations this subject' : 'Cases this subject';
+  $('capVal').textContent = projected + ' of ' + cap;
+  const overCap = projected > cap;
+  $('capBar').style.width = Math.min(projected/cap*100,100)+'%';
+  $('capBar').style.background = overCap?'var(--red)':(projected===cap?'var(--amber)':'var(--green)');
+  $('capNote').textContent = overCap ? ('Over the '+cap+' per subject limit. Needs justification and review.') : (projected===cap?'This request reaches the per-subject limit.':(cap-projected)+' more allowed after this.');
+
+  let ratioBreach=false, isNonH = type==='case' && $('source').value==='non_harvard';
+  if(type==='case'){
+    const h=COUNTS.harvard + (isNonH?0:1), n=COUNTS.non_harvard + (isNonH?1:0);
+    const r = n===0?Infinity:h/n;
+    $('ratioVal').textContent = h+' : '+n + (n===0?'  (all Harvard)':'  ('+r.toFixed(1)+':1)');
+    ratioBreach = r < POL.ratio_target;
+    $('ratioBar').style.width = (n===0?100:Math.min(r/POL.ratio_target*100,100))+'%';
+    $('ratioBar').style.background = ratioBreach?'var(--red)':(r<POL.ratio_target+0.5?'var(--amber)':'var(--green)');
+    $('ratioNote').textContent = ratioBreach?'Below the 2.5:1 target. A non-Harvard case here needs justification.':'Within the 2.5:1 target.';
+  }
+  let overPrice=false;
+  if(type==='simulation'){
+    const p=parseFloat($('price').value)||0; overPrice=p>POL.price_cap_usd;
+    $('priceVal').textContent='$'+p.toFixed(2)+' of $'+POL.price_cap_usd;
+    $('priceBar').style.width=Math.min(p/POL.price_cap_usd*100,100)+'%';
+    $('priceBar').style.background=overPrice?'var(--red)':(p>POL.price_cap_usd*0.8?'var(--amber)':'var(--green)');
+  }
+  const dd=daysTo($('session').value); const lb=$('leadBadge'), lt=$('leadTxt'); let late=false; lb.className='badge b-ok';
+  if(dd===null){ lt.textContent='Add a session date'; $('leadNote').textContent='Policy asks for two weeks ahead, and no later than one week.'; }
+  else if(dd>=POL.lead_ideal_days){ lt.textContent='On time · '+dd+' days ahead'; $('leadNote').textContent='Comfortably within the window.'; }
+  else if(dd>=POL.lead_min_days){ lb.className='badge b-warn'; lt.textContent='Tight · '+dd+' days ahead'; $('leadNote').textContent='Inside the window, but earlier is better.'; }
+  else { lb.className='badge b-late'; late=true; lt.textContent=(dd<0?'Session already passed':'Late · '+dd+' days ahead'); $('leadNote').textContent='Past the one-week policy window. Needs justification and review.'; }
+
+  const needsJust = late||overCap||ratioBreach||overPrice||isNonH;
+  $('justWrap').style.display = needsJust?'':'none';
+  const reasons=[]; if(isNonH)reasons.push('non-Harvard case'); if(ratioBreach)reasons.push('Harvard ratio'); if(overCap)reasons.push('over the subject limit'); if(overPrice)reasons.push('over the $25 cap'); if(late)reasons.push('late request');
+  $('justHint').textContent = reasons.length?('Flagged for: '+reasons.join(', ')+'.'):'';
+  const forReview = late||overCap||ratioBreach||overPrice;
+  const btn=$('submit'); btn.textContent = forReview?'Submit for review':'Submit to Library'; btn.className='btn'+(forReview?' review':'');
+}
+function renderLedger(rows){
+  const list=$('ledgerList');
+  if(!rows.length){ list.innerHTML='<div class="lrow" style="color:var(--ink-soft)">Nothing ordered yet for this subject and term.</div>'; return; }
+  list.innerHTML = rows.map(x=>{
+    const tag = x.resource_type==='simulation' ? '<span class="ltag tag-h">Sim</span>' : (x.source==='harvard'?'<span class="ltag tag-h">Harvard</span>':'<span class="ltag tag-n">Non-Harvard</span>');
+    return '<div class="lrow">'+tag+'<span class="lt">'+(x.title||'Untitled')+'</span><span class="lstat">'+x.status+'</span><span class="lp">$'+(Number(x.price_usd)||0).toFixed(2)+'</span></div>';
+  }).join('');
+}
+
+// ---- interactions ----
+function wire(){
+  $('seg').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; type=b.dataset.type;
+    [...$('seg').children].forEach(c=>c.setAttribute('aria-pressed', c===b?'true':'false'));
+    $('titleLbl').textContent = type==='case'?'Case title':'Simulation title';
+    $('srcWrap').style.display = type==='case'?'':'none';
+    $('ratioMeter').style.display = type==='case'?'':'none';
+    $('priceMeter').style.display = type==='simulation'?'':'none';
+    refreshCounts();
+  });
+  $('source').addEventListener('change', ()=>{ $('pubWrap').style.display=$('source').value==='non_harvard'?'':'none'; renderMeters(); });
+  $('price').addEventListener('input', renderMeters);
+  $('session').addEventListener('input', renderMeters);
+  $('subject').addEventListener('change', refreshCounts);
+  $('term').addEventListener('change', refreshCounts);
+  $('submit').addEventListener('click', submitReq);
+}
+
+function mailBody(p, id){
+  const L=[];
+  L.push('A '+(p.resource_type==='simulation'?'simulation':'case study')+' request has been logged on X-Hub. Details below.');
+  L.push('');
+  L.push('Programme: '+p.programme);
+  L.push('Term: '+p.term);
+  L.push('Subject: '+p.subject);
+  L.push('Campus: '+p.campus);
+  L.push('Faculty: '+p.faculty_name);
+  L.push('Students: '+p.students+'   Copies: '+p.copies);
+  L.push('');
+  L.push('Title: '+p.title);
+  L.push('Author(s): '+p.author);
+  L.push('HBI Product #: '+p.product_no);
+  L.push('Price (USD): '+p.price_usd);
+  if(p.resource_type==='case') L.push('Source: '+(p.source==='harvard'?'Harvard':'Non-Harvard'+(p.publisher?' ('+p.publisher+')':'')));
+  L.push('Session date: '+p.session_date);
+  if(p.justification) { L.push(''); L.push('Justification: '+p.justification); }
+  L.push('');
+  L.push('X-Hub reference: '+id);
+  return L.join('\n');
+}
+
+async function submitReq(){
+  const btn=$('submit'); const isNonH = type==='case' && $('source').value==='non_harvard';
+  const p = {
+    programme:$('prog').value, term:$('term').value, subject:$('subject').value.trim(), campus:$('campus').value,
+    faculty_name:$('faculty').value.trim(), resource_type:type,
+    title:$('title').value.trim(), author:$('author').value.trim(), product_no:$('prodno').value.trim(),
+    source: type==='case' ? $('source').value : 'harvard',
+    publisher: isNonH ? $('pub').value : null,
+    price_usd: parseFloat($('price').value)||0, students: parseInt($('students').value)||null, copies: parseInt($('copies').value)||null,
+    session_date: $('session').value || null, justification: $('just').value.trim() || null
+  };
+  if(!p.subject || !p.title){ showSummary('err','Add a subject and a title','Both are needed before this can go to the Library.'); return; }
+  if($('justWrap').style.display!=='none' && !p.justification){ $('just').focus(); $('just').style.borderColor='var(--red)'; return; }
+  btn.disabled=true; const prev=btn.textContent; btn.textContent='Submitting…';
+  const { data, error } = await sb.rpc('cs_submit', { p });
+  btn.disabled=false; btn.textContent=prev;
+  if(error){ showSummary('err','Could not submit', error.message==='justification required'?'A justification is needed for this request.':('Error: '+error.message)); return; }
+  const review = data && data.status==='under_review';
+  const body = mailBody(p, data.id);
+  const href = 'mailto:'+encodeURIComponent(LIBRARY_EMAIL)+'?cc='+encodeURIComponent(CC_EMAIL)
+    +'&subject='+encodeURIComponent('HBI '+(type==='simulation'?'Simulation':'Case')+' Request — '+p.subject+' ('+p.faculty_name+')')
+    +'&body='+encodeURIComponent(body);
+  showSummary(review?'review':'ok', review?'Logged and flagged for review':'Logged on X-Hub',
+    (review?'Recorded with your justification and routed to the Library and Area Head. ':'Recorded and ready for the Library. ')
+    +'Send the email below to complete the order, and log it on Digii (Create Session description).',
+    $('title').value.trim()+(p.author?' · By: '+p.author:'')+(p.product_no?' · Product #: '+p.product_no:''), href);
+  window.location.href = href;
+  refreshCounts();
+}
+
+function showSummary(kind, title, body, digii, href){
+  const s=$('summary'); s.style.display='block'; s.className='summary'+(kind==='ok'?'':' '+kind);
+  $('sumTitle').textContent=title; $('sumBody').textContent=body;
+  const d=$('digii'), m=$('mailbtn');
+  if(digii){ d.textContent=digii; d.classList.remove('hidden'); } else d.classList.add('hidden');
+  if(href){ m.href=href; m.classList.remove('hidden'); } else m.classList.add('hidden');
+  s.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+init();
+</script>
+</body>
+</html>
