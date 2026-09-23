@@ -144,7 +144,7 @@
     const ay=$("#ay").value;
     const [p,s]=await Promise.all([
       sb.rpc("xl_institute_summary",{p_academic_year:ay}),
-      sb.from("xl_submission").select("submission_id,record_key,version,is_current,faculty_email,campus,area,programme,batch,term,course_code,course_name,class_section,student_count,aggregation_eligible,validation_status,overall_validity,avg_co,avg_po,co_met_pct,po_met_pct_of_mapped,students_needing_support,closing_loop_status,closing_loop_complete,submitted_at,co_attainment,po_attainment,co_po_mapping,record,record_columns").eq("academic_year",ay).order("submitted_at",{ascending:false})
+      sb.from("xl_submission").select("submission_id,record_key,version,is_current,faculty_email,campus,area,programme,batch,term,course_code,course_name,class_section,student_count,aggregation_eligible,validation_status,overall_validity,avg_co,avg_po,co_met_pct,po_met_pct_of_mapped,students_needing_support,closing_loop_status,closing_loop_complete,submitted_at,withdrawn_at,withdrawn_by,withdrawn_reason,co_attainment,po_attainment,co_po_mapping,record,record_columns").eq("academic_year",ay).order("submitted_at",{ascending:false})
     ]);
     PIVOT=p.data||[]; ROWS=s.data||[];
     if(p.error) console.error(p.error); if(s.error) console.error(s.error);
@@ -152,7 +152,7 @@
   }
   function visibleRows(){
     const c=$("#campus").value, t=$("#term").value, hist=$("#history").checked;
-    return ROWS.filter(r=>(hist||r.is_current)&&(!c||r.campus===c)&&(!t||String(r.term)===t));
+    return ROWS.filter(r=>(hist||(r.is_current&&!r.withdrawn_at))&&(!c||r.campus===c)&&(!t||String(r.term)===t));
   }
   const POS=["PO1","PO2","PO3","PO4","PO5","PO6","PO7"];
   function poValue(r,po){ const x=r.po_attainment&&r.po_attainment[po]; const v=x&&x.value; return (v===""||v==null||isNaN(Number(v)))?null:Number(v); }
@@ -160,7 +160,7 @@
   function poCells(avgs){ return avgs.map(v=>`<td class="n po">${v==null?'<span style="color:var(--muted)">N/M</span>':num(v)}</td>`).join(""); }
   function renderPivot(){
     const c=$("#campus").value, t=$("#term").value;
-    const elig=ROWS.filter(r=>r.is_current&&r.aggregation_eligible&&(!c||r.campus===c)&&(!t||String(r.term)===t));
+    const elig=ROWS.filter(r=>r.is_current&&!r.withdrawn_at&&r.aggregation_eligible&&(!c||r.campus===c)&&(!t||String(r.term)===t));
     if(!elig.length){ $("#pivot").innerHTML=`<div class="empty"><b>No eligible records yet for this selection.</b> The table fills as faculty submit course records that pass XLEAP's validation.</div>`; $("#batch").innerHTML=""; return; }
     const maxCo=Math.max(...elig.map(r=>Object.keys(r.co_attainment||{}).length),1);
     const COS=Array.from({length:maxCo},(_,i)=>"CO"+(i+1));
@@ -202,10 +202,13 @@
         <td>${chips(r.co_attainment,coKeys(r))}</td><td>${chips(r.po_attainment,POS)}</td>
         <td>${r.aggregation_eligible?`<span class="pill ok">Eligible</span>`:`<span class="pill warn">${h(r.validation_status||"Not eligible")}</span>`}</td>
         <td>${h(r.closing_loop_status||"")}${r.closing_loop_complete?' <span class="pill ok">Closed</span>':""}</td>
-        <td>${when(r.submitted_at)} ${r.is_current?`<span class="pill">v${r.version}</span>`:`<span class="pill old">v${r.version}, superseded</span>`}</td>
-        <td style="white-space:nowrap"><button class="rowbtn" data-more="${h(r.submission_id)}">Detail</button> <button class="rowbtn" data-id="${h(r.submission_id)}">CSV</button></td></tr>
+        <td>${when(r.submitted_at)} ${r.withdrawn_at?`<span class="pill old" title="${h(r.withdrawn_reason||"")}">v${r.version}, withdrawn</span>`:r.is_current?`<span class="pill">v${r.version}</span>`:`<span class="pill old">v${r.version}, superseded</span>`}</td>
+        <td style="white-space:nowrap"><button class="rowbtn" data-more="${h(r.submission_id)}">Detail</button> <button class="rowbtn" data-id="${h(r.submission_id)}">CSV</button>${(r.is_current&&!r.withdrawn_at&&(ME.can_review||r.faculty_email===ME.email))?` <button class="rowbtn" data-wd="${h(r.record_key)}" data-name="${h(r.course_name)}" style="color:#8A1C1C">Withdraw</button>`:""}</td></tr>
         <tr class="detail" id="d-${h(r.submission_id)}" style="display:none"><td colspan="12">${detail(r)}</td></tr>`).join("")}
       </tbody></table>`;
+    document.querySelectorAll("[data-wd]").forEach(b=>b.onclick=async()=>{ const key=b.getAttribute("data-wd"), name=b.getAttribute("data-name");
+      const reason=window.prompt(`Withdraw the institutional record for ${name}? It leaves every view and total, and stays in history as withdrawn. Reason (optional):`); if(reason===null) return;
+      const {error}=await sb.rpc("xl_withdraw",{p_record_key:key,p_reason:reason||null}); if(error){ alert("Could not withdraw: "+error.message); return; } await load(); });
     document.querySelectorAll("[data-more]").forEach(b=>b.onclick=()=>{ const d=document.getElementById("d-"+b.getAttribute("data-more")); const open=d.style.display!=="none"; d.style.display=open?"none":"table-row"; b.textContent=open?"Detail":"Hide"; });
     document.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{ const r=ROWS.find(x=>x.submission_id===b.getAttribute("data-id")); downloadCSV([r],`${(r.record&&r.record.ExportFileName)||("XLEAP_"+r.record_key.replace(/[^A-Za-z0-9]+/g,"_"))}.csv`); });
   }
