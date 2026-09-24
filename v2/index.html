@@ -254,6 +254,11 @@
       <div class="card-body"><div class="card-tag">Governance</div><div class="card-icon">&#9707;</div>
         <div class="card-title">X-Process</div><div class="card-desc">The policy and process register. Opens on register.xime.org.</div></div>
     </div>
+    <div class="module-card dimmed" id="tile-hrms">
+      <div class="corner-badge locked" id="badge-hrms">&#128274; HR &amp; Leadership</div>
+      <div class="card-body"><div class="card-tag">HR &amp; Recruitment</div><div class="card-icon">&#9678;</div>
+        <div class="card-title">HR &amp; Recruitment</div><div class="card-desc">Recruitment pipeline from requisition and sanction to offer, plus the <a href="/onboarding-module.html" onclick="event.stopPropagation()" style="color:inherit;text-decoration:underline">onboarding checklist</a> for new joiners.</div></div>
+    </div>
     <div class="module-card dimmed">
       <div class="corner-badge parked">Coming soon</div>
       <div class="card-body"><div class="card-tag">Learning Resources</div><div class="card-icon">&#9634;</div>
@@ -376,12 +381,14 @@ async function personalize(session){
     sb.from("faculty_master").select("name,campus,designation").eq("email", email).maybeSingle(),
     sb.from("v2_checkpoints").select("gate,status").eq("faculty_email", email).eq("academic_year", AY),
     sb.from("dean_registry").select("role,campus").eq("email", email),
-    sb.from("director_campus_map").select("campus").eq("email", email).maybeSingle()
+    sb.from("director_campus_map").select("campus").eq("email", email).maybeSingle(),
+    sb.from("user_profiles").select("role").eq("email", email).maybeSingle()
   ]);
   const fm = results[0].data;
   const cps = results[1].data || [];
   const deanRows = results[2].data || [];
   const dirRow = results[3].data;
+  const prof = results[4].data;
 
   const displayName = (fm && fm.name) ? fm.name : email;
   document.getElementById("hero-greeting").textContent = timeOfDayGreeting();
@@ -408,6 +415,11 @@ async function personalize(session){
     const first = deanRows[0];
     const label = (DEAN_LABELS[first.role] || "Dean") + (first.campus ? " \u00B7 " + first.campus : "");
     unlockCard("tile-validate", "badge-validate", label, "validate.html");
+  }
+  /* HR & Recruitment: same role gate the recruitment pipeline page enforces */
+  const HRMS_ROLES = ["hrms_user","director","super_admin","org_admin"];
+  if (prof && HRMS_ROLES.indexOf(prof.role) >= 0) {
+    unlockCard("tile-hrms", "badge-hrms", "Open", "/anjaly-recruitment-pipeline.html");
   }
   if (dirRow) {
     unlockCard("tile-review", "badge-review", "Director" + (dirRow.campus ? " \u00B7 " + dirRow.campus : ""), "review.html");
