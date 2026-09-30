@@ -5,6 +5,10 @@
     { "source": "/hub", "destination": "/index.html" },
     { "source": "/xhub", "destination": "/v2/", "permanent": false }
   ],
+  "rewrites": [
+    { "source": "/xpedagogy", "destination": "/xpedagogy.html" },
+    { "source": "/xresearch", "destination": "/xresearch.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
