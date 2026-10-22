@@ -92,7 +92,7 @@
   </div>
 
   <h1>Case &amp; Simulation Requests</h1>
-  <p class="sub">Order Harvard and non-Harvard cases, simulations and articles, within policy.</p>
+  <p class="sub">Order Harvard and non-Harvard cases, simulations and articles within policy, and record free or self-developed cases for the Library.</p>
 
   <div class="seg" id="seg">
     <button data-type="case" aria-pressed="true">Case study</button>
@@ -118,14 +118,28 @@
       <div class="field"><label id="titleLbl">Case title</label><input id="title" placeholder="Full title"></div>
       <div class="field two">
         <div><label>Author(s)</label><input id="author" placeholder="Authors"></div>
-        <div><label>HBI product #</label><input id="prodno" placeholder="e.g. 615013-PDF-ENG"></div>
+        <div id="prodWrap"><label>HBI product #</label><input id="prodno" placeholder="e.g. 615013-PDF-ENG"></div>
       </div>
       <div class="field two">
-        <div><label>Price (USD)</label><input id="price" type="number" step="0.01" placeholder="0.00"></div>
-        <div id="srcWrap"><label>Source</label><select id="source"><option value="harvard">Harvard</option><option value="non_harvard">Non-Harvard</option></select></div>
+        <div id="priceWrap"><label>Price (USD)</label><input id="price" type="number" step="0.01" placeholder="0.00"></div>
+        <div id="srcWrap"><label>Source</label><select id="source"><option value="harvard">Harvard, through HBI</option><option value="non_harvard">Non-Harvard, through HBI</option><option value="non_hbi">Free or self-developed, not through HBI</option></select></div>
       </div>
       <div class="field" id="pubWrap" style="display:none"><label>Non-Harvard publisher</label>
         <select id="pub"><option>Ivey</option><option>Darden</option><option>Kellogg</option><option>Stanford GSB</option><option>London Business School</option><option>INSEAD</option><option>ISB</option><option>IIM</option><option>NTU</option><option>Berkeley Haas</option><option>Columbia</option><option>ESMT</option><option>NACRA</option><option>Other</option></select></div>
+      <div id="docWrap" style="display:none">
+        <div class="field two">
+          <div><label>Source (journal, website, institution, or self-developed)</label><input id="srcUrl" placeholder="Name, and URL if online"></div>
+          <div><label>Year of publication</label><input id="yearPub" type="number" placeholder="e.g. 2024"></div>
+        </div>
+        <div class="field"><label>Session or module in which it is used</label><input id="sessMod" placeholder="e.g. Module 3, Session 7"></div>
+        <div class="field"><label>Enclosed with your email to the Library</label>
+          <div class="hint" style="display:flex;gap:18px;flex-wrap:wrap;margin-top:6px">
+            <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-size:14.5px"><input id="tnote" type="checkbox"> Teaching note</label>
+            <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-size:14.5px"><input id="lout" type="checkbox"> Learning outcomes</label>
+            <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-size:14.5px"><input id="digiiUp" type="checkbox"> Details entered on Digii (Create Session)</label>
+          </div>
+        </div>
+      </div>
       <div class="field"><label>Session date (when it will be used)</label><input id="session" type="date"></div>
       <div class="field" id="justWrap" style="display:none">
         <label>Justification</label>
@@ -143,9 +157,9 @@
         <div class="m-note" id="capNote"></div>
       </div>
       <div class="meter" id="ratioMeter">
-        <div class="m-top"><span class="m-label">Harvard ratio</span><span class="m-val" id="ratioVal">–</span></div>
+        <div class="m-top"><span class="m-label">Non-Harvard within 2.5:1</span><span class="m-val" id="ratioVal">–</span></div>
         <div class="bar"><span id="ratioBar" style="width:100%;background:var(--green)"></span></div>
-        <div class="m-note" id="ratioNote">Target is 2.5 to 1 Harvard to non-Harvard.</div>
+        <div class="m-note" id="ratioNote">Policy: Harvard to non-Harvard about 2.5 to 1. Applies only to non-Harvard cases bought through HBI.</div>
       </div>
       <div class="meter" id="priceMeter" style="display:none">
         <div class="m-top"><span class="m-label">Price</span><span class="m-val" id="priceVal">–</span></div>
@@ -220,6 +234,17 @@ async function refreshCounts(){
 // ---- meters ----
 function daysTo(d){ if(!d) return null; const s=new Date(d+'T00:00'); const t=new Date(); t.setHours(0,0,0,0); return Math.round((s-t)/86400000); }
 function renderMeters(){
+  const isFree = type==='case' && $('source').value==='non_hbi';
+  $('capMeter').style.display = isFree?'none':'';
+  $('ratioMeter').style.display = (type==='case' && !isFree)?'':'none';
+  $('priceMeter').style.display = type==='simulation'?'':'none';
+  if(isFree){
+    const dd0=daysTo($('session').value); $('leadBadge').className='badge b-ok'; $('leadTxt').textContent = dd0===null?'Documentation only':'For '+$('session').value;
+    $('leadNote').textContent='Free and self-developed cases are outside the ratio, the cap and the price. The Library keeps a copy with the teaching note and learning outcomes.';
+    $('justWrap').style.display='none';
+    const b=$('submit'); b.textContent='Record for the Library'; b.className='btn';
+    return;
+  }
   const cap = type==='simulation' ? POL.sim_cap : POL.case_cap;
   const projected = COUNTS.total + 1;
   $('capLabel').textContent = type==='simulation' ? 'Simulations this subject' : 'Cases this subject';
@@ -237,7 +262,7 @@ function renderMeters(){
     ratioBreach = r < POL.ratio_target;
     $('ratioBar').style.width = (n===0?100:Math.min(r/POL.ratio_target*100,100))+'%';
     $('ratioBar').style.background = ratioBreach?'var(--red)':(r<POL.ratio_target+0.5?'var(--amber)':'var(--green)');
-    $('ratioNote').textContent = ratioBreach?'Below the 2.5:1 target. A non-Harvard case here needs justification.':'Within the 2.5:1 target.';
+    $('ratioNote').textContent = ratioBreach?'Below 2.5:1. This non-Harvard case needs a justification and review.':'Within 2.5:1.';
   }
   let overPrice=false;
   if(type==='simulation'){
@@ -254,7 +279,7 @@ function renderMeters(){
 
   const needsJust = late||overCap||ratioBreach||overPrice||isNonH;
   $('justWrap').style.display = needsJust?'':'none';
-  const reasons=[]; if(isNonH)reasons.push('non-Harvard case'); if(ratioBreach)reasons.push('Harvard ratio'); if(overCap)reasons.push('over the subject limit'); if(overPrice)reasons.push('over the $25 cap'); if(late)reasons.push('late request');
+  const reasons=[]; if(isNonH)reasons.push('non-Harvard case'); if(ratioBreach)reasons.push('non-Harvard ratio'); if(overCap)reasons.push('over the subject limit'); if(overPrice)reasons.push('over the $25 cap'); if(late)reasons.push('late request');
   $('justHint').textContent = reasons.length?('Flagged for: '+reasons.join(', ')+'.'):'';
   const forReview = late||overCap||ratioBreach||overPrice;
   const btn=$('submit'); btn.textContent = forReview?'Submit for review':'Submit to Library'; btn.className='btn'+(forReview?' review':'');
@@ -263,7 +288,7 @@ function renderLedger(rows){
   const list=$('ledgerList');
   if(!rows.length){ list.innerHTML='<div class="lrow" style="color:var(--ink-soft)">Nothing ordered yet for this subject and term.</div>'; return; }
   list.innerHTML = rows.map(x=>{
-    const tag = x.resource_type==='simulation' ? '<span class="ltag tag-h">Sim</span>' : (x.source==='harvard'?'<span class="ltag tag-h">Harvard</span>':'<span class="ltag tag-n">Non-Harvard</span>');
+    const tag = x.resource_type==='simulation' ? '<span class="ltag tag-h">Sim</span>' : (x.source==='harvard'?'<span class="ltag tag-h">Harvard</span>':(x.source==='non_hbi'?'<span class="ltag tag-n">Free or own</span>':'<span class="ltag tag-n">Non-Harvard</span>'));
     return '<div class="lrow">'+tag+'<span class="lt">'+(x.title||'Untitled')+'</span><span class="lstat">'+x.status+'</span><span class="lp">$'+(Number(x.price_usd)||0).toFixed(2)+'</span></div>';
   }).join('');
 }
@@ -274,11 +299,12 @@ function wire(){
     [...$('seg').children].forEach(c=>c.setAttribute('aria-pressed', c===b?'true':'false'));
     $('titleLbl').textContent = type==='case'?'Case title':'Simulation title';
     $('srcWrap').style.display = type==='case'?'':'none';
-    $('ratioMeter').style.display = type==='case'?'':'none';
-    $('priceMeter').style.display = type==='simulation'?'':'none';
+    if(type!=='case'){ $('docWrap').style.display='none'; $('prodWrap').style.display=''; $('priceWrap').style.display=''; }
+    else { $('source').dispatchEvent(new Event('change')); }
     refreshCounts();
   });
-  $('source').addEventListener('change', ()=>{ $('pubWrap').style.display=$('source').value==='non_harvard'?'':'none'; renderMeters(); });
+  $('source').addEventListener('change', ()=>{ const v=$('source').value; $('pubWrap').style.display=v==='non_harvard'?'':'none'; $('docWrap').style.display=v==='non_hbi'?'':'none';
+    $('prodWrap').style.display=v==='non_hbi'?'none':''; $('priceWrap').style.display=v==='non_hbi'?'none':''; renderMeters(); });
   $('price').addEventListener('input', renderMeters);
   $('session').addEventListener('input', renderMeters);
   $('subject').addEventListener('change', refreshCounts);
@@ -288,6 +314,14 @@ function wire(){
 
 function mailBody(p, id){
   const L=[];
+  if(p.source==='non_hbi'){
+    L.push('A case study used from a free or self-developed source has been recorded on X-Hub for documentation, per the Usage Policy of Case Studies. Details below; the case, teaching note and learning outcomes are attached.');
+    L.push(''); L.push('Programme: '+p.programme); L.push('Term: '+p.term); L.push('Subject: '+p.subject); L.push('Campus: '+p.campus); L.push('Faculty: '+p.faculty_name);
+    L.push(''); L.push('Title: '+p.title); L.push('Author(s): '+p.author); L.push('Source: '+(p.source_url||'')); L.push('Year of publication: '+(p.year_published||''));
+    L.push('Session / module: '+(p.session_module||'')); L.push('Session date: '+(p.session_date||''));
+    L.push('Teaching note enclosed: '+(p.teaching_note?'Yes':'No')); L.push('Learning outcomes enclosed: '+(p.learning_outcomes?'Yes':'No')); L.push('Details on Digii (Create Session): '+(p.digii_uploaded?'Yes':'No'));
+    L.push(''); L.push('X-Hub reference: '+id); return L.join('\n');
+  }
   L.push('A '+(p.resource_type==='simulation'?'simulation':'case study')+' request has been logged on X-Hub. Details below.');
   L.push('');
   L.push('Programme: '+p.programme);
@@ -310,7 +344,7 @@ function mailBody(p, id){
 }
 
 async function submitReq(){
-  const btn=$('submit'); const isNonH = type==='case' && $('source').value==='non_harvard';
+  const btn=$('submit'); const isNonH = type==='case' && $('source').value==='non_harvard'; const isFree = type==='case' && $('source').value==='non_hbi';
   const p = {
     programme:$('prog').value, term:$('term').value, subject:$('subject').value.trim(), campus:$('campus').value,
     faculty_name:$('faculty').value.trim(), resource_type:type,
@@ -318,8 +352,11 @@ async function submitReq(){
     source: type==='case' ? $('source').value : 'harvard',
     publisher: isNonH ? $('pub').value : null,
     price_usd: parseFloat($('price').value)||0, students: parseInt($('students').value)||null, copies: parseInt($('copies').value)||null,
-    session_date: $('session').value || null, justification: $('just').value.trim() || null
+    session_date: $('session').value || null, justification: isFree ? null : ($('just').value.trim() || null),
+    source_url: isFree ? $('srcUrl').value.trim() : null, year_published: isFree ? (parseInt($('yearPub').value)||null) : null, session_module: isFree ? $('sessMod').value.trim() : null,
+    teaching_note: isFree ? $('tnote').checked : null, learning_outcomes: isFree ? $('lout').checked : null, digii_uploaded: isFree ? $('digiiUp').checked : null
   };
+  if(isFree){ p.price_usd=0; p.product_no=null; p.publisher=null; }
   if(!p.subject || !p.title){ showSummary('err','Add a subject and a title','Both are needed before this can go to the Library.'); return; }
   if($('justWrap').style.display!=='none' && !p.justification){ $('just').focus(); $('just').style.borderColor='var(--red)'; return; }
   btn.disabled=true; const prev=btn.textContent; btn.textContent='Submitting…';
@@ -328,9 +365,15 @@ async function submitReq(){
   if(error){ showSummary('err','Could not submit', error.message==='justification required'?'A justification is needed for this request.':('Error: '+error.message)); return; }
   const review = data && data.status==='under_review';
   const body = mailBody(p, data.id);
+  const subj = isFree ? ('Case Study Documentation (Non-HBI) — '+p.subject+' ('+p.faculty_name+')') : ('HBI '+(type==='simulation'?'Simulation':'Case')+' Request — '+p.subject+' ('+p.faculty_name+')');
   const href = 'mailto:'+encodeURIComponent(LIBRARY_EMAIL)+'?cc='+encodeURIComponent(CC_EMAIL)
-    +'&subject='+encodeURIComponent('HBI '+(type==='simulation'?'Simulation':'Case')+' Request — '+p.subject+' ('+p.faculty_name+')')
+    +'&subject='+encodeURIComponent(subj)
     +'&body='+encodeURIComponent(body);
+  if(isFree){
+    showSummary('ok','Recorded for documentation','Logged on X-Hub as a free or self-developed case. Send the email below with the case, teaching note and learning outcomes attached, and enter the details on Digii under Create Session.',
+      $('title').value.trim()+(p.author?' · By: '+p.author:''), href);
+    window.location.href = href; refreshCounts(); return;
+  }
   showSummary(review?'review':'ok', review?'Logged and flagged for review':'Logged on X-Hub',
     (review?'Recorded with your justification and routed to the Library and Area Head. ':'Recorded and ready for the Library. ')
     +'Send the email below to complete the order, and log it on Digii (Create Session description).',
